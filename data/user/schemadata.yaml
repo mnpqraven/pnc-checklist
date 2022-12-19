@@ -1,0 +1,10 @@
+---
+- name: test
+  type: Guard
+  current:
+    algo:
+      offense:
+        name: BLANK
+        stat: BLANK
+        slot: [1,2]
+- name: test2

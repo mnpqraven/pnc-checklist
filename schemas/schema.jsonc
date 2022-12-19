@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "User Unit Schema",
+  "description": "User's data for unit schema",
+  "type": "object",
+  "properties": {
+    "unit": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/unit"
+      }
+    }
+  },
+  "definitions": {
+    "unit": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "oneOf": [
+            { "const": "Guard" },
+            { "const": "Medic" },
+            { "const": "Specialist" },
+            { "const": "Warrior" },
+            { "const": "Sniper" }
+          ]
+        },
+        "current": {
+          "type": "object",
+          "properties": {
+            "algo": {
+              "type": "object",
+              "$ref": "#/definitions/algo"
+            },
+            "skill": {
+              "type": "object",
+              "properties": {
+                "passive": { "type": "number" },
+                "auto": { "type": "number" }
+              }
+            }
+          },
+          "required": ["algo","skill"]
+        },
+        "goal": {
+          "type":"object",
+          "properties": {
+            "algo": {
+              "type": "object",
+              "$ref": "#/definitions/algo"
+            }
+          },
+          "required": ["algo"]
+        }
+      },
+      "required": [ "name", "type", "current", "goal" ]
+    },
+    "algo_piece": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "stat": { "type": "string" },
+        "slot": {
+          "type": "array",
+          "items": { "type": "number" }
+        }
+      },
+      "required": ["name", "stat", "slot"]
+    },
+    "algo": {
+      "type": "object",
+      "properties": {
+        "offense": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/algo_piece"
+          }
+        },
+        "stability": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/algo_piece"
+          }
+        },
+        "special": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/algo_piece"
+          }
+        }
+      },
+      "required": ["offense", "stability", "special"]
+    }
+  },
+  "required": [
+    "unit"
+  ]
+}
