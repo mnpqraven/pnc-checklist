@@ -4,21 +4,34 @@
   "description": "User's data for unit schema",
   "type": "object",
   "properties": {
-    "unit": {
+    "units": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/unit"
+        "$ref": "#/definitions/units"
       }
     }
   },
   "definitions": {
-    "unit": {
+    "database": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "type": "object",
+          "properties": {
+            "token": { "type": "number" },
+            "pivot": { "type": "number" }
+          }
+        },
+        "coin": { "type": "number" }
+      }
+    },
+    "units": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
-        "type": {
+        "class": {
           "type": "string",
           "oneOf": [
             { "const": "Guard" },
@@ -35,7 +48,7 @@
               "type": "object",
               "$ref": "#/definitions/algo"
             },
-            "skill": {
+            "skill_level": {
               "type": "object",
               "properties": {
                 "passive": { "type": "number" },
@@ -46,7 +59,7 @@
           "required": ["algo","skill"]
         },
         "goal": {
-          "type":"object",
+          "type": "object",
           "properties": {
             "algo": {
               "type": "object",
@@ -56,7 +69,7 @@
           "required": ["algo"]
         }
       },
-      "required": [ "name", "type", "current", "goal" ]
+      "required": [ "name", "class", "current", "goal" ]
     },
     "algo_piece": {
       "type": "object",
@@ -99,6 +112,6 @@
     }
   },
   "required": [
-    "unit"
+    "units"
   ]
 }

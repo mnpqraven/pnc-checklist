@@ -1,11 +1,11 @@
 use std::fmt::Display;
 
-use crate::parser::datamodel::SLV_COIN;
+use serde::{Serialize, Deserialize};
 
-use super::datamodel::UnitSkill;
-use super::datamodel::{SLV_PIVOT, SLV_TOKEN};
+use crate::model::{infomodel::UnitSkill, tables::*};
 
 /// Tokens and pivots a unit would need to max out its skill
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SkillResourceRequirement {
     token: u32,
     pivot: u32,
@@ -21,7 +21,8 @@ impl Display for SkillResourceRequirement {
 /// calculates total tokens + pivots needed for a unit
 ///
 /// * `current_slv`: unit's current slv
-fn calc_slv(current_slv: UnitSkill) -> SkillResourceRequirement {
+#[tauri::command]
+pub fn calc_slv(current_slv: UnitSkill) -> SkillResourceRequirement {
     fn slice_sum_2end(vector: Vec<u32>, index: u32) -> u32 {
         let (_, right) = vector.split_at(index.try_into().unwrap());
         right.iter().sum()
@@ -46,8 +47,7 @@ fn calc_slv(current_slv: UnitSkill) -> SkillResourceRequirement {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::datamodel::UnitSkill;
-
+    use crate::model::infomodel::UnitSkill;
     use super::calc_slv;
 
     #[test]

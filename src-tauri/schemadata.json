@@ -1,9 +1,16 @@
 {
   "$schema": "./schemas/schema.jsonc",
-  "unit": [
+  "database": {
+    "skill": {
+      "token": 1000,
+      "pivot": 100
+    },
+    "coin": 100000
+  },
+  "units": [
       {
         "name": "Croque",
-        "type": "Guard",
+        "class": "Guard",
         "current": {
           "algo": {
             "offense": [
