@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 // NOTE: need to init loading specifying algo quantity for each class ?
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Class {
     Guard,
     Warrior,
@@ -9,43 +9,10 @@ pub enum Class {
     Specialist,
     Medic,
 }
-// NOTE: find place to put these 2 fns
-pub fn default_slot_vec(class: &Class, category: AlgoCategory) -> Vec<u32> {
-    match category {
-        AlgoCategory::Offense => match *class {
-            Class::Warrior | Class::Specialist => vec![1, 2, 3],
-            _ => vec![1, 2],
-        },
-        AlgoCategory::Stability => match *class {
-            Class::Guard => vec![1, 2, 3],
-            _ => vec![1, 2],
-        },
-        AlgoCategory::Special => match *class {
-            Class::Specialist | Class::Medic => vec![1, 2, 3],
-            _ => vec![1, 2],
-        },
-    }
-}
-pub fn default_slot_size(class: Class, category: AlgoCategory) -> u32 {
-    match category {
-        AlgoCategory::Offense => match class {
-            Class::Warrior | Class::Specialist => 3,
-            _ => 2,
-        },
-        AlgoCategory::Stability => match class {
-            Class::Guard => 3,
-            _ => 2,
-        },
-        AlgoCategory::Special => match class {
-            Class::Specialist | Class::Medic => 3,
-            _ => 2,
-        },
-    }
-}
 
 #[allow(clippy::upper_case_acronyms)]
 /// List of algorithms
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Algorithm {
     //offense
     TowerLimit,
@@ -70,7 +37,23 @@ pub enum Algorithm {
     Cluster,
     Stratagem,
     // blank slot
-    BLANK, // null
+    BLANK,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum Day {
+    Mon,
+    Tue,
+    Wed,
+    Thu,
+    Fri,
+    Sat,
+    Sun,
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Timetable {
+    pub day: Day,
+    pub algos: Option<Vec<Algorithm>>,
 }
 
 #[allow(clippy::upper_case_acronyms)]
@@ -130,7 +113,7 @@ pub struct AlgoPiece {
 }
 impl AlgoPiece {
     /// creates an empty Algo piece with specified slots
-    fn new(slot: Vec<u32>) -> Self {
+    pub fn new(slot: Vec<u32>) -> Self {
         Self {
             name: Algorithm::BLANK,
             stat: AlgoMainStat::BLANK,
@@ -139,6 +122,7 @@ impl AlgoPiece {
     }
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub enum AlgoCategory {
     Offense,
     Stability,
@@ -150,39 +134,10 @@ pub struct AlgoSet {
     pub stability: Vec<AlgoPiece>,
     pub special: Vec<AlgoPiece>,
 }
-impl AlgoSet {
-    fn new(class: &Class) -> Self {
-        Self {
-            offense: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Offense,
-            ))],
-            stability: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Stability,
-            ))],
-            special: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Special,
-            ))],
-        }
-    }
-}
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Loadout {
     pub skill_level: Option<UnitSkill>, // None defaults to slv 10
     pub algo: AlgoSet,
-}
-impl Loadout {
-    fn new(class: &Class) -> Self {
-        Self {
-            skill_level: Some(UnitSkill {
-                passive: 10,
-                auto: 10,
-            }),
-            algo: AlgoSet::new(class),
-        }
-    }
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Unit {
@@ -190,16 +145,6 @@ pub struct Unit {
     pub class: Class,
     pub current: Loadout,
     pub goal: Loadout,
-}
-impl Unit {
-    fn new(name: String, class: Class) -> Self {
-        Self {
-            name,
-            class: class.to_owned(),
-            current: Loadout::new(&class),
-            goal: Loadout::new(&class),
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]

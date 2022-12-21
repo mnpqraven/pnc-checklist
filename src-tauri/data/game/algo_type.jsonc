@@ -1,0 +1,5 @@
+[
+    { "category": "Offense", "algos": [ "TowerLimit", "Feedforward", "Deduction", "Progression", "DataRepair", "MLRMatrix" ] },
+    { "category": "Stability", "algos": [ "Encapsulate", "Iteration", "Perception", "Overflow", "Rationality", "Convolution" ] },
+    { "category": "Special", "algos": [ "Inspiration", "LoopGain", "SVM", "Paradigm", "DeltaV", "Cluster", "Stratagem" ] }
+]

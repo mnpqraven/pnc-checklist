@@ -28,3 +28,29 @@ impl Display for Algorithm {
         write!(f, "{label}")
     }
 }
+
+impl Algorithm {
+    pub fn all() -> Vec<Algorithm> {
+        vec![
+            Algorithm::TowerLimit,
+            Algorithm::Feedforward,
+            Algorithm::Deduction,
+            Algorithm::Progression,
+            Algorithm::DataRepair,
+            Algorithm::MLRMatrix,
+            Algorithm::Encapsulate,
+            Algorithm::Iteration,
+            Algorithm::Perception,
+            Algorithm::Overflow,
+            Algorithm::Rationality,
+            Algorithm::Convolution,
+            Algorithm::Inspiration,
+            Algorithm::LoopGain,
+            Algorithm::SVM,
+            Algorithm::Paradigm,
+            Algorithm::DeltaV,
+            Algorithm::Cluster,
+            Algorithm::Stratagem,
+        ]
+    }
+}

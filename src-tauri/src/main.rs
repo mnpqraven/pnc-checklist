@@ -8,14 +8,9 @@ mod parser;
 mod screen;
 use tauri::Manager;
 
-use crate::parser::calc::calc_slv;
+use crate::{parser::{calc::calc_slv, parse::get_timetable}};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -26,7 +21,7 @@ fn main() {
             }
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet, calc_slv])
+        .invoke_handler(tauri::generate_handler![calc_slv, get_timetable])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
