@@ -1,12 +1,7 @@
-use std::fmt::Display;
+use serde::{Deserialize, Serialize};
 
-use serde::{Serialize, Deserialize};
-
-use crate::parser::calc::SkillResourceRequirement;
-
-// need to init loading specifying algo quantity for each class ?
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+// NOTE: need to init loading specifying algo quantity for each class ?
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub enum Class {
     Guard,
     Warrior,
@@ -14,10 +9,43 @@ pub enum Class {
     Specialist,
     Medic,
 }
+// NOTE: find place to put these 2 fns
+pub fn default_slot_vec(class: &Class, category: AlgoCategory) -> Vec<u32> {
+    match category {
+        AlgoCategory::Offense => match *class {
+            Class::Warrior | Class::Specialist => vec![1, 2, 3],
+            _ => vec![1, 2],
+        },
+        AlgoCategory::Stability => match *class {
+            Class::Guard => vec![1, 2, 3],
+            _ => vec![1, 2],
+        },
+        AlgoCategory::Special => match *class {
+            Class::Specialist | Class::Medic => vec![1, 2, 3],
+            _ => vec![1, 2],
+        },
+    }
+}
+pub fn default_slot_size(class: Class, category: AlgoCategory) -> u32 {
+    match category {
+        AlgoCategory::Offense => match class {
+            Class::Warrior | Class::Specialist => 3,
+            _ => 2,
+        },
+        AlgoCategory::Stability => match class {
+            Class::Guard => 3,
+            _ => 2,
+        },
+        AlgoCategory::Special => match class {
+            Class::Specialist | Class::Medic => 3,
+            _ => 2,
+        },
+    }
+}
+
 #[allow(clippy::upper_case_acronyms)]
 /// List of algorithms
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum Algorithm {
     //offense
     TowerLimit,
@@ -42,39 +70,11 @@ pub enum Algorithm {
     Cluster,
     Stratagem,
     // blank slot
-    BLANK // null
+    BLANK, // null
 }
 
-impl Display for Algorithm {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let label = match self {
-            Algorithm::TowerLimit => "Tower Limit",
-            Algorithm::Feedforward => "Feedforward",
-            Algorithm::Deduction => "Deduction",
-            Algorithm::Progression => "Progression",
-            Algorithm::DataRepair => "Data Repair",
-            Algorithm::MLRMatrix => "MLR Matrix",
-            Algorithm::Encapsulate => "Encapsulate",
-            Algorithm::Iteration => "Iteration",
-            Algorithm::Perception => "Perception",
-            Algorithm::Overflow => "Overflow",
-            Algorithm::Rationality => "Rationality",
-            Algorithm::Convolution => "Convolution",
-            Algorithm::Inspiration => "Inspiration",
-            Algorithm::LoopGain => "Loop Gain",
-            Algorithm::SVM => "S.V.M",
-            Algorithm::Paradigm => "Paradigm",
-            Algorithm::DeltaV => "Delta V",
-            Algorithm::Cluster => "Cluster",
-            Algorithm::Stratagem => "Stratagem",
-            Algorithm::BLANK => "BLANK"
-        };
-        write!(f, "{label}")
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+#[allow(clippy::upper_case_acronyms)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum AlgoMainStat {
     Hashrate,
     HashratePercent,
@@ -84,7 +84,7 @@ pub enum AlgoMainStat {
     HealthPercent,
     Haste,
     HealInc,
-    BLANK // null
+    BLANK, // null
 }
 #[derive(Serialize, Deserialize)]
 pub enum AlgoSubStat {
@@ -99,60 +99,118 @@ pub struct SkillCurrency {
     token: u32,
     pivot: u32,
 }
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UnitSkill {
     pub passive: u32,
     pub auto: u32,
 }
+impl Default for UnitSkill {
+    fn default() -> Self {
+        Self {
+            passive: 1,
+            auto: 1,
+        }
+    }
+}
 
 // WRAPPER STRUCTS FOR IMPORT MODEL
+// TODO: needs a new or default fn to create empty units, same as clicking
+// add button for frontend, should be legit right away
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Database {
     skill: SkillCurrency,
-    coin: u32
+    coin: u32,
 }
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct AlgoPiece {
-    name: Algorithm, // "name"
-    stat: AlgoMainStat, // "stat"
+    pub name: Algorithm,    // "name"
+    pub stat: AlgoMainStat, // "stat"
     // sub_stat: Option<Vec<AlgoSubStat>>,
-    slot: Vec<u32>, // "slot"
+    pub slot: Vec<u32>, // "slot"
 }
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
-pub struct AlgoSet {
-    offense: Vec<AlgoPiece>,
-    stability: Vec<AlgoPiece>,
-    special: Vec<AlgoPiece>,
-}
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
-pub struct Loadout {
-    skill_level: Option<UnitSkill>, // None defaults to slv 10
-    algo: AlgoSet
-}
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
-pub struct Unit {
-    name: String,
-    class: Class,
-    current: Loadout,
-    goal: Loadout,
+impl AlgoPiece {
+    /// creates an empty Algo piece with specified slots
+    fn new(slot: Vec<u32>) -> Self {
+        Self {
+            name: Algorithm::BLANK,
+            stat: AlgoMainStat::BLANK,
+            slot,
+        }
+    }
 }
 
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
-pub struct ImportChunk {
-    #[serde(rename="$schema")]
-    schema: String,
-    database: Database,
-    units: Vec<Unit>
+pub enum AlgoCategory {
+    Offense,
+    Stability,
+    Special,
 }
-#[derive(Serialize, Deserialize)]
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
+pub struct AlgoSet {
+    pub offense: Vec<AlgoPiece>,
+    pub stability: Vec<AlgoPiece>,
+    pub special: Vec<AlgoPiece>,
+}
+impl AlgoSet {
+    fn new(class: &Class) -> Self {
+        Self {
+            offense: vec![AlgoPiece::new(default_slot_vec(
+                class,
+                AlgoCategory::Offense,
+            ))],
+            stability: vec![AlgoPiece::new(default_slot_vec(
+                class,
+                AlgoCategory::Stability,
+            ))],
+            special: vec![AlgoPiece::new(default_slot_vec(
+                class,
+                AlgoCategory::Special,
+            ))],
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Loadout {
+    pub skill_level: Option<UnitSkill>, // None defaults to slv 10
+    pub algo: AlgoSet,
+}
+impl Loadout {
+    fn new(class: &Class) -> Self {
+        Self {
+            skill_level: Some(UnitSkill {
+                passive: 10,
+                auto: 10,
+            }),
+            algo: AlgoSet::new(class),
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Unit {
+    pub name: String,
+    pub class: Class,
+    pub current: Loadout,
+    pub goal: Loadout,
+}
+impl Unit {
+    fn new(name: String, class: Class) -> Self {
+        Self {
+            name,
+            class: class.to_owned(),
+            current: Loadout::new(&class),
+            goal: Loadout::new(&class),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ImportChunk {
+    #[serde(rename = "$schema")]
+    schema: String,
+    pub database: Database,
+    pub units: Vec<Unit>,
+}
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SchemalessImportChunk {
     database: Database,
-    units: Vec<Unit>
+    units: Vec<Unit>,
 }
