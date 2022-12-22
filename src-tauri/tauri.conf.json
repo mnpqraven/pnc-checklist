@@ -1,22 +1,18 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
+    "beforeBuildCommand": "npm run build && npm run export",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "devPath": "http://localhost:3000",
+    "distDir": "../out"
   },
   "package": {
-    "productName": "pnc-checklist-tauri",
-    "version": "0.0.0"
+    "productName": "pnc-checklist",
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      }
+      "all": false
     },
     "bundle": {
       "active": true,
@@ -62,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "pnc-checklist-tauri",
+        "title": "pnc-checklist",
         "width": 800
       }
     ]
