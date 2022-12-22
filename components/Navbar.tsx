@@ -8,6 +8,7 @@ const navigationRoutes = [
   { route: 'summary', name: "Summary" },
   { route: 'algo', name: "Algorithm" },
   { route: 'about', name: "About" },
+  { route: 'settings', name: "Settings" },
 ]
 
 export const Navbar = () => {

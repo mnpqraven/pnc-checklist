@@ -4,7 +4,7 @@ use super::infomodel::*;
 impl Display for Algorithm {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let label = match self {
-            Algorithm::TowerLimit => "Tower Limit",
+            Algorithm::LowerLimit => "Lower Limit",
             Algorithm::Feedforward => "Feedforward",
             Algorithm::Deduction => "Deduction",
             Algorithm::Progression => "Progression",
@@ -32,7 +32,7 @@ impl Display for Algorithm {
 impl Algorithm {
     pub fn all() -> Vec<Algorithm> {
         vec![
-            Algorithm::TowerLimit,
+            Algorithm::LowerLimit,
             Algorithm::Feedforward,
             Algorithm::Deduction,
             Algorithm::Progression,

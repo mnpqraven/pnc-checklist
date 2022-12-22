@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/schema.jsonc",
+  "$schema": "../../schemas/schema.jsonc",
   "database": {
     "skill": {
       "token": 1000,

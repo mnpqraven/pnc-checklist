@@ -15,7 +15,7 @@ pub enum Class {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Algorithm {
     //offense
-    TowerLimit,
+    LowerLimit,
     Feedforward,
     Deduction,
     Progression,
