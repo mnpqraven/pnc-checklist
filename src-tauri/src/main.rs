@@ -9,7 +9,7 @@ mod screen;
 mod startup;
 use tauri::Manager;
 
-use crate::model::builder::new_unit;
+use crate::model::builder::{new_unit, save_unit};
 use crate::parser::{calc::calc_slv, parse::get_timetable};
 
 // will be invoked during startup
@@ -31,6 +31,7 @@ fn main() {
             import_userdata,
             import_userdata_schemaless,
             new_unit,
+            save_unit,
             // common
             calc_slv, get_timetable,
             ])

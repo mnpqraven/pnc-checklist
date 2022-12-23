@@ -1,5 +1,5 @@
 import { Unit } from "@/interfaces";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
 import { Dispatch, SetStateAction, useState } from "react";
 import DollListItem from "./DollListItem";
 
@@ -28,7 +28,7 @@ const DollList = ({ list, setList, setSelected, setListIndex }: Props) => {
         <li key={index}
           onClick={() => handleChange(unit, index)}
         >
-          <DollListItem data={unit}/>
+          <DollListItem data={unit} />
         </li>
       ))}
       <li

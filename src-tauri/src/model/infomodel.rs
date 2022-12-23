@@ -57,7 +57,7 @@ pub struct Timetable {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum AlgoMainStat {
     Hashrate,
     HashratePercent,
@@ -82,7 +82,7 @@ pub struct SkillCurrency {
     token: u32,
     pivot: u32,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UnitSkill {
     pub passive: u32,
     pub auto: u32,
@@ -104,7 +104,7 @@ pub struct Database {
     skill: SkillCurrency,
     coin: u32,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoPiece {
     pub name: Algorithm,    // "name"
     pub stat: AlgoMainStat, // "stat"
@@ -128,18 +128,18 @@ pub enum AlgoCategory {
     Stability,
     Special,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoSet {
     pub offense: Vec<AlgoPiece>,
     pub stability: Vec<AlgoPiece>,
     pub special: Vec<AlgoPiece>,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Loadout {
     pub skill_level: Option<UnitSkill>, // None defaults to slv 10
     pub algo: AlgoSet,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Unit {
     pub name: String,
     pub class: Class,

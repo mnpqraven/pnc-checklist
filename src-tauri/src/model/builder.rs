@@ -1,8 +1,10 @@
 //! handles building stucts like unit, algos, resources
 //!
 
+use crate::startup::import_userdata;
+
 use super::infomodel::{
-    AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill,
+    AlgoCategory, AlgoPiece, AlgoSet, Class, ImportChunk, Loadout, Unit, UnitSkill, self,
 };
 
 pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<u32> {
@@ -29,6 +31,24 @@ impl Unit {
 pub fn new_unit(name: String, class: Class) -> Unit {
     Unit::new(name, class)
 }
+#[tauri::command]
+pub fn save_unit(unit: Unit, index: usize) -> ( Vec<Unit>, usize ) {
+    // TODO: store json data inside app and get later
+    // probably using struct method
+    let mut units: Vec<Unit> = import_userdata().units;
+    match units.get(index) {
+        #[allow(unused_variables)]
+        Some(mut _value) => {
+            _value = &unit;
+            (units, index)
+        }
+        None => {
+            units.push(unit);
+            (units.clone(), units.len())
+        }
+    }
+}
+
 // LOADOUT
 impl Loadout {
     fn new(class: Class) -> Self {

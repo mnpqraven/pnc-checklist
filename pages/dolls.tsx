@@ -31,10 +31,17 @@ export default function Dolls() {
         setImportUnits(result.units)
       })
   }, [])
-  function save_handler() {
+  async function save_handler() {
     // TODO: saving unit should be done in the back end
+    // NOTE: probably only use this with invoke,
+    // backend uses push
     console.warn(selectedUnit?.name)
-    console.warn(listIndex)
+    if (selectedUnit !== undefined) {
+      let save_unit_call= await invoke<[Unit, number]>('save_unit', { unit: selectedUnit, index: listIndex }) // returns (Unit, index)
+      console.warn(save_unit_call[1])
+    }
+
+    // console.warn(listIndex)
   }
 
   return (
