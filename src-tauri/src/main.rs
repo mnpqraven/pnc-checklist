@@ -9,7 +9,7 @@ mod screen;
 mod startup;
 use tauri::Manager;
 
-use crate::model::builder::{new_unit, save_unit};
+use crate::model::builder::{new_unit, save_unit, default_slot_vec, algo_set_new};
 use crate::parser::{calc::calc_slv, parse::get_timetable};
 
 // will be invoked during startup
@@ -34,6 +34,7 @@ fn main() {
             save_unit,
             // common
             calc_slv, get_timetable,
+            default_slot_vec, algo_set_new
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

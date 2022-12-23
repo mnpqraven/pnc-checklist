@@ -15,7 +15,7 @@
     "database": {
       "type": "object",
       "properties": {
-        "skill": {
+        "skill_level": {
           "type": "object",
           "properties": {
             "token": { "type": "number" },

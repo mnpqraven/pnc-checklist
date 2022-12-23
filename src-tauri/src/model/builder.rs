@@ -4,9 +4,10 @@
 use crate::startup::import_userdata;
 
 use super::infomodel::{
-    AlgoCategory, AlgoPiece, AlgoSet, Class, ImportChunk, Loadout, Unit, UnitSkill, self,
+    AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill,
 };
 
+#[tauri::command]
 pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<u32> {
     match class {
         Class::Guard if category == AlgoCategory::Stability => vec![1, 2, 3],
@@ -79,6 +80,10 @@ impl AlgoSet {
             ))],
         }
     }
+}
+#[tauri::command]
+pub fn algo_set_new(class: Class) -> AlgoSet {
+    AlgoSet::new(class)
 }
 
 #[cfg(test)]

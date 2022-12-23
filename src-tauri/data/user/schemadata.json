@@ -24,7 +24,38 @@
               { "name": "BLANK", "stat": "BLANK", "slot": [ 1, 2 ] }
             ]
           },
-          "skill": { "passive": 8, "auto": 8 }
+          "skill_level": { "passive": 8, "auto": 8 }
+        },
+        "goal": {
+          "algo": {
+            "offense": [
+              { "name": "Progression", "stat": "HashratePercent", "slot": [ 1, 2 ] }
+            ],
+            "stability": [
+              { "name": "Overflow", "stat": "HealthPercent", "slot": [ 1, 2, 3 ] }
+            ],
+            "special": [
+              { "name": "Stratagem", "stat": "Haste", "slot": [ 1, 2 ] }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Hubble",
+        "class": "Sniper",
+        "current": {
+          "algo": {
+            "offense": [
+              { "name": "Feedforward", "stat": "HashratePercent", "slot": [1, 2, 3] }
+            ],
+            "stability": [
+              { "name": "Encapsulate", "stat": "Health", "slot": [ 1, 2 ] }
+            ],
+            "special": [
+              { "name": "DeltaV", "stat": "BLANK", "slot": [ 1, 2 ] }
+            ]
+          },
+          "skill_level": { "passive": 8, "auto": 8 }
         },
         "goal": {
           "algo": {
