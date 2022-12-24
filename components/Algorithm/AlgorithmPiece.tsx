@@ -1,4 +1,4 @@
-import { AlgoPiece } from "@/interfaces"
+import { AlgoPiece } from "@/interfaces/datamodel"
 
 type Props = {
   data: AlgoPiece

@@ -1,4 +1,4 @@
-import { AlgoSet } from "@/interfaces"
+import { AlgoSet } from "@/interfaces/datamodel"
 import getKeys from "@/utils/helper"
 import AlgorithmPiece from "./AlgorithmPiece"
 

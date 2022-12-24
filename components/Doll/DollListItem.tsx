@@ -1,4 +1,4 @@
-import { Unit } from "@/interfaces";
+import { Unit } from "@/interfaces/datamodel";
 import { Dispatch, SetStateAction } from "react";
 
 type Props = {

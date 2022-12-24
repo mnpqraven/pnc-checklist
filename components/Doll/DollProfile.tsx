@@ -1,40 +1,48 @@
-import { Unit, CLASS, Class } from "@/interfaces"
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { Unit, CLASS, Class } from "@/interfaces/datamodel"
+import { ChangeEvent, useContext } from "react";
 import ClassSelect from "@/components/ClassSelect";
 import Loadout from "@/components/Loadout";
+import { DollContext } from "@/pages/dolls";
 
 type Props = {
-  unit: Unit | undefined
-  setUnit: Dispatch<SetStateAction<Unit | undefined>>,
+  dirtyListHandler: (data: Unit) => void
 }
-const DollProfile = ({ unit, setUnit }: Props) => {
+const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
+  const { dollData, setDollData } = useContext(DollContext);
+  const defined = dollData && setDollData
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    let name = e.currentTarget.value;
-    if (unit !== undefined) {
-      setUnit({ ...unit, name: name });
-    } else throw new Error("[DollProfile] undefined Unit should never see this");
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+    if (defined) {
+      let editedData = { ...dollData, name: e.currentTarget.value }
+      setDollData(editedData);
+      updateDirty(editedData);
+    }
+  }
+  function handleClassChange(e: ChangeEvent<HTMLInputElement>) {
+    if (defined) {
+      let editedData = { ...dollData, class: e.currentTarget.value as Class }
+      setDollData(editedData)
+      updateDirty(editedData);
+    }
   }
 
-  const [unitClass, setUnitClass] = useState<Class>("Guard");
-
-  if (unit !== undefined) return (
+  if (dollData !== undefined) return (
     <>
       <input
         type="text"
         id="name"
-        value={unit.name}
-        onChange={e => handleChange(e)}
+        value={dollData.name}
+        onChange={e => handleNameChange(e)}
       />
       <ClassSelect
         options={Object.values(CLASS)}
-        value={unit.class}
-        valueHandler={(value) => setUnitClass(value)}
+        value={dollData.class}
+        valueHandler={e => handleClassChange(e)}
       />
       <p>current loadout:</p>
       <Loadout
-        skill_level={unit.current.skill_level}
-        algo={unit.current.algo}
+        skill_level={dollData.current.skill_level}
+        algo={dollData.current.algo}
       />
     </>
   )

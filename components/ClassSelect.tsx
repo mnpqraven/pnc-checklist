@@ -1,4 +1,4 @@
-import { Class } from "@/interfaces"
+import { Class } from "@/interfaces/datamodel"
 
 type Props = {
   options: string[],

@@ -3,7 +3,7 @@
 
 use tauri::State;
 
-use crate::startup::{import_userdata, Storage};
+use crate::startup::Storage;
 
 use super::infomodel::{AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill};
 
@@ -31,6 +31,8 @@ impl Unit {
 #[tauri::command]
 pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
     let guard = store.store.lock().unwrap();
+    let list: Vec<String> = guard.units.iter().map(|e| e.name.clone()).collect();
+    println!("{:?}", list);
     guard.units.clone()
 }
 #[tauri::command]
@@ -41,16 +43,13 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
     new_unit
 }
 
-// FIX: not working
 #[tauri::command]
 pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usize, ()> {
-    // TODO: store json data inside app and get later
-    // probably using struct method
-    // FIX:
-    println!("save_unit()");
+    println!("[invoke] save_unit");
     let mut guard = store.store.lock().unwrap(); // needs mutable lock
     let units = &mut guard.units;
     units[index] = unit;
+    println!("{}", index);
     Ok(index)
 }
 

@@ -1,4 +1,4 @@
-import { AlgoSet, UnitSkill } from "@/interfaces"
+import { AlgoSet, UnitSkill } from "@/interfaces/datamodel"
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet"
 
 type Props = {

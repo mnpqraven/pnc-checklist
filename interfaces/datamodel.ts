@@ -1,8 +1,3 @@
-export type User = {
-  id: string,
-  number: number
-}
-
 export type ImportChunk = {
   schema: string,
   database: Database,
