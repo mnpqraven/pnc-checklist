@@ -4,7 +4,7 @@ import StatusBar from '@/components/StatusBar'
 import { Database, ImportChunk, Unit } from '@/interfaces'
 import styles from '@/styles/Home.module.css'
 import { invoke } from '@tauri-apps/api/tauri'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function Dolls() {
   // NOTE:
@@ -20,29 +20,25 @@ export default function Dolls() {
   // B: info form
   // C: save/info text
 
-  const [importDatabase, setImportDatabase] = useState<Database>();
   const [importUnits, setImportUnits] = useState<Unit[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<Unit | undefined>(importUnits.at(0))
   const [listIndex, setListIndex] = useState(0);
-  useEffect(() => {
-    invoke<ImportChunk>('import_userdata')
-      .then(result => {
-        setImportDatabase(result.database)
-        setImportUnits(result.units)
-      })
-  }, [])
 
-  async function save_handler() {
-    // TODO: saving unit should be done in the backend
-    // NOTE: probably only use this with invoke,
-    // backend uses push
-    // FIX: backend is also broken
-    console.warn(selectedUnit?.name)
-    if (selectedUnit !== undefined) {
-      let save_unit_call= await invoke<[Unit, number]>('save_unit', { unit: selectedUnit, index: listIndex }) // returns (Unit, index)
-      console.warn(save_unit_call[1])
-    }
+  async function update_units() {
+    setImportUnits(await invoke('view_store_units'))
   }
+
+  const handleUnitSave = useCallback(() => {
+    if (selectedUnit !== undefined) {
+      invoke<[Unit, number]>('save_unit', { unit: selectedUnit, index: listIndex });
+      update_units(); // async
+    }
+  }, [listIndex, selectedUnit]);
+
+  // synchro
+  useEffect(() => {
+    update_units();
+  }, [handleUnitSave])
 
   return (
     <>
@@ -61,7 +57,7 @@ export default function Dolls() {
               setUnit={setSelectedUnit}
             />
             <StatusBar
-              save_changes={save_handler}
+              saveHandle={handleUnitSave}
             />
           </div>
         </div>

@@ -1,11 +1,11 @@
 //! handles building stucts like unit, algos, resources
 //!
 
-use crate::startup::import_userdata;
+use tauri::State;
 
-use super::infomodel::{
-    AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill,
-};
+use crate::startup::{import_userdata, Storage};
+
+use super::infomodel::{AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill};
 
 #[tauri::command]
 pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<u32> {
@@ -29,25 +29,29 @@ impl Unit {
     }
 }
 #[tauri::command]
-pub fn new_unit(name: String, class: Class) -> Unit {
-    Unit::new(name, class)
+pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
+    let guard = store.store.lock().unwrap();
+    guard.units.clone()
 }
 #[tauri::command]
-pub fn save_unit(unit: Unit, index: usize) -> ( Vec<Unit>, usize ) {
+pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
+    let new_unit = Unit::new(name, class);
+    let mut guard = store.store.lock().unwrap();
+    guard.units.push(new_unit.clone());
+    new_unit
+}
+
+// FIX: not working
+#[tauri::command]
+pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usize, ()> {
     // TODO: store json data inside app and get later
     // probably using struct method
-    let mut units: Vec<Unit> = import_userdata().units;
-    match units.get(index) {
-        #[allow(unused_variables)]
-        Some(mut _value) => {
-            _value = &unit;
-            (units, index)
-        }
-        None => {
-            units.push(unit);
-            (units.clone(), units.len())
-        }
-    }
+    // FIX:
+    println!("save_unit()");
+    let mut guard = store.store.lock().unwrap(); // needs mutable lock
+    let units = &mut guard.units;
+    units[index] = unit;
+    Ok(index)
 }
 
 // LOADOUT

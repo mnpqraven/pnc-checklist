@@ -15,6 +15,7 @@ const DollList = ({ list, setList, setSelected, setListIndex }: Props) => {
       .then(unit => {
         setList(current => [...current, unit]);
         setSelected(unit);
+        setListIndex(list.length)
       });
   }
   function handleChange(unit: Unit, index: number) {
