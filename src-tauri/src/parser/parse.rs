@@ -16,6 +16,7 @@ pub struct AlgoTypeDb {
     pub category: AlgoCategory,
     pub algos: Vec<Algorithm>
 }
+#[tauri::command]
 pub fn get_algo_types() -> Vec<AlgoTypeDb> {
     let file = fs::read_to_string("./data/game/algo_type.jsonc")
     .expect("can't open file, check path");

@@ -55,7 +55,7 @@
               { "name": "DeltaV", "stat": "BLANK", "slot": [ 1, 2 ] }
             ]
           },
-          "skill_level": { "passive": 8, "auto": 8 }
+          "skill_level": { "passive": 2, "auto": 6 }
         },
         "goal": {
           "algo": {

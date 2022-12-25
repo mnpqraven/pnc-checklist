@@ -10,6 +10,8 @@ mod startup;
 use tauri::Manager;
 
 use crate::model::builder::{algo_set_new, default_slot_vec, new_unit, save_unit, view_store_units};
+use crate::model::impls::{algorithm_all, main_stat_all};
+use crate::parser::parse::get_algo_types;
 use crate::parser::{calc::calc_slv, parse::get_timetable};
 
 // will be invoked during startup
@@ -38,7 +40,10 @@ fn main() {
             calc_slv,
             get_timetable,
             default_slot_vec,
-            algo_set_new
+            algo_set_new,
+            get_algo_types,
+            main_stat_all,
+            algorithm_all
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

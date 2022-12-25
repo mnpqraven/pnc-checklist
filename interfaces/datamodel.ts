@@ -41,6 +41,8 @@ export type AlgoPiece = {
   stat: AlgoMainStat, // "stat"
   slot: number[]
 }
+
+// can use values from Display impl in rust backend
 export const ALGORITHM = {
   LowerLimit: "Lower Limit",
   Feedforward: "Feedforward",
@@ -65,18 +67,40 @@ export const ALGORITHM = {
 } as const;
 export type Algorithm = keyof typeof ALGORITHM
 
-export enum AlgoMainStat {
-  Hashrate,
-  HashratePercent,
-  Atk,
-  AtkPer,
-  Health,
-  HealthPercent,
-  Haste,
-  HealInc,
-  BLANK, // null
-}
+export const ALGOMAINSTAT = {
+  Hashrate: "Hashrate",
+  HashratePercent: "Hashrate %",
+  Atk: "Attack",
+  AtkPercent: "Atk %",
+  Health: "Health",
+  HealthPercent: "Health %",
+  Haste: "Haste",
+  CritRate: "Critical Rate",
+  CritDmg: "Critical Damage",
+  DamageInc: "Damage Increase",
+  Dodge: "Dodge",
+  HealInc: "Heal Increase",
+  DamageReduction: "Damage Reduction",
+  Def: "Defense",
+  DefPercent: "Defense %",
+  OpenrandDef: "Openrand Defense",
+  OperandDefPercent: "Operand Defense %",
+  BLANK: "BLANK",
+} as const
+export type AlgoMainStat = keyof typeof ALGOMAINSTAT
+
 export type SkillCurrency = {
   token: number,
   pivot: number,
+}
+export const ALGOCATEGORY = {
+  Offense: "Offense",
+  Stability: "Stability",
+  Special: "Special",
+} as const
+export type AlgoCategory = keyof typeof ALGOCATEGORY
+
+export type AlgoTypeDb = {
+  category: AlgoCategory,
+  algos: Algorithm
 }

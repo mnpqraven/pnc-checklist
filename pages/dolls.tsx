@@ -9,7 +9,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 export const DollContext = React.createContext<DollContextPayload>
-  ({ dollData: undefined, setDollData: undefined });
+  ({ dollData: undefined, setDollData: undefined , updateDirtyList: undefined});
 export default function Dolls() {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
   const [dirtyUnits, setDirtyUnits] = useState<Unit[]>([]);
@@ -58,7 +58,7 @@ export default function Dolls() {
           />
           <div className='border border-blue-500 flex flex-col w-10/12'>
             {/* using context here to pass unit object deep down the tree */}
-            <DollContext.Provider value={{ dollData: profileUnit, setDollData: setProfileUnit }}>
+            <DollContext.Provider value={{ dollData: profileUnit, setDollData: setProfileUnit, updateDirtyList }}>
               <DollProfile
                 dirtyListHandler={updateDirtyList}
               />

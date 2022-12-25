@@ -3,5 +3,6 @@ import { Unit } from "./datamodel"
 
 export type DollContextPayload = {
   dollData: Unit | undefined,
-  setDollData: Dispatch<SetStateAction<Unit | undefined>> | undefined
+  setDollData: Dispatch<SetStateAction<Unit | undefined>> | undefined,
+  updateDirtyList: ((e: Unit) => void) | undefined
 }

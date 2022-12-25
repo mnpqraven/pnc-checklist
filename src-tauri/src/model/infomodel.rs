@@ -62,11 +62,20 @@ pub enum AlgoMainStat {
     Hashrate,
     HashratePercent,
     Atk,
-    AtkPer,
+    AtkPercent,
     Health,
     HealthPercent,
     Haste,
+    CritRate,
+    CritDmg,
+    DamageInc,
+    Dodge,
     HealInc,
+    DamageReduction,
+    Def,
+    DefPercent,
+    OpenrandDef,
+    OperandDefPercent,
     BLANK, // null
 }
 #[derive(Serialize, Deserialize)]

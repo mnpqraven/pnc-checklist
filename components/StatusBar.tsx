@@ -1,4 +1,3 @@
-import { Unit } from "@/interfaces/datamodel"
 import { invoke } from "@tauri-apps/api/tauri"
 
 type Props = {

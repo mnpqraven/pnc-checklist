@@ -1,5 +1,5 @@
-use std::fmt::Display;
 use super::infomodel::*;
+use std::fmt::Display;
 
 impl Display for Algorithm {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -23,7 +23,7 @@ impl Display for Algorithm {
             Algorithm::DeltaV => "Delta V",
             Algorithm::Cluster => "Cluster",
             Algorithm::Stratagem => "Stratagem",
-            Algorithm::BLANK => "BLANK"
+            Algorithm::BLANK => "BLANK",
         };
         write!(f, "{label}")
     }
@@ -53,4 +53,57 @@ impl Algorithm {
             Algorithm::Stratagem,
         ]
     }
+}
+#[tauri::command]
+pub fn algorithm_all() -> Vec<Algorithm> {
+    Algorithm::all()
+}
+
+impl Display for AlgoMainStat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let label = match self {
+            AlgoMainStat::Hashrate => "Hashrate",
+            AlgoMainStat::HashratePercent => "Hashrate %",
+            AlgoMainStat::Atk => "Attack",
+            AlgoMainStat::AtkPercent => "Atk %",
+            AlgoMainStat::Health => "Health",
+            AlgoMainStat::HealthPercent => "Health %",
+            AlgoMainStat::Haste => "Haste",
+            AlgoMainStat::CritRate => "Critical Rate",
+            AlgoMainStat::CritDmg => "Critical Damage",
+            AlgoMainStat::DamageInc => "Damage Increase",
+            AlgoMainStat::Dodge => "Dodge",
+            AlgoMainStat::HealInc => "Heal Increase",
+            AlgoMainStat::DamageReduction => "Damage Reduction",
+            AlgoMainStat::Def => "Defense",
+            AlgoMainStat::DefPercent => "Defense %",
+            AlgoMainStat::OpenrandDef => "Openrand Defense",
+            AlgoMainStat::OperandDefPercent => "Operand Defense %",
+            AlgoMainStat::BLANK => "BLANK",
+        };
+        write!(f, "{label}")
+    }
+}
+
+#[tauri::command]
+pub fn main_stat_all() -> Vec<AlgoMainStat> {
+    vec![
+        AlgoMainStat::Hashrate,
+        AlgoMainStat::HashratePercent,
+        AlgoMainStat::Atk,
+        AlgoMainStat::AtkPercent,
+        AlgoMainStat::Health,
+        AlgoMainStat::HealthPercent,
+        AlgoMainStat::Haste,
+        AlgoMainStat::CritRate,
+        AlgoMainStat::CritDmg,
+        AlgoMainStat::DamageInc,
+        AlgoMainStat::Dodge,
+        AlgoMainStat::HealInc,
+        AlgoMainStat::DamageReduction,
+        AlgoMainStat::Def,
+        AlgoMainStat::DefPercent,
+        AlgoMainStat::OpenrandDef,
+        AlgoMainStat::OperandDefPercent,
+    ]
 }

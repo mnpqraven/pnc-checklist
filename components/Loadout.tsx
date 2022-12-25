@@ -6,7 +6,6 @@ type Props = {
   algo: AlgoSet
 }
 const Loadout = ({ skill_level, algo }: Props) => {
-
   return (
     <>
       <p>Skill level: {skill_level?.passive}/{skill_level?.auto}</p>

@@ -1,6 +1,6 @@
 import { Unit, CLASS, Class } from "@/interfaces/datamodel"
 import { ChangeEvent, useContext } from "react";
-import ClassSelect from "@/components/ClassSelect";
+import Select from "@/components/Select";
 import Loadout from "@/components/Loadout";
 import { DollContext } from "@/pages/dolls";
 
@@ -18,7 +18,7 @@ const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
       updateDirty(editedData);
     }
   }
-  function handleClassChange(e: ChangeEvent<HTMLInputElement>) {
+  function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
       let editedData = { ...dollData, class: e.currentTarget.value as Class }
       setDollData(editedData)
@@ -32,12 +32,12 @@ const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
         type="text"
         id="name"
         value={dollData.name}
-        onChange={e => handleNameChange(e)}
+        onChange={handleNameChange}
       />
-      <ClassSelect
+      <Select
         options={Object.values(CLASS)}
         value={dollData.class}
-        valueHandler={e => handleClassChange(e)}
+        onChangeHandler={handleClassChange}
       />
       <p>current loadout:</p>
       <Loadout
