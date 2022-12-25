@@ -4,6 +4,7 @@ import { get_algo } from "@/utils/helper"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import Select from "../Select"
 import { OptionPayload } from "./AlgorithmSet"
+import SlotCheckbox from "./SlotCheckbox"
 
 type Props = {
   index: number
@@ -15,10 +16,12 @@ const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const [nameLabel, setNameLabel] = useState(pieceData.name);
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
+  const [slot, setSlot] = useState<boolean[]>([false, false])
 
   useEffect(() => {
     setNameLabel(pieceData.name);
     setMainStatLabel(pieceData.stat)
+    setSlot(pieceData.slot)
   }, [pieceData])
 
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
@@ -39,8 +42,17 @@ const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
       updateDirtyList(dollData);
     }
   }
+  function slotHandler(e: ChangeEvent<HTMLInputElement>, checkboxIndex: number) {
+    if (dollData && setDollData && updateDirtyList) {
+      let cloneProfile = dollData
+      let cloneSlot = get_algo(category, cloneProfile)[index].slot
+      cloneSlot[checkboxIndex] = e.target.checked
+      setSlot(cloneSlot)
+      setDollData(cloneProfile)
+      updateDirtyList(dollData)
+    }
+  }
 
-  // TODO:
   return (
     <>
       <div className="flex justify-between">
@@ -55,7 +67,14 @@ const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
             options={Object.values(options.mainStat)}
             onChangeHandler={mainStatHandler}
           />
-          <div>{pieceData.slot}</div>
+          {dollData ?
+            <SlotCheckbox
+              value={slot}
+              unitClass={dollData.class}
+              category={category}
+              onChangeHandler={slotHandler}
+            />
+            : <></>}
         </div>
       </div>
     </>

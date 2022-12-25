@@ -39,7 +39,7 @@ export type AlgoSet = {
 export type AlgoPiece = {
   name: Algorithm,    // "name"
   stat: AlgoMainStat, // "stat"
-  slot: number[]
+  slot: boolean[]
 }
 
 // can use values from Display impl in rust backend

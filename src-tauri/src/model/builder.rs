@@ -8,13 +8,17 @@ use crate::startup::Storage;
 use super::infomodel::{AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill};
 
 #[tauri::command]
-pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<u32> {
+pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<bool> {
     match class {
-        Class::Guard if category == AlgoCategory::Stability => vec![1, 2, 3],
-        Class::Warrior | Class::Sniper if category == AlgoCategory::Offense => vec![1, 2, 3],
-        Class::Specialist | Class::Medic if category == AlgoCategory::Special => vec![1, 2, 3],
-        _ => vec![1, 2],
+        Class::Guard if category == AlgoCategory::Stability => vec![false,false,false],
+        Class::Warrior | Class::Sniper if category == AlgoCategory::Offense => vec![false,false,false],
+        Class::Specialist | Class::Medic if category == AlgoCategory::Special => vec![false,false,false],
+        _ => vec![false, false],
     }
+}
+#[tauri::command]
+pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
+    default_slot_vec(class, category).len()
 }
 
 // UNIT

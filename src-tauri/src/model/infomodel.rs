@@ -118,11 +118,11 @@ pub struct AlgoPiece {
     pub name: Algorithm,    // "name"
     pub stat: AlgoMainStat, // "stat"
     // sub_stat: Option<Vec<AlgoSubStat>>,
-    pub slot: Vec<u32>, // "slot"
+    pub slot: Vec<bool>, // "slot"
 }
 impl AlgoPiece {
     /// creates an empty Algo piece with specified slots
-    pub fn new(slot: Vec<u32>) -> Self {
+    pub fn new(slot: Vec<bool>) -> Self {
         Self {
             name: Algorithm::BLANK,
             stat: AlgoMainStat::BLANK,

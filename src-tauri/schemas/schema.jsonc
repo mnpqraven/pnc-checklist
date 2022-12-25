@@ -78,7 +78,7 @@
         "stat": { "type": "string" },
         "slot": {
           "type": "array",
-          "items": { "type": "number" }
+          "items": { "type": "boolean" }
         }
       },
       "required": ["name", "stat", "slot"]
