@@ -2,7 +2,7 @@ import { Algorithm, ALGOCATEGORY, AlgoCategory, AlgoPiece, AlgoTypeDb, Unit, Alg
 import { DollContext } from "@/pages/dolls"
 import { get_algo } from "@/utils/helper"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
-import Select from "../Select"
+import { Loading, Select } from "@/components/Common"
 import { OptionPayload } from "./AlgorithmSet"
 import SlotCheckbox from "./SlotCheckbox"
 
@@ -74,7 +74,8 @@ const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
               category={category}
               onChangeHandler={slotHandler}
             />
-            : <></>}
+            : <Loading />
+          }
         </div>
       </div>
     </>

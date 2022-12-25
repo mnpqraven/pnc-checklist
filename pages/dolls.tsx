@@ -1,11 +1,10 @@
-import DollList from '@/components/Doll/DollList'
-import DollProfile from '@/components/Doll/DollProfile'
-import StatusBar from '@/components/StatusBar'
+import { DollList, DollProfile } from '@/components/Doll'
+import { StatusBar } from '@/components/Common'
 import { Unit } from '@/interfaces/datamodel'
 import { DollContextPayload } from '@/interfaces/payloads'
 import styles from '@/styles/Home.module.css'
 import { invoke } from '@tauri-apps/api/tauri'
-import React, { Dispatch, SetStateAction } from 'react'
+import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 export const DollContext = React.createContext<DollContextPayload>

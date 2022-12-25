@@ -1,7 +1,6 @@
 import { Unit, CLASS, Class } from "@/interfaces/datamodel"
 import { ChangeEvent, useContext } from "react";
-import Select from "@/components/Select";
-import Loadout from "@/components/Loadout";
+import { Select, Loadout } from "@/components/Common"
 import { DollContext } from "@/pages/dolls";
 
 type Props = {

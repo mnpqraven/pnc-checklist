@@ -10,40 +10,44 @@ type Props = {
 }
 const SlotCheckbox = ({ unitClass, category, value, onChangeHandler }: Props) => {
   const [size, setSize] = useState(2)
-  const [clickable, setClickable] = useState(2);
+  // FIX: bug, breaks when changing unit
+  const [clickable, setClickable] = useState(value.filter(Boolean).length)
 
   async function setVisible(unitClass: Class, category: AlgoCategory) {
     let s = await invoke<number>('default_slot_size', { class: unitClass, category })
     setSize(s)
-    setClickable(s)
   }
 
   useEffect(() => {
     setVisible(unitClass, category)
   }, [category, unitClass])
-  // [true true true]
-  // [true* true true]
-  // [true* true* false]
-  function updateVisible(e: ChangeEvent<HTMLInputElement>, ind: number) {
-    // only applies to size of 2
-    //TODO:
+
+  function updateVisible(e: ChangeEvent<HTMLInputElement>) {
+    if (e.currentTarget.checked === true) {
+      if (size == 2) {
+        setClickable(clickable - 1)
+        console.log(clickable)
+      }
+    } else {
+      setClickable(clickable + 1)
+      console.log(clickable)
+    }
   }
 
   return (
-    <>
+    <div className="flex">
       {value.map((item, index) => (
-        <>
+        <div key={index}>
           <input
-            key={index}
             type="checkbox"
-            onChange={e => { onChangeHandler(e, index); updateVisible(e, index) }}
+            onChange={e => { onChangeHandler(e, index); updateVisible(e) }}
             checked={item}
-            disabled={item === false && clickable === 0}
+            disabled={item === false && clickable == 0}
           />
           <span> {index + 1} </span>
-        </>
+        </div>
       ))}
-    </>
+    </div>
   )
 }
 export default SlotCheckbox
