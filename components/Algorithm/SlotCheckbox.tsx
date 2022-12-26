@@ -9,28 +9,28 @@ type Props = {
   onChangeHandler: (value: ChangeEvent<HTMLInputElement>, index: number) => void,
 }
 const SlotCheckbox = ({ unitClass, category, value, onChangeHandler }: Props) => {
+  // gonna always 2 due to rendering at the same time as AlgorithmPiece
+  const [clickable, setClickable] = useState(2) // default case for 2 falses
   const [size, setSize] = useState(2)
-  // FIX: bug, breaks when changing unit
-  const [clickable, setClickable] = useState(value.filter(Boolean).length)
 
-  async function setVisible(unitClass: Class, category: AlgoCategory) {
+  async function setVisible(unitClass: Class, category: AlgoCategory): Promise<number> {
     let s = await invoke<number>('default_slot_size', { class: unitClass, category })
     setSize(s)
+    return s
   }
 
   useEffect(() => {
     setVisible(unitClass, category)
-  }, [category, unitClass])
+      .then(size => setClickable(size - value.filter(Boolean).length))
+  }, [category, unitClass, value])
 
   function updateVisible(e: ChangeEvent<HTMLInputElement>) {
     if (e.currentTarget.checked === true) {
       if (size == 2) {
         setClickable(clickable - 1)
-        console.log(clickable)
       }
     } else {
       setClickable(clickable + 1)
-      console.log(clickable)
     }
   }
 

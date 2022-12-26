@@ -8,17 +8,13 @@ use crate::startup::Storage;
 use super::infomodel::{AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill};
 
 #[tauri::command]
-pub fn default_slot_vec(class: Class, category: AlgoCategory) -> Vec<bool> {
-    match class {
-        Class::Guard if category == AlgoCategory::Stability => vec![false,false,false],
-        Class::Warrior | Class::Sniper if category == AlgoCategory::Offense => vec![false,false,false],
-        Class::Specialist | Class::Medic if category == AlgoCategory::Special => vec![false,false,false],
-        _ => vec![false, false],
-    }
-}
-#[tauri::command]
 pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
-    default_slot_vec(class, category).len()
+    match class {
+        Class::Guard if category == AlgoCategory::Stability => 3,
+        Class::Warrior | Class::Sniper if category == AlgoCategory::Offense => 3,
+        Class::Specialist | Class::Medic if category == AlgoCategory::Special => 3,
+        _ => 2,
+    }
 }
 
 // UNIT
@@ -73,18 +69,9 @@ impl Loadout {
 impl AlgoSet {
     fn new(class: Class) -> Self {
         Self {
-            offense: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Offense,
-            ))],
-            stability: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Stability,
-            ))],
-            special: vec![AlgoPiece::new(default_slot_vec(
-                class,
-                AlgoCategory::Special,
-            ))],
+            offense: vec![AlgoPiece::new(vec![false;3])],
+            stability: vec![AlgoPiece::new(vec![false;3])],
+            special: vec![AlgoPiece::new(vec![false;3])],
         }
     }
 }

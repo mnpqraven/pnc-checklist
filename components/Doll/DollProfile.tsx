@@ -2,6 +2,7 @@ import { Unit, CLASS, Class } from "@/interfaces/datamodel"
 import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common"
 import { DollContext } from "@/pages/dolls";
+import { invoke } from "@tauri-apps/api/tauri";
 
 type Props = {
   dirtyListHandler: (data: Unit) => void
@@ -12,14 +13,15 @@ const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined) {
-      let editedData = { ...dollData, name: e.currentTarget.value }
+      let editedData: Unit = { ...dollData, name: e.currentTarget.value }
       setDollData(editedData);
       updateDirty(editedData);
     }
   }
   function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
-      let editedData = { ...dollData, class: e.currentTarget.value as Class }
+      let editedData: Unit = { ...dollData, class: e.currentTarget.value as Class }
+      invoke('validate_algo', { unit: editedData })
       setDollData(editedData)
       updateDirty(editedData);
     }
