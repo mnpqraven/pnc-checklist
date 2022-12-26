@@ -10,9 +10,10 @@ type Props = {
   index: number
   pieceData: AlgoPiece,
   options: OptionPayload,
-  category: AlgoCategory
+  category: AlgoCategory,
+  valid: boolean | undefined
 }
-const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
+const AlgorithmPiece = ({ index, pieceData, options, category, valid }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const [nameLabel, setNameLabel] = useState(pieceData.name);
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
@@ -55,7 +56,7 @@ const AlgorithmPiece = ({ index, pieceData, options, category }: Props) => {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className={`${valid === false ? `border border-red-500` : ``} flex justify-between`}>
         <Select
           value={nameLabel}
           options={Object.values(options.algoTypes.algos)}

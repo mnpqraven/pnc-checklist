@@ -21,7 +21,6 @@ const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
   function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
       let editedData: Unit = { ...dollData, class: e.currentTarget.value as Class }
-      invoke('validate_algo', { unit: editedData })
       setDollData(editedData)
       updateDirty(editedData);
     }

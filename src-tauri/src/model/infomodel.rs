@@ -131,11 +131,19 @@ impl AlgoPiece {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy)]
 pub enum AlgoCategory {
     Offense,
     Stability,
     Special,
+}
+#[tauri::command]
+pub fn algo_category_all() -> Vec<AlgoCategory> {
+    vec![
+        AlgoCategory::Offense,
+        AlgoCategory::Stability,
+        AlgoCategory::Special,
+    ]
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoSet {
