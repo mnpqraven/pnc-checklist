@@ -1,7 +1,7 @@
 import { Unit } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { SetStateAction, useState } from "react";
 import DollListItem from "./DollListItem";
+import styles from "@/styles/Page.module.css"
 
 type Props = {
   list: Unit[],
@@ -16,13 +16,14 @@ const DollList = ({ list, indexHandler: indexChange }: Props) => {
   }
 
   return (
-    <ul>
+    <ul className={styles.dolllist}>
       {list.map((unit, index) => (
         <li
           key={index}
           onClick={() => indexChange(index)}
         >
           <DollListItem data={unit} />
+          <p>{unit.current.skill_level?.passive}/{unit.current.skill_level?.auto}</p>
         </li>
       ))}
       <li

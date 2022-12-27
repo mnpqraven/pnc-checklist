@@ -2,7 +2,7 @@ import { DollList, DollProfile } from '@/components/Doll'
 import { StatusBar } from '@/components/Common'
 import { Unit } from '@/interfaces/datamodel'
 import { AlgoErrorContext, AlgoErrorContextPayload, DollContext } from '@/interfaces/payloads'
-import styles from '@/styles/Home.module.css'
+import styles from '@/styles/Page.module.css'
 import { invoke } from '@tauri-apps/api/tauri'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
@@ -59,7 +59,7 @@ export default function Dolls() {
   return (
     <>
       <main className={styles.main}>
-        <div className='flex flex-row w-10/12 justify-center'>
+        <div className={styles.big_container}>
           <DollList
             list={dirtyUnits}
             indexHandler={handleIndex}

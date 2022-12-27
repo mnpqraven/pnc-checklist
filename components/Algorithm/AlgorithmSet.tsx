@@ -106,13 +106,16 @@ const NewAlgoSet = ({ category, loadout_type }: { category: AlgoCategory, loadou
   async function new_algo_set(category: AlgoCategory, loadout_type: LoadoutType) {
     if (defined) {
       let cloned = { ...dollData }
-      let t = await invoke<AlgoPiece>('algo_set_new')
+      let t = await invoke<AlgoPiece>('algo_piece_new')
       get_algo(category, cloned, loadout_type).push(t)
-      // FIX: test
       updateDirtyList(cloned)
     }
   }
   return (
-    <p onClick={() => new_algo_set(category, loadout_type)}>+ new algoset</p>
+    <button
+      onClick={() => new_algo_set(category, loadout_type)}
+    >
+      + new algoset
+    </button>
   )
 }

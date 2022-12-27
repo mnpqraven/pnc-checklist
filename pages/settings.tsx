@@ -1,9 +1,41 @@
-import styles from '@/styles/Home.module.css'
-const Settings = () => (
+import styles from "@/styles/Home.module.css";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+const Settings = () => {
+  const { theme, setTheme } = useTheme();
+  const [isSystemTheme, setIsSystemTheme] = useState(true);
+  return (
     <>
-    <main className={styles.main}>
+      <main className={styles.main}>
         <h1>setting page</h1>
-    </main>
+        <p>current theme is {theme}</p>
+        <p>use system color ?</p> {/**yes /no, if no clickable */}
+        <label>
+          <input
+            type="radio"
+            checked={theme === "dark"}
+            onClick={() => setTheme("dark")}
+          />
+          Dark mode
+        </label>
+        <label>
+          <input
+            type="radio"
+            checked={theme === "light"}
+            onClick={() => setTheme("light")}
+          />
+          Light mode
+        </label>
+        <label>
+          <input
+            type="radio"
+            checked={theme === "system"}
+            onClick={() => setTheme("system")}
+          />
+          System color
+        </label>
+      </main>
     </>
-)
-export default Settings
+  );
+};
+export default Settings;

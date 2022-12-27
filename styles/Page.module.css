@@ -1,0 +1,34 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.big_container {
+    @apply flex flex-row w-full justify-center
+}
+.dolllist {
+  padding: 1rem 1.2rem;
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0);
+  transition: background 200ms, border 200ms;
+}
+.dolllist li {
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .dolllist li:hover  {
+    background: rgba(var(--card-rgb), 0.2);
+    border: 1px solid rgba(var(--card-border-rgb), 0.15);
+  }
+
+  .dolllist:hover span {
+    transform: translateX(4px);
+  }
+}
