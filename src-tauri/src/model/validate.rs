@@ -52,8 +52,9 @@ mod test {
     use super::validate_algo;
 
     #[test]
+    // TODO: needs helper fns
     fn validalgo() {
-        let mut algo_set: AlgoSet = AlgoSet {
+        let algo_set: AlgoSet = AlgoSet {
             offense: vec![AlgoPiece {
                 name: Algorithm::Feedforward,
                 stat: AlgoMainStat::AtkPercent,
@@ -98,14 +99,14 @@ mod test {
             name: "hubble".to_string(),
             class: crate::model::infomodel::Class::Sniper,
             current: Loadout {
-                skill_level: Some(UnitSkill {
+                skill_level: UnitSkill {
                     passive: 7,
                     auto: 7,
-                }),
+                },
                 algo: algo_set.clone(),
             },
             goal: Loadout {
-                skill_level: None,
+                skill_level: UnitSkill { passive: 10, auto: 10 },
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,
@@ -129,9 +130,9 @@ mod test {
             (AlgoCategory::Stability, [2].to_vec()),
             (AlgoCategory::Special, [0, 2].to_vec()),
         ];
-        assert_eq!(validate_algo(unit_false.clone()), Err(right.clone()));
+        assert_eq!(validate_algo(unit_false), Err(right));
 
-        let mut scnd_set = algo_set.clone();
+        let mut scnd_set = algo_set;
         scnd_set.stability[2].slot = vec![false,false,false];
         scnd_set.special[0].slot = vec![false,false,false];
         scnd_set.special[2].slot = vec![false,false,false];
@@ -139,14 +140,14 @@ mod test {
             name: "hubble".to_string(),
             class: crate::model::infomodel::Class::Sniper,
             current: Loadout {
-                skill_level: Some(UnitSkill {
+                skill_level: UnitSkill {
                     passive: 7,
                     auto: 7,
-                }),
+                },
                 algo: scnd_set
             },
             goal: Loadout {
-                skill_level: None,
+                skill_level: UnitSkill { passive: 10, auto: 10 },
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,

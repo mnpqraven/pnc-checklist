@@ -1,6 +1,6 @@
 import { AlgoCategory, Class } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { ChangeEvent, Dispatch, SetStateAction, use, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
   unitClass: Class,

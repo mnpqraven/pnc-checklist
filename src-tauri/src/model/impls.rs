@@ -107,3 +107,61 @@ pub fn main_stat_all() -> Vec<AlgoMainStat> {
         AlgoMainStat::OperandDefPercent,
     ]
 }
+
+impl Loadout {
+    pub fn new(maxed_slv: bool) -> Self {
+        match maxed_slv {
+            true => Self {
+                skill_level: UnitSkill::max(),
+                algo: AlgoSet::new(),
+            },
+            false => Self {
+                skill_level: UnitSkill::new(),
+                algo: AlgoSet::new(),
+            },
+        }
+    }
+}
+
+impl UnitSkill {
+    fn new() -> Self {
+        Self {
+            passive: 1,
+            auto: 1,
+        }
+    }
+    fn max() -> Self {
+        Self {
+            passive: 10,
+            auto: 10,
+        }
+    }
+}
+impl AlgoSet {
+    pub fn new() -> Self {
+        Self {
+            offense: vec![AlgoPiece::new(vec![false; 3])],
+            stability: vec![AlgoPiece::new(vec![false; 3])],
+            special: vec![AlgoPiece::new(vec![false; 3])],
+        }
+    }
+}
+#[tauri::command]
+pub fn algo_set_new() -> AlgoSet {
+    AlgoSet::new()
+}
+
+impl AlgoPiece {
+    /// creates an empty Algo piece with specified slots
+    pub fn new(slot: Vec<bool>) -> Self {
+        Self {
+            name: Algorithm::BLANK,
+            stat: AlgoMainStat::BLANK,
+            slot,
+        }
+    }
+}
+#[tauri::command]
+pub fn algo_piece_new() -> AlgoPiece {
+    AlgoPiece::new(vec![false; 3])
+}

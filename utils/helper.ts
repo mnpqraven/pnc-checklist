@@ -1,4 +1,4 @@
-import { AlgoCategory, Unit, AlgoPiece, ALGOCATEGORY } from "@/interfaces/datamodel";
+import { AlgoCategory, Unit, AlgoPiece, ALGOCATEGORY, LoadoutType, LOADOUTTYPE } from "@/interfaces/datamodel";
 
 /**
  * same as Object.keys() but with generic type return
@@ -14,10 +14,25 @@ export function getKeys<T extends object>(obj: T): Array<keyof T> {
  * @param unit
  * @returns array of algo pieces
  */
-export function get_algo(category: AlgoCategory, unit: Unit): AlgoPiece[] {
+export function get_algo(category: AlgoCategory, unit: Unit, loadout_type: LoadoutType): AlgoPiece[] {
   switch (category) {
-    case ALGOCATEGORY.Offense: return unit?.current.algo.offense;
-    case ALGOCATEGORY.Stability: return unit?.current.algo.stability;
-    case ALGOCATEGORY.Special: return unit?.current.algo.special;
+    case ALGOCATEGORY.Offense: switch (loadout_type) {
+      case LOADOUTTYPE.current:
+        return unit.current.algo.offense;
+      case LOADOUTTYPE.goal:
+        return unit.goal.algo.offense;
+    }
+    case ALGOCATEGORY.Stability: switch (loadout_type) {
+      case LOADOUTTYPE.current:
+        return unit.current.algo.stability;
+      case LOADOUTTYPE.goal:
+        return unit.goal.algo.stability;
+    }
+    case ALGOCATEGORY.Special: switch (loadout_type) {
+      case LOADOUTTYPE.current:
+        return unit.current.algo.special;
+      case LOADOUTTYPE.goal:
+        return unit.goal.algo.special;
+    }
   }
 }

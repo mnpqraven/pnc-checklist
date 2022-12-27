@@ -1,10 +1,10 @@
-import { Algorithm, ALGOCATEGORY, AlgoCategory, AlgoPiece, AlgoTypeDb, Unit, AlgoMainStat } from "@/interfaces/datamodel"
-import { DollContext } from "@/pages/dolls"
+import { Algorithm, AlgoCategory, AlgoPiece, AlgoMainStat, LOADOUTTYPE } from "@/interfaces/datamodel"
 import { get_algo } from "@/utils/helper"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { Loading, Select } from "@/components/Common"
 import { OptionPayload } from "./AlgorithmSet"
 import SlotCheckbox from "./SlotCheckbox"
+import { DollContext } from "@/interfaces/payloads"
 
 type Props = {
   index: number
@@ -27,30 +27,27 @@ const AlgorithmPiece = ({ index, pieceData, options, category, valid }: Props) =
 
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
     if (dollData && setDollData && updateDirtyList) {
-      let clone = dollData;
-      get_algo(category, dollData)[index].name = event.currentTarget.value as Algorithm
+      let clone = { ...dollData };
+      get_algo(category, dollData, 'current')[index].name = event.currentTarget.value as Algorithm
       setNameLabel(event.currentTarget.value as Algorithm)
-      setDollData(clone);
-      updateDirtyList(dollData);
+      updateDirtyList(clone);
     }
   }
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
     if (dollData && setDollData && updateDirtyList) {
-      let clone = dollData;
-      get_algo(category, dollData)[index].stat = event.currentTarget.value as AlgoMainStat
+      let clone = { ...dollData };
+      get_algo(category, dollData, LOADOUTTYPE.current)[index].stat = event.currentTarget.value as AlgoMainStat
       setMainStatLabel(event.currentTarget.value as AlgoMainStat)
-      setDollData(clone);
-      updateDirtyList(dollData);
+      updateDirtyList(clone);
     }
   }
   function slotHandler(e: ChangeEvent<HTMLInputElement>, checkboxIndex: number) {
     if (dollData && setDollData && updateDirtyList) {
-      let cloneProfile = dollData
-      let cloneSlot = get_algo(category, cloneProfile)[index].slot
+      let cloneProfile = { ...dollData }
+      let cloneSlot = get_algo(category, cloneProfile, LOADOUTTYPE.current)[index].slot
       cloneSlot[checkboxIndex] = e.target.checked
       setSlot(cloneSlot)
-      setDollData(cloneProfile)
-      updateDirtyList(dollData)
+      updateDirtyList(cloneProfile)
     }
   }
 

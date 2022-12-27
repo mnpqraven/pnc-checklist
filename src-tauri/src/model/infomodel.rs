@@ -120,16 +120,6 @@ pub struct AlgoPiece {
     // sub_stat: Option<Vec<AlgoSubStat>>,
     pub slot: Vec<bool>, // "slot"
 }
-impl AlgoPiece {
-    /// creates an empty Algo piece with specified slots
-    pub fn new(slot: Vec<bool>) -> Self {
-        Self {
-            name: Algorithm::BLANK,
-            stat: AlgoMainStat::BLANK,
-            slot,
-        }
-    }
-}
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy)]
 pub enum AlgoCategory {
@@ -153,7 +143,7 @@ pub struct AlgoSet {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Loadout {
-    pub skill_level: Option<UnitSkill>, // None defaults to slv 10
+    pub skill_level: UnitSkill, // None defaults to slv 10
     pub algo: AlgoSet,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]

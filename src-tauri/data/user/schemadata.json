@@ -37,7 +37,8 @@
             "special": [
               { "name": "Stratagem", "stat": "Haste", "slot": [ true, true, false ] }
             ]
-          }
+          },
+          "skill_level": { "passive": 8, "auto": 8 }
         }
       },
       {
@@ -68,7 +69,8 @@
             "special": [
               { "name": "Stratagem", "stat": "Haste", "slot": [ true,true, false ] }
             ]
-          }
+          },
+          "skill_level": { "passive": 10, "auto": 10 }
         }
       }
   ]

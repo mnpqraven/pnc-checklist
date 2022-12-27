@@ -5,7 +5,7 @@ use tauri::State;
 
 use crate::startup::Storage;
 
-use super::infomodel::{AlgoCategory, AlgoPiece, AlgoSet, Class, Loadout, Unit, UnitSkill};
+use super::infomodel::{AlgoCategory, Class, Loadout, Unit};
 
 #[tauri::command]
 pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
@@ -22,9 +22,9 @@ impl Unit {
     fn new(name: String, class: Class) -> Self {
         Self {
             name,
-            class: class.to_owned(),
-            current: Loadout::new(class),
-            goal: Loadout::new(class),
+            class,
+            current: Loadout::new(false),
+            goal: Loadout::new(true),
         }
     }
 }
@@ -53,32 +53,6 @@ pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usiz
     Ok(index)
 }
 
-// LOADOUT
-impl Loadout {
-    fn new(class: Class) -> Self {
-        Self {
-            skill_level: Some(UnitSkill {
-                passive: 1,
-                auto: 1,
-            }),
-            algo: AlgoSet::new(class),
-        }
-    }
-}
-// ALGOS
-impl AlgoSet {
-    fn new(class: Class) -> Self {
-        Self {
-            offense: vec![AlgoPiece::new(vec![false;3])],
-            stability: vec![AlgoPiece::new(vec![false;3])],
-            special: vec![AlgoPiece::new(vec![false;3])],
-        }
-    }
-}
-#[tauri::command]
-pub fn algo_set_new(class: Class) -> AlgoSet {
-    AlgoSet::new(class)
-}
 
 #[cfg(test)]
 mod tests {

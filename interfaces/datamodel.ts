@@ -13,6 +13,11 @@ export type Unit = {
   current: Loadout,
   goal: Loadout,
 }
+export const LOADOUTTYPE = {
+  current: 'current',
+  goal: 'goal'
+} as const;
+export type LoadoutType = keyof typeof LOADOUTTYPE
 
 export const CLASS = {
   Guard: "Guard",

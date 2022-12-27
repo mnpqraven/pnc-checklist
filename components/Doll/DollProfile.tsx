@@ -1,52 +1,59 @@
-import { Unit, CLASS, Class } from "@/interfaces/datamodel"
+import { Unit, CLASS, Class, LOADOUTTYPE } from "@/interfaces/datamodel"
 import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common"
-import { DollContext } from "@/pages/dolls";
-import { invoke } from "@tauri-apps/api/tauri";
+import React from "react";
+import { DollContext } from "@/interfaces/payloads";
 
-type Props = {
-  dirtyListHandler: (data: Unit) => void
-}
-const DollProfile = ({ dirtyListHandler: updateDirty }: Props) => {
-  const { dollData, setDollData } = useContext(DollContext);
-  const defined = dollData && setDollData
+const DollProfile = () => {
+  const { dollData, setDollData, updateDirtyList } = useContext(DollContext)
+  const defined = dollData && setDollData && updateDirtyList
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined) {
       let editedData: Unit = { ...dollData, name: e.currentTarget.value }
-      setDollData(editedData);
-      updateDirty(editedData);
+      updateDirtyList(editedData);
     }
+
   }
   function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
       let editedData: Unit = { ...dollData, class: e.currentTarget.value as Class }
-      setDollData(editedData)
-      updateDirty(editedData);
+      updateDirtyList(editedData);
     }
   }
 
-  if (dollData !== undefined) return (
+  // NOTE: probably move data stuct here to eliminate undefined case
+  // TODO: goal loadout
+  if (dollData) return (
     <>
-      <input
-        type="text"
-        id="name"
-        value={dollData.name}
-        onChange={handleNameChange}
-      />
-      <Select
-        options={Object.values(CLASS)}
-        value={dollData.class}
-        onChangeHandler={handleClassChange}
-      />
-      <p>current loadout:</p>
+      <div className="flex flex-row">
+        <input
+          type="text"
+          id="name"
+          value={dollData.name}
+          onChange={handleNameChange}
+        />
+        <Select
+          options={Object.values(CLASS)}
+          value={dollData.class}
+          onChangeHandler={handleClassChange}
+        />
+      </div>
+      <p>current:</p>
       <Loadout
         skill_level={dollData.current.skill_level}
         algo={dollData.current.algo}
+        type={LOADOUTTYPE.current}
+      />
+      <p>goal:</p>
+      <Loadout
+        skill_level={dollData.goal.skill_level}
+        algo={dollData.goal.algo}
+        type={LOADOUTTYPE.goal}
       />
     </>
   )
-  return <Empty />
+  else return <Empty />
 }
 export default DollProfile;
 

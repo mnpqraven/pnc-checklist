@@ -1,4 +1,3 @@
-import { Class } from "@/interfaces/datamodel"
 import { ChangeEvent } from "react"
 
 type Props = {

@@ -1,4 +1,4 @@
-use crate::model::infomodel::{ImportChunk, SchemalessImportChunk, Unit, Database};
+use crate::model::infomodel::{ImportChunk, SchemalessImportChunk};
 use std::{fs, sync::Mutex};
 
 pub struct Storage {

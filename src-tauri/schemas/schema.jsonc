@@ -56,7 +56,7 @@
               }
             }
           },
-          "required": ["algo","skill"]
+          "required": ["algo","skill_level"]
         },
         "goal": {
           "type": "object",

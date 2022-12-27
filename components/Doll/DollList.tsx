@@ -1,14 +1,13 @@
 import { Unit } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Dispatch, SetStateAction, useState } from "react";
+import { SetStateAction, useState } from "react";
 import DollListItem from "./DollListItem";
 
 type Props = {
   list: Unit[],
-  setList: Dispatch<SetStateAction<Unit[]>>,
   indexHandler: (value: number) => void
 }
-const DollList = ({ list, setList, indexHandler: indexChange }: Props) => {
+const DollList = ({ list, indexHandler: indexChange }: Props) => {
 
   async function new_unit() {
     let unit: Unit = await invoke<Unit>('new_unit', { name: `Doll #${list.length + 1}`, class: 'Guard' });

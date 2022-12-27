@@ -1,27 +1,28 @@
-import { AlgoCategory, ALGOCATEGORY, AlgoMainStat, AlgoSet, AlgoTypeDb } from "@/interfaces/datamodel"
-import { AlgoError } from "@/interfaces/payloads"
-import { AlgoErrorContext } from "@/pages/dolls"
-import { invoke } from "@tauri-apps/api"
-import { useState, useEffect, Suspense, useContext } from "react"
+import { AlgoCategory, ALGOCATEGORY, AlgoMainStat, AlgoPiece, AlgoSet, AlgoTypeDb, LoadoutType } from "@/interfaces/datamodel"
+import { AlgoError, AlgoErrorContext, DollContext } from "@/interfaces/payloads"
+import { get_algo } from "@/utils/helper"
+import { invoke } from "@tauri-apps/api/tauri"
+import { useState, useEffect, useContext } from "react"
 import Loading from "../Loading"
 import AlgorithmPiece from "./AlgorithmPiece"
 
 type Props = {
-  algo: AlgoSet
+  algo: AlgoSet,
+  type: LoadoutType
 }
 export type OptionPayload = {
   algoTypes: AlgoTypeDb,
   mainStat: AlgoMainStat[]
 }
-const AlgoSet = ({ algo }: Props) => {
+const AlgorithmSet = ({ algo, type }: Props) => {
   const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([])
   const [mainStat, setMainStat] = useState<AlgoMainStat[]>([])
 
   const algoError: AlgoError[] = useContext(AlgoErrorContext)
-  const valid = (category: AlgoCategory): number[] => {
-    console.log(algoError)
+  const errList = (category: AlgoCategory): number[] => {
+    // e: [ALGOCATEGORY, indexes[]]
+    // FIX:
     let find = algoError.find(e => e[0] == category);
-    // console.log(find)
     if (find === undefined) return []
     return find[1]
   }
@@ -47,11 +48,14 @@ const AlgoSet = ({ algo }: Props) => {
                   options={{ algoTypes: algoTypes[0], mainStat }}
                   category={ALGOCATEGORY.Offense}
                   pieceData={piece}
-                  valid={!valid(ALGOCATEGORY.Offense).includes(index)}
+                  valid={!errList(ALGOCATEGORY.Offense).includes(index)}
                 />
               )) : <Loading />}
           </div>
-          <p>+</p>
+          <NewAlgoSet
+            category={ALGOCATEGORY.Offense}
+            loadout_type={type}
+          />
         </div>
         <div className="flex grow flex-col justify-between">
           <div>
@@ -62,11 +66,14 @@ const AlgoSet = ({ algo }: Props) => {
                 options={{ algoTypes: algoTypes[1], mainStat }}
                 category={ALGOCATEGORY.Stability}
                 pieceData={piece}
-                valid={!valid(ALGOCATEGORY.Stability).includes(index)}
+                valid={!errList(ALGOCATEGORY.Stability).includes(index)}
               />
             )) : <Loading />}
           </div>
-          <p>+</p>
+          <NewAlgoSet
+            category={ALGOCATEGORY.Stability}
+            loadout_type={type}
+          />
         </div>
         <div className="flex grow flex-col justify-between">
           <div>
@@ -77,14 +84,35 @@ const AlgoSet = ({ algo }: Props) => {
                 options={{ algoTypes: algoTypes[2], mainStat }}
                 category={ALGOCATEGORY.Special}
                 pieceData={piece}
-                valid={!valid(ALGOCATEGORY.Special).includes(index)}
+                valid={!errList(ALGOCATEGORY.Special).includes(index)}
               />
             )) : <Loading />}
           </div>
-          <p>+</p>
+          <NewAlgoSet
+            category={ALGOCATEGORY.Special}
+            loadout_type={type}
+          />
         </div>
       </div>
     </>
   )
 }
-export default AlgoSet
+export default AlgorithmSet
+
+const NewAlgoSet = ({ category, loadout_type }: { category: AlgoCategory, loadout_type: LoadoutType }) => {
+
+  const { dollData, setDollData, updateDirtyList } = useContext(DollContext)
+  const defined = dollData && setDollData && updateDirtyList
+  async function new_algo_set(category: AlgoCategory, loadout_type: LoadoutType) {
+    if (defined) {
+      let cloned = { ...dollData }
+      let t = await invoke<AlgoPiece>('algo_set_new')
+      get_algo(category, cloned, loadout_type).push(t)
+      // FIX: test
+      updateDirtyList(cloned)
+    }
+  }
+  return (
+    <p onClick={() => new_algo_set(category, loadout_type)}>+ new algoset</p>
+  )
+}
