@@ -21,7 +21,6 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   const algoError: AlgoError[] = useContext(AlgoErrorContext)
   const errList = (category: AlgoCategory): number[] => {
     // e: [ALGOCATEGORY, indexes[]]
-    // FIX:
     let find = algoError.find(e => e[0] == category);
     if (find === undefined) return []
     return find[1]
@@ -43,7 +42,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
             {algoTypes[0] !== undefined ?
               algo.offense.map((piece, index) => (
                 <AlgorithmPiece
-                  key={index}
+                  key={`offense-${index}`}
                   index={index}
                   options={{ algoTypes: algoTypes[0], mainStat }}
                   category={ALGOCATEGORY.Offense}
@@ -61,7 +60,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           <div>
             {algoTypes[1] !== undefined ? algo.stability.map((piece, index) => (
               <AlgorithmPiece
-                key={index}
+                key={`stability-${index}`}
                 index={index}
                 options={{ algoTypes: algoTypes[1], mainStat }}
                 category={ALGOCATEGORY.Stability}
@@ -79,7 +78,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           <div>
             {algoTypes[2] !== undefined ? algo.special.map((piece, index) => (
               <AlgorithmPiece
-                key={index}
+                key={`special-${index}`}
                 index={index}
                 options={{ algoTypes: algoTypes[2], mainStat }}
                 category={ALGOCATEGORY.Special}
@@ -106,7 +105,7 @@ const NewAlgoSet = ({ category, loadout_type }: { category: AlgoCategory, loadou
   async function new_algo_set(category: AlgoCategory, loadout_type: LoadoutType) {
     if (defined) {
       let cloned = { ...dollData }
-      let t = await invoke<AlgoPiece>('algo_piece_new')
+      let t = await invoke<AlgoPiece>('algo_piece_new', { category })
       get_algo(category, cloned, loadout_type).push(t)
       updateDirtyList(cloned)
     }

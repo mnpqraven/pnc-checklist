@@ -36,8 +36,6 @@ pub enum Algorithm {
     DeltaV,
     Cluster,
     Stratagem,
-    // blank slot
-    BLANK,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -76,7 +74,6 @@ pub enum AlgoMainStat {
     DefPercent,
     OpenrandDef,
     OperandDefPercent,
-    BLANK, // null
 }
 #[derive(Serialize, Deserialize)]
 pub enum AlgoSubStat {

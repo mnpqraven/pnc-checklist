@@ -14,6 +14,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
 
   function handleSlvChange(e: ChangeEvent<HTMLInputElement>, type: string) {
     if (defined) {
+      // TODO: try useImmer
       let clone: Unit = { ...dollData };
       if (clone.current.skill_level) {
         switch (type) {

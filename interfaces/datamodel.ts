@@ -68,7 +68,6 @@ export const ALGORITHM = {
   DeltaV: "Delta V",
   Cluster: "Cluster",
   Stratagem: "Stratagem",
-  BLANK: "BLANK"
 } as const;
 export type Algorithm = keyof typeof ALGORITHM
 
@@ -90,7 +89,6 @@ export const ALGOMAINSTAT = {
   DefPercent: "Defense %",
   OpenrandDef: "Openrand Defense",
   OperandDefPercent: "Operand Defense %",
-  BLANK: "BLANK",
 } as const
 export type AlgoMainStat = keyof typeof ALGOMAINSTAT
 

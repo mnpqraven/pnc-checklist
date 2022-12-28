@@ -14,14 +14,14 @@
         "current": {
           "algo": {
             "offense": [
-              { "name": "BLANK", "stat": "BLANK", "slot": [true, true, false] }
+              { "name": "Feedforward", "stat": "Hashrate", "slot": [true, true, false] }
             ],
             "stability": [
               { "name": "Overflow", "stat": "Health", "slot": [ true, false, true ] },
               { "name": "Overflow", "stat": "HealthPercent", "slot": [ false, true, false ] }
             ],
             "special": [
-              { "name": "BLANK", "stat": "BLANK", "slot": [ true, true, false ] }
+              { "name": "SVM", "stat": "Haste", "slot": [ true, true, false ] }
             ]
           },
           "skill_level": { "passive": 8, "auto": 8 }
@@ -53,7 +53,7 @@
               { "name": "Encapsulate", "stat": "Health", "slot": [ true,true, false ] }
             ],
             "special": [
-              { "name": "DeltaV", "stat": "BLANK", "slot": [ true,true, false ] }
+              { "name": "DeltaV", "stat": "Haste", "slot": [ true,true, false ] }
             ]
           },
           "skill_level": { "passive": 2, "auto": 6 }

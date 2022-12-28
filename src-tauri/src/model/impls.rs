@@ -23,7 +23,6 @@ impl Display for Algorithm {
             Algorithm::DeltaV => "Delta V",
             Algorithm::Cluster => "Cluster",
             Algorithm::Stratagem => "Stratagem",
-            Algorithm::BLANK => "BLANK",
         };
         write!(f, "{label}")
     }
@@ -79,7 +78,6 @@ impl Display for AlgoMainStat {
             AlgoMainStat::DefPercent => "Defense %",
             AlgoMainStat::OpenrandDef => "Openrand Defense",
             AlgoMainStat::OperandDefPercent => "Operand Defense %",
-            AlgoMainStat::BLANK => "BLANK",
         };
         write!(f, "{label}")
     }
@@ -140,9 +138,9 @@ impl UnitSkill {
 impl AlgoSet {
     pub fn new() -> Self {
         Self {
-            offense: vec![AlgoPiece::new(vec![false; 3])],
-            stability: vec![AlgoPiece::new(vec![false; 3])],
-            special: vec![AlgoPiece::new(vec![false; 3])],
+            offense: vec![AlgoPiece::new(AlgoCategory::Offense)],
+            stability: vec![AlgoPiece::new(AlgoCategory::Stability)],
+            special: vec![AlgoPiece::new(AlgoCategory::Special)],
         }
     }
 }
@@ -153,15 +151,27 @@ pub fn algo_set_new() -> AlgoSet {
 
 impl AlgoPiece {
     /// creates an empty Algo piece with specified slots
-    pub fn new(slot: Vec<bool>) -> Self {
-        Self {
-            name: Algorithm::BLANK,
-            stat: AlgoMainStat::BLANK,
-            slot,
+    pub fn new(category: AlgoCategory) -> Self {
+        match category {
+            AlgoCategory::Offense => Self {
+                name: Algorithm::Feedforward,
+                stat: AlgoMainStat::AtkPercent,
+                slot: vec![false; 3],
+            },
+            AlgoCategory::Stability => Self {
+                name: Algorithm::Encapsulate,
+                stat: AlgoMainStat::Health,
+                slot: vec![false; 3],
+            },
+            AlgoCategory::Special => Self {
+                name: Algorithm::DeltaV,
+                stat: AlgoMainStat::Haste,
+                slot: vec![false; 3],
+            },
         }
     }
 }
 #[tauri::command]
-pub fn algo_piece_new() -> AlgoPiece {
-    AlgoPiece::new(vec![false; 3])
+pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
+    AlgoPiece::new(category)
 }

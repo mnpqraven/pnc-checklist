@@ -1,4 +1,4 @@
-import { Algorithm, AlgoCategory, AlgoPiece, AlgoMainStat, LOADOUTTYPE } from "@/interfaces/datamodel"
+import { Algorithm, AlgoCategory, AlgoPiece, AlgoMainStat, LOADOUTTYPE, ALGOMAINSTAT, ALGORITHM } from "@/interfaces/datamodel"
 import { get_algo } from "@/utils/helper"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { Loading, Select } from "@/components/Common"
@@ -50,6 +50,15 @@ const AlgorithmPiece = ({ index, pieceData, options, category, valid }: Props) =
       updateDirtyList(cloneProfile)
     }
   }
+  function deleteHandler() {
+    // TODO: current vs goal differentiate
+    if (dollData && setDollData && updateDirtyList) {
+      let cloneProfile = { ...dollData }
+      // intentionally uses splice here cause cloneProfile is already a copy
+      get_algo(category, cloneProfile, LOADOUTTYPE.current).splice(index, 1)
+      updateDirtyList(cloneProfile);
+    }
+  }
 
   return (
     <>
@@ -57,12 +66,15 @@ const AlgorithmPiece = ({ index, pieceData, options, category, valid }: Props) =
         <Select
           value={nameLabel}
           options={Object.values(options.algoTypes.algos)}
+          label={Object.values(options.algoTypes.algos)
+            .map(e => ALGORITHM[e as Algorithm])}
           onChangeHandler={pieceHandler}
         />
         <div>
           <Select
             value={mainStatLabel}
-            options={Object.values(options.mainStat)}
+            options={options.mainStat}
+            label={options.mainStat.map(e => ALGOMAINSTAT[e])}
             onChangeHandler={mainStatHandler}
           />
           {dollData ?
@@ -74,6 +86,9 @@ const AlgorithmPiece = ({ index, pieceData, options, category, valid }: Props) =
             />
             : <Loading />
           }
+        </div>
+        <div>
+          <button onClick={deleteHandler}>delete</button>
         </div>
       </div>
     </>
