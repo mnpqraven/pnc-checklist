@@ -45,7 +45,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
     }
   }
   return (
-    <>
+    <div className={`${styles.card} ${styles.component_space}`}>
       <p>Skill level: </p>
       <div>
         <input

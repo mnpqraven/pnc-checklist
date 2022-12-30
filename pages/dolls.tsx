@@ -58,13 +58,14 @@ export default function Dolls() {
 
   return (
     <>
-      <main className={styles.main}>
         <div className={styles.big_container}>
+          <div className={`${styles.panel_left} ${styles.component_space}`}>
           <DollList
             list={dirtyUnits}
             indexHandler={handleIndex}
           />
-          <div className='flex flex-col w-10/12'>
+          </div>
+          <div>
             <DollContext.Provider value={{ dollData, setDollData, updateDirtyList }}>
               <AlgoErrorContext.Provider value={algoValidation}>
                 <DollProfile />
@@ -76,7 +77,6 @@ export default function Dolls() {
             />
           </div>
         </div>
-      </main>
     </>
   )
 }
