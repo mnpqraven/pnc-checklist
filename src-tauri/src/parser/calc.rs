@@ -1,20 +1,22 @@
-use std::fmt::Display;
-
-use serde::{Serialize, Deserialize};
-
 use crate::model::{infomodel::UnitSkill, tables::*};
+use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 
 /// Tokens and pivots a unit would need to max out its skill
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SkillResourceRequirement {
-    token: u32,
-    pivot: u32,
-    coin: u32
+    pub token: u32,
+    pub pivot: u32,
+    pub coin: u32,
 }
 
 impl Display for SkillResourceRequirement {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Unit needs {} tokens, {} pivots and {} DGC Coin", self.token, self.pivot, self.coin)
+        write!(
+            f,
+            "Unit needs {} tokens, {} pivots and {} DGC Coin",
+            self.token, self.pivot, self.coin
+        )
     }
 }
 
@@ -22,33 +24,56 @@ impl Display for SkillResourceRequirement {
 ///
 /// * `current_slv`: unit's current slv
 #[tauri::command]
-pub fn calc_slv(current_slv: UnitSkill) -> SkillResourceRequirement {
-    fn slice_sum_2end(vector: Vec<u32>, index: u32) -> u32 {
-        let (_, right) = vector.split_at(index.try_into().unwrap());
-        right.iter().sum()
+pub fn requirement_slv(current_slv: UnitSkill, target_slv: UnitSkill) -> SkillResourceRequirement {
+    /// returns needed resource for passive skill and auto skill from a range of slv
+    fn slice_sum(vector: Vec<u32>, from: UnitSkill, to: UnitSkill) -> u32 {
+        let v_passive: Vec<u32> = vector
+            .clone()
+            .drain(from.passive as usize..to.passive as usize)
+            .collect();
+        let v_auto: Vec<u32> = vector
+            .clone()
+            .drain(from.auto as usize..to.auto as usize)
+            .collect();
+        v_passive.iter().sum::<u32>() + v_auto.iter().sum::<u32>()
     }
-
-    let total_token_auto = slice_sum_2end(SLV_TOKEN.to_vec(), current_slv.auto);
-    let total_pivot_auto = slice_sum_2end(SLV_PIVOT.to_vec(), current_slv.auto);
-    let total_coin_auto = slice_sum_2end(SLV_COIN.to_vec(), current_slv.auto);
-    dbg!(total_coin_auto);
-
-    let total_token_passive = slice_sum_2end(SLV_TOKEN.to_vec(), current_slv.passive);
-    let total_pivot_passive = slice_sum_2end(SLV_PIVOT.to_vec(), current_slv.passive);
-    let total_coin_passive = slice_sum_2end(SLV_COIN.to_vec(), current_slv.passive);
-    dbg!(total_coin_passive);
+    let mut data: Vec<u32> = Vec::new();
+    // NOTE: double check with index in return struct
+    let attrs = vec![SLV_TOKEN, SLV_PIVOT, SLV_COIN];
+    for attr in attrs.iter() {
+        data.push(slice_sum(attr.to_vec(), current_slv, target_slv))
+    }
 
     SkillResourceRequirement {
-        token: (total_token_auto + total_token_passive),
-        pivot: (total_pivot_auto + total_pivot_passive),
-        coin: (total_coin_auto + total_coin_passive)
+        token: data[0],
+        pivot: data[1],
+        coin: data[2],
     }
+}
+
+/// struct for the requirement screen, gathers all requirements needed, single
+///  requirement can be accessed by fields
+/// SoSoA
+pub struct DatabaseRequirement {
+    pub unit_req: Vec<UnitRequirement>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GrandResource {
+    pub slv_token: u32,
+    pub slv_pivot: u32,
+    pub coin: u32,
+}
+/// struct for single unit
+pub struct UnitRequirement {
+    pub skill: SkillResourceRequirement,
+    // neural: NeuralResourceRequirement
 }
 
 #[cfg(test)]
 mod tests {
+    use super::requirement_slv;
     use crate::model::infomodel::UnitSkill;
-    use super::calc_slv;
 
     #[test]
     fn test_skill_total() {
@@ -56,9 +81,30 @@ mod tests {
             passive: 5,
             auto: 8,
         };
-        let calc = calc_slv(unit_skill);
+        let calc = requirement_slv(
+            unit_skill,
+            UnitSkill {
+                passive: 10,
+                auto: 10,
+            },
+        );
         assert_eq!(calc.token, 16680);
         assert_eq!(calc.pivot, 44);
+    }
+    #[test]
+    fn test_skill_halfway() {
+        let unit_skill = UnitSkill {
+            passive: 5,
+            auto: 8,
+        };
+        let calc = requirement_slv(
+            unit_skill,
+            UnitSkill {
+                passive: 9,
+                auto: 9,
+            },
+        );
+        assert_eq!(calc.pivot, 20);
     }
     #[test]
     fn test_display() {
@@ -66,7 +112,13 @@ mod tests {
             passive: 5,
             auto: 8,
         };
-        let calc = calc_slv(unit_skill);
+        let calc = requirement_slv(
+            unit_skill,
+            UnitSkill {
+                passive: 10,
+                auto: 10,
+            },
+        );
         println!("{}", calc);
     }
 }

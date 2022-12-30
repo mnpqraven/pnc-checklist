@@ -88,7 +88,7 @@ pub struct SkillCurrency {
     token: u32,
     pivot: u32,
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub struct UnitSkill {
     pub passive: u32,
     pub auto: u32,

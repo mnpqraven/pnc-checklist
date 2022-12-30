@@ -52,7 +52,7 @@ export default function Dolls() {
   }
 
   useEffect(() => {
-    console.log('[mount] useEffect')
+    console.log('[mount] page dolls')
     initUnitList();
   }, [])
 

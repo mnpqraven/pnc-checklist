@@ -3,7 +3,6 @@ import { useTheme } from "next-themes";
 import { useState } from "react";
 const Settings = () => {
   const { theme, setTheme } = useTheme();
-  const [isSystemTheme, setIsSystemTheme] = useState(true);
   return (
     <>
       <main className={styles.main}>
@@ -14,7 +13,7 @@ const Settings = () => {
           <input
             type="radio"
             checked={theme === "dark"}
-            onClick={() => setTheme("dark")}
+            onChange={() => setTheme("dark")}
           />
           Dark mode
         </label>
@@ -22,7 +21,7 @@ const Settings = () => {
           <input
             type="radio"
             checked={theme === "light"}
-            onClick={() => setTheme("light")}
+            onChange={() => setTheme("light")}
           />
           Light mode
         </label>
@@ -30,7 +29,7 @@ const Settings = () => {
           <input
             type="radio"
             checked={theme === "system"}
-            onClick={() => setTheme("system")}
+            onChange={() => setTheme("system")}
           />
           System color
         </label>

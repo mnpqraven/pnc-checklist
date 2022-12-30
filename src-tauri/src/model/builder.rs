@@ -1,11 +1,9 @@
 //! handles building stucts like unit, algos, resources
 //!
 
-use tauri::State;
-
-use crate::startup::Storage;
-
 use super::infomodel::{AlgoCategory, Class, Loadout, Unit};
+use crate::{model::impls::update_reqs, startup::Storage};
+use tauri::State;
 
 #[tauri::command]
 pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
@@ -45,14 +43,19 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
 
 #[tauri::command]
 pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usize, ()> {
-    println!("[invoke] save_unit");
-    let mut guard = store.store.lock().unwrap(); // needs mutable lock
-    let units = &mut guard.units;
-    units[index] = unit;
-    println!("{}", index);
+    {
+        println!("[invoke] save_unit");
+        let mut guard = store.store.lock().unwrap(); // needs mutable lock
+        let units = &mut guard.units;
+        units[index] = unit;
+        println!("{}", index);
+    } // unlock
+      // TODO: error handling
+    {
+        update_reqs(store).unwrap();
+    }
     Ok(index)
 }
-
 
 #[cfg(test)]
 mod tests {
