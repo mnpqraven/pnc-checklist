@@ -2,6 +2,7 @@ import { AlgoSet, LoadoutType, Unit, UnitSkill } from "@/interfaces/datamodel"
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet"
 import { ChangeEvent, useContext } from "react"
 import { DollContext } from "@/interfaces/payloads"
+import styles from "@/styles/Page.module.css"
 
 type Props = {
   skill_level: UnitSkill | undefined,
@@ -30,7 +31,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
     }
   }
   return (
-    <>
+    <div className={`${styles.card} ${styles.component_space}`}>
       <p>Skill level: </p>
       <div>
         <input
@@ -48,7 +49,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
         algo={algo}
         type={type}
       />
-    </>
+    </div>
   )
 }
 export default Loadout

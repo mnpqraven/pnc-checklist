@@ -14,7 +14,7 @@ const navigationRoutes = [
 
 export const Navbar = () => {
   return (
-    <nav className="flex flex-col fixed h-full bg-gray-400 ">
+    <nav className="h-full flex flex-col items-center justify-center fixed bg-gray-400">
       {navigationRoutes.map((singleRoute) => {
         return (
           <Link
