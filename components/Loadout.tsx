@@ -19,7 +19,10 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const defined = dollData && setDollData && updateDirtyList;
 
-  function handleSlvChange(e: ChangeEvent<HTMLInputElement>, skill_type: string) {
+  function handleSlvChange(
+    e: ChangeEvent<HTMLInputElement>,
+    skill_type: string
+  ) {
     if (defined) {
       // TODO: try useImmer
       let clone: Unit = { ...dollData };
@@ -46,7 +49,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
     }
   }
   return (
-    <div className={`${styles.card} ${styles.component_space}`}>
+    <>
       <p>Skill level: </p>
       <div>
         <input
@@ -65,7 +68,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
         />
       </div>
       <AlgorithmSet algo={algo} type={type} />
-    </div>
+    </>
   );
 };
 export default Loadout;
