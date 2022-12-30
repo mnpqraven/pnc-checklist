@@ -87,8 +87,8 @@ export const ALGOMAINSTAT = {
   DamageReduction: "Damage Reduction",
   Def: "Defense",
   DefPercent: "Defense %",
-  OpenrandDef: "Openrand Defense",
-  OperandDefPercent: "Operand Defense %",
+  OperandDef: "Operand Def",
+  OperandDefPercent: "Operand Def %",
 } as const
 export type AlgoMainStat = keyof typeof ALGOMAINSTAT
 

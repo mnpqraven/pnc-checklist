@@ -12,7 +12,7 @@ const navigationRoutes = [
   { route: "settings", name: "🍨🍨🍨" },
 ];
 
-export const Navbar = () => {
+export default function Navbar() {
   return (
     <nav className="h-full flex flex-col items-center fixed justify-center bg-gray-400">
       {navigationRoutes.map((route) => {
@@ -24,4 +24,4 @@ export const Navbar = () => {
       })}
     </nav>
   );
-};
+}

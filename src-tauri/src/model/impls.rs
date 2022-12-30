@@ -77,7 +77,7 @@ impl Display for AlgoMainStat {
             AlgoMainStat::DamageReduction => "Damage Reduction",
             AlgoMainStat::Def => "Defense",
             AlgoMainStat::DefPercent => "Defense %",
-            AlgoMainStat::OpenrandDef => "Openrand Defense",
+            AlgoMainStat::OperandDef => "Openrand Defense",
             AlgoMainStat::OperandDefPercent => "Operand Defense %",
         };
         write!(f, "{label}")
@@ -102,7 +102,7 @@ pub fn main_stat_all() -> Vec<AlgoMainStat> {
         AlgoMainStat::DamageReduction,
         AlgoMainStat::Def,
         AlgoMainStat::DefPercent,
-        AlgoMainStat::OpenrandDef,
+        AlgoMainStat::OperandDef,
         AlgoMainStat::OperandDefPercent,
     ]
 }

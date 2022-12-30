@@ -8,7 +8,6 @@ import {
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
-import styles from "@/styles/Page.module.css";
 
 type Props = {
   skill_level: UnitSkill | undefined;
@@ -50,22 +49,34 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
   }
   return (
     <>
-      <p>Skill level: </p>
-      <div>
-        <input
-          type="number"
-          min={1}
-          max={10}
-          value={skill_level?.passive}
-          onChange={(e) => handleSlvChange(e, "passive")}
-        />
-        <input
-          type="number"
-          min={1}
-          max={10}
-          value={skill_level?.auto}
-          onChange={(e) => handleSlvChange(e, "auto")}
-        />
+      <div className="flex flex-row">
+        <p>Skill level: </p>
+        <div>
+          <div className="flex flex-row">
+            <p>passive: </p>
+            <input
+              className="p-0"
+              type="range"
+              min={1}
+              max={10}
+              value={skill_level?.passive}
+              onChange={(e) => handleSlvChange(e, "passive")}
+            />
+            <p>{skill_level?.passive}</p>
+          </div>
+          <div className="flex flex-row">
+            <p>auto: </p>
+            <input
+              className="p-0"
+              type="range"
+              min={1}
+              max={10}
+              value={skill_level?.auto}
+              onChange={(e) => handleSlvChange(e, "auto")}
+            />
+            <p>{skill_level?.auto}</p>
+          </div>
+        </div>
       </div>
       <AlgorithmSet algo={algo} type={type} />
     </>

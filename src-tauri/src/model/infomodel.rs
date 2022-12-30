@@ -72,7 +72,7 @@ pub enum AlgoMainStat {
     DamageReduction,
     Def,
     DefPercent,
-    OpenrandDef,
+    OperandDef,
     OperandDefPercent,
 }
 #[derive(Serialize, Deserialize)]

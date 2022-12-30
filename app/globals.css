@@ -92,9 +92,12 @@
 main {
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
-  /* align-items: center; */
-  padding: 6rem;
+  /* justify-content: space-between;
+  align-items: center; */
+  padding-left: 4.5rem;
+  padding-right: 0.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
   min-height: 100vh;
 }
 

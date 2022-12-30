@@ -1,3 +1,4 @@
+'use client';
 import { DollList, DollProfile } from "@/components/Doll";
 import { StatusBar } from "@/components/Common";
 import { Unit } from "@/interfaces/datamodel";
@@ -6,7 +7,7 @@ import {
   AlgoErrorContextPayload,
   DollContext,
 } from "@/interfaces/payloads";
-import styles from "@/styles/Page.module.css";
+import styles from "../page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import React from "react";
 import { useEffect, useMemo, useState } from "react";

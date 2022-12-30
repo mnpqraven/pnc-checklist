@@ -3,7 +3,7 @@ import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
-import styles from "@/styles/Page.module.css";
+import styles from "../../app/page.module.css";
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
@@ -47,20 +47,14 @@ const DollProfile = () => {
             />
           </div>
         </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
-          <p>Current loadout</p>
-        </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
+        <div className={styles.loadout}>
           <Loadout
             skill_level={dollData.current.skill_level}
             algo={dollData.current.algo}
             type={LOADOUTTYPE.current}
           />
         </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
-          <p>Goal</p>
-        </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
+        <div className={styles.loadout}>
           <Loadout
             skill_level={dollData.goal.skill_level}
             algo={dollData.goal.algo}

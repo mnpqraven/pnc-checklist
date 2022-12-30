@@ -17,7 +17,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
-import styles from "@/styles/Page.module.css";
+import styles from "../../app/page.module.css";
 
 type Props = {
   algo: AlgoSet;
@@ -49,64 +49,66 @@ const AlgorithmSet = ({ algo, type }: Props) => {
 
   return (
     <>
-      <div className={styles.algoset}>
+      <div className="flex">
+        <div className={styles.algocategory}>
+          {algoTypes[0] !== undefined ? (
+            algo.offense.map((piece, index) => (
+              <AlgorithmPiece
+                key={`offense-${index}`}
+                index={index}
+                options={{ algoTypes: algoTypes[0], mainStat }}
+                category={ALGOCATEGORY.Offense}
+                pieceData={piece}
+                valid={!errList(ALGOCATEGORY.Offense).includes(index)}
+              />
+            ))
+          ) : (
+            <Loading />
+          )}
+        </div>
+
+        <div className="mx-2" />
+
         <div className={`${styles.algocategory} ${styles.list}`}>
-            {algoTypes[0] !== undefined ? (
-              algo.offense.map((piece, index) => (
-                <AlgorithmPiece
-                  key={`offense-${index}`}
-                  index={index}
-                  options={{ algoTypes: algoTypes[0], mainStat }}
-                  category={ALGOCATEGORY.Offense}
-                  pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Offense).includes(index)}
-                />
-              ))
-            ) : (
-              <Loading />
-            )}
+          {algoTypes[1] !== undefined ? (
+            algo.stability.map((piece, index) => (
+              <AlgorithmPiece
+                key={`stability-${index}`}
+                index={index}
+                options={{ algoTypes: algoTypes[1], mainStat }}
+                category={ALGOCATEGORY.Stability}
+                pieceData={piece}
+                valid={!errList(ALGOCATEGORY.Stability).includes(index)}
+              />
+            ))
+          ) : (
+            <Loading />
+          )}
+        </div>
+
+        <div className="mx-2" />
+
+        <div className={`${styles.algocategory} ${styles.list}`}>
+          {algoTypes[2] !== undefined ? (
+            algo.special.map((piece, index) => (
+              <AlgorithmPiece
+                key={`special-${index}`}
+                index={index}
+                options={{ algoTypes: algoTypes[2], mainStat }}
+                category={ALGOCATEGORY.Special}
+                pieceData={piece}
+                valid={!errList(ALGOCATEGORY.Special).includes(index)}
+              />
+            ))
+          ) : (
+            <Loading />
+          )}
+        </div>
+      </div>
+      <div className="flex flex-row justify-around">
           <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} />
-        </div>
-
-        <div className="mx-2" />
-
-        <div className={`${styles.algocategory} ${styles.list}`}>
-            {algoTypes[1] !== undefined ? (
-              algo.stability.map((piece, index) => (
-                <AlgorithmPiece
-                  key={`stability-${index}`}
-                  index={index}
-                  options={{ algoTypes: algoTypes[1], mainStat }}
-                  category={ALGOCATEGORY.Stability}
-                  pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Stability).includes(index)}
-                />
-              ))
-            ) : (
-              <Loading />
-            )}
           <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} />
-        </div>
-
-        <div className="mx-2" />
-
-        <div className={`${styles.algocategory} ${styles.list}`}>
-            {algoTypes[2] !== undefined ? (
-              algo.special.map((piece, index) => (
-                <AlgorithmPiece
-                  key={`special-${index}`}
-                  index={index}
-                  options={{ algoTypes: algoTypes[2], mainStat }}
-                  category={ALGOCATEGORY.Special}
-                  pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Special).includes(index)}
-                />
-              ))
-            ) : (
-              <Loading />
-            )}
           <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} />
-        </div>
       </div>
     </>
   );
@@ -135,7 +137,7 @@ const NewAlgoSet = ({
   }
   return (
     <button onClick={() => new_algo_set(category, loadout_type)}>
-      + new algoset
+      New {category} algorithm
     </button>
   );
 };

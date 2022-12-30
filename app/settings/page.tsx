@@ -1,7 +1,6 @@
-import styles from "@/styles/Home.module.css";
+'use client'
 import { useTheme } from "next-themes";
-import { useState } from "react";
-const Settings = () => {
+export default function Settings() {
   const { theme, setTheme } = useTheme();
   return (
     <>
@@ -35,4 +34,3 @@ const Settings = () => {
     </>
   );
 };
-export default Settings;

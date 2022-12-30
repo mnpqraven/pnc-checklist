@@ -1,5 +1,5 @@
+'use client';
 import { GrandResource } from "@/interfaces/datamodel";
-import styles from "@/styles/Home.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 export default function Resources() {
