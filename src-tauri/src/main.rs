@@ -11,13 +11,10 @@ mod startup;
 mod validate;
 use tauri::Manager;
 
-use crate::api::builder::{
-    algo_piece_new, algo_set_new, algorithm_all, default_slot_size, new_unit, save_unit,
-    view_store_units,
-};
-use crate::model::impls::main_stat_all;
-use crate::parser::parse::get_algo_types;
-use crate::parser::{calc::calc_slv, parse::get_timetable};
+use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new};
+use crate::model::impls::{main_stat_all, get_needed_rsc};
+use crate::parser::calc::requirement_slv;
+use crate::parser::parse::{get_timetable, get_algo_types};
 
 // will be invoked during startup
 use crate::startup::*;
@@ -37,6 +34,8 @@ fn main() {
         })
         .manage(Storage {
             store: Default::default(),
+            database_req: Default::default(),
+            db: Default::default()
         })
         .invoke_handler(tauri::generate_handler![
             // startup
@@ -46,16 +45,17 @@ fn main() {
             new_unit,
             save_unit,
             view_store_units,
+            // common
+            requirement_slv,
+            get_timetable,
             default_slot_size,
             algo_set_new,
             algo_piece_new,
             main_stat_all,
             algorithm_all,
             validate_algo,
-            // parser
-            calc_slv,
-            get_timetable,
-            get_algo_types,
+            get_needed_rsc,
+            get_algo_types
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

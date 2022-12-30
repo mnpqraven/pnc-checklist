@@ -107,3 +107,9 @@ export type AlgoTypeDb = {
   category: AlgoCategory,
   algos: Algorithm
 }
+
+export type GrandResource = {
+  slv_token: number,
+  slv_pivot: number,
+  coin: number
+}

@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { useState, useEffect, useContext } from "react"
 import Loading from "../Loading"
 import AlgorithmPiece from "./AlgorithmPiece"
+import styles from "@/styles/Page.module.css"
 
 type Props = {
   algo: AlgoSet,
@@ -36,8 +37,8 @@ const AlgorithmSet = ({ algo, type }: Props) => {
 
   return (
     <>
-      <div id="container" className="flex">
-        <div id="row-container" className="flex grow flex-col justify-between">
+      <div id="container" className={styles.algoset}>
+        <div id="row-container" className={styles.algocategory}>
           <div>
             {algoTypes[0] !== undefined ?
               algo.offense.map((piece, index) => (
@@ -56,7 +57,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
             loadout_type={type}
           />
         </div>
-        <div className="flex grow flex-col justify-between">
+        <div className={styles.algocategory}>
           <div>
             {algoTypes[1] !== undefined ? algo.stability.map((piece, index) => (
               <AlgorithmPiece
@@ -74,7 +75,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
             loadout_type={type}
           />
         </div>
-        <div className="flex grow flex-col justify-between">
+        <div className={styles.algocategory}>
           <div>
             {algoTypes[2] !== undefined ? algo.special.map((piece, index) => (
               <AlgorithmPiece

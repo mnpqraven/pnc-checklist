@@ -4,8 +4,8 @@ import Link from "next/link"
 const navigationRoutes = [
   { route: '/', name: "Home" },
   { route: 'dolls', name: "Dolls" },
+  { route: 'resources', name: "General Resources" },
   // unimplemented
-  // { route: 'resources', name: "General Resources" },
   // { route: 'summary', name: "Summary" },
   // { route: 'algo', name: "Algorithm" },
   // { route: 'about', name: "About" },
@@ -14,7 +14,7 @@ const navigationRoutes = [
 
 export const Navbar = () => {
   return (
-    <nav className="flex flex-col fixed h-full bg-gray-400 ">
+    <nav className="h-full flex flex-col items-center justify-center fixed bg-gray-400">
       {navigationRoutes.map((singleRoute) => {
         return (
           <Link

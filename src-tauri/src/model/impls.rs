@@ -1,5 +1,10 @@
 use super::infomodel::*;
+use crate::{
+    parser::calc::{GrandResource, requirement_slv, UnitRequirement},
+    startup::Storage,
+};
 use std::fmt::Display;
+use tauri::State;
 
 impl Display for Algorithm {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -162,4 +167,38 @@ impl AlgoPiece {
             },
         }
     }
+}
+
+/// updates the requirement field in the store by reading the store field
+pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
+    let store_guard = store.store.lock().expect("requesting mutex failed");
+    let mut req_guard = store.database_req.lock().unwrap();
+    let mut reqs: Vec<UnitRequirement> = Vec::new();
+    for unit in store_guard.units.iter() {
+        reqs.push(UnitRequirement {
+            skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
+        })
+    }
+    req_guard.unit_req = reqs;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
+    println!("ping");
+    let guard_req = store.database_req.lock().unwrap();
+    let (mut slv_token, mut slv_pivot, mut coin) = (0, 0, 0);
+    for req in guard_req.unit_req.iter() {
+        slv_pivot += req.skill.pivot;
+        slv_token += req.skill.token;
+        coin += req.skill.coin;
+    }
+
+    let t = GrandResource {
+        slv_token,
+        slv_pivot,
+        coin,
+    };
+    println!("{:?}", t);
+    t
 }

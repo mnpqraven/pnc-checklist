@@ -3,6 +3,7 @@ import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common"
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
+import styles from "@/styles/Page.module.css"
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext)
@@ -26,18 +27,22 @@ const DollProfile = () => {
   // TODO: goal loadout
   if (dollData) return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-row [&>div]:px-2">
+        <div>
         <input
           type="text"
           id="name"
           value={dollData.name}
           onChange={handleNameChange}
         />
+      </div>
+      <div>
         <Select
           options={Object.values(CLASS)}
           value={dollData.class}
           onChangeHandler={handleClassChange}
         />
+      </div>
       </div>
       <p>current:</p>
       <Loadout
