@@ -53,10 +53,6 @@ impl Algorithm {
         ]
     }
 }
-#[tauri::command]
-pub fn algorithm_all() -> Vec<Algorithm> {
-    Algorithm::all()
-}
 
 impl Display for AlgoMainStat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -144,10 +140,6 @@ impl AlgoSet {
         }
     }
 }
-#[tauri::command]
-pub fn algo_set_new() -> AlgoSet {
-    AlgoSet::new()
-}
 
 impl AlgoPiece {
     /// creates an empty Algo piece with specified slots
@@ -170,8 +162,4 @@ impl AlgoPiece {
             },
         }
     }
-}
-#[tauri::command]
-pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
-    AlgoPiece::new(category)
 }

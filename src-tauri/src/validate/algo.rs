@@ -1,6 +1,5 @@
-use crate::model::{builder::default_slot_size, infomodel::algo_category_all};
+use crate::{model::{infomodel::{Unit, AlgoCategory, algo_category_all} }, api::builder::default_slot_size};
 
-use super::infomodel::{AlgoCategory, Unit};
 
 /// NOTE: for now validate algo integrity when changing unit class
 /// only validate current set, goal TBA

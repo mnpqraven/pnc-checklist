@@ -3,9 +3,22 @@
 
 use tauri::State;
 
-use crate::startup::Storage;
+use crate::{model::infomodel::*, startup::Storage};
 
-use super::infomodel::{AlgoCategory, Class, Loadout, Unit};
+#[tauri::command]
+pub fn algorithm_all() -> Vec<Algorithm> {
+    Algorithm::all()
+}
+
+#[tauri::command]
+pub fn algo_set_new() -> AlgoSet {
+    AlgoSet::new()
+}
+
+#[tauri::command]
+pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
+    AlgoPiece::new(category)
+}
 
 #[tauri::command]
 pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
@@ -52,7 +65,6 @@ pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usiz
     println!("{}", index);
     Ok(index)
 }
-
 
 #[cfg(test)]
 mod tests {
