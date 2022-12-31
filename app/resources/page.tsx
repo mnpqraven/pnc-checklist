@@ -9,7 +9,9 @@ export default function Resources() {
     coin: 0,
   });
   async function get_req() {
-    setReg(await invoke<GrandResource>("get_needed_rsc"));
+    let t = await invoke<GrandResource>("get_needed_rsc")
+    setReg(t);
+    return t
   }
 
   async function view_store_units() {
@@ -21,7 +23,8 @@ export default function Resources() {
 
   useEffect(() => {
     console.log("[mount] page resources");
-    get_req();
+    get_req().then(console.log);
+
   }, []);
 
   return (

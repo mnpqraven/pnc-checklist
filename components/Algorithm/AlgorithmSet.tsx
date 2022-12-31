@@ -53,14 +53,15 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         <div className={styles.algocategory}>
           {algoTypes[0] !== undefined ? (
             algo.offense.map((piece, index) => (
-              <AlgorithmPiece
-                key={`offense-${index}`}
-                index={index}
-                options={{ algoTypes: algoTypes[0], mainStat }}
-                category={ALGOCATEGORY.Offense}
-                pieceData={piece}
-                valid={!errList(ALGOCATEGORY.Offense).includes(index)}
-              />
+              <div key={`offense-${index}`} className="m-1">
+                <AlgorithmPiece
+                  index={index}
+                  options={{ algoTypes: algoTypes[0], mainStat }}
+                  category={ALGOCATEGORY.Offense}
+                  pieceData={piece}
+                  valid={!errList(ALGOCATEGORY.Offense).includes(index)}
+                />
+              </div>
             ))
           ) : (
             <Loading />
@@ -72,14 +73,15 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         <div className={`${styles.algocategory} ${styles.list}`}>
           {algoTypes[1] !== undefined ? (
             algo.stability.map((piece, index) => (
-              <AlgorithmPiece
-                key={`stability-${index}`}
-                index={index}
-                options={{ algoTypes: algoTypes[1], mainStat }}
-                category={ALGOCATEGORY.Stability}
-                pieceData={piece}
-                valid={!errList(ALGOCATEGORY.Stability).includes(index)}
-              />
+              <div key={`stability-${index}`} className="m-1">
+                <AlgorithmPiece
+                  index={index}
+                  options={{ algoTypes: algoTypes[1], mainStat }}
+                  category={ALGOCATEGORY.Stability}
+                  pieceData={piece}
+                  valid={!errList(ALGOCATEGORY.Stability).includes(index)}
+                />
+              </div>
             ))
           ) : (
             <Loading />
@@ -91,14 +93,15 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         <div className={`${styles.algocategory} ${styles.list}`}>
           {algoTypes[2] !== undefined ? (
             algo.special.map((piece, index) => (
-              <AlgorithmPiece
-                key={`special-${index}`}
-                index={index}
-                options={{ algoTypes: algoTypes[2], mainStat }}
-                category={ALGOCATEGORY.Special}
-                pieceData={piece}
-                valid={!errList(ALGOCATEGORY.Special).includes(index)}
-              />
+              <div key={`special-${index}`} className="m-1">
+                <AlgorithmPiece
+                  index={index}
+                  options={{ algoTypes: algoTypes[2], mainStat }}
+                  category={ALGOCATEGORY.Special}
+                  pieceData={piece}
+                  valid={!errList(ALGOCATEGORY.Special).includes(index)}
+                />
+              </div>
             ))
           ) : (
             <Loading />
@@ -106,9 +109,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         </div>
       </div>
       <div className="flex flex-row justify-around">
-          <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} />
-          <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} />
-          <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} />
+        <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} />
+        <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} />
+        <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} />
       </div>
     </>
   );

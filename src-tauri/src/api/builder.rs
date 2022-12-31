@@ -1,9 +1,12 @@
 //! handles building stucts like unit, algos, resources
 //!
 
+use crate::{
+    model::{impls::update_reqs, infomodel::*},
+    parser::calc::GrandResource,
+    startup::Storage,
+};
 use tauri::State;
-
-use crate::{model::infomodel::*, startup::Storage};
 
 #[tauri::command]
 pub fn algorithm_all() -> Vec<Algorithm> {
@@ -43,7 +46,7 @@ impl Unit {
 }
 
 #[tauri::command]
-pub fn update_chunk(chunk: ImportChunk, store: State<Storage>) -> Result<(), &'static str>{
+pub fn update_chunk(chunk: ImportChunk, store: State<Storage>) -> Result<(), &'static str> {
     let mut store = store.store.lock().unwrap();
     *store = chunk;
     Ok(())
@@ -64,13 +67,35 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
 }
 
 #[tauri::command]
-pub fn save_unit(unit: Unit, index: usize, store: State<Storage>) -> Result<usize, ()> {
+pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>) -> Result<usize, ()> {
     println!("[invoke] save_unit");
     let mut guard = store.store.lock().unwrap(); // needs mutable lock
     let units = &mut guard.units;
     units[index] = unit;
+    drop(guard);
+
     println!("{}", index);
+    update_reqs(store).unwrap();
     Ok(index)
+}
+
+#[tauri::command]
+pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
+    let guard_req = store.database_req.lock().unwrap();
+    let (mut slv_token, mut slv_pivot, mut coin) = (0, 0, 0);
+    for req in guard_req.unit_req.iter() {
+        slv_pivot += req.skill.pivot;
+        slv_token += req.skill.token;
+        coin += req.skill.coin;
+    }
+
+    let t = GrandResource {
+        slv_token,
+        slv_pivot,
+        coin,
+    };
+    println!("{:?}", t);
+    t
 }
 
 #[cfg(test)]

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { DollList, DollProfile } from "@/components/Doll";
 import { StatusBar } from "@/components/Common";
 import { Unit } from "@/interfaces/datamodel";
@@ -11,6 +11,7 @@ import styles from "../page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import React from "react";
 import { useEffect, useMemo, useState } from "react";
+import { UnitValidationError } from "@/interfaces/results";
 
 export default function Dolls() {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
@@ -19,6 +20,7 @@ export default function Dolls() {
   const [dollData, setDollData] = useState<Unit | undefined>();
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const [errors, setErrors] = useState<UnitValidationError[]>([]);
   const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
     []
   );
@@ -51,9 +53,11 @@ export default function Dolls() {
   function updateDirtyList(e: Unit) {
     setDollData(e);
 
-    invoke("validate_algo", { unit: e })
-      .then((_) => setAlgoValidation([]))
-      .catch((err) => setAlgoValidation(err as AlgoErrorContextPayload));
+    // invoke("validate", { unit: e })
+    //   .then((_) => setAlgoValidation([]))
+    //   .catch((err) => setAlgoValidation(err as UnitValidationError));
+    // TODO: implement validation
+    invoke("validate", { unit: e }).catch((err) => console.log(err));
 
     setDirtyUnits(
       dirtyUnits.map((unit, index) => {

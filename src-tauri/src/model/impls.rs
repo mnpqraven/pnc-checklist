@@ -1,9 +1,9 @@
 use super::infomodel::*;
 use crate::{
-    parser::calc::{GrandResource, requirement_slv, UnitRequirement},
+    parser::calc::{requirement_slv, UnitRequirement},
     startup::Storage,
 };
-use std::{fmt::Display, ops::Deref};
+use std::fmt::Display;
 use tauri::State;
 
 impl Display for Algorithm {
@@ -28,13 +28,19 @@ impl Display for Algorithm {
             Algorithm::DeltaV => "Delta V",
             Algorithm::Cluster => "Cluster",
             Algorithm::Stratagem => "Stratagem",
+            // gen 2
+            Algorithm::Stack => "Stack",
+            Algorithm::LimitValue => "Limit Value",
+            Algorithm::Reflection => "Reflection",
+            Algorithm::Resolve => "Resolve",
+            Algorithm::Exploit => "Exploit",
         };
         write!(f, "{label}")
     }
 }
 
 impl Algorithm {
-    pub fn all() -> Vec<Algorithm> {
+    pub fn all_gen1() -> Vec<Algorithm> {
         vec![
             Algorithm::LowerLimit,
             Algorithm::Feedforward,
@@ -56,6 +62,21 @@ impl Algorithm {
             Algorithm::Cluster,
             Algorithm::Stratagem,
         ]
+    }
+    pub fn all_gen2() -> Vec<Algorithm> {
+        vec![
+            Algorithm::Stack,
+            Algorithm::LimitValue,
+            Algorithm::Reflection,
+            Algorithm::Resolve,
+            Algorithm::Exploit,
+        ]
+    }
+    pub fn all() -> Vec<Algorithm> {
+        Algorithm::all_gen1()
+            .into_iter()
+            .chain(Algorithm::all_gen2().into_iter())
+            .collect()
     }
 }
 
@@ -183,22 +204,3 @@ pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
     Ok(())
 }
 
-#[tauri::command]
-pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
-    println!("ping");
-    let guard_req = store.database_req.lock().unwrap();
-    let (mut slv_token, mut slv_pivot, mut coin) = (0, 0, 0);
-    for req in guard_req.unit_req.iter() {
-        slv_pivot += req.skill.pivot;
-        slv_token += req.skill.token;
-        coin += req.skill.coin;
-    }
-
-    let t = GrandResource {
-        slv_token,
-        slv_pivot,
-        coin,
-    };
-    println!("{:?}", t);
-    t
-}

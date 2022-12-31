@@ -18,10 +18,7 @@ pub struct AlgoTypeDb {
 }
 #[tauri::command]
 pub fn get_algo_types() -> Vec<AlgoTypeDb> {
-    let file =
-        fs::read_to_string("./data/game/algo_type.jsonc").expect("can't open file, check path");
-    let algo: Vec<AlgoTypeDb> = serde_json::from_str(&file).expect("unable to parse");
-    algo
+    AlgoTypeDb::generate_algo_db()
 }
 
 #[cfg(test)]

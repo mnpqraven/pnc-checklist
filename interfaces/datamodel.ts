@@ -68,6 +68,11 @@ export const ALGORITHM = {
   DeltaV: "Delta V",
   Cluster: "Cluster",
   Stratagem: "Stratagem",
+  Stack: "Stack",
+  LimitValue: "Limit Value",
+  Reflection: "Reflection",
+  Resolve: "Resolve",
+  Exploit: "Exploit"
 } as const;
 export type Algorithm = keyof typeof ALGORITHM
 

@@ -43,7 +43,6 @@
   background: rgba(var(--card-rgb), 0.1);
   border: 1px solid rgba(var(--card-border-rgb), 0.4);
   transition: background 200ms, border 200ms;
-  overflow-y: scroll;
 }
 .algocategory {
   display: flex;

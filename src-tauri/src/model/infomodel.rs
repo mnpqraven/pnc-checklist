@@ -21,6 +21,8 @@ pub enum Algorithm {
     Progression,
     DataRepair,
     MLRMatrix,
+    Stack,
+    LimitValue,
     //stability
     Encapsulate,
     Iteration,
@@ -28,6 +30,8 @@ pub enum Algorithm {
     Overflow,
     Rationality,
     Convolution,
+    Reflection,
+    Resolve,
     //special
     Inspiration,
     LoopGain,
@@ -36,6 +40,7 @@ pub enum Algorithm {
     DeltaV,
     Cluster,
     Stratagem,
+    Exploit,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

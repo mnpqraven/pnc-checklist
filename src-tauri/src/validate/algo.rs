@@ -1,5 +1,9 @@
-use crate::{model::{infomodel::{Unit, AlgoCategory, algo_category_all} }, api::builder::default_slot_size};
+use crate::{
+    api::builder::default_slot_size,
+    model::infomodel::{algo_category_all, AlgoCategory, Unit},
+};
 
+use super::UnitValidationError;
 
 /// NOTE: for now validate algo integrity when changing unit class
 /// only validate current set, goal TBA
@@ -7,7 +11,7 @@ use crate::{model::{infomodel::{Unit, AlgoCategory, algo_category_all} }, api::b
 /// usize is the index of the error
 // TODO: finish other 2 + refactor
 #[tauri::command]
-pub fn validate_algo(unit: Unit) -> Result<(), Vec<(AlgoCategory, Vec<usize>)>> {
+pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
     println!("validate_algo");
     let mut errs: Vec<(AlgoCategory, Vec<usize>)> = Vec::new();
 
@@ -38,14 +42,17 @@ pub fn validate_algo(unit: Unit) -> Result<(), Vec<(AlgoCategory, Vec<usize>)>> 
     }
     match errs.is_empty() {
         true => Ok(()),
-        false => Err(errs),
+        false => Err(UnitValidationError::AlgorithmError(errs)),
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::model::infomodel::{
-        AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Loadout, Unit, UnitSkill,
+    use crate::{
+        model::infomodel::{
+            AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Loadout, Unit, UnitSkill,
+        },
+        validate::UnitValidationError,
     };
 
     use super::validate_algo;
@@ -105,7 +112,10 @@ mod test {
                 algo: algo_set.clone(),
             },
             goal: Loadout {
-                skill_level: UnitSkill { passive: 10, auto: 10 },
+                skill_level: UnitSkill {
+                    passive: 10,
+                    auto: 10,
+                },
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,
@@ -129,12 +139,15 @@ mod test {
             (AlgoCategory::Stability, [2].to_vec()),
             (AlgoCategory::Special, [0, 2].to_vec()),
         ];
-        assert_eq!(validate_algo(unit_false), Err(right));
+        assert_eq!(
+            validate_algo(&unit_false),
+            Err(UnitValidationError::AlgorithmError(right))
+        );
 
         let mut scnd_set = algo_set;
-        scnd_set.stability[2].slot = vec![false,false,false];
-        scnd_set.special[0].slot = vec![false,false,false];
-        scnd_set.special[2].slot = vec![false,false,false];
+        scnd_set.stability[2].slot = vec![false, false, false];
+        scnd_set.special[0].slot = vec![false, false, false];
+        scnd_set.special[2].slot = vec![false, false, false];
         let scnd_unit = Unit {
             name: "hubble".to_string(),
             class: crate::model::infomodel::Class::Sniper,
@@ -143,10 +156,13 @@ mod test {
                     passive: 7,
                     auto: 7,
                 },
-                algo: scnd_set
+                algo: scnd_set,
             },
             goal: Loadout {
-                skill_level: UnitSkill { passive: 10, auto: 10 },
+                skill_level: UnitSkill {
+                    passive: 10,
+                    auto: 10,
+                },
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,
@@ -166,6 +182,6 @@ mod test {
                 },
             },
         };
-        assert_eq!(validate_algo(scnd_unit), Ok(()));
+        assert_eq!(validate_algo(&scnd_unit), Ok(()));
     }
 }
