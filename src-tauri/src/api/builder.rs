@@ -41,6 +41,13 @@ impl Unit {
         }
     }
 }
+
+#[tauri::command]
+pub fn update_chunk(chunk: ImportChunk, store: State<Storage>) -> Result<(), &'static str>{
+    let mut store = store.store.lock().unwrap();
+    *store = chunk;
+    Ok(())
+}
 #[tauri::command]
 pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
     let guard = store.store.lock().unwrap();

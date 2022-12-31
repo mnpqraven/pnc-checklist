@@ -154,7 +154,7 @@ pub struct Unit {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ImportChunk {
     #[serde(rename = "$schema")]
-    schema: String,
+    pub schema: String,
     pub database: Database,
     pub units: Vec<Unit>,
 }

@@ -3,7 +3,7 @@ use crate::{
     parser::calc::{GrandResource, requirement_slv, UnitRequirement},
     startup::Storage,
 };
-use std::fmt::Display;
+use std::{fmt::Display, ops::Deref};
 use tauri::State;
 
 impl Display for Algorithm {

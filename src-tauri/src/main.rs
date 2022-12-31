@@ -14,6 +14,7 @@ use tauri::Manager;
 use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new};
 use crate::model::impls::{main_stat_all, get_needed_rsc};
 use crate::parser::calc::requirement_slv;
+use crate::parser::file::import;
 use crate::parser::parse::{get_timetable, get_algo_types};
 
 // will be invoked during startup
@@ -38,10 +39,13 @@ fn main() {
             db: Default::default()
         })
         .invoke_handler(tauri::generate_handler![
+            // file
+            import,
             // startup
             import_userdata,
             import_userdata_schemaless,
             // builder
+            update_chunk,
             new_unit,
             save_unit,
             view_store_units,
