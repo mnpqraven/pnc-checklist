@@ -42,7 +42,7 @@ pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
     }
     match errs.is_empty() {
         true => Ok(()),
-        false => Err(UnitValidationError::AlgorithmError(errs)),
+        false => Err(UnitValidationError::Algorithm(errs)),
     }
 }
 
@@ -141,7 +141,7 @@ mod test {
         ];
         assert_eq!(
             validate_algo(&unit_false),
-            Err(UnitValidationError::AlgorithmError(right))
+            Err(UnitValidationError::Algorithm(right))
         );
 
         let mut scnd_set = algo_set;

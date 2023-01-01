@@ -12,11 +12,11 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
         Ok(payload) => match serde_json::from_str::<ImportChunk>(&payload) {
             Ok(valid_data) => {
                 // generate new json in cache dir
-                return Ok(valid_data);
+                Ok(valid_data)
             }
-            Err(e) => return Err(TauriError::ImportStructError(e.to_string())),
+            Err(e) => Err(TauriError::ImportStruct(e.to_string()))
         },
-        Err(_) => Err(TauriError::ImportPathError(path)),
+        Err(_) => Err(TauriError::ImportPath(path)),
     }
 }
 
@@ -33,7 +33,7 @@ pub fn export(path: &str, store: State<Storage>) -> Result<(), TauriError> {
 
 #[cfg(test)]
 mod tests {
-    use super::{export, import};
+    use super::import;
 
     #[test]
     fn import_verbose() {

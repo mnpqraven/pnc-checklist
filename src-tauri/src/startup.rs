@@ -26,15 +26,6 @@ impl Default for DatabaseRequirement {
         Self { unit_req: reqs }
     }
 }
-impl Default for GrandResource {
-    fn default() -> Self {
-        Self {
-            slv_token: 0,
-            slv_pivot: 0,
-            coin: 0,
-        }
-    }
-}
 
 #[tauri::command]
 pub fn import_userdata(path: String) -> Result<ImportChunk, &'static str> {

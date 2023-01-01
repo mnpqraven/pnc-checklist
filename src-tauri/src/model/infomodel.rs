@@ -43,7 +43,7 @@ pub enum Algorithm {
     Exploit,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub enum Day {
     Mon,
     Tue,
@@ -53,10 +53,13 @@ pub enum Day {
     Sat,
     Sun,
 }
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Timetable {
-    pub day: Day,
-    pub algos: Option<Vec<Algorithm>>,
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum Bonus {
+    Coin,
+    Exp,
+    Skill,
+    Class(Class),
+    Algos(Vec<Algorithm>),
 }
 
 #[allow(clippy::upper_case_acronyms)]

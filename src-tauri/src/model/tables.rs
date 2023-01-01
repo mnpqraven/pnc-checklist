@@ -1,6 +1,6 @@
+use super::infomodel::{AlgoCategory, Algorithm, Bonus, Class, Day};
 use crate::parser::parse::AlgoTypeDb;
-
-use super::infomodel::{AlgoCategory, Algorithm};
+use serde::Serialize;
 
 /// cost of skill level token
 /// follow user-displayed slv so the 1st index will be 0 (slv always starts at 1)
@@ -36,7 +36,7 @@ const ALGO_SPECIAL: [Algorithm; 8] = [
     Algorithm::DeltaV,
     Algorithm::Cluster,
     Algorithm::Stratagem,
-    Algorithm::Exploit
+    Algorithm::Exploit,
 ];
 
 impl AlgoTypeDb {
@@ -44,7 +44,7 @@ impl AlgoTypeDb {
         let algos: Vec<Algorithm> = match category {
             AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
             AlgoCategory::Stability => ALGO_STABILITY.to_vec(),
-            AlgoCategory::Special => ALGO_SPECIAL.to_vec()
+            AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
         };
         Self { category, algos }
     }
@@ -56,4 +56,115 @@ impl AlgoTypeDb {
             AlgoTypeDb::get_algo(AlgoCategory::Special),
         ]
     }
+}
+impl Algorithm {
+    fn get_bonuses(day: Day) -> Option<Vec<Algorithm>> {
+        match day {
+            Day::Mon => Some(vec![
+                Algorithm::Encapsulate,
+                Algorithm::Iteration,
+                Algorithm::Perception,
+                Algorithm::Inspiration,
+                Algorithm::Stack,
+            ]),
+            Day::Tue => Some(vec![
+                Algorithm::LowerLimit,
+                Algorithm::Feedforward,
+                Algorithm::Overflow,
+                Algorithm::Rationality,
+                Algorithm::LimitValue,
+            ]),
+            Day::Wed => Some(vec![
+                Algorithm::Progression,
+                Algorithm::Convolution,
+                Algorithm::LoopGain,
+                Algorithm::SVM,
+                Algorithm::Resolve,
+            ]),
+            Day::Thu => Some(vec![
+                Algorithm::Paradigm,
+                Algorithm::DeltaV,
+                Algorithm::Convolution,
+                Algorithm::Exploit,
+            ]),
+            Day::Fri => Some(vec![
+                Algorithm::DataRepair,
+                Algorithm::MLRMatrix,
+                Algorithm::Cluster,
+                Algorithm::Stratagem,
+                Algorithm::Reflection,
+            ]),
+            Day::Sat => None,
+            Day::Sun => None,
+        }
+    }
+}
+
+// [ [coin, exp, skill, class]; ...days ]
+#[allow(dead_code)]
+const BONUS_TABLE: [[Option<Bonus>; 4]; 7] = [
+    [
+        Some(Bonus::Coin),
+        None,
+        None,
+        Some(Bonus::Class(Class::Guard)),
+    ],
+    [
+        None,
+        None,
+        Some(Bonus::Skill),
+        Some(Bonus::Class(Class::Sniper)),
+    ],
+    [
+        None,
+        Some(Bonus::Exp),
+        None,
+        Some(Bonus::Class(Class::Warrior)),
+    ],
+    [
+        Some(Bonus::Coin),
+        None,
+        None,
+        Some(Bonus::Class(Class::Specialist)),
+    ],
+    [
+        None,
+        None,
+        Some(Bonus::Skill),
+        Some(Bonus::Class(Class::Medic)),
+    ],
+    [None, Some(Bonus::Exp), None, None],
+    [
+        Some(Bonus::Coin),
+        Some(Bonus::Exp),
+        Some(Bonus::Skill),
+        None,
+    ],
+];
+#[derive(Serialize)]
+pub struct ResourceByDay {
+    day: Day,
+    coin: &'static Option<Bonus>,
+    exp: &'static Option<Bonus>,
+    skill: &'static Option<Bonus>,
+    class: &'static Option<Bonus>,
+    algos: Option<Vec<Algorithm>>,
+}
+impl ResourceByDay {
+    pub fn get_bonuses(day: Day) -> Self {
+        unsafe {
+            Self {
+                day,
+                coin: &BONUS_TABLE.get_unchecked(day as usize)[0],
+                exp: &BONUS_TABLE.get_unchecked(day as usize)[1],
+                skill: &BONUS_TABLE.get_unchecked(day as usize)[2],
+                class: &BONUS_TABLE.get_unchecked(day as usize)[3],
+                algos: Algorithm::get_bonuses(day),
+            }
+        }
+    }
+}
+#[tauri::command]
+pub fn get_bonuses(day: Day) -> ResourceByDay {
+    ResourceByDay::get_bonuses(day)
 }

@@ -13,9 +13,10 @@ use tauri::Manager;
 
 use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new, update_chunk, get_needed_rsc};
 use crate::model::impls::main_stat_all;
+use crate::model::tables::get_bonuses;
 use crate::parser::calc::requirement_slv;
 use crate::parser::file::{import, export};
-use crate::parser::parse::{get_timetable, get_algo_types};
+use crate::parser::parse::get_algo_types;
 use crate::validate::validate;
 
 // will be invoked during startup
@@ -60,7 +61,8 @@ fn main() {
             view_store_units,
             // common
             requirement_slv,
-            get_timetable,
+            // table
+            get_bonuses,
             default_slot_size,
             algo_set_new,
             algo_piece_new,

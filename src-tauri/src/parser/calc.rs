@@ -26,13 +26,12 @@ impl Display for SkillResourceRequirement {
 #[tauri::command]
 pub fn requirement_slv(current_slv: UnitSkill, target_slv: UnitSkill) -> SkillResourceRequirement {
     /// returns needed resource for passive skill and auto skill from a range of slv
-    fn slice_sum(vector: Vec<u32>, from: UnitSkill, to: UnitSkill) -> u32 {
+    fn slice_sum(mut vector: Vec<u32>, from: UnitSkill, to: UnitSkill) -> u32 {
         let v_passive: Vec<u32> = vector
             .clone()
             .drain(from.passive as usize..to.passive as usize)
             .collect();
         let v_auto: Vec<u32> = vector
-            .clone()
             .drain(from.auto as usize..to.auto as usize)
             .collect();
         v_passive.iter().sum::<u32>() + v_auto.iter().sum::<u32>()
@@ -58,7 +57,7 @@ pub struct DatabaseRequirement {
     pub unit_req: Vec<UnitRequirement>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct GrandResource {
     pub slv_token: u32,
     pub slv_pivot: u32,

@@ -9,16 +9,16 @@ mod unit;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub enum UnitValidationError {
-    NameError,
-    SkillLevelError,
-    AlgorithmError(Vec<(AlgoCategory, Vec<usize>)>),
+    Name,
+    SkillLevel,
+    Algorithm(Vec<(AlgoCategory, Vec<usize>)>),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum TauriError {
-    ImportPathError(String),
-    ImportStructError(String),
-    ExportError,
+    ImportPath(String),
+    ImportStruct(String),
+    Export,
 }
 // TODO: skill level boundary check
 

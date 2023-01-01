@@ -1,7 +1,0 @@
-[
-    { "day": "Mon", "algos": [ "Encapsulate", "Iteration", "Perception", "Inspiration" ] },
-    { "day": "Tue", "algos": [ "TowerLimit", "Feedforward", "Overflow", "Rationality" ] },
-    { "day": "Wed", "algos": [ "Progression", "Convolution", "LoopGain", "SVM" ] },
-    { "day": "Thu", "algos": [ "Deduction", "Paradigm", "DeltaV", "Convolution" ] },
-    { "day": "Fri", "algos": [ "DataRepair", "MLRMatrix", "Cluster", "Stratagem" ] }
-]
