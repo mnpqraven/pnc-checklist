@@ -39,4 +39,12 @@ export function get_algo(category: AlgoCategory, unit: Unit, loadout_type: Loado
 
 export function algo_src(item: string): string {
   return `algos/${item.toLowerCase()}.png`
-  }
+}
+
+export function parse_date_iso(d: Date): string {
+  const year = d.getFullYear();
+  let month = String(d.getMonth() + 1).padStart(2, "0");
+  let day = String(d.getDate()).padStart(2, "0");
+  // TODO: 20:00:00 JP 21:00:00 CN
+  return `${year}-${month}-${day}T13:00:00Z`;
+}

@@ -1,5 +1,6 @@
 import { Class, CLASS, DAY, Day, ResourceByDay } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
+import { getPriority } from "os";
 import { useEffect, useState } from "react";
 
 const Timetable = () => {
@@ -22,11 +23,10 @@ const Timetable = () => {
     if (day.skill != null) x2.push(day.skill);
     grid.push(x2);
     grid.push(cl);
-    grid = grid.flat();
 
     return (
       <div className="flex flex-col">
-        {grid.map((item, index) => (
+        {grid.flat().map((item, index) => (
           <div key={index}>{item}</div>
         ))}
       </div>
@@ -38,22 +38,24 @@ const Timetable = () => {
     get_timetable();
   }, []);
   return (
-    <table>
-      <thead>
-        <tr>
-          {timetable.map((day, index) => (
-            <th key={index}>{day.day}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          {timetable.map((day, index) => (
-            <td key={index}>{get_current_bonus(day)}</td>
-          ))}
-        </tr>
-      </tbody>
-    </table>
+    <>
+      <table>
+        <thead>
+          <tr>
+            {timetable.map((day, index) => (
+              <th key={index}>{day.day}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {timetable.map((day, index) => (
+              <td key={index}>{get_current_bonus(day)}</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </>
   );
 };
 export default Timetable;

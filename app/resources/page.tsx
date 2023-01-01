@@ -2,7 +2,7 @@
 import { GrandResource } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
-export default function Resources() {
+const Resources = () => {
   const [req, setReg] = useState<GrandResource>({
     slv_token: 0,
     slv_pivot: 0,
@@ -37,3 +37,4 @@ export default function Resources() {
     </>
   );
 }
+export default Resources

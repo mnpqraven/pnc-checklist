@@ -13,7 +13,7 @@ import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { UnitValidationError } from "@/interfaces/results";
 
-export default function Dolls() {
+const Dolls = () => {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
   const [dirtyUnits, setDirtyUnits] = useState<Unit[]>([]);
 
@@ -24,6 +24,7 @@ export default function Dolls() {
   const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
     []
   );
+  const [dirtyIndexTup, setDirtyIndexTup] = useState<[Unit, number][] >([]);
 
   const canSave = useMemo(() => {
     return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnits); // shallow cmp
@@ -37,25 +38,32 @@ export default function Dolls() {
     setDirtyUnits(await invoke<Unit[]>("view_store_units"));
   }
 
+  useEffect(() => {
+    let list: [Unit, number][] = [];
+    storeUnits.map((storeItem, index) => {
+      if (JSON.stringify(storeItem) != JSON.stringify(dirtyUnits[index])) {
+        let p: [Unit, number] = [dirtyUnits[index], index];
+        list.push(p);
+      }
+      return storeItem;
+    });
+    setDirtyIndexTup(list);
+  }, [dirtyUnits, storeUnits]);
+
   // TODO: save all button
   function handleUnitSave() {
     console.warn("handleUnitSave");
-    invoke<[Unit, number]>("save_unit", {
-      unit: dirtyUnits.at(currentIndex),
-      index: currentIndex,
-    });
+    invoke<[[Unit, number]]>("save_units", { units: dirtyIndexTup });
     initUnitList(); // async
   }
+
   function handleIndex(e: number) {
     setCurrentIndex(e);
     setDollData(dirtyUnits.at(e));
   }
+
   function updateDirtyList(e: Unit) {
     setDollData(e);
-
-    // invoke("validate", { unit: e })
-    //   .then((_) => setAlgoValidation([]))
-    //   .catch((err) => setAlgoValidation(err as UnitValidationError));
     // TODO: implement validation
     invoke("validate", { unit: e }).catch((err) => console.log(err));
 
@@ -93,4 +101,6 @@ export default function Dolls() {
       </div>
     </>
   );
-}
+};
+
+export default Dolls;

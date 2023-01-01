@@ -78,6 +78,19 @@ pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>) -> Result<
     update_reqs(store).unwrap();
     Ok(index)
 }
+#[tauri::command]
+pub fn save_units(units: Vec<(Unit, usize)>, store: State<'_, Storage>) -> Result<Vec<usize>, &'static str> {
+    println!("[invoke] save_units");
+    let mut guard = store.store.lock().unwrap();
+    for (unit, index) in units.iter() {
+        guard.units[*index] = unit.clone();
+    }
+    drop(guard);
+    update_reqs(store).unwrap();
+
+    let edited: Vec<usize> = units.iter().map(|e| e.1).collect();
+    Ok(edited)
+}
 
 #[tauri::command]
 pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
