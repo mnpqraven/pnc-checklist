@@ -36,3 +36,7 @@ export function get_algo(category: AlgoCategory, unit: Unit, loadout_type: Loado
     }
   }
 }
+
+export function algo_src(item: string): string {
+  return `algos/${item.toLowerCase()}.png`
+  }

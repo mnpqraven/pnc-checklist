@@ -14,20 +14,23 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
                 // generate new json in cache dir
                 Ok(valid_data)
             }
-            Err(e) => Err(TauriError::ImportStruct(e.to_string()))
+            Err(e) => Err(TauriError::ImportStruct(e.to_string())),
         },
         Err(_) => Err(TauriError::ImportPath(path)),
     }
 }
 
 #[tauri::command]
-pub fn export(path: &str, store: State<Storage>) -> Result<(), TauriError> {
+pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriError> {
     let store = store.store.lock().unwrap();
-    let new_path = Path::new(path).join("pnc-database.json");
-    let t =
-        serde_json::to_string_pretty(&*store).expect("can't convert ImportChunk struct to string");
-    println!("{:?}", t);
-    fs::write(new_path, t).expect("cannot write to file");
+    if let Some(path) = path {
+        let new_path = Path::new(path).join("pnc-database.json");
+        let t = serde_json::to_string_pretty(&*store)
+            .expect("can't convert ImportChunk struct to string");
+        println!("{:?}", t);
+        fs::write(new_path, t).expect("cannot write to file");
+    }
+    // user cancelled export
     Ok(())
 }
 

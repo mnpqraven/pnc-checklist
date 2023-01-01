@@ -59,6 +59,7 @@ export const ALGORITHM = {
   Iteration: "Iteration",
   Perception: "Perception",
   Overflow: "Overflow",
+  Connection: "Connection",
   Rationality: "Rationality",
   Convolution: "Convolution",
   Inspiration: "Inspiration",
@@ -110,11 +111,36 @@ export type AlgoCategory = keyof typeof ALGOCATEGORY
 
 export type AlgoTypeDb = {
   category: AlgoCategory,
-  algos: Algorithm
+  algos: Algorithm[]
 }
 
 export type GrandResource = {
   slv_token: number,
   slv_pivot: number,
   coin: number
+}
+export const DAY = {
+  Mon: "Mon",
+  Tue: "Tue",
+  Wed: "Wed",
+  Thu: "Thu",
+  Fri: "Fri",
+  Sat: "Sat",
+  Sun: "Sun",
+} as const;
+export type Day = keyof typeof DAY;
+
+export const Bonus = {
+  Coin: "Coin",
+  Exp: "Exp",
+  Skill: "Skill",
+}
+
+export type ResourceByDay = {
+  day: Day,
+  coin: typeof Bonus.Coin | null,
+  exp: typeof Bonus.Exp | null,
+  skill: typeof Bonus.Skill | null,
+  class: Class | null,
+  algos: Algorithm[] | null
 }

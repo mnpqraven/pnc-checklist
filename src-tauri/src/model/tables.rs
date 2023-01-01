@@ -76,14 +76,15 @@ impl Algorithm {
             ]),
             Day::Wed => Some(vec![
                 Algorithm::Progression,
-                Algorithm::Convolution,
+                Algorithm::Connection,
                 Algorithm::LoopGain,
                 Algorithm::SVM,
-                Algorithm::Resolve,
+                Algorithm::Reflection,
             ]),
             Day::Thu => Some(vec![
-                Algorithm::Paradigm,
+                Algorithm::Deduction,
                 Algorithm::DeltaV,
+                Algorithm::Paradigm,
                 Algorithm::Convolution,
                 Algorithm::Exploit,
             ]),
@@ -92,12 +93,20 @@ impl Algorithm {
                 Algorithm::MLRMatrix,
                 Algorithm::Cluster,
                 Algorithm::Stratagem,
-                Algorithm::Reflection,
+                Algorithm::Resolve,
             ]),
             Day::Sat => None,
             Day::Sun => None,
         }
     }
+}
+#[tauri::command]
+pub fn generate_algo_db() -> Vec<AlgoTypeDb> {
+    AlgoTypeDb::generate_algo_db()
+}
+#[tauri::command]
+pub fn get_algo_by_days(day: Day) -> Option<Vec<Algorithm>> {
+    Algorithm::get_bonuses(day)
 }
 
 // [ [coin, exp, skill, class]; ...days ]

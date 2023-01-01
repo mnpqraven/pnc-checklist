@@ -20,6 +20,7 @@ impl Display for Algorithm {
             Algorithm::Perception => "Perception",
             Algorithm::Overflow => "Overflow",
             Algorithm::Rationality => "Rationality",
+            Algorithm::Connection => "Connection",
             Algorithm::Convolution => "Convolution",
             Algorithm::Inspiration => "Inspiration",
             Algorithm::LoopGain => "Loop Gain",

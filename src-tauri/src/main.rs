@@ -13,7 +13,7 @@ use tauri::Manager;
 
 use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new, update_chunk, get_needed_rsc};
 use crate::model::impls::main_stat_all;
-use crate::model::tables::get_bonuses;
+use crate::model::tables::{get_bonuses, generate_algo_db, get_algo_by_days};
 use crate::parser::calc::requirement_slv;
 use crate::parser::file::{import, export};
 use crate::parser::parse::get_algo_types;
@@ -70,6 +70,8 @@ fn main() {
             get_needed_rsc,
             algorithm_all,
             get_algo_types,
+            generate_algo_db,
+            get_algo_by_days,
             // validator
             validate,
         ])

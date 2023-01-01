@@ -29,6 +29,7 @@ pub enum Algorithm {
     Perception,
     Overflow,
     Rationality,
+    Connection,
     Convolution,
     Reflection,
     Resolve,
@@ -59,7 +60,6 @@ pub enum Bonus {
     Exp,
     Skill,
     Class(Class),
-    Algos(Vec<Algorithm>),
 }
 
 #[allow(clippy::upper_case_acronyms)]
