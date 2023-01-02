@@ -54,8 +54,8 @@ pub fn update_chunk(chunk: ImportChunk, store: State<Storage>) -> Result<(), &'s
 #[tauri::command]
 pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
     let guard = store.store.lock().unwrap();
-    let list: Vec<String> = guard.units.iter().map(|e| e.name.clone()).collect();
-    println!("{:?}", list);
+    // debugging
+    let _list: Vec<String> = guard.units.iter().map(|e| e.name.clone()).collect();
     guard.units.clone()
 }
 #[tauri::command]

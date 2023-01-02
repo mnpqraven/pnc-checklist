@@ -8,6 +8,7 @@ import {
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
+import RaritySelect from "./Doll/RaritySelect";
 
 type Props = {
   skill_level: UnitSkill | undefined;
@@ -52,7 +53,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
       <div className="flex flex-row">
         <p>Skill level: </p>
         <div>
-          <div className="flex flex-row">
+          <div className="flex flex-row justify-end">
             <p>passive: </p>
             <input
               className="p-0"
@@ -64,7 +65,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
             />
             <p>{skill_level?.passive}</p>
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row justify-end">
             <p>auto: </p>
             <input
               className="p-0"
@@ -76,6 +77,9 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
             />
             <p>{skill_level?.auto}</p>
           </div>
+        </div>
+        <div>
+          <RaritySelect />
         </div>
       </div>
       <AlgorithmSet algo={algo} type={type} />

@@ -52,7 +52,7 @@ const Dolls = () => {
   // TODO: save all button
   function handleUnitSave() {
     console.warn("handleUnitSave");
-    invoke<[[Unit, number]]>("save_units", { units: dirtyIndexTup });
+    invoke<[Unit, number][]>("save_units", { units: dirtyIndexTup });
     initUnitList(); // async
   }
 

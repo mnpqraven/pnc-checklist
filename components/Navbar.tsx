@@ -4,8 +4,8 @@ import Link from "next/link";
 const navigationRoutes = [
   { route: "/", name: "Home" },
   { route: "dolls", name: "🍨🍨🍨" },
-  { route: "resources", name: "🍨🍨🍨" },
   // unimplemented
+  // { route: "resources", name: "🍨🍨🍨" },
   // { route: 'summary', name: "Summary" },
   // { route: 'algo', name: "Algorithm" },
   // { route: 'about', name: "About" },

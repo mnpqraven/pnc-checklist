@@ -43,19 +43,19 @@ export default function Settings() {
         },
       ],
     }).then((file) => {
+      if (file && typeof file == "string") setFilePath(file);
       invoke("set_default_file", { file });
     });
   }
 
   return (
-    <>
     <main>
       <div className={`${styles.component_space}  flex flex-col`}>
         <h1>setting page</h1>
         <p>{log}</p>
         <label>
           File read during startup
-          <input type="text" defaultValue={filePath} />
+          <input type="text" disabled defaultValue={filePath} />
         </label>
         <div className="flex">
           <button onClick={openDefaultDialog}>Choose default file</button>
@@ -88,6 +88,5 @@ export default function Settings() {
         </label>
       </div>
     </main>
-    </>
   );
 }

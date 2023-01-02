@@ -2,6 +2,7 @@ import { Class, CLASS, DAY, Day, ResourceByDay } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
 import { getPriority } from "os";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const Timetable = () => {
   const [timetable, setTimetable] = useState<ResourceByDay[]>([]);
@@ -27,7 +28,19 @@ const Timetable = () => {
     return (
       <div className="flex flex-col">
         {grid.flat().map((item, index) => (
-          <div key={index}>{item}</div>
+          <div key={index}>
+            {/* {item} */}
+            {item ? (
+              <Image
+                src={`class/${item.toLowerCase()}.png`}
+                alt={item}
+                width={24}
+                height={24}
+              />
+            ) : (
+              <></>
+            )}
+          </div>
         ))}
       </div>
     );

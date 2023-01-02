@@ -41,6 +41,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             // TODO: refactor dir structure
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
+            // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
             // figure out validation return on frontend home
             // auto read json in data_dir
             // actual logging to frontend
