@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "pnc-checklist",
-    "version": "0.1.1"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -19,9 +19,9 @@
       "category": "DeveloperTool",
       "copyright": "",
       "deb": {
-        "depends": []
+        "depends": [ ]
       },
-      "externalBin": [],
+      "externalBin": [ ],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -34,11 +34,11 @@
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
-        "frameworks": [],
+        "frameworks": [ ],
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [ ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
@@ -51,7 +51,12 @@
       "csp": null
     },
     "updater": {
-      "active": false
+      "active": true,
+      "endpoints": [
+        "https://raw.githubusercontent.com/mnpqraven/pnc-checklist/main/src-tauri/endpoint.json"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ2QTRFQTg0NERGNjUyOQpSV1FwWmQ5RXFFNXFCRVBjNExDcnpUaTR3ZWdvWkc4OWZPQmFvMHlRVWlROFh6TElvdUljcnZHUAo="
     },
     "windows": [
       {
