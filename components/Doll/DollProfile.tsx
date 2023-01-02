@@ -3,7 +3,7 @@ import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
-import styles from "../../app/page.module.css";
+import styles from "@/styles/Page.module.css";
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);

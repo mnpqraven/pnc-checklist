@@ -1,9 +1,8 @@
-"use client";
 import { useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
-import styles from "@/app/page.module.css";
+import styles from "@/styles/Page.module.css";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -50,6 +49,7 @@ export default function Settings() {
 
   return (
     <>
+    <main>
       <div className={`${styles.component_space}  flex flex-col`}>
         <h1>setting page</h1>
         <p>{log}</p>
@@ -62,7 +62,6 @@ export default function Settings() {
           <button onClick={openImportDialog}>Import database</button>
           <button onClick={openExportDialog}>Export database</button>
         </div>
-        <p>current theme:</p>
         <label>
           <input
             type="radio"
@@ -88,6 +87,7 @@ export default function Settings() {
           System color
         </label>
       </div>
+    </main>
     </>
   );
 }

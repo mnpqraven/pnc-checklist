@@ -1,10 +1,10 @@
 [package]
-name = "pnc-checklist-tauri"
-version = "0.0.0"
+name = "pnc-checklist"
+version = "0.1.1"
 description = "PNC Checklist App"
 authors = ["Othi"]
 license = ""
-repository = ""
+repository = "https://github.com/mnpqraven/pnc-checklist"
 edition = "2021"
 rust-version = "1.57"
 

@@ -1,7 +1,7 @@
 import { Unit } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
 import DollListItem from "./DollListItem";
-import styles from "../../app/page.module.css";
+import styles from "@/styles/Page.module.css";
 
 type Props = {
   list: Unit[],

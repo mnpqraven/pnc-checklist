@@ -1843,8 +1843,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "pnc-checklist-tauri"
-version = "0.0.0"
+name = "pnc-checklist"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",

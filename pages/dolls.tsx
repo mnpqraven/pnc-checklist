@@ -1,4 +1,3 @@
-"use client";
 import { DollList, DollProfile } from "@/components/Doll";
 import { StatusBar } from "@/components/Common";
 import { Unit } from "@/interfaces/datamodel";
@@ -7,7 +6,7 @@ import {
   AlgoErrorContextPayload,
   DollContext,
 } from "@/interfaces/payloads";
-import styles from "../page.module.css";
+import styles from "@/styles/Page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import React from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -81,7 +80,7 @@ const Dolls = () => {
   }, []);
 
   return (
-    <>
+    <main>
       <div className={styles.big_container}>
         <div className={`${styles.panel_left} ${styles.component_space}`}>
           <DollList list={dirtyUnits} indexHandler={handleIndex} />
@@ -99,7 +98,7 @@ const Dolls = () => {
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 };
 

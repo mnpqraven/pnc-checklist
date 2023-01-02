@@ -17,7 +17,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
-import styles from "../../app/page.module.css";
+import styles from "@/styles/Page.module.css";
 
 type Props = {
   algo: AlgoSet;

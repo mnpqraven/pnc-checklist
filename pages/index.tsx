@@ -1,12 +1,11 @@
-"use client";
 import { Timetable, TodayAlgo, ResetCalendar } from "@/components/Dashboard";
 import { parse_date_iso } from "@/utils/helper";
 import { useState } from "react";
-import styles from "./page.module.css";
+import styles from "@/styles/Page.module.css";
 
 // JS day array shifted left by 1 because we're getting the day before reset
 const list = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-const Index = () => {
+export default function Index () {
   const [nextDate, setNextDate] = useState(
     new Date(parse_date_iso(new Date()))
   );
@@ -17,6 +16,7 @@ const Index = () => {
   }
   return (
     <>
+    <main>
       <div className={`${styles.card} ${styles.component_space} w-fit`}>
         <Timetable />
       </div>
@@ -26,7 +26,8 @@ const Index = () => {
       <div className={`${styles.card} ${styles.component_space} w-fit`}>
         <ResetCalendar prevDateHandler={handlePrevDate} />
       </div>
-    </>
+    </main>
+</>
   );
 };
-export default Index;
+// export default Index;

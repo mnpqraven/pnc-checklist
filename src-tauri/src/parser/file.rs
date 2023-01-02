@@ -1,8 +1,6 @@
-use std::{fs, path::Path};
-
-use tauri::{api::path::data_dir, State};
-
 use crate::{model::infomodel::ImportChunk, startup::Storage, validate::TauriError};
+use std::{fs, path::Path};
+use tauri::{api::path::data_dir, State};
 
 #[tauri::command]
 pub fn import(path: String) -> Result<ImportChunk, TauriError> {
@@ -17,22 +15,21 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
             Err(e) => Err(TauriError::ImportStruct(e.to_string())),
         },
         Err(_) => {
-            // moves example file
-            let file = fs::read_to_string("data/user/schemadata.json".to_string()).unwrap();
-            let c: ImportChunk = serde_json::from_str(&file).expect("unable to parse");
-            // folder doesn't exist in data_dir()
+            // folder doesn't exist in data_dir(), likely first time running
             let pnc_dir_data = &data_dir().unwrap().join("PNCChecklist");
             fs::create_dir_all(&pnc_dir_data).unwrap();
 
+            // create example chunk
+            let example: ImportChunk = ImportChunk::generate_example();
             fs::write(
                 Path::new(&pnc_dir_data.join("pnc_database.json")),
-                serde_json::to_string_pretty(&c).unwrap(),
+                serde_json::to_string_pretty(&example).unwrap(),
             )
             .unwrap();
             // path doesn't exist, using fallback example schemadata
             // Err(TauriError::ImportPath(path))
             // handled
-            Ok(c)
+            Ok(example)
         }
     }
 }

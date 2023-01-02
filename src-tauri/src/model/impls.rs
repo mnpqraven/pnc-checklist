@@ -205,3 +205,54 @@ pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
     Ok(())
 }
 
+impl ImportChunk {
+    pub fn generate_example() -> Self {
+        Self {
+            schema: String::from("https://raw.githubusercontent.com/mnpqraven/pnc-checklist/main/src-tauri/schemas/schema.jsonc"),
+            database: Database {
+                skill: SkillCurrency {
+                    token: 0,
+                    pivot: 0
+                },
+                coin: 0
+            },
+            units: vec![
+                Unit {
+                    name: String::from("Croque"),
+                    class: Class::Guard,
+                    current: Loadout {
+                        skill_level: UnitSkill { passive: 1, auto: 1 },
+                        algo: AlgoSet { offense: vec![], stability: vec![], special: vec![] }
+                    },
+                    goal: Loadout {
+                        skill_level: UnitSkill { passive: 10, auto: 10 },
+                        algo: AlgoSet {
+                            offense: vec![
+                                AlgoPiece {
+                                    name: Algorithm::Deduction,
+                                    stat: AlgoMainStat::HashratePercent,
+                                    slot: vec![true, true]
+                                }
+                            ],
+                            stability: vec![
+                                AlgoPiece {
+                                    name: Algorithm::Overflow,
+                                    stat: AlgoMainStat::DefPercent,
+                                    slot: vec![true, true, true]
+                                }
+                            ],
+                            special: vec![
+                                AlgoPiece {
+                                    name: Algorithm::Stratagem,
+                                    stat: AlgoMainStat::DefPercent,
+                                    slot: vec![true, true]
+                                }
+
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

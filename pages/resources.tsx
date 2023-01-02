@@ -1,4 +1,3 @@
-'use client';
 import { GrandResource } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";

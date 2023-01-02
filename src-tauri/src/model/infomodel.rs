@@ -93,8 +93,8 @@ pub enum AlgoSubStat {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SkillCurrency {
-    token: u32,
-    pivot: u32,
+    pub token: u32,
+    pub pivot: u32,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub struct UnitSkill {
@@ -115,8 +115,8 @@ impl Default for UnitSkill {
 // add button for frontend, should be legit right away
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Database {
-    skill: SkillCurrency,
-    coin: u32,
+    pub skill: SkillCurrency,
+    pub coin: u32,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoPiece {
