@@ -1,8 +1,13 @@
+use tauri::api::path::data_dir;
+
 use crate::{
     model::infomodel::{ImportChunk, SchemalessImportChunk},
-    parser::calc::{requirement_slv, DatabaseRequirement, GrandResource, UnitRequirement},
+    parser::{
+        calc::{requirement_slv, DatabaseRequirement, GrandResource, UnitRequirement},
+        file::import,
+    },
 };
-use std::{fs, sync::Mutex};
+use std::{fs, path::Path, sync::Mutex};
 
 pub struct Storage {
     pub store: Mutex<ImportChunk>,
@@ -11,7 +16,19 @@ pub struct Storage {
 }
 impl Default for ImportChunk {
     fn default() -> Self {
-        import_userdata("./data/user/schemadata.json".to_string()).unwrap()
+        // import_userdata("./data/user/schemadata.json".to_string()).unwrap()
+        import(
+            Path::new(
+                &data_dir()
+                    .unwrap()
+                    .join("PNCChecklist")
+                    .join("pnc_database.json"),
+            )
+            .to_str()
+            .unwrap()
+            .to_owned(),
+        )
+        .unwrap()
     }
 }
 impl Default for DatabaseRequirement {

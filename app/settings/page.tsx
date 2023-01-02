@@ -8,6 +8,7 @@ import styles from "@/app/page.module.css";
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const [filePath, setFilePath] = useState("");
+  // TODO: move log to context for overall logging
   const [log, setLog] = useState("awaiting import");
 
   async function openImportDialog() {
@@ -34,6 +35,18 @@ export default function Settings() {
       invoke("export", { path: e });
     });
   }
+  async function openDefaultDialog() {
+    await open({
+      filters: [
+        {
+          name: "JSON file",
+          extensions: ["json", "jsonc"],
+        },
+      ],
+    }).then((file) => {
+      invoke("set_default_file", { file });
+    });
+  }
 
   return (
     <>
@@ -45,6 +58,7 @@ export default function Settings() {
           <input type="text" defaultValue={filePath} />
         </label>
         <div className="flex">
+          <button onClick={openDefaultDialog}>Choose default file</button>
           <button onClick={openImportDialog}>Import database</button>
           <button onClick={openExportDialog}>Export database</button>
         </div>

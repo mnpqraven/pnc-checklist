@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use tauri::State;
+use tauri::{api::path::data_dir, State};
 
 use crate::{model::infomodel::ImportChunk, startup::Storage, validate::TauriError};
 
@@ -16,7 +16,24 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
             }
             Err(e) => Err(TauriError::ImportStruct(e.to_string())),
         },
-        Err(_) => Err(TauriError::ImportPath(path)),
+        Err(_) => {
+            // moves example file
+            let file = fs::read_to_string("data/user/schemadata.json".to_string()).unwrap();
+            let c: ImportChunk = serde_json::from_str(&file).expect("unable to parse");
+            // folder doesn't exist in data_dir()
+            let pnc_dir_data = &data_dir().unwrap().join("PNCChecklist");
+            fs::create_dir_all(&pnc_dir_data).unwrap();
+
+            fs::write(
+                Path::new(&pnc_dir_data.join("pnc_database.json")),
+                serde_json::to_string_pretty(&c).unwrap(),
+            )
+            .unwrap();
+            // path doesn't exist, using fallback example schemadata
+            // Err(TauriError::ImportPath(path))
+            // handled
+            Ok(c)
+        }
     }
 }
 
@@ -24,7 +41,7 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
 pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriError> {
     let store = store.store.lock().unwrap();
     if let Some(path) = path {
-        let new_path = Path::new(path).join("pnc-database.json");
+        let new_path = Path::new(path).join("pnc_database.json");
         let t = serde_json::to_string_pretty(&*store)
             .expect("can't convert ImportChunk struct to string");
         println!("{:?}", t);
@@ -33,13 +50,42 @@ pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriErro
     // user cancelled export
     Ok(())
 }
+#[tauri::command]
+pub fn set_default_file(_file: Option<&str>) -> Result<(), TauriError> {
+    // TODO: "copy the selected file to $data_dir/pnc_database.json";
+    // TODO: validation before check
+    if let Some(filepath) = _file {
+        let chunk = import(filepath.to_string()).unwrap();
+        let t = serde_json::to_string_pretty(&chunk)
+            .expect("can't convert ImportChunk struct to string");
+
+        let pnc_dir =
+            Path::new(&data_dir().expect("error finding data_dir()")).join("PNCChecklist");
+        fs::create_dir_all(&pnc_dir).expect("failed creating dir");
+        // write data
+        fs::write(Path::new(&pnc_dir).join("pnc_database.json"), t)
+            .expect("cannot write to data_dir()");
+        // write pointer to data_dir for startup read
+        // NOTE: not using
+        fs::write(Path::new(&pnc_dir).join("pointer"), filepath).unwrap();
+    }
+
+    Ok(())
+}
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+
     use super::import;
 
     #[test]
     fn import_verbose() {
-        import("/home/othi/dev_env/rust-local/pnc-checklist/testjson.json".to_string()).unwrap();
+        import("./data/user/schemadata.json".to_string()).unwrap();
+    }
+
+    #[test]
+    fn import_fs() {
+        fs::read_to_string("./data/user/schemadata.json".to_string()).unwrap();
     }
 }

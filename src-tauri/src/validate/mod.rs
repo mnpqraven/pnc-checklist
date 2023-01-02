@@ -16,7 +16,9 @@ pub enum UnitValidationError {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum TauriError {
+    /// can't find the file specified in the import filepath
     ImportPath(String),
+    /// struct in the import file doesn't fit ImportChunk
     ImportStruct(String),
     Export,
 }
