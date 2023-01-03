@@ -15,24 +15,22 @@ const RaritySelect = () => {
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
     index: number
   ) {
-    if (index != 0) {
-      let bcr = e.currentTarget.getBoundingClientRect();
-      if (e.clientX - bcr.left < bcr.width * 0.5) {
-        setStarDirty(
-          starDirty.map((e, i) => {
-            if (i == index) return "star-half";
-            if (i < index) return "star-full";
-            else return "star-dark";
-          })
-        );
-      } else
-        setStarDirty(
-          starDirty.map((e, i) => {
-            if (i <= index) return "star-full";
-            else return "star-dark";
-          })
-        );
-    }
+    let bcr = e.currentTarget.getBoundingClientRect();
+    if (e.clientX - bcr.left < bcr.width * 0.5 && index != 0) {
+      setStarDirty(
+        starDirty.map((e, i) => {
+          if (i == index) return "star-half";
+          if (i < index) return "star-full";
+          else return "star-dark";
+        })
+      );
+    } else
+      setStarDirty(
+        starDirty.map((e, i) => {
+          if (i <= index) return "star-full";
+          else return "star-dark";
+        })
+      );
   }
 
   function updateStars() {
