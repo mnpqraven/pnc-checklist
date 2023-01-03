@@ -62,11 +62,18 @@ pub struct GrandResource {
     pub slv_token: u32,
     pub slv_pivot: u32,
     pub coin: u32,
+    // TODO: widgets struct
+    // exp
+    // neural kits
+    // rolls ?
 }
 /// struct for single unit
 pub struct UnitRequirement {
     pub skill: SkillResourceRequirement,
     // neural: NeuralResourceRequirement
+    // exp: Exp
+    // TODO: AlgorithmRequirement, compare goal with current and generate
+    // missing algos from current
 }
 
 #[cfg(test)]

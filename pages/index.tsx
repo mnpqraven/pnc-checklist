@@ -1,6 +1,6 @@
 import { Timetable, TodayAlgo, ResetCalendar } from "@/components/Dashboard";
 import { parse_date_iso } from "@/utils/helper";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "@/styles/Page.module.css";
 import Summary from "@/components/Resources/Summary";
 
@@ -10,30 +10,23 @@ const Index = () => {
   const [nextDate, setNextDate] = useState(
     new Date(parse_date_iso(new Date()))
   );
-  const today = list[nextDate.getUTCDay()];
   const [day, setDay] = useState(list[0]);
 
+  const updateDay = useCallback((offset: number) => {
+    let ree =
+      list[(new Date(parse_date_iso(new Date())).getUTCDay() + 7 + offset) % 7];
+    setDay(ree);
+  }, [])
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      const ree =
-        list[(new Date(parse_date_iso(new Date())).getUTCDay() + 1) % 7];
-      setDay(ree);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    updateDay(0)
+  }, [updateDay]);
 
   function handleMouseEnter(e: number) {
-    switch (e) {
-      case 1:
-        setDay(list[(nextDate.getUTCDay() + 1) % 7]);
-        break;
-      case -1:
-        setDay(list[(nextDate.getUTCDay() + 6) % 7]);
-        break;
-    }
+    updateDay(e);
   }
   function handleMouseLeave() {
-    setDay(today);
+    updateDay(0)
   }
 
   return (

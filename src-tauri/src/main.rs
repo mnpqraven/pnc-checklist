@@ -45,6 +45,7 @@ fn main() {
             // figure out validation return on frontend home
             // auto read json in data_dir
             // actual logging to frontend
+            // rsc page inventory for frontend
 
             // file
             import,

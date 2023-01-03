@@ -29,7 +29,6 @@ const Timetable = () => {
       <div className="flex flex-col">
         {grid.flat().map((item, index) => (
           <div key={index}>
-            {/* {item} */}
             {item ? (
               <Image
                 src={`class/${item.toLowerCase()}.png`}
