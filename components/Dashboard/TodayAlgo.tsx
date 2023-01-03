@@ -12,9 +12,9 @@ type Props = {
 };
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
   const [algos, setAlgos] = useState<AlgoTypeDb[]>([]); // [category: [algo]]
+
   async function initdata() {
     let db = await invoke<AlgoTypeDb[]>("generate_algo_db");
-
     invoke<string[] | null>("get_algo_by_days", { day }).then((today) => {
       if (today) {
         setAlgos(

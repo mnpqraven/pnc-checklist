@@ -45,16 +45,17 @@ const ALGO_STABILITY: [Algorithm; 8] = [
     Algorithm::Perception,
     Algorithm::Overflow,
     Algorithm::Rationality,
-    Algorithm::Convolution,
+    Algorithm::Connection,
     Algorithm::Reflection,
     Algorithm::Resolve,
 ];
-const ALGO_SPECIAL: [Algorithm; 8] = [
+const ALGO_SPECIAL: [Algorithm; 9] = [
     Algorithm::Inspiration,
     Algorithm::LoopGain,
     Algorithm::SVM,
     Algorithm::Paradigm,
     Algorithm::DeltaV,
+    Algorithm::Convolution,
     Algorithm::Cluster,
     Algorithm::Stratagem,
     Algorithm::Exploit,

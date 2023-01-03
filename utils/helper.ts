@@ -48,3 +48,6 @@ export function parse_date_iso(d: Date): string {
   // TODO: 20:00:00 JP 21:00:00 CN
   return `${year}-${month}-${day}T13:00:00Z`;
 }
+export function date_passed(d: Date): boolean {
+  return new Date() > new Date(parse_date_iso(d))
+}
