@@ -1,8 +1,7 @@
 use super::infomodel::*;
-use crate::{
-    parser::calc::{requirement_slv, UnitRequirement},
-    startup::Storage,
-};
+use crate::parser::requirement::{UnitRequirement, NeuralResourceRequirement, WidgetResourceRequirement, LevelRequirement};
+use crate::requirement_slv;
+use crate::startup::Storage;
 use std::fmt::Display;
 use tauri::State;
 
@@ -199,6 +198,9 @@ pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
     for unit in store_guard.units.iter() {
         reqs.push(UnitRequirement {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
+            neural: NeuralResourceRequirement::default(), // TODO:
+            level: LevelRequirement::default(),
+            breakthrough: WidgetResourceRequirement::default() // TODO:
         })
     }
     req_guard.unit_req = reqs;
@@ -210,11 +212,8 @@ impl ImportChunk {
         Self {
             schema: String::from("https://raw.githubusercontent.com/mnpqraven/pnc-checklist/main/src-tauri/schemas/schema.jsonc"),
             database: Database {
-                skill: SkillCurrency {
-                    token: 0,
-                    pivot: 0
-                },
-                coin: 0
+                skill: SkillCurrency::default(),
+                coin: Coin::default()
             },
             units: vec![
                 Unit {

@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 
 // NOTE: need to init loading specifying algo quantity for each class ?
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Class {
+    #[default]
     Guard,
     Warrior,
     Sniper,
@@ -91,7 +92,7 @@ pub enum AlgoSubStat {
     HashratePercent,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct SkillCurrency {
     pub token: u32,
     pub pivot: u32,
@@ -109,6 +110,8 @@ impl Default for UnitSkill {
         }
     }
 }
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Coin(pub u32);
 
 // WRAPPER STRUCTS FOR IMPORT MODEL
 // TODO: needs a new or default fn to create empty units, same as clicking
@@ -116,7 +119,7 @@ impl Default for UnitSkill {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Database {
     pub skill: SkillCurrency,
-    pub coin: u32,
+    pub coin: Coin,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoPiece {
@@ -165,9 +168,4 @@ pub struct ImportChunk {
     pub schema: String,
     pub database: Database,
     pub units: Vec<Unit>,
-}
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SchemalessImportChunk {
-    database: Database,
-    units: Vec<Unit>,
 }

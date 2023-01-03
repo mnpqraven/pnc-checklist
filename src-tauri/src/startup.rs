@@ -1,10 +1,13 @@
 use tauri::api::path::data_dir;
 
 use crate::{
-    model::infomodel::{ImportChunk, SchemalessImportChunk},
+    model::infomodel::ImportChunk,
     parser::{
-        calc::{requirement_slv, DatabaseRequirement, GrandResource, UnitRequirement},
         file::import,
+        requirement::{
+            requirement_slv, DatabaseRequirement, GrandResource, LevelRequirement,
+            NeuralResourceRequirement, UnitRequirement, WidgetResourceRequirement,
+        },
     },
 };
 use std::{fs, path::Path, sync::Mutex};
@@ -16,7 +19,6 @@ pub struct Storage {
 }
 impl Default for ImportChunk {
     fn default() -> Self {
-        // import_userdata("./data/user/schemadata.json".to_string()).unwrap()
         import(
             Path::new(
                 &data_dir()
@@ -32,17 +34,22 @@ impl Default for ImportChunk {
     }
 }
 impl Default for DatabaseRequirement {
+    // TODO: this is supposed to be blank
     fn default() -> Self {
         let chunk: ImportChunk = ImportChunk::default();
         let mut reqs: Vec<UnitRequirement> = Vec::new();
         for unit in chunk.units.iter() {
             reqs.push(UnitRequirement {
                 skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
+                neural: NeuralResourceRequirement::default(),
+                breakthrough: WidgetResourceRequirement::default(),
+                level: LevelRequirement::default(),
             })
         }
         Self { unit_req: reqs }
     }
 }
+// TODO: impl calculation fns
 
 #[tauri::command]
 pub fn import_userdata(path: String) -> Result<ImportChunk, &'static str> {
@@ -52,16 +59,6 @@ pub fn import_userdata(path: String) -> Result<ImportChunk, &'static str> {
             Ok(data)
         }
         // TODO: error handle. This will 100% eventually happen
-        Err(..) => panic!("panic during import, also TODO this"),
+        Err(_) => panic!("panic during import, also TODO this"),
     }
-}
-
-// NOTE: not using
-#[tauri::command]
-pub fn import_userdata_schemaless() -> SchemalessImportChunk {
-    let file = fs::read_to_string("./data/user/schemalessdata.json")
-        .expect("can't open file, check perm or path");
-    let res: SchemalessImportChunk = serde_json::from_str(&file).expect("unable to parse");
-    println!("{:?}", res);
-    res
 }

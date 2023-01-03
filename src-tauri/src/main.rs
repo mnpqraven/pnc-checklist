@@ -14,9 +14,9 @@ use tauri::Manager;
 use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new, update_chunk, get_needed_rsc, save_units};
 use crate::model::impls::main_stat_all;
 use crate::model::tables::{get_bonuses, generate_algo_db, get_algo_by_days};
-use crate::parser::calc::requirement_slv;
 use crate::parser::file::{import, export, set_default_file};
 use crate::parser::parse::get_algo_types;
+use crate::parser::requirement::{requirement_slv, requirement_level, requirement_neural};
 use crate::validate::validate;
 
 // will be invoked during startup
@@ -53,15 +53,16 @@ fn main() {
             set_default_file,
             // startup
             import_userdata,
-            import_userdata_schemaless,
             // builder
             update_chunk,
             new_unit,
             save_unit,
             save_units,
             view_store_units,
-            // common
+            // requirement
             requirement_slv,
+            requirement_level,
+            requirement_neural,
             // table
             get_bonuses,
             default_slot_size,

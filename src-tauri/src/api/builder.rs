@@ -3,7 +3,7 @@
 
 use crate::{
     model::{impls::update_reqs, infomodel::*},
-    parser::calc::GrandResource,
+    parser::requirement::GrandResource,
     startup::Storage,
 };
 use tauri::State;
@@ -95,17 +95,17 @@ pub fn save_units(units: Vec<(Unit, usize)>, store: State<'_, Storage>) -> Resul
 #[tauri::command]
 pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
     let guard_req = store.database_req.lock().unwrap();
-    let (mut slv_token, mut slv_pivot, mut coin) = (0, 0, 0);
+    let (mut token, mut pivot, mut coin) = (0, 0, 0);
     for req in guard_req.unit_req.iter() {
-        slv_pivot += req.skill.pivot;
-        slv_token += req.skill.token;
+        pivot += req.skill.pivot;
+        token += req.skill.token;
         coin += req.skill.coin;
     }
 
     let t = GrandResource {
-        slv_token,
-        slv_pivot,
-        coin,
+        skill: SkillCurrency { token, pivot },
+        coin: Coin(coin),
+        ..Default::default()
     };
     println!("{:?}", t);
     t
