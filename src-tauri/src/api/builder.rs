@@ -99,7 +99,7 @@ pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
     for req in guard_req.unit_req.iter() {
         pivot += req.skill.pivot;
         token += req.skill.token;
-        coin += req.skill.coin;
+        coin += req.skill.coin.0;
     }
 
     let t = GrandResource {

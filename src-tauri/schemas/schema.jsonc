@@ -54,9 +54,12 @@
                 "passive": { "type": "number" },
                 "auto": { "type": "number" }
               }
+            },
+            "level": {
+              "type": "number"
             }
           },
-          "required": ["algo","skill_level"]
+          "required": ["algo","skill_level", "level"]
         },
         "goal": {
           "type": "object",

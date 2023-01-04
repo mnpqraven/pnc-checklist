@@ -11,12 +11,16 @@ import { invoke } from "@tauri-apps/api/tauri";
 import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { UnitValidationError } from "@/interfaces/results";
+import { useImmer } from "use-immer";
+import { UNITEXAMPLE } from "@/utils/constants";
 
 const Dolls = () => {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
   const [dirtyUnits, setDirtyUnits] = useState<Unit[]>([]);
 
-  const [dollData, setDollData] = useState<Unit | undefined>();
+  // immer refactor state:
+  // TODO: refactor from AlgorithmSet onwards
+  const [dollData, setDollData] = useImmer<Unit>(UNITEXAMPLE);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [errors, setErrors] = useState<UnitValidationError[]>([]);
@@ -36,6 +40,10 @@ const Dolls = () => {
     setStoreUnits(await invoke<Unit[]>("view_store_units"));
     setDirtyUnits(await invoke<Unit[]>("view_store_units"));
   }
+  useEffect(() => {
+    console.log('@dolls.tsx[useEffect], dollData changed')
+    updateDirtyList(dollData)
+  }, [dollData])
 
   useEffect(() => {
     let list: [Unit, number][] = [];
@@ -58,11 +66,11 @@ const Dolls = () => {
 
   function handleIndex(e: number) {
     setCurrentIndex(e);
-    setDollData(dirtyUnits.at(e));
+    setDollData(dirtyUnits[e]);
   }
 
   function updateDirtyList(e: Unit) {
-    setDollData(e);
+    // setDollData(e);
     // TODO: implement validation
     invoke("validate", { unit: e }).catch((err) => console.log(err));
 

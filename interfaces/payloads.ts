@@ -1,14 +1,15 @@
+import { UNITEXAMPLE } from "@/utils/constants";
 import React from "react";
-import { Dispatch, SetStateAction } from "react"
+import { Updater } from "use-immer";
 import { AlgoCategory, Unit } from "./datamodel"
 
 export type DollContextPayload = {
-  dollData: Unit | undefined,
-  setDollData: Dispatch<SetStateAction<Unit | undefined>> | undefined,
+  dollData: Unit,
+  setDollData: Updater<Unit> | undefined,
   updateDirtyList: ((e: Unit) => void) | undefined
 }
 export const DollContext = React.createContext<DollContextPayload>({
-  dollData: undefined,
+  dollData: UNITEXAMPLE,
   setDollData: undefined,
   updateDirtyList: undefined
 });

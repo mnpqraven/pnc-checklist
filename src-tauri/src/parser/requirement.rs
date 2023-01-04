@@ -2,7 +2,10 @@ use std::fmt::Display;
 
 use crate::model::{
     infomodel::{Class, Coin, SkillCurrency, UnitSkill},
-    tables::{REQ_EXP_CHAIN, REQ_NEURAL, REQ_SLV_COIN, REQ_SLV_PIVOT, REQ_SLV_TOKEN, REQ_NEURAL_COIN, REQ_BREAK_CHAIN},
+    tables::{
+        REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
+        REQ_SLV_TOKEN,
+    },
 };
 use serde::{Deserialize, Serialize};
 
@@ -28,7 +31,7 @@ impl<T: Display> Display for RequirementError<T> {
 pub struct SkillResourceRequirement {
     pub token: u32,
     pub pivot: u32,
-    pub coin: u32,
+    pub coin: Coin,
 }
 
 /// struct for the requirement screen, gathers all requirements needed, single
@@ -55,12 +58,11 @@ pub struct WidgetResourceRequirement {
     pub coin: Coin,
 }
 #[derive(Debug, Serialize, Deserialize, Default)]
-pub struct NeuralResourceRequirement{
-    pub frags: u32 ,
-    pub coin: Coin
+pub struct NeuralResourceRequirement {
+    pub frags: u32,
+    pub coin: Coin,
 }
 
-#[allow(dead_code)]
 #[derive(Serialize, Deserialize, Copy, Clone)]
 pub enum NeuralExpansion {
     One,
@@ -126,12 +128,16 @@ impl NeuralResourceRequirement {
         let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
         Ok(NeuralResourceRequirement {
             frags: sum.iter().sum::<u32>(),
-            coin: Coin(sum_coin.iter().sum::<u32>())
+            coin: Coin(sum_coin.iter().sum::<u32>()),
         })
     }
 
     // TODO:
-    fn calculate_kits(bought: Option<u32>, from: NeuralExpansion, to: NeuralExpansion) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
+    fn _calculate_kits_conversion(
+        _bought: Option<u32>,
+        from: NeuralExpansion,
+        to: NeuralExpansion,
+    ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         NeuralResourceRequirement::calculate(from, to)?;
         unimplemented!()
     }
@@ -157,36 +163,44 @@ impl SkillResourceRequirement {
         Self {
             token: data[0],
             pivot: data[1],
-            coin: data[2],
+            coin: Coin(data[2]),
         }
     }
 }
 
 impl WidgetResourceRequirement {
     /// from, to are levels, LB stages are automatically converted
-    fn calculate(class: Class, from: u32,to: u32) -> Result<WidgetResourceRequirement, RequirementError<u32>>{
-        match &from.cmp(&to) {
+    fn calculate(
+        class: Class,
+        from: u32,
+        to: u32,
+    ) -> Result<WidgetResourceRequirement, RequirementError<u32>> {
+        let (from_ind, mut to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
+        match &from_ind.cmp(&to_ind) {
             std::cmp::Ordering::Less => {
                 let mut total: [u32; 7] = [0; 7];
-                let (from_ind, to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
+                if to_ind == 1 {
+                    // first breakthrough starts at 10 not 0, make iter loop twice
+                    to_ind += 1;
+                }
                 for stage in REQ_BREAK_CHAIN[from_ind..to_ind].iter() {
+                    dbg!(stage);
                     // individual [u32; 7]
-                    // TODO: sum with mut total
                     for (index, item) in stage.iter().enumerate() {
-                        total[index] += item
+                        total[index] += item;
                     }
                 }
                 let (widget_inventory, coin) = total.split_at(6);
                 Ok(WidgetResourceRequirement {
                     widget: WidgetResource {
                         class,
-                        widget_inventory: widget_inventory.try_into().unwrap()
+                        widget_inventory: widget_inventory.try_into().unwrap(),
                     },
-                    coin: Coin(coin[0])
+                    coin: Coin(coin[0]),
                 })
-            },
+            }
             std::cmp::Ordering::Equal => Ok(WidgetResourceRequirement::default()),
-            std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to))
+            std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to)),
         }
     }
 }
@@ -203,18 +217,29 @@ pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, Require
     LevelRequirement::calculate(from, to)
 }
 #[tauri::command]
-pub fn requirement_neural(from: NeuralExpansion, to: NeuralExpansion) -> Result<NeuralResourceRequirement, RequirementError<u32>>{
+pub fn requirement_neural(
+    from: NeuralExpansion,
+    to: NeuralExpansion,
+) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
     NeuralResourceRequirement::calculate(from, to)
+}
+#[tauri::command]
+pub fn requirement_widget(
+    class: Class,
+    from: u32,
+    to: u32,
+) -> Result<WidgetResourceRequirement, RequirementError<u32>> {
+    WidgetResourceRequirement::calculate(class, from, to)
 }
 
 #[cfg(test)]
 mod tests {
     use crate::{
-        model::infomodel::UnitSkill,
+        model::infomodel::{Class, UnitSkill},
         parser::requirement::{requirement_slv, LevelRequirement},
     };
 
-    use super::{NeuralExpansion, NeuralResourceRequirement};
+    use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
 
     #[test]
     fn test_skill_total() {
@@ -285,5 +310,90 @@ mod tests {
                 .frags,
             25 + 40 + 60 + 70 + 90
         )
+    }
+    #[test]
+    fn widget_1() {
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 1, 11)
+                .unwrap()
+                .coin
+                .0,
+            500
+        );
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 1, 11)
+                .unwrap()
+                .widget
+                .widget_inventory,
+            [10, 0, 0, 0, 0, 0]
+        );
+    }
+    #[test]
+    fn widget_2() {
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 1, 70)
+                .unwrap()
+                .coin
+                .0,
+            7500 + 150000
+        );
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 1, 70)
+                .unwrap()
+                .widget
+                .widget_inventory,
+            [20, 30, 35, 45, 55, 35]
+        );
+    }
+    #[test]
+    fn widget_3() {
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 19, 40)
+                .unwrap()
+                .coin
+                .0,
+            17000
+        );
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 19, 40)
+                .unwrap()
+                .widget
+                .widget_inventory,
+            [10, 30, 35, 25, 0, 0]
+        );
+    }
+    #[test]
+    fn widget_4() {
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 19, 39)
+                .unwrap()
+                .coin
+                .0,
+            7000
+        );
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 19, 39)
+                .unwrap()
+                .widget
+                .widget_inventory,
+            [10, 30, 20, 0, 0, 0]
+        );
+    }
+    #[test]
+    fn widget_5() {
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 21, 28)
+                .unwrap()
+                .coin
+                .0,
+            0
+        );
+        assert_eq!(
+            WidgetResourceRequirement::calculate(Class::Guard, 21, 28)
+                .unwrap()
+                .widget
+                .widget_inventory,
+            [0, 0, 0, 0, 0, 0]
+        );
     }
 }

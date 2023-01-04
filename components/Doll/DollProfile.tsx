@@ -7,21 +7,20 @@ import styles from "@/styles/Page.module.css";
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
-  const defined = dollData && setDollData && updateDirtyList;
+  const defined = setDollData && updateDirtyList;
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined) {
-      let editedData: Unit = { ...dollData, name: e.currentTarget.value };
-      updateDirtyList(editedData);
+      setDollData((draft) => {
+        draft.name = e.target.value;
+      });
     }
   }
   function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
-      let editedData: Unit = {
-        ...dollData,
-        class: e.currentTarget.value as Class,
-      };
-      updateDirtyList(editedData);
+      setDollData((draft) => {
+        draft.class = e.target.value as Class;
+      })
     }
   }
 

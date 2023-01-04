@@ -24,7 +24,8 @@
               { "name": "SVM", "stat": "Haste", "slot": [ true, true, false ] }
             ]
           },
-          "skill_level": { "passive": 8, "auto": 8 }
+          "skill_level": { "passive": 8, "auto": 8 },
+          "level": 1
         },
         "goal": {
           "algo": {
@@ -38,7 +39,8 @@
               { "name": "Stratagem", "stat": "Haste", "slot": [ true, true, false ] }
             ]
           },
-          "skill_level": { "passive": 10, "auto": 10 }
+          "skill_level": { "passive": 10, "auto": 10 },
+          "level": 60
         }
       },
       {

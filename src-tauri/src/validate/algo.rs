@@ -110,6 +110,7 @@ mod test {
                     auto: 7,
                 },
                 algo: algo_set.clone(),
+                level: Some(1),
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -133,6 +134,7 @@ mod test {
                         slot: vec![true, true, true],
                     }],
                 },
+                level: Some(1),
             },
         };
         let right: Vec<(AlgoCategory, Vec<usize>)> = vec![
@@ -157,6 +159,7 @@ mod test {
                     auto: 7,
                 },
                 algo: scnd_set,
+                level: Some(1),
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -180,6 +183,7 @@ mod test {
                         slot: vec![true, true, true],
                     }],
                 },
+                level: Some(1),
             },
         };
         assert_eq!(validate_algo(&scnd_unit), Ok(()));

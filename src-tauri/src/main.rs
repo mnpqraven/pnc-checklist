@@ -16,7 +16,7 @@ use crate::model::impls::main_stat_all;
 use crate::model::tables::{get_bonuses, generate_algo_db, get_algo_by_days};
 use crate::parser::file::{import, export, set_default_file};
 use crate::parser::parse::get_algo_types;
-use crate::parser::requirement::{requirement_slv, requirement_level, requirement_neural};
+use crate::parser::requirement::{requirement_slv, requirement_level, requirement_neural, requirement_widget};
 use crate::validate::validate;
 
 // will be invoked during startup
@@ -63,6 +63,7 @@ fn main() {
             requirement_slv,
             requirement_level,
             requirement_neural,
+            requirement_widget,
             // table
             get_bonuses,
             default_slot_size,

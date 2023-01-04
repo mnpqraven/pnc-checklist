@@ -1,5 +1,7 @@
 use super::infomodel::*;
-use crate::parser::requirement::{UnitRequirement, NeuralResourceRequirement, WidgetResourceRequirement, LevelRequirement};
+use crate::parser::requirement::{
+    LevelRequirement, NeuralResourceRequirement, UnitRequirement, WidgetResourceRequirement,
+};
 use crate::requirement_slv;
 use crate::startup::Storage;
 use std::fmt::Display;
@@ -134,10 +136,12 @@ impl Loadout {
             true => Self {
                 skill_level: UnitSkill::max(),
                 algo: AlgoSet::new(),
+                level: Some(1),
             },
             false => Self {
                 skill_level: UnitSkill::new(),
                 algo: AlgoSet::new(),
+                level: Some(1),
             },
         }
     }
@@ -200,7 +204,7 @@ pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
             neural: NeuralResourceRequirement::default(), // TODO:
             level: LevelRequirement::default(),
-            breakthrough: WidgetResourceRequirement::default() // TODO:
+            breakthrough: WidgetResourceRequirement::default(), // TODO:
         })
     }
     req_guard.unit_req = reqs;
@@ -221,7 +225,8 @@ impl ImportChunk {
                     class: Class::Guard,
                     current: Loadout {
                         skill_level: UnitSkill { passive: 1, auto: 1 },
-                        algo: AlgoSet { offense: vec![], stability: vec![], special: vec![] }
+                        algo: AlgoSet { offense: vec![], stability: vec![], special: vec![] },
+                        level: Some(1)
                     },
                     goal: Loadout {
                         skill_level: UnitSkill { passive: 10, auto: 10 },
@@ -248,7 +253,8 @@ impl ImportChunk {
                                 }
 
                             ]
-                        }
+                        },
+                        level: Some(60)
                     }
                 }
             ]

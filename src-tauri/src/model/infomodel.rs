@@ -152,6 +152,7 @@ pub struct AlgoSet {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Loadout {
     pub skill_level: UnitSkill, // None defaults to slv 10
+    pub level: Option<u32>,
     pub algo: AlgoSet,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -162,6 +163,8 @@ pub struct Unit {
     pub goal: Loadout,
 }
 
+// TODO: need another wrapper
+// ImportChunk has all the options > go through Option<> check into another struct
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ImportChunk {
     #[serde(rename = "$schema")]

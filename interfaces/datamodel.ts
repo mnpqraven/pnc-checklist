@@ -29,8 +29,9 @@ export const CLASS = {
 export type Class = keyof typeof CLASS
 
 export type Loadout = {
-  skill_level?: UnitSkill,
+  skill_level: UnitSkill,
   algo: AlgoSet,
+  level: number
 }
 export type UnitSkill = {
   passive: number,
@@ -119,6 +120,18 @@ export type GrandResource = {
   slv_pivot: number,
   coin: number
 }
+export const NEURALEXPANSION = {
+  One: "One",
+  OneHalf: "OneHalf",
+  Two: "Two",
+  TwoHalf: "TwoHalf",
+  Three: "Three",
+  ThreeHalf: "ThreeHalf",
+  Four: "Four",
+  FourHalf: "FourHalf",
+  Five: "Five",
+} as const
+export type NeuralExpansion = keyof typeof NEURALEXPANSION
 export const DAY = {
   Mon: "Mon",
   Tue: "Tue",

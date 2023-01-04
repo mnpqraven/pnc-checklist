@@ -11,7 +11,7 @@ import { DollContext } from "@/interfaces/payloads";
 import RaritySelect from "./Doll/RaritySelect";
 
 type Props = {
-  skill_level: UnitSkill | undefined;
+  skill_level: UnitSkill;
   algo: AlgoSet;
   type: LoadoutType;
 };
@@ -19,33 +19,17 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const defined = dollData && setDollData && updateDirtyList;
 
+  const SKILL_TYPE = { passive: "passive", auto: "auto" };
+  type SkillType = keyof typeof SKILL_TYPE;
+
   function handleSlvChange(
     e: ChangeEvent<HTMLInputElement>,
     skill_type: string
   ) {
     if (defined) {
-      // TODO: try useImmer
-      let clone: Unit = { ...dollData };
-      let sk = clone.current.skill_level; // default unit, won't be reading this
-      switch (type) {
-        case LOADOUTTYPE.current:
-          sk = clone.current.skill_level;
-          break;
-        case LOADOUTTYPE.goal:
-          sk = clone.goal.skill_level;
-          break;
-      }
-      if (sk) {
-        switch (skill_type) {
-          case "passive":
-            sk.passive = +e.target.value;
-            break;
-          case "auto":
-            sk.auto = +e.target.value;
-            break;
-        }
-      }
-      updateDirtyList(clone);
+      setDollData((draft) => {
+        draft[type].skill_level[skill_type as SkillType] = +e.target.value;
+      });
     }
   }
   return (
@@ -60,10 +44,10 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
               type="range"
               min={1}
               max={10}
-              value={skill_level?.passive}
-              onChange={(e) => handleSlvChange(e, "passive")}
+              value={skill_level.passive}
+              onChange={(e) => handleSlvChange(e, SKILL_TYPE.passive)}
             />
-            <p>{skill_level?.passive}</p>
+            <p>{skill_level.passive}</p>
           </div>
           <div className="flex flex-row justify-end">
             <p>auto: </p>
@@ -72,10 +56,10 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
               type="range"
               min={1}
               max={10}
-              value={skill_level?.auto}
-              onChange={(e) => handleSlvChange(e, "auto")}
+              value={skill_level.auto}
+              onChange={(e) => handleSlvChange(e, SKILL_TYPE.auto)}
             />
-            <p>{skill_level?.auto}</p>
+            <p>{skill_level.auto}</p>
           </div>
         </div>
         <div>
