@@ -8,6 +8,7 @@ pub const REQ_SLV_TOKEN: [u32; 10] = [0, 100, 200, 360, 560, 880, 1320, 1920, 26
 pub const REQ_SLV_PIVOT: [u32; 10] = [0, 0, 0, 0, 0, 0, 0, 4, 8, 12];
 pub const REQ_SLV_COIN: [u32; 10] = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 10000];
 pub const REQ_NEURAL: [u32; 9] = [0, 5, 10, 25, 40, 60, 70, 90, 100];
+pub const REQ_NEURAL_COIN: [u32; 9] = [0, 1000, 2000, 3000, 4000, 5000, 7500, 10000, 20000];
 pub const REQ_EXP_LB0: [u32; 10] = [0, 90, 140, 190, 240, 290, 340, 390, 440, 490];
 pub const REQ_EXP_LB1: [u32; 10] = [540, 580, 620, 660, 700, 740, 780, 820, 860, 900];
 pub const REQ_EXP_LB2: [u32; 10] = [940, 980, 1000, 1050, 1100, 1300, 1410, 1540, 1930, 2190];
@@ -27,6 +28,22 @@ pub const REQ_EXP_CHAIN: [&[u32; 10]; 7] = [
     &REQ_EXP_LB4,
     &REQ_EXP_LB5,
     &REQ_EXP_LB6,
+];
+/// first 6 items are widget count, last item is coin requirement
+/// gray green blue purple gold rainbow
+pub const REQ_BREAK_LB0: [u32; 7] = [10, 0, 0, 0, 0, 0, 500];
+pub const REQ_BREAK_LB1: [u32; 7] = [10, 15, 0, 0, 0, 0, 2000];
+pub const REQ_BREAK_LB2: [u32; 7] = [0, 15, 20, 0, 0, 0, 5000];
+pub const REQ_BREAK_LB3: [u32; 7] = [0, 0, 15, 25, 0, 0, 10000];
+pub const REQ_BREAK_LB4: [u32; 7] = [0, 0, 0, 20, 30, 0, 20000];
+pub const REQ_BREAK_LB5: [u32; 7] = [0, 0, 0, 0, 25, 35, 120000];
+pub const REQ_BREAK_CHAIN: [&[u32; 7]; 6] = [
+    &REQ_BREAK_LB0,
+    &REQ_BREAK_LB1,
+    &REQ_BREAK_LB2,
+    &REQ_BREAK_LB3,
+    &REQ_BREAK_LB4,
+    &REQ_BREAK_LB5,
 ];
 
 const ALGO_OFFENSE: [Algorithm; 8] = [

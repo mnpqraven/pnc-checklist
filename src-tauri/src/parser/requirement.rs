@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use crate::model::{
     infomodel::{Class, Coin, SkillCurrency, UnitSkill},
-    tables::{REQ_EXP_CHAIN, REQ_NEURAL, REQ_SLV_COIN, REQ_SLV_PIVOT, REQ_SLV_TOKEN},
+    tables::{REQ_EXP_CHAIN, REQ_NEURAL, REQ_SLV_COIN, REQ_SLV_PIVOT, REQ_SLV_TOKEN, REQ_NEURAL_COIN, REQ_BREAK_CHAIN},
 };
 use serde::{Deserialize, Serialize};
 
@@ -50,6 +50,30 @@ pub struct GrandResource {
     // rolls ?
 }
 #[derive(Debug, Serialize, Deserialize, Default)]
+pub struct WidgetResourceRequirement {
+    pub widget: WidgetResource,
+    pub coin: Coin,
+}
+#[derive(Debug, Serialize, Deserialize, Default)]
+pub struct NeuralResourceRequirement{
+    pub frags: u32 ,
+    pub coin: Coin
+}
+
+#[allow(dead_code)]
+#[derive(Serialize, Deserialize, Copy, Clone)]
+pub enum NeuralExpansion {
+    One,
+    OneHalf,
+    Two,
+    TwoHalf,
+    Three,
+    ThreeHalf,
+    Four,
+    FourHalf,
+    Five,
+}
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct WidgetResource {
     class: Class,
     widget_inventory: [u32; 6],
@@ -76,7 +100,7 @@ impl LevelRequirement {
                 let mut middle = 0;
                 if &to / 10 - &from / 10 > 1 {
                     for item in REQ_EXP_CHAIN[from_ind + 1..to_ind].iter() {
-                        middle += item.into_iter().sum::<u32>();
+                        middle += item.iter().sum::<u32>();
                     }
                 }
 
@@ -84,7 +108,7 @@ impl LevelRequirement {
                 let (to_left, _) = REQ_EXP_CHAIN[to_ind].split_at((&to % 10) as usize);
 
                 let total: u32 =
-                    from_right.into_iter().sum::<u32>() + middle + to_left.into_iter().sum::<u32>();
+                    from_right.iter().sum::<u32>() + middle + to_left.iter().sum::<u32>();
                 Ok(Self { exp: Exp(total) })
             }
             std::cmp::Ordering::Equal => Ok(Self::default()),
@@ -93,34 +117,17 @@ impl LevelRequirement {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct WidgetResourceRequirement {
-    pub widget_inventory: [u32; 6],
-    pub coin: Coin,
-}
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct NeuralResourceRequirement(pub u32);
-
-#[allow(dead_code)]
-#[derive(Serialize, Deserialize)]
-pub enum NeuralExpansion {
-    One,
-    OneHalf,
-    Two,
-    TwoHalf,
-    Three,
-    ThreeHalf,
-    Four,
-    FourHalf,
-    Five,
-}
 impl NeuralResourceRequirement {
     fn calculate(
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
-        Ok(NeuralResourceRequirement(sum.into_iter().sum::<u32>()))
+        let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
+        Ok(NeuralResourceRequirement {
+            frags: sum.iter().sum::<u32>(),
+            coin: Coin(sum_coin.iter().sum::<u32>())
+        })
     }
 
     // TODO:
@@ -151,6 +158,35 @@ impl SkillResourceRequirement {
             token: data[0],
             pivot: data[1],
             coin: data[2],
+        }
+    }
+}
+
+impl WidgetResourceRequirement {
+    /// from, to are levels, LB stages are automatically converted
+    fn calculate(class: Class, from: u32,to: u32) -> Result<WidgetResourceRequirement, RequirementError<u32>>{
+        match &from.cmp(&to) {
+            std::cmp::Ordering::Less => {
+                let mut total: [u32; 7] = [0; 7];
+                let (from_ind, to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
+                for stage in REQ_BREAK_CHAIN[from_ind..to_ind].iter() {
+                    // individual [u32; 7]
+                    // TODO: sum with mut total
+                    for (index, item) in stage.iter().enumerate() {
+                        total[index] += item
+                    }
+                }
+                let (widget_inventory, coin) = total.split_at(6);
+                Ok(WidgetResourceRequirement {
+                    widget: WidgetResource {
+                        class,
+                        widget_inventory: widget_inventory.try_into().unwrap()
+                    },
+                    coin: Coin(coin[0])
+                })
+            },
+            std::cmp::Ordering::Equal => Ok(WidgetResourceRequirement::default()),
+            std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to))
         }
     }
 }
@@ -234,19 +270,19 @@ mod tests {
         assert_eq!(
             NeuralResourceRequirement::calculate(NeuralExpansion::One, NeuralExpansion::Five)
                 .unwrap()
-                .0,
+                .frags,
             400
         );
         assert_eq!(
             NeuralResourceRequirement::calculate(NeuralExpansion::Three, NeuralExpansion::Five)
                 .unwrap()
-                .0,
+                .frags,
             320
         );
         assert_eq!(
             NeuralResourceRequirement::calculate(NeuralExpansion::Two, NeuralExpansion::FourHalf)
                 .unwrap()
-                .0,
+                .frags,
             25 + 40 + 60 + 70 + 90
         )
     }
