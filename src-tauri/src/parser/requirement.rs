@@ -1,6 +1,5 @@
-use std::fmt::Display;
-
 use crate::model::{
+    error::RequirementError,
     infomodel::{Class, Coin, SkillCurrency, UnitSkill},
     tables::{
         REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
@@ -9,23 +8,6 @@ use crate::model::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub enum RequirementError<T> {
-    OutOfBound(T),
-    FromTo(T, T),
-}
-
-impl<T: Display> Display for RequirementError<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let err = match self {
-            RequirementError::OutOfBound(t) => {
-                format!("Element {t} is out of range that can be calculated")
-            }
-            RequirementError::FromTo(a, b) => format!("{a} is bigger than {b}"),
-        };
-        write!(f, "{}", err)
-    }
-}
 /// Tokens and pivots a unit would need to max out its skill
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SkillResourceRequirement {
@@ -121,24 +103,25 @@ impl LevelRequirement {
 
 impl NeuralResourceRequirement {
     fn calculate(
+        current: u32,
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
         let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
         Ok(NeuralResourceRequirement {
-            frags: sum.iter().sum::<u32>(),
+            frags: sum.iter().sum::<u32>() - current,
             coin: Coin(sum_coin.iter().sum::<u32>()),
         })
     }
 
     // TODO:
     fn _calculate_kits_conversion(
-        _bought: Option<u32>,
+        current: Option<u32>,
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
-        NeuralResourceRequirement::calculate(from, to)?;
+        // NeuralResourceRequirement::calculate(current, from, to)?;
         unimplemented!()
     }
 }
@@ -218,10 +201,11 @@ pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, Require
 }
 #[tauri::command]
 pub fn requirement_neural(
+    current: u32,
     from: NeuralExpansion,
     to: NeuralExpansion,
 ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
-    NeuralResourceRequirement::calculate(from, to)
+    NeuralResourceRequirement::calculate(current, from, to)
 }
 #[tauri::command]
 pub fn requirement_widget(
@@ -293,21 +277,25 @@ mod tests {
     #[test]
     fn neuralreq() {
         assert_eq!(
-            NeuralResourceRequirement::calculate(NeuralExpansion::One, NeuralExpansion::Five)
+            NeuralResourceRequirement::calculate(0, NeuralExpansion::One, NeuralExpansion::Five)
                 .unwrap()
                 .frags,
             400
         );
         assert_eq!(
-            NeuralResourceRequirement::calculate(NeuralExpansion::Three, NeuralExpansion::Five)
+            NeuralResourceRequirement::calculate(0, NeuralExpansion::Three, NeuralExpansion::Five)
                 .unwrap()
                 .frags,
             320
         );
         assert_eq!(
-            NeuralResourceRequirement::calculate(NeuralExpansion::Two, NeuralExpansion::FourHalf)
-                .unwrap()
-                .frags,
+            NeuralResourceRequirement::calculate(
+                0,
+                NeuralExpansion::Two,
+                NeuralExpansion::FourHalf
+            )
+            .unwrap()
+            .frags,
             25 + 40 + 60 + 70 + 90
         )
     }

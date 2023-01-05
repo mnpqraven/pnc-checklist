@@ -86,6 +86,14 @@ export default function Settings() {
           />
           System color
         </label>
+        <div>
+          <p>
+            assets from 42Lab wiki under CC BY-NC-SA
+          </p>
+          <p>
+            made with NextJS and Tauri
+          </p>
+        </div>
       </div>
     </main>
   );
