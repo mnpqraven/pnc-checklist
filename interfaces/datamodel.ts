@@ -1,3 +1,5 @@
+import { ValueOf } from "next/dist/shared/lib/constants"
+
 export type ImportChunk = {
   schema: string,
   database: Database,
@@ -31,7 +33,8 @@ export type Class = keyof typeof CLASS
 export type Loadout = {
   skill_level: UnitSkill,
   algo: AlgoSet,
-  level: number
+  level: number,
+  neural: NeuralExpansion
 }
 export type UnitSkill = {
   passive: number,

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::parser::requirement::NeuralExpansion;
+
 // NOTE: need to init loading specifying algo quantity for each class ?
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Class {
@@ -154,6 +156,7 @@ pub struct Loadout {
     pub skill_level: UnitSkill, // None defaults to slv 10
     pub level: Option<u32>,
     pub algo: AlgoSet,
+    pub neural: NeuralExpansion
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Unit {

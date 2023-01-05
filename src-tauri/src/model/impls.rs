@@ -1,6 +1,6 @@
 use super::infomodel::*;
 use crate::parser::requirement::{
-    LevelRequirement, NeuralResourceRequirement, UnitRequirement, WidgetResourceRequirement,
+    LevelRequirement, NeuralResourceRequirement, UnitRequirement, WidgetResourceRequirement, NeuralExpansion,
 };
 use crate::requirement_slv;
 use crate::startup::Storage;
@@ -137,11 +137,13 @@ impl Loadout {
                 skill_level: UnitSkill::max(),
                 algo: AlgoSet::new(),
                 level: Some(1),
+                neural: NeuralExpansion::Three
             },
             false => Self {
                 skill_level: UnitSkill::new(),
                 algo: AlgoSet::new(),
                 level: Some(1),
+                neural: NeuralExpansion::Three
             },
         }
     }
@@ -159,6 +161,11 @@ impl UnitSkill {
             passive: 10,
             auto: 10,
         }
+    }
+}
+impl Default for NeuralExpansion {
+    fn default() -> Self {
+        Self::Two
     }
 }
 impl AlgoSet {
@@ -226,7 +233,8 @@ impl ImportChunk {
                     current: Loadout {
                         skill_level: UnitSkill { passive: 1, auto: 1 },
                         algo: AlgoSet { offense: vec![], stability: vec![], special: vec![] },
-                        level: Some(1)
+                        level: Some(1),
+                        neural: NeuralExpansion::Three
                     },
                     goal: Loadout {
                         skill_level: UnitSkill { passive: 10, auto: 10 },
@@ -254,7 +262,8 @@ impl ImportChunk {
 
                             ]
                         },
-                        level: Some(60)
+                        level: Some(60),
+                        neural: NeuralExpansion::Five
                     }
                 }
             ]

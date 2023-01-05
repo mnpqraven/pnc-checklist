@@ -111,12 +111,14 @@ mod test {
                 },
                 algo: algo_set.clone(),
                 level: Some(1),
+                neural: crate::parser::requirement::NeuralExpansion::Three,
             },
             goal: Loadout {
                 skill_level: UnitSkill {
                     passive: 10,
                     auto: 10,
                 },
+                neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,
@@ -158,6 +160,7 @@ mod test {
                     passive: 7,
                     auto: 7,
                 },
+                neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: scnd_set,
                 level: Some(1),
             },
@@ -166,6 +169,7 @@ mod test {
                     passive: 10,
                     auto: 10,
                 },
+                neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: AlgoSet {
                     offense: vec![AlgoPiece {
                         name: Algorithm::Feedforward,

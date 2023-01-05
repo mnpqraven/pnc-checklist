@@ -2,6 +2,7 @@ import {
   AlgoSet,
   LOADOUTTYPE,
   LoadoutType,
+  NeuralExpansion,
   Unit,
   UnitSkill,
 } from "@/interfaces/datamodel";
@@ -29,6 +30,13 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
     if (defined) {
       setDollData((draft) => {
         draft[type].skill_level[skill_type as SkillType] = +e.target.value;
+      });
+    }
+  }
+  function handleRarityChange(e: string) {
+    if (defined) {
+      setDollData((draft) => {
+        draft[type].neural = e as NeuralExpansion;
       });
     }
   }
@@ -63,7 +71,7 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
           </div>
         </div>
         <div>
-          <RaritySelect />
+          <RaritySelect onChange={handleRarityChange} />
         </div>
       </div>
       <AlgorithmSet algo={algo} type={type} />

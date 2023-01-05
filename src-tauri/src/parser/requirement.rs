@@ -45,7 +45,7 @@ pub struct NeuralResourceRequirement {
     pub coin: Coin,
 }
 
-#[derive(Serialize, Deserialize, Copy, Clone)]
+#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
 pub enum NeuralExpansion {
     One,
     OneHalf,
@@ -103,26 +103,36 @@ impl LevelRequirement {
 
 impl NeuralResourceRequirement {
     fn calculate(
-        current: u32,
+        current: Option<u32>,
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
         let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
         Ok(NeuralResourceRequirement {
-            frags: sum.iter().sum::<u32>() - current,
+            frags: sum.iter().sum::<u32>() - current.unwrap_or(0),
             coin: Coin(sum_coin.iter().sum::<u32>()),
         })
     }
 
     // TODO:
-    fn _calculate_kits_conversion(
+    fn calculate_kits_conversion(
         current: Option<u32>,
         from: NeuralExpansion,
         to: NeuralExpansion,
-    ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
-        // NeuralResourceRequirement::calculate(current, from, to)?;
-        unimplemented!()
+    ) -> Result<u32, RequirementError<u32>> {
+        let frags =
+            NeuralResourceRequirement::calculate(current, from, to)?.frags;
+        println!("{:?}", frags);
+        // increases by 5 every 25 uses, cap 25
+        let (mut kits_cost, mut kits_req) = (5, 0);
+        for i in 1..=frags {
+            kits_req += kits_cost;
+            if i % 25 == 0 && kits_cost < 25 {
+                kits_cost += 5;
+            }
+        }
+        Ok(kits_req)
     }
 }
 impl SkillResourceRequirement {
@@ -201,11 +211,19 @@ pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, Require
 }
 #[tauri::command]
 pub fn requirement_neural(
-    current: u32,
+    current: Option<u32>,
     from: NeuralExpansion,
     to: NeuralExpansion,
 ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
     NeuralResourceRequirement::calculate(current, from, to)
+}
+#[tauri::command]
+pub fn requirment_neural_kits(
+    current: Option<u32>,
+    from: NeuralExpansion,
+    to: NeuralExpansion
+) -> Result<u32, RequirementError<u32>>{
+    NeuralResourceRequirement::calculate_kits_conversion(current, from, to)
 }
 #[tauri::command]
 pub fn requirement_widget(
@@ -277,20 +295,28 @@ mod tests {
     #[test]
     fn neuralreq() {
         assert_eq!(
-            NeuralResourceRequirement::calculate(0, NeuralExpansion::One, NeuralExpansion::Five)
-                .unwrap()
-                .frags,
+            NeuralResourceRequirement::calculate(
+                Some(0),
+                NeuralExpansion::One,
+                NeuralExpansion::Five
+            )
+            .unwrap()
+            .frags,
             400
         );
         assert_eq!(
-            NeuralResourceRequirement::calculate(0, NeuralExpansion::Three, NeuralExpansion::Five)
-                .unwrap()
-                .frags,
+            NeuralResourceRequirement::calculate(
+                Some(0),
+                NeuralExpansion::Three,
+                NeuralExpansion::Five
+            )
+            .unwrap()
+            .frags,
             320
         );
         assert_eq!(
             NeuralResourceRequirement::calculate(
-                0,
+                Some(0),
                 NeuralExpansion::Two,
                 NeuralExpansion::FourHalf
             )
@@ -383,5 +409,26 @@ mod tests {
                 .widget_inventory,
             [0, 0, 0, 0, 0, 0]
         );
+    }
+    #[test]
+    fn kits_conversion() {
+        let t = NeuralResourceRequirement::calculate_kits_conversion(
+            None,
+            NeuralExpansion::Three,
+            NeuralExpansion::Five,
+        )
+        .unwrap();
+        // 320
+        let a = 25 * (5 + 10 + 15 + 20);
+        let b = (320 - 100) * 25;
+        assert_eq!(t, a + b);
+    }
+    #[test]
+    fn kits_2() {
+        let t = NeuralResourceRequirement::calculate_kits_conversion(Some(10), NeuralExpansion::Four, NeuralExpansion::Five).unwrap();
+        // 90 + 100 - 10 = 180
+        let a = 25 * (5 + 10 + 15 + 20); // 100
+        let b = 25 * 80;
+        assert_eq!(t, a + b);
     }
 }
