@@ -1,10 +1,12 @@
 //! handles building stucts like unit, algos, resources
 //!
 
+use std::sync::Arc;
+
 use crate::{
     model::{impls::update_reqs, infomodel::*},
-    parser::requirement::GrandResource,
-    startup::Storage,
+    parser::{requirement::GrandResource, file::localsave},
+    startup::{Storage, Computed},
 };
 use tauri::State;
 
@@ -46,7 +48,7 @@ impl Unit {
 }
 
 #[tauri::command]
-pub fn update_chunk(chunk: ImportChunk, store: State<Storage>) -> Result<(), &'static str> {
+pub fn update_chunk(chunk: UserStore, store: State<Storage>) -> Result<(), &'static str> {
     let mut store = store.store.lock().unwrap();
     *store = chunk;
     Ok(())
@@ -67,7 +69,7 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
 }
 
 #[tauri::command]
-pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>) -> Result<usize, ()> {
+pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>, computed: State<'_,Computed>) -> Result<usize, ()> {
     println!("[invoke] save_unit");
     let mut guard = store.store.lock().unwrap(); // needs mutable lock
     let units = &mut guard.units;
@@ -75,26 +77,31 @@ pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>) -> Result<
     drop(guard);
 
     println!("{}", index);
-    update_reqs(store).unwrap();
+    update_reqs(store, computed).unwrap();
     Ok(index)
 }
 #[tauri::command]
-pub fn save_units(units: Vec<(Unit, usize)>, store: State<'_, Storage>) -> Result<Vec<usize>, &'static str> {
+pub fn save_units(
+    units: Vec<(Unit, usize)>,
+    store: State<'_, Storage>, computed: State<'_,Computed>
+) -> Result<Vec<usize>, &'static str> {
     println!("[invoke] save_units");
     let mut guard = store.store.lock().unwrap();
     for (unit, index) in units.iter() {
         guard.units[*index] = unit.clone();
     }
     drop(guard);
-    update_reqs(store).unwrap();
+    // FIX: fix move
+    update_reqs(store, computed).unwrap();
+    localsave(store);
 
     let edited: Vec<usize> = units.iter().map(|e| e.1).collect();
     Ok(edited)
 }
 
 #[tauri::command]
-pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
-    let guard_req = store.database_req.lock().unwrap();
+pub fn get_needed_rsc(computed: State<'_,Computed>) -> GrandResource {
+    let guard_req = computed.database_req.lock().unwrap();
     let (mut token, mut pivot, mut coin) = (0, 0, 0);
     for req in guard_req.unit_req.iter() {
         pivot += req.skill.pivot;
@@ -102,6 +109,7 @@ pub fn get_needed_rsc(store: State<Storage>) -> GrandResource {
         coin += req.skill.coin.0;
     }
 
+    // TODO: fill other fields
     let t = GrandResource {
         skill: SkillCurrency { token, pivot },
         coin: Coin(coin),

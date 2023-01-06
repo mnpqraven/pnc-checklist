@@ -1,5 +1,3 @@
-import { ValueOf } from "next/dist/shared/lib/constants"
-
 export type ImportChunk = {
   schema: string,
   database: Database,
@@ -112,6 +110,12 @@ export const ALGOCATEGORY = {
   Special: "Special",
 } as const
 export type AlgoCategory = keyof typeof ALGOCATEGORY
+export const ALGOCATEGORY_LOWER = {
+  offense: "offense",
+  stability: "stability",
+  special: "special",
+} as const
+export type AlgoCategoryLower = keyof typeof ALGOCATEGORY_LOWER
 
 export type AlgoTypeDb = {
   category: AlgoCategory,
@@ -119,8 +123,7 @@ export type AlgoTypeDb = {
 }
 
 export type GrandResource = {
-  slv_token: number,
-  slv_pivot: number,
+  skill: SkillCurrency,
   coin: number
 }
 export const NEURALEXPANSION = {

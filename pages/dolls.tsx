@@ -72,7 +72,7 @@ const Dolls = () => {
   function updateDirtyList(e: Unit) {
     // setDollData(e);
     // TODO: implement validation
-    invoke("validate", { unit: e }).catch((err) => console.log(err));
+    invoke("validate", { unit: e }).catch((err) => console.log(`[invoke] validate Err: ${err}`));
 
     setDirtyUnits(
       dirtyUnits.map((unit, index) => {

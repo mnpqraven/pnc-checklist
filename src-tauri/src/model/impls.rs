@@ -1,45 +1,11 @@
 use super::infomodel::*;
 use crate::parser::requirement::{
-    LevelRequirement, NeuralResourceRequirement, UnitRequirement, WidgetResourceRequirement, NeuralExpansion,
+    LevelRequirement, NeuralExpansion, NeuralResourceRequirement, UnitRequirement,
+    WidgetResourceRequirement,
 };
 use crate::requirement_slv;
-use crate::startup::Storage;
-use std::fmt::Display;
+use crate::startup::{Storage, Computed};
 use tauri::State;
-
-impl Display for Algorithm {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let label = match self {
-            Algorithm::LowerLimit => "Lower Limit",
-            Algorithm::Feedforward => "Feedforward",
-            Algorithm::Deduction => "Deduction",
-            Algorithm::Progression => "Progression",
-            Algorithm::DataRepair => "Data Repair",
-            Algorithm::MLRMatrix => "MLR Matrix",
-            Algorithm::Encapsulate => "Encapsulate",
-            Algorithm::Iteration => "Iteration",
-            Algorithm::Perception => "Perception",
-            Algorithm::Overflow => "Overflow",
-            Algorithm::Rationality => "Rationality",
-            Algorithm::Connection => "Connection",
-            Algorithm::Convolution => "Convolution",
-            Algorithm::Inspiration => "Inspiration",
-            Algorithm::LoopGain => "Loop Gain",
-            Algorithm::SVM => "S.V.M",
-            Algorithm::Paradigm => "Paradigm",
-            Algorithm::DeltaV => "Delta V",
-            Algorithm::Cluster => "Cluster",
-            Algorithm::Stratagem => "Stratagem",
-            // gen 2
-            Algorithm::Stack => "Stack",
-            Algorithm::LimitValue => "Limit Value",
-            Algorithm::Reflection => "Reflection",
-            Algorithm::Resolve => "Resolve",
-            Algorithm::Exploit => "Exploit",
-        };
-        write!(f, "{label}")
-    }
-}
 
 impl Algorithm {
     pub fn all_gen1() -> Vec<Algorithm> {
@@ -82,31 +48,6 @@ impl Algorithm {
     }
 }
 
-impl Display for AlgoMainStat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let label = match self {
-            AlgoMainStat::Hashrate => "Hashrate",
-            AlgoMainStat::HashratePercent => "Hashrate %",
-            AlgoMainStat::Atk => "Attack",
-            AlgoMainStat::AtkPercent => "Atk %",
-            AlgoMainStat::Health => "Health",
-            AlgoMainStat::HealthPercent => "Health %",
-            AlgoMainStat::Haste => "Haste",
-            AlgoMainStat::CritRate => "Critical Rate",
-            AlgoMainStat::CritDmg => "Critical Damage",
-            AlgoMainStat::DamageInc => "Damage Increase",
-            AlgoMainStat::Dodge => "Dodge",
-            AlgoMainStat::HealInc => "Heal Increase",
-            AlgoMainStat::DamageReduction => "Damage Reduction",
-            AlgoMainStat::Def => "Defense",
-            AlgoMainStat::DefPercent => "Defense %",
-            AlgoMainStat::OperandDef => "Openrand Defense",
-            AlgoMainStat::OperandDefPercent => "Operand Defense %",
-        };
-        write!(f, "{label}")
-    }
-}
-
 #[tauri::command]
 pub fn main_stat_all() -> Vec<AlgoMainStat> {
     vec![
@@ -136,14 +77,16 @@ impl Loadout {
             true => Self {
                 skill_level: UnitSkill::max(),
                 algo: AlgoSet::new(),
-                level: Some(1),
-                neural: NeuralExpansion::Three
+                level: Level(1),
+                neural: NeuralExpansion::Three,
+                frags: 0
             },
             false => Self {
                 skill_level: UnitSkill::new(),
                 algo: AlgoSet::new(),
-                level: Some(1),
-                neural: NeuralExpansion::Three
+                level: Level(1),
+                neural: NeuralExpansion::Three,
+                frags: 0
             },
         }
     }
@@ -161,11 +104,6 @@ impl UnitSkill {
             passive: 10,
             auto: 10,
         }
-    }
-}
-impl Default for NeuralExpansion {
-    fn default() -> Self {
-        Self::Two
     }
 }
 impl AlgoSet {
@@ -202,9 +140,9 @@ impl AlgoPiece {
 }
 
 /// updates the requirement field in the store by reading the store field
-pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
+pub fn update_reqs(store: State<Storage>, computed: State<Computed>) -> Result<(), &'static str> {
     let store_guard = store.store.lock().expect("requesting mutex failed");
-    let mut req_guard = store.database_req.lock().unwrap();
+    let mut req_guard = computed.database_req.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
     for unit in store_guard.units.iter() {
         reqs.push(UnitRequirement {
@@ -218,7 +156,7 @@ pub fn update_reqs(store: State<Storage>) -> Result<(), &'static str> {
     Ok(())
 }
 
-impl ImportChunk {
+impl UserStore {
     pub fn generate_example() -> Self {
         Self {
             schema: String::from("https://raw.githubusercontent.com/mnpqraven/pnc-checklist/main/src-tauri/schemas/schema.jsonc"),
@@ -232,12 +170,13 @@ impl ImportChunk {
                     class: Class::Guard,
                     current: Loadout {
                         skill_level: UnitSkill { passive: 1, auto: 1 },
-                        algo: AlgoSet { offense: vec![], stability: vec![], special: vec![] },
-                        level: Some(1),
-                        neural: NeuralExpansion::Three
+                        algo: AlgoSet::default(),
+                        level: Level::default(),
+                        neural: NeuralExpansion::Three,
+                        frags: 0
                     },
                     goal: Loadout {
-                        skill_level: UnitSkill { passive: 10, auto: 10 },
+                        skill_level: UnitSkill::max(),
                         algo: AlgoSet {
                             offense: vec![
                                 AlgoPiece {
@@ -259,11 +198,11 @@ impl ImportChunk {
                                     stat: AlgoMainStat::DefPercent,
                                     slot: vec![true, true]
                                 }
-
                             ]
                         },
-                        level: Some(60),
-                        neural: NeuralExpansion::Five
+                        level: Level(60),
+                        neural: NeuralExpansion::Five,
+                        frags: 0
                     }
                 }
             ]

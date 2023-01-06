@@ -4,6 +4,7 @@
 )]
 
 mod api;
+pub mod impls;
 mod model;
 mod parser;
 mod screen;
@@ -11,12 +12,18 @@ mod startup;
 mod validate;
 use tauri::Manager;
 
-use crate::api::builder::{save_unit, view_store_units, new_unit, default_slot_size, algo_piece_new, algorithm_all, algo_set_new, update_chunk, get_needed_rsc, save_units};
+use crate::api::builder::{
+    algo_piece_new, algo_set_new, algorithm_all, default_slot_size, get_needed_rsc, new_unit,
+    save_unit, save_units, update_chunk, view_store_units,
+};
 use crate::model::impls::main_stat_all;
-use crate::model::tables::{get_bonuses, generate_algo_db, get_algo_by_days};
-use crate::parser::file::{import, export, set_default_file};
+use crate::model::tables::{generate_algo_db, get_algo_by_days, get_bonuses};
+use crate::parser::file::{export, import, set_default_file};
 use crate::parser::parse::get_algo_types;
-use crate::parser::requirement::{requirement_slv, requirement_level, requirement_neural, requirement_widget, requirment_neural_kits};
+use crate::parser::requirement::{
+    requirement_level, requirement_neural, requirement_slv, requirement_widget,
+    requirment_neural_kits,
+};
 use crate::validate::validate;
 
 // will be invoked during startup
@@ -34,9 +41,15 @@ fn main() {
             Ok(())
         })
         .manage(Storage {
+            // JSON data
             store: Default::default(),
+            db: Default::default(),
+            // updated post launch
+            // NOTE: should put in separate state ?
+            // database_req: Default::default(),
+        })
+        .manage(Computed {
             database_req: Default::default(),
-            db: Default::default()
         })
         .invoke_handler(tauri::generate_handler![
             // TODO: refactor dir structure

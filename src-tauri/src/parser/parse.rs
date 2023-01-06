@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::model::infomodel::{AlgoCategory, Algorithm};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AlgoTypeDb {
@@ -13,7 +13,7 @@ pub fn get_algo_types() -> Vec<AlgoTypeDb> {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::infomodel::ImportChunk;
+    use crate::model::infomodel::UserStore;
     use std::fs;
 
     use super::get_algo_types;
@@ -27,12 +27,13 @@ mod tests {
     fn import_test() {
         let file = fs::read_to_string("./data/user/schemadata.json")
             .expect("can't open file, check perm or path");
-        let res: ImportChunk = serde_json::from_str(&file).expect("unable to parse");
+        let res: UserStore = serde_json::from_str(&file).expect("unable to parse");
         println!("{:?}", res);
     }
 
     #[test]
     fn export_test() {
         // TODO: export json from data
+        // run after every unit save or database save
     }
 }

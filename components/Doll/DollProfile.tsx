@@ -50,6 +50,7 @@ const DollProfile = () => {
           <Loadout
             skill_level={dollData.current.skill_level}
             algo={dollData.current.algo}
+            level={dollData.current.level}
             type={LOADOUTTYPE.current}
           />
         </div>
@@ -57,6 +58,7 @@ const DollProfile = () => {
           <Loadout
             skill_level={dollData.goal.skill_level}
             algo={dollData.goal.algo}
+            level={dollData.current.level}
             type={LOADOUTTYPE.goal}
           />
         </div>

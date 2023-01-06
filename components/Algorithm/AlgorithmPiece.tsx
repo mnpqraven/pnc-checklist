@@ -3,11 +3,9 @@ import {
   AlgoCategory,
   AlgoPiece,
   AlgoMainStat,
-  LOADOUTTYPE,
   ALGOMAINSTAT,
   ALGORITHM,
 } from "@/interfaces/datamodel";
-import { get_algo } from "@/utils/helper";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Loading, Select } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
@@ -20,6 +18,7 @@ type Props = {
   options: OptionPayload;
   category: AlgoCategory;
   valid: boolean | undefined;
+  onChange: (e: AlgoPiece | null, cat: AlgoCategory, index: number) => void
 };
 const AlgorithmPiece = ({
   index,
@@ -27,66 +26,50 @@ const AlgorithmPiece = ({
   options,
   category,
   valid,
+  onChange: pieceUpdate
 }: Props) => {
-  const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
+  const { dollData } = useContext(DollContext);
   const [nameLabel, setNameLabel] = useState(pieceData.name);
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
   const [slot, setSlot] = useState<boolean[]>([false, false]);
+  const [piece, setPiece] = useState<AlgoPiece | null>(pieceData)
 
+  // chaging unit
   useEffect(() => {
     setNameLabel(pieceData.name);
     setMainStatLabel(pieceData.stat);
     setSlot(pieceData.slot);
   }, [pieceData]);
 
+  // changing details, passed to parent's setDollData
+  useEffect(() => {
+    pieceUpdate(piece, category, index)
+  }, [category, index, piece, pieceUpdate])
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
-    if (dollData && setDollData && updateDirtyList) {
-      let clone = { ...dollData };
-      get_algo(category, dollData, "current")[index].name = event.currentTarget
-        .value as Algorithm;
-      setNameLabel(event.currentTarget.value as Algorithm);
-      updateDirtyList(clone);
-    }
+    setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm })
+    setNameLabel(event.currentTarget.value as Algorithm);
   }
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
-    if (dollData && setDollData && updateDirtyList) {
-      let clone = { ...dollData };
-      get_algo(category, dollData, LOADOUTTYPE.current)[index].stat = event
-        .currentTarget.value as AlgoMainStat;
-      setMainStatLabel(event.currentTarget.value as AlgoMainStat);
-      updateDirtyList(clone);
-    }
+    setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat })
+    setMainStatLabel(event.currentTarget.value as AlgoMainStat);
   }
   function slotHandler(
     e: ChangeEvent<HTMLInputElement>,
     checkboxIndex: number
   ) {
-    if (dollData && setDollData && updateDirtyList) {
-      let cloneProfile = { ...dollData };
-      let cloneSlot = get_algo(category, cloneProfile, LOADOUTTYPE.current)[
-        index
-      ].slot;
-      cloneSlot[checkboxIndex] = e.target.checked;
-      setSlot(cloneSlot);
-      updateDirtyList(cloneProfile);
-    }
-  }
-  function deleteHandler() {
-    // TODO: current vs goal differentiate
-    if (dollData && setDollData && updateDirtyList) {
-      let cloneProfile = { ...dollData };
-      // intentionally uses splice here cause cloneProfile is already a copy
-      get_algo(category, cloneProfile, LOADOUTTYPE.current).splice(index, 1);
-      updateDirtyList(cloneProfile);
-    }
+    let slot = pieceData.slot.map((item, index) => {
+      if (checkboxIndex == index) return e.target.checked
+      else return item
+    })
+    setPiece({ ...pieceData, slot })
+    setSlot(slot);
   }
 
   return (
     <>
       <div
-        className={`${
-          valid === false ? `border border-red-500` : ``
-        } flex justify-between`}
+        className={`${valid === false ? `border border-red-500` : ``
+          } flex justify-between`}
       >
         <Select
           value={nameLabel}
@@ -115,7 +98,7 @@ const AlgorithmPiece = ({
           )}
         </div>
         <div className="self-center">
-          <button onClick={deleteHandler}>delete</button>
+          <button onClick={() => setPiece(null)}>delete</button>
         </div>
       </div>
     </>

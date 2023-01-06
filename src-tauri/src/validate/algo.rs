@@ -50,7 +50,7 @@ pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
 mod test {
     use crate::{
         model::infomodel::{
-            AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Loadout, Unit, UnitSkill,
+            AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Loadout, Unit, UnitSkill, Level,
         },
         validate::UnitValidationError,
     };
@@ -110,8 +110,9 @@ mod test {
                     auto: 7,
                 },
                 algo: algo_set.clone(),
-                level: Some(1),
+                level: Level(1),
                 neural: crate::parser::requirement::NeuralExpansion::Three,
+                frags: 0
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -136,7 +137,8 @@ mod test {
                         slot: vec![true, true, true],
                     }],
                 },
-                level: Some(1),
+                level: Level(1),
+                frags: 0
             },
         };
         let right: Vec<(AlgoCategory, Vec<usize>)> = vec![
@@ -162,7 +164,8 @@ mod test {
                 },
                 neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: scnd_set,
-                level: Some(1),
+                level: Level(1),
+                frags: 0
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -187,7 +190,8 @@ mod test {
                         slot: vec![true, true, true],
                     }],
                 },
-                level: Some(1),
+                level: Level(1),
+                frags: 0
             },
         };
         assert_eq!(validate_algo(&scnd_unit), Ok(()));

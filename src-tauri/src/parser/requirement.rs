@@ -1,6 +1,6 @@
 use crate::model::{
     error::RequirementError,
-    infomodel::{Class, Coin, SkillCurrency, UnitSkill},
+    infomodel::{Class, Coin, SkillCurrency, Unit, UnitSkill},
     tables::{
         REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
         REQ_SLV_TOKEN,
@@ -19,6 +19,7 @@ pub struct SkillResourceRequirement {
 /// struct for the requirement screen, gathers all requirements needed, single
 ///  requirement can be accessed by fields
 /// SoSoA
+#[derive(Debug)]
 pub struct DatabaseRequirement {
     pub unit_req: Vec<UnitRequirement>,
 }
@@ -64,6 +65,7 @@ pub struct WidgetResource {
 }
 
 /// struct for single unit
+#[derive(Debug)]
 pub struct UnitRequirement {
     pub skill: SkillResourceRequirement,
     pub neural: NeuralResourceRequirement,
@@ -71,6 +73,29 @@ pub struct UnitRequirement {
     pub breakthrough: WidgetResourceRequirement,
     // TODO: AlgorithmRequirement, compare goal with current and generate
     // missing algos from current
+}
+impl UnitRequirement {
+    pub fn update_unit_req(unit: &Unit) -> Self {
+        Self {
+            skill: SkillResourceRequirement::calculate(
+                unit.current.skill_level,
+                unit.goal.skill_level,
+            ),
+            neural: NeuralResourceRequirement::calculate(
+                Some(unit.current.frags),
+                unit.current.neural,
+                unit.goal.neural,
+            )
+            .unwrap(),
+            level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0).unwrap(),
+            breakthrough: WidgetResourceRequirement::calculate(
+                unit.class,
+                unit.current.level.0,
+                unit.goal.level.0,
+            )
+            .unwrap(),
+        }
+    }
 }
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct LevelRequirement {
@@ -121,8 +146,7 @@ impl NeuralResourceRequirement {
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<u32, RequirementError<u32>> {
-        let frags =
-            NeuralResourceRequirement::calculate(current, from, to)?.frags;
+        let frags = NeuralResourceRequirement::calculate(current, from, to)?.frags;
         println!("{:?}", frags);
         // increases by 5 every 25 uses, cap 25
         let (mut kits_cost, mut kits_req) = (5, 0);
@@ -221,8 +245,8 @@ pub fn requirement_neural(
 pub fn requirment_neural_kits(
     current: Option<u32>,
     from: NeuralExpansion,
-    to: NeuralExpansion
-) -> Result<u32, RequirementError<u32>>{
+    to: NeuralExpansion,
+) -> Result<u32, RequirementError<u32>> {
     NeuralResourceRequirement::calculate_kits_conversion(current, from, to)
 }
 #[tauri::command]
@@ -425,7 +449,12 @@ mod tests {
     }
     #[test]
     fn kits_2() {
-        let t = NeuralResourceRequirement::calculate_kits_conversion(Some(10), NeuralExpansion::Four, NeuralExpansion::Five).unwrap();
+        let t = NeuralResourceRequirement::calculate_kits_conversion(
+            Some(10),
+            NeuralExpansion::Four,
+            NeuralExpansion::Five,
+        )
+        .unwrap();
         // 90 + 100 - 10 = 180
         let a = 25 * (5 + 10 + 15 + 20); // 100
         let b = 25 * 80;

@@ -14,8 +14,8 @@ pub enum Class {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-/// List of algorithms
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// List of algorithms
 pub enum Algorithm {
     //offense
     LowerLimit,
@@ -104,14 +104,6 @@ pub struct UnitSkill {
     pub passive: u32,
     pub auto: u32,
 }
-impl Default for UnitSkill {
-    fn default() -> Self {
-        Self {
-            passive: 1,
-            auto: 1,
-        }
-    }
-}
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Coin(pub u32);
 
@@ -145,7 +137,7 @@ pub fn algo_category_all() -> Vec<AlgoCategory> {
         AlgoCategory::Special,
     ]
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct AlgoSet {
     pub offense: Vec<AlgoPiece>,
     pub stability: Vec<AlgoPiece>,
@@ -153,11 +145,20 @@ pub struct AlgoSet {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Loadout {
-    pub skill_level: UnitSkill, // None defaults to slv 10
-    pub level: Option<u32>,
+    #[serde(default)]
+    pub skill_level: UnitSkill,
+    #[serde(default)]
+    pub level: Level,
+    #[serde(default)]
     pub algo: AlgoSet,
-    pub neural: NeuralExpansion
+    #[serde(default)]
+    pub neural: NeuralExpansion,
+    #[serde(default)]
+    pub frags: u32
 }
+// TODO: move
+#[derive(Debug, Serialize, Deserialize, Clone, Copy)]
+pub struct Level(pub u32);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Unit {
     pub name: String,
@@ -169,7 +170,7 @@ pub struct Unit {
 // TODO: need another wrapper
 // ImportChunk has all the options > go through Option<> check into another struct
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ImportChunk {
+pub struct UserStore {
     #[serde(rename = "$schema")]
     pub schema: String,
     pub database: Database,

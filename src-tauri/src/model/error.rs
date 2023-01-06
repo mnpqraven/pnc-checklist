@@ -1,3 +1,4 @@
+use super::infomodel::AlgoCategory;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -17,4 +18,20 @@ impl<T: Display> Display for RequirementError<T> {
         };
         write!(f, "{}", err)
     }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum TauriError {
+    /// can't find the file specified in the import filepath
+    ImportPath(String),
+    /// struct in the import file doesn't fit ImportChunk
+    ImportStruct(String),
+    Export,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub enum UnitValidationError {
+    Name,
+    SkillLevel,
+    Algorithm(Vec<(AlgoCategory, Vec<usize>)>),
 }

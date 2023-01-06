@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 
 const Summary = () => {
   const [req, setReg] = useState<GrandResource>({
-    slv_token: 0,
-    slv_pivot: 0,
+    skill: {token: 0, pivot: 0},
     coin: 0,
   });
 
@@ -19,8 +18,8 @@ const Summary = () => {
   return (
     <>
       <h1>amount needed:</h1>
-      <p>token: {req.slv_token}</p>
-      <p>pivot: {req.slv_pivot}</p>
+      <p>token: {req.skill.token}</p>
+      <p>pivot: {req.skill.pivot}</p>
       <p>coin: {req.coin}</p>
     </>
   );

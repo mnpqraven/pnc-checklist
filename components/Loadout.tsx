@@ -15,8 +15,9 @@ type Props = {
   skill_level: UnitSkill;
   algo: AlgoSet;
   type: LoadoutType;
+  level: number
 };
-const Loadout = ({ skill_level, algo, type }: Props) => {
+const Loadout = ({ skill_level, algo, type, level }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const defined = dollData && setDollData && updateDirtyList;
 
@@ -56,6 +57,8 @@ const Loadout = ({ skill_level, algo, type }: Props) => {
               onChange={(e) => handleSlvChange(e, SKILL_TYPE.passive)}
             />
             <p>{skill_level.passive}</p>
+            <p>level:</p>
+            <input type="number" defaultValue={level} min={1} max={70} />
           </div>
           <div className="flex flex-row justify-end">
             <p>auto: </p>

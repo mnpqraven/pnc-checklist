@@ -1,6 +1,7 @@
 import {
   AlgoCategory,
   ALGOCATEGORY,
+  AlgoCategoryLower,
   AlgoMainStat,
   AlgoPiece,
   AlgoSet,
@@ -12,7 +13,6 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { get_algo } from "@/utils/helper";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
@@ -47,6 +47,29 @@ const AlgorithmSet = ({ algo, type }: Props) => {
     get_algo_types();
   }, []);
 
+  const { setDollData } = useContext(DollContext)
+
+  function handleAddPiece(e: AlgoPiece, cat: AlgoCategory, loadout: LoadoutType): void {
+    if (setDollData)
+      setDollData((draft) => {
+        draft[loadout].algo[cat.toLowerCase() as AlgoCategoryLower].push(e)
+      })
+  }
+  function handleUpdatePiece(e: AlgoPiece | null, cat: AlgoCategory, index: number): void {
+    if (setDollData) {
+      if (e) {
+        setDollData((draft) => {
+          draft[type].algo[cat.toLowerCase() as AlgoCategoryLower][index] = e
+        })
+      } else {
+        // no piece passed, deletion
+        setDollData((draft) => {
+          draft[type].algo[cat.toLowerCase() as AlgoCategoryLower].splice(index, 1)
+        })
+      }
+    }
+  }
+
   return (
     <>
       <div className="flex">
@@ -60,6 +83,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                   category={ALGOCATEGORY.Offense}
                   pieceData={piece}
                   valid={!errList(ALGOCATEGORY.Offense).includes(index)}
+                  onChange={handleUpdatePiece}
                 />
               </div>
             ))
@@ -80,6 +104,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                   category={ALGOCATEGORY.Stability}
                   pieceData={piece}
                   valid={!errList(ALGOCATEGORY.Stability).includes(index)}
+                  onChange={handleUpdatePiece}
                 />
               </div>
             ))
@@ -100,6 +125,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                   category={ALGOCATEGORY.Special}
                   pieceData={piece}
                   valid={!errList(ALGOCATEGORY.Special).includes(index)}
+                  onChange={handleUpdatePiece}
                 />
               </div>
             ))
@@ -109,9 +135,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         </div>
       </div>
       <div className="flex flex-row justify-around">
-        <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} />
-        <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} />
-        <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} />
+        <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} addHandler={handleAddPiece} />
+        <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} addHandler={handleAddPiece} />
+        <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} addHandler={handleAddPiece} />
       </div>
     </>
   );
@@ -121,9 +147,11 @@ export default AlgorithmSet;
 const NewAlgoSet = ({
   category,
   loadout_type,
+  addHandler
 }: {
   category: AlgoCategory;
   loadout_type: LoadoutType;
+  addHandler: (value: AlgoPiece, category: AlgoCategory, loadout_type: LoadoutType) => void
 }) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const defined = dollData && setDollData && updateDirtyList;
@@ -132,10 +160,8 @@ const NewAlgoSet = ({
     loadout_type: LoadoutType
   ) {
     if (defined) {
-      let cloned = { ...dollData };
       let t = await invoke<AlgoPiece>("algo_piece_new", { category });
-      get_algo(category, cloned, loadout_type).push(t);
-      updateDirtyList(cloned);
+      addHandler(t, category, loadout_type);
     }
   }
   return (

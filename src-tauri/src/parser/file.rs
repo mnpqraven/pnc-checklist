@@ -1,13 +1,14 @@
-use crate::{model::infomodel::ImportChunk, startup::Storage, validate::TauriError};
+use crate::model::error::TauriError;
+use crate::{model::infomodel::UserStore, startup::Storage};
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 
 #[tauri::command]
-pub fn import(path: String) -> Result<ImportChunk, TauriError> {
+pub fn import(path: String) -> Result<UserStore, TauriError> {
     println!("import");
-    let file = fs::read_to_string(path.clone());
+    let file = fs::read_to_string(path);
     match file {
-        Ok(payload) => match serde_json::from_str::<ImportChunk>(&payload) {
+        Ok(payload) => match serde_json::from_str::<UserStore>(&payload) {
             Ok(valid_data) => {
                 // generate new json in cache dir
                 Ok(valid_data)
@@ -17,10 +18,10 @@ pub fn import(path: String) -> Result<ImportChunk, TauriError> {
         Err(_) => {
             // folder doesn't exist in data_dir(), likely first time running
             let pnc_dir_data = &data_dir().unwrap().join("PNCChecklist");
-            fs::create_dir_all(&pnc_dir_data).unwrap();
+            fs::create_dir_all(pnc_dir_data).unwrap();
 
             // create example chunk
-            let example: ImportChunk = ImportChunk::generate_example();
+            let example: UserStore = UserStore::generate_example();
             fs::write(
                 Path::new(&pnc_dir_data.join("pnc_database.json")),
                 serde_json::to_string_pretty(&example).unwrap(),
@@ -45,6 +46,16 @@ pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriErro
         fs::write(new_path, t).expect("cannot write to file");
     }
     // user cancelled export
+    Ok(())
+}
+
+pub fn localsave(store: State<'_, Storage>) -> Result<(), TauriError> {
+    let store = store.store.lock().unwrap();
+    let localjson = data_dir().unwrap().join("PNCChecklist").join("pnc_database.json");
+    let payload =
+        serde_json::to_string_pretty(&*store).expect("can't convert UserStore struct to string");
+    println!("{:?}", payload);
+    fs::write(Path::new(&localjson), payload).expect("cannot write to file");
     Ok(())
 }
 #[tauri::command]
