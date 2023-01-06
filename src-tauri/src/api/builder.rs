@@ -69,18 +69,6 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
 }
 
 #[tauri::command]
-pub fn save_unit(unit: Unit, index: usize, store: State<'_, Storage>, computed: State<'_,Computed>) -> Result<usize, ()> {
-    println!("[invoke] save_unit");
-    let mut guard = store.store.lock().unwrap(); // needs mutable lock
-    let units = &mut guard.units;
-    units[index] = unit;
-    drop(guard);
-
-    println!("{}", index);
-    update_reqs(store, computed).unwrap();
-    Ok(index)
-}
-#[tauri::command]
 pub fn save_units(
     units: Vec<(Unit, usize)>,
     store: State<'_, Storage>, computed: State<'_,Computed>
@@ -90,10 +78,8 @@ pub fn save_units(
     for (unit, index) in units.iter() {
         guard.units[*index] = unit.clone();
     }
-    drop(guard);
-    // FIX: fix move
-    update_reqs(store, computed).unwrap();
-    localsave(store);
+    update_reqs(&guard, computed).unwrap();
+    localsave(&guard).unwrap();
 
     let edited: Vec<usize> = units.iter().map(|e| e.1).collect();
     Ok(edited)

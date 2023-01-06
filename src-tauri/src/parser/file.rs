@@ -1,5 +1,6 @@
 use crate::model::error::TauriError;
 use crate::{model::infomodel::UserStore, startup::Storage};
+use std::sync::MutexGuard;
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 
@@ -49,11 +50,11 @@ pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriErro
     Ok(())
 }
 
-pub fn localsave(store: State<'_, Storage>) -> Result<(), TauriError> {
-    let store = store.store.lock().unwrap();
+pub fn localsave(store: &UserStore) -> Result<(), TauriError> {
+    // let store = store.store.lock().unwrap();
     let localjson = data_dir().unwrap().join("PNCChecklist").join("pnc_database.json");
     let payload =
-        serde_json::to_string_pretty(&*store).expect("can't convert UserStore struct to string");
+        serde_json::to_string_pretty(&store).expect("can't convert UserStore struct to string");
     println!("{:?}", payload);
     fs::write(Path::new(&localjson), payload).expect("cannot write to file");
     Ok(())

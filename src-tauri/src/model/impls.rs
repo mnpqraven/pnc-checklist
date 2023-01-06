@@ -140,11 +140,11 @@ impl AlgoPiece {
 }
 
 /// updates the requirement field in the store by reading the store field
-pub fn update_reqs(store: State<Storage>, computed: State<Computed>) -> Result<(), &'static str> {
-    let store_guard = store.store.lock().expect("requesting mutex failed");
+pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &'static str> {
+    // let store_guard = store.store.lock().expect("requesting mutex failed");
     let mut req_guard = computed.database_req.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
-    for unit in store_guard.units.iter() {
+    for unit in store.units.iter() {
         reqs.push(UnitRequirement {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
             neural: NeuralResourceRequirement::default(), // TODO:
