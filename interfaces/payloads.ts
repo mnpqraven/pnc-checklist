@@ -1,4 +1,3 @@
-import { UNITEXAMPLE } from "@/utils/constants";
 import React from "react";
 import { Updater } from "use-immer";
 import { AlgoCategory, Unit } from "./datamodel"
@@ -9,7 +8,7 @@ export type DollContextPayload = {
   updateDirtyList: ((e: Unit) => void) | undefined
 }
 export const DollContext = React.createContext<DollContextPayload>({
-  dollData: UNITEXAMPLE,
+  dollData: null,
   setDollData: undefined,
   updateDirtyList: undefined
 });
