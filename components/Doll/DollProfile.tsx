@@ -1,9 +1,10 @@
-import { Unit, CLASS, Class, LOADOUTTYPE } from "@/interfaces/datamodel";
+import { CLASS, LOADOUTTYPE } from "@/interfaces/datamodel";
 import { ChangeEvent, useContext } from "react";
 import { Select, Loadout } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
 import styles from "@/styles/Page.module.css";
+import { Class } from "@/src-tauri/bindings/enums/Class";
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);

@@ -1,6 +1,5 @@
-import { Class, CLASS, DAY, Day, ResourceByDay } from "@/interfaces/datamodel";
+import { DAY, ResourceByDay } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { getPriority } from "os";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 

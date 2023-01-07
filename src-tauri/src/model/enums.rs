@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum Class {
     #[default]
@@ -13,7 +14,7 @@ pub enum Class {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 /// List of algorithms
 pub enum Algorithm {
@@ -47,7 +48,7 @@ pub enum Algorithm {
     Exploit,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum Day {
     Mon,
@@ -58,7 +59,7 @@ pub enum Day {
     Sat,
     Sun,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum Bonus {
     Coin,
@@ -68,7 +69,7 @@ pub enum Bonus {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoMainStat {
     Hashrate,
@@ -89,7 +90,7 @@ pub enum AlgoMainStat {
     OperandDef,
     OperandDefPercent,
 }
-#[derive(Serialize, Deserialize, TS)]
+#[derive(Debug, Serialize, Deserialize, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoSubStat {
     CritRate,
@@ -98,7 +99,7 @@ pub enum AlgoSubStat {
     HashratePercent,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy, TS)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoCategory {
     Offense,
@@ -106,7 +107,7 @@ pub enum AlgoCategory {
     Special,
 }
 
-#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS)]
+#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum NeuralExpansion {
     One,

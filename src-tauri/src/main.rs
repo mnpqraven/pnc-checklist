@@ -4,17 +4,19 @@
 )]
 
 mod api;
-pub mod impls;
-pub mod model;
+mod impls;
+mod macros;
+mod model;
 mod parser;
 mod state;
 mod validate;
 use tauri::Manager;
 
 use crate::api::builder::{
-    algo_piece_new, algo_set_new, algorithm_all, default_slot_size, get_needed_rsc, new_unit,
-    save_units, update_chunk, view_store_units, algo_slots_compute,
+    algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
+    get_needed_rsc, new_unit, save_units, update_chunk, view_store_units,
 };
+use crate::model::cmdbindings::enum_ls;
 use crate::model::impls::main_stat_all;
 use crate::model::tables::{generate_algo_db, get_algo_by_days, get_bonuses};
 use crate::parser::file::{export, import, set_default_file};
@@ -87,6 +89,7 @@ fn main() {
             get_algo_by_days,
             // api
             algo_slots_compute,
+            enum_ls,
             // validator
             validate,
         ])
