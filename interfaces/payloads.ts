@@ -4,8 +4,8 @@ import { Updater } from "use-immer";
 import { AlgoCategory, Unit } from "./datamodel"
 
 export type DollContextPayload = {
-  dollData: Unit,
-  setDollData: Updater<Unit> | undefined,
+  dollData: Unit | null,
+  setDollData: Updater<Unit | null> | undefined,
   updateDirtyList: ((e: Unit) => void) | undefined
 }
 export const DollContext = React.createContext<DollContextPayload>({

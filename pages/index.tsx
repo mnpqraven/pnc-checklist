@@ -25,10 +25,6 @@ const Index = () => {
     setDay(ree);
   }, []);
 
-  // FIX: delete when done
-  useEffect(() => {
-      invoke('debug_database_requirement')
-    },[])
   useEffect(() => {
     updateDay(0);
   }, [updateDay]);

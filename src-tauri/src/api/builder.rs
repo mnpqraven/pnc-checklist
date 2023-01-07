@@ -1,12 +1,9 @@
 //! handles building stucts like unit, algos, resources
 //!
-
-use std::sync::Arc;
-
 use crate::{
     model::{impls::update_reqs, infomodel::*},
-    parser::{requirement::GrandResource, file::localsave},
-    startup::{Storage, Computed},
+    parser::{file::localsave, requirement::GrandResource},
+    startup::{Computed, Storage},
 };
 use tauri::State;
 
@@ -23,6 +20,10 @@ pub fn algo_set_new() -> AlgoSet {
 #[tauri::command]
 pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
     AlgoPiece::new(category)
+}
+#[tauri::command]
+pub fn algo_slots_compute(name: Algorithm, current_slots: Vec<bool>) -> Vec<bool> {
+    AlgoPiece::compute_slots(name, current_slots)
 }
 
 #[tauri::command]
@@ -42,7 +43,7 @@ impl Unit {
             name,
             class,
             current: Loadout::new(false),
-            goal: Loadout::new(true),
+            goal: Loadout::new_goal(),
         }
     }
 }
@@ -71,7 +72,8 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
 #[tauri::command]
 pub fn save_units(
     units: Vec<(Unit, usize)>,
-    store: State<'_, Storage>, computed: State<'_,Computed>
+    store: State<'_, Storage>,
+    computed: State<'_, Computed>,
 ) -> Result<Vec<usize>, &'static str> {
     println!("[invoke] save_units");
     let mut guard = store.store.lock().unwrap();
@@ -86,7 +88,7 @@ pub fn save_units(
 }
 
 #[tauri::command]
-pub fn get_needed_rsc(computed: State<'_,Computed>) -> GrandResource {
+pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
     let guard_req = computed.database_req.lock().unwrap();
     let (mut token, mut pivot, mut coin) = (0, 0, 0);
     for req in guard_req.unit_req.iter() {

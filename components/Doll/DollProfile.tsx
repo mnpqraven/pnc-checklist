@@ -12,15 +12,15 @@ const DollProfile = () => {
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined) {
       setDollData((draft) => {
-        draft.name = e.target.value;
+        if (draft) draft.name = e.target.value;
       });
     }
   }
   function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
     if (defined) {
       setDollData((draft) => {
-        draft.class = e.target.value as Class;
-      })
+        if (draft) draft.class = e.target.value as Class;
+      });
     }
   }
 
@@ -48,18 +48,14 @@ const DollProfile = () => {
         </div>
         <div className={styles.loadout}>
           <Loadout
-            skill_level={dollData.current.skill_level}
-            algo={dollData.current.algo}
-            level={dollData.current.level}
             type={LOADOUTTYPE.current}
+            data={dollData.current}
           />
         </div>
         <div className={styles.loadout}>
           <Loadout
-            skill_level={dollData.goal.skill_level}
-            algo={dollData.goal.algo}
-            level={dollData.current.level}
             type={LOADOUTTYPE.goal}
+            data={dollData.goal}
           />
         </div>
       </>

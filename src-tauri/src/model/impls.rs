@@ -4,7 +4,7 @@ use crate::parser::requirement::{
     WidgetResourceRequirement,
 };
 use crate::requirement_slv;
-use crate::startup::{Storage, Computed};
+use crate::startup::Computed;
 use tauri::State;
 
 impl Algorithm {
@@ -79,15 +79,24 @@ impl Loadout {
                 algo: AlgoSet::new(),
                 level: Level(1),
                 neural: NeuralExpansion::Three,
-                frags: 0
+                frags: Some(0),
             },
             false => Self {
                 skill_level: UnitSkill::new(),
                 algo: AlgoSet::new(),
                 level: Level(1),
                 neural: NeuralExpansion::Three,
-                frags: 0
+                frags: Some(0),
             },
+        }
+    }
+    pub fn new_goal() -> Self {
+        Self {
+            skill_level: UnitSkill::max(),
+            level: Level::max(),
+            algo: AlgoSet::new(),
+            neural: NeuralExpansion::Five,
+            frags: None,
         }
     }
 }
@@ -137,6 +146,26 @@ impl AlgoPiece {
             },
         }
     }
+    pub fn compute_slots(name: Algorithm, current_slots: Vec<bool>) -> Vec<bool> {
+        let size: usize = match name {
+            Algorithm::Perception
+            | Algorithm::Deduction
+            | Algorithm::Connection
+            | Algorithm::Cluster
+            | Algorithm::Convolution
+            | Algorithm::Feedforward
+            | Algorithm::Inspiration
+            | Algorithm::Progression
+            | Algorithm::Rationality
+            | Algorithm::Stratagem => 2,
+            _ => 3,
+        };
+        let mut res: Vec<bool> = Vec::new();
+        for i in 0..size {
+            res.push(*current_slots.get(i).unwrap_or(&false));
+        }
+        res
+    }
 }
 
 /// updates the requirement field in the store by reading the store field
@@ -173,7 +202,7 @@ impl UserStore {
                         algo: AlgoSet::default(),
                         level: Level::default(),
                         neural: NeuralExpansion::Three,
-                        frags: 0
+                        frags: Some(0)
                     },
                     goal: Loadout {
                         skill_level: UnitSkill::max(),
@@ -202,10 +231,41 @@ impl UserStore {
                         },
                         level: Level(60),
                         neural: NeuralExpansion::Five,
-                        frags: 0
+                        frags: None
                     }
                 }
             ]
         }
+    }
+}
+
+impl Level {
+    pub fn max() -> Self {
+        Self(70)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::model::infomodel::{AlgoPiece, Algorithm};
+
+    #[test]
+    fn slots_small_to_big() {
+        let right = AlgoPiece::compute_slots(Algorithm::DeltaV, vec![true, true]);
+        assert_eq!(vec![true, true, false], right);
+
+        let right = AlgoPiece::compute_slots(Algorithm::MLRMatrix, vec![false, true]);
+        assert_eq!(vec![false, true, false], right);
+    }
+    #[test]
+    fn slots_big_to_small() {
+        let right = AlgoPiece::compute_slots(Algorithm::Connection, vec![true, true, true]);
+        assert_eq!(vec![true, true], right);
+
+        let right = AlgoPiece::compute_slots(Algorithm::Inspiration, vec![true, false, true]);
+        assert_eq!(vec![true, false], right);
+
+        let right = AlgoPiece::compute_slots(Algorithm::Feedforward, vec![false, true, false]);
+        assert_eq!(vec![false, true], right);
     }
 }

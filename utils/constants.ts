@@ -1,30 +1,32 @@
-import { Unit } from "@/interfaces/datamodel";
+import { NEURALEXPANSION, Unit } from "@/interfaces/datamodel";
 
 export const UNITEXAMPLE: Unit = {
   name: "",
   class: "Guard",
   current: {
     skill_level: {
-      passive: 0,
-      auto: 0
+      passive: 1,
+      auto: 1
     },
     algo: {
       offense: [],
       stability: [],
       special: []
     },
-    level: 0
+    level: 1,
+    neural: NEURALEXPANSION.Three
   },
   goal: {
     skill_level: {
-      passive: 0,
-      auto: 0
+      passive: 1,
+      auto: 1
     },
     algo: {
       offense: [],
       stability: [],
       special: []
     },
-    level: 0
+    level: 1,
+    neural: NEURALEXPANSION.Three
   }
 }

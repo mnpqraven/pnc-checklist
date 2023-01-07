@@ -14,7 +14,7 @@ use tauri::Manager;
 
 use crate::api::builder::{
     algo_piece_new, algo_set_new, algorithm_all, default_slot_size, get_needed_rsc, new_unit,
-    save_units, update_chunk, view_store_units,
+    save_units, update_chunk, view_store_units, algo_slots_compute,
 };
 use crate::model::impls::main_stat_all;
 use crate::model::tables::{generate_algo_db, get_algo_by_days, get_bonuses};
@@ -56,9 +56,9 @@ fn main() {
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
             // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
             // figure out validation return on frontend home
-            // auto read json in data_dir
             // actual logging to frontend
             // rsc page inventory for frontend
+            // relative search ? TBD
 
             // file
             import,
@@ -88,6 +88,8 @@ fn main() {
             get_algo_types,
             generate_algo_db,
             get_algo_by_days,
+            // api
+            algo_slots_compute,
             // validator
             validate,
         ])

@@ -6,7 +6,7 @@ use crate::{
     },
 };
 use std::{fs, path::Path, sync::Mutex};
-use tauri::{api::path::data_dir, State};
+use tauri::{api::path::data_dir};
 
 pub struct Storage {
     pub store: Mutex<UserStore>, // User's JSON

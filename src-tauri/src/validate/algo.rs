@@ -112,7 +112,7 @@ mod test {
                 algo: algo_set.clone(),
                 level: Level(1),
                 neural: crate::parser::requirement::NeuralExpansion::Three,
-                frags: 0
+                frags: Some(0)
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -138,7 +138,7 @@ mod test {
                     }],
                 },
                 level: Level(1),
-                frags: 0
+                frags: None
             },
         };
         let right: Vec<(AlgoCategory, Vec<usize>)> = vec![
@@ -165,7 +165,7 @@ mod test {
                 neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: scnd_set,
                 level: Level(1),
-                frags: 0
+                frags: Some(0)
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -191,7 +191,7 @@ mod test {
                     }],
                 },
                 level: Level(1),
-                frags: 0
+                frags: None
             },
         };
         assert_eq!(validate_algo(&scnd_unit), Ok(()));

@@ -82,7 +82,7 @@ impl UnitRequirement {
                 unit.goal.skill_level,
             ),
             neural: NeuralResourceRequirement::calculate(
-                Some(unit.current.frags),
+                Some(unit.current.frags.unwrap()),
                 unit.current.neural,
                 unit.goal.neural,
             )
@@ -114,14 +114,22 @@ impl LevelRequirement {
                 }
 
                 let (_, from_right) = REQ_EXP_CHAIN[from_ind].split_at((&from % 10) as usize);
-                let (to_left, _) = REQ_EXP_CHAIN[to_ind].split_at((&to % 10) as usize);
+                // fallback case last index
+                let (mut to_left, _): (&[u32], &[u32]) = (&[0; 10], &[0]);
+                if to_ind < REQ_EXP_CHAIN.len() {
+                    (to_left, _) = REQ_EXP_CHAIN[to_ind].split_at((&to % 10) as usize);
+                }
 
                 let total: u32 =
                     from_right.iter().sum::<u32>() + middle + to_left.iter().sum::<u32>();
                 Ok(Self { exp: Exp(total) })
             }
             std::cmp::Ordering::Equal => Ok(Self::default()),
-            std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to)),
+            std::cmp::Ordering::Greater => {
+                // TODO: handle
+                // Err(RequirementError::FromTo(from, to))
+                Ok(Self::default())
+            }
         }
     }
 }
@@ -132,12 +140,18 @@ impl NeuralResourceRequirement {
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
-        let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
-        let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
-        Ok(NeuralResourceRequirement {
-            frags: sum.iter().sum::<u32>() - current.unwrap_or(0),
-            coin: Coin(sum_coin.iter().sum::<u32>()),
-        })
+        match (from as usize).cmp(&(to as usize)) {
+            std::cmp::Ordering::Less => {
+                let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
+                let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
+                Ok(NeuralResourceRequirement {
+                    frags: sum.iter().sum::<u32>() - current.unwrap_or(0),
+                    coin: Coin(sum_coin.iter().sum::<u32>()),
+                })
+            }
+            // TODO: handle
+            _ => Ok(NeuralResourceRequirement::default()),
+        }
     }
 
     // TODO:
@@ -192,16 +206,21 @@ impl WidgetResourceRequirement {
         from: u32,
         to: u32,
     ) -> Result<WidgetResourceRequirement, RequirementError<u32>> {
-        let (from_ind, mut to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
+        let (mut from_ind, mut to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
         match &from_ind.cmp(&to_ind) {
             std::cmp::Ordering::Less => {
-                let mut total: [u32; 7] = [0; 7];
-                if to_ind == 1 {
-                    // first breakthrough starts at 10 not 0, make iter loop twice
-                    to_ind += 1;
+                // offset for lv 1-10
+                if from % 10 != 0 && from > 10 {
+                    from_ind += 1;
                 }
-                for stage in REQ_BREAK_CHAIN[from_ind..to_ind].iter() {
-                    dbg!(stage);
+                // offset for maxlevel not triggering another iteration
+                if to_ind >= REQ_BREAK_CHAIN.len() {
+                    to_ind = REQ_BREAK_CHAIN.len() - 1;
+                }
+
+                let mut total: [u32; 7] = [0; 7];
+                for stage in REQ_BREAK_CHAIN[from_ind..=to_ind].iter() {
+                    // dbg!(stage);
                     // individual [u32; 7]
                     for (index, item) in stage.iter().enumerate() {
                         total[index] += item;
@@ -315,6 +334,23 @@ mod tests {
             LevelRequirement::calculate(27, 62).unwrap().exp.0,
             1540 + 1930 + 2190 + 30410 + 54390 + 105490 + 17000 + 22000
         );
+    }
+    #[test]
+    fn level_to60bound() {
+        assert_eq!(LevelRequirement::calculate(1, 60).unwrap().exp.0, 213540);
+        assert_eq!(
+            LevelRequirement::calculate(50, 69).unwrap().exp.0,
+            600000 + 105490 - 119000
+        );
+    }
+    #[test]
+    fn level_to70bound() {
+        assert_eq!(
+            LevelRequirement::calculate(50, 70).unwrap().exp.0,
+            600000 + 105490
+        );
+        assert_eq!(LevelRequirement::calculate(1, 70).unwrap().exp.0, 813540);
+        assert_eq!(LevelRequirement::calculate(60, 70).unwrap().exp.0, 600000);
     }
     #[test]
     fn neuralreq() {

@@ -7,15 +7,15 @@ import Image from "next/image";
 type Props = {
   list: Unit[];
   indexHandler: (value: number) => void;
+  newUnitHandler: (unit: Unit, index: number) => void;
 };
-const DollList = ({ list, indexHandler: indexChange }: Props) => {
+const DollList = ({ list, indexHandler: indexChange, newUnitHandler }: Props) => {
   async function new_unit() {
     let unit: Unit = await invoke<Unit>("new_unit", {
       name: `Doll #${list.length + 1}`,
       class: "Guard",
     });
-    list.push(unit);
-    indexChange(list.length - 1);
+    newUnitHandler(unit, list.length);
   }
 
   return (

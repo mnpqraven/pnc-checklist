@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
 import { StatusBar } from "@/components/Common";
 import { Unit } from "@/interfaces/datamodel";
@@ -16,18 +17,18 @@ import { UNITEXAMPLE } from "@/utils/constants";
 
 const Dolls = () => {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
-  const [dirtyUnits, setDirtyUnits] = useState<Unit[]>([]);
+  const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
 
   // immer refactor state:
   // TODO: refactor from AlgorithmSet onwards
-  const [dollData, setDollData] = useImmer<Unit>(UNITEXAMPLE);
+  const [dollData, setDollData] = useImmer<Unit | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [errors, setErrors] = useState<UnitValidationError[]>([]);
   const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
     []
   );
-  const [dirtyIndexTup, setDirtyIndexTup] = useState<[Unit, number][] >([]);
+  const [dirtyIndexTup, setDirtyIndexTup] = useImmer<[Unit, number][]>([]);
 
   const canSave = useMemo(() => {
     return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnits); // shallow cmp
@@ -38,12 +39,13 @@ const Dolls = () => {
     // NOTE: needs double await here
     // if we assign await to a variable it will be a shallow copy
     setStoreUnits(await invoke<Unit[]>("view_store_units"));
-    setDirtyUnits(await invoke<Unit[]>("view_store_units"));
+    let t = await invoke<Unit[]>("view_store_units");
+    setDirtyUnits(t);
   }
   useEffect(() => {
-    console.log('@dolls.tsx[useEffect], dollData changed')
-    updateDirtyList(dollData)
-  }, [dollData])
+    console.log("@dolls.tsx[useEffect], dollData changed");
+    if (dollData) updateDirtyList(dollData);
+  }, [dollData]);
 
   useEffect(() => {
     let list: [Unit, number][] = [];
@@ -54,12 +56,10 @@ const Dolls = () => {
       }
       return storeItem;
     });
-    setDirtyIndexTup(list);
+    // setDirtyIndexTup(list);
   }, [dirtyUnits, storeUnits]);
 
-  // TODO: save all button
   function handleUnitSave() {
-    console.warn("handleUnitSave");
     invoke<[Unit, number][]>("save_units", { units: dirtyIndexTup });
     initUnitList(); // async
   }
@@ -72,7 +72,9 @@ const Dolls = () => {
   function updateDirtyList(e: Unit) {
     // setDollData(e);
     // TODO: implement validation
-    invoke("validate", { unit: e }).catch((err) => console.log(`[invoke] validate Err: ${err}`));
+    invoke("validate", { unit: e }).catch((err) =>
+      console.log(`[invoke] validate Err: ${err}`)
+    );
 
     setDirtyUnits(
       dirtyUnits.map((unit, index) => {
@@ -80,6 +82,20 @@ const Dolls = () => {
         else return unit;
       })
     );
+    setDirtyIndexTup((draft) => {
+      draft.push([e, currentIndex]);
+    });
+  }
+
+  function handleNewUnit(e: Unit, ind: number) {
+    setDirtyUnits((draft) => {
+      draft.push(e);
+    });
+    setDirtyIndexTup((draft) => {
+      draft.push([e, ind]);
+    });
+    setCurrentIndex(ind);
+    setDollData(e);
   }
 
   useEffect(() => {
@@ -91,7 +107,11 @@ const Dolls = () => {
     <main>
       <div className={styles.big_container}>
         <div className={`${styles.panel_left} ${styles.component_space}`}>
-          <DollList list={dirtyUnits} indexHandler={handleIndex} />
+          <DollList
+            list={dirtyUnits}
+            indexHandler={handleIndex}
+            newUnitHandler={handleNewUnit}
+          />
         </div>
         <div>
           <DollContext.Provider

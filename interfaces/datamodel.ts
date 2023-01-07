@@ -32,7 +32,8 @@ export type Loadout = {
   skill_level: UnitSkill,
   algo: AlgoSet,
   level: number,
-  neural: NeuralExpansion
+  neural: NeuralExpansion,
+  frags: number
 }
 export type UnitSkill = {
   passive: number,

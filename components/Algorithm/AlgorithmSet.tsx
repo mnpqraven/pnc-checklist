@@ -52,19 +52,19 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   function handleAddPiece(e: AlgoPiece, cat: AlgoCategory, loadout: LoadoutType): void {
     if (setDollData)
       setDollData((draft) => {
-        draft[loadout].algo[cat.toLowerCase() as AlgoCategoryLower].push(e)
+        if (draft) draft[loadout].algo[cat.toLowerCase() as AlgoCategoryLower].push(e)
       })
   }
   function handleUpdatePiece(e: AlgoPiece | null, cat: AlgoCategory, index: number): void {
     if (setDollData) {
       if (e) {
         setDollData((draft) => {
-          draft[type].algo[cat.toLowerCase() as AlgoCategoryLower][index] = e
+          if (draft) draft[type].algo[cat.toLowerCase() as AlgoCategoryLower][index] = e
         })
       } else {
         // no piece passed, deletion
         setDollData((draft) => {
-          draft[type].algo[cat.toLowerCase() as AlgoCategoryLower].splice(index, 1)
+          if (draft) draft[type].algo[cat.toLowerCase() as AlgoCategoryLower].splice(index, 1)
         })
       }
     }

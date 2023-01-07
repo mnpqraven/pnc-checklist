@@ -117,10 +117,10 @@ pub struct Database {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AlgoPiece {
-    pub name: Algorithm,    // "name"
-    pub stat: AlgoMainStat, // "stat"
+    pub name: Algorithm,
+    pub stat: AlgoMainStat,
     // sub_stat: Option<Vec<AlgoSubStat>>,
-    pub slot: Vec<bool>, // "slot"
+    pub slot: Vec<bool>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy)]
@@ -154,7 +154,7 @@ pub struct Loadout {
     #[serde(default)]
     pub neural: NeuralExpansion,
     #[serde(default)]
-    pub frags: u32
+    pub frags: Option<u32>
 }
 // TODO: move
 #[derive(Debug, Serialize, Deserialize, Clone, Copy)]

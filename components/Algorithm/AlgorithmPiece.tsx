@@ -11,6 +11,8 @@ import { Loading, Select } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
 import SlotCheckbox from "./SlotCheckbox";
 import { DollContext } from "@/interfaces/payloads";
+import Image from "next/image";
+import { invoke } from "@tauri-apps/api/tauri";
 
 type Props = {
   index: number;
@@ -18,7 +20,7 @@ type Props = {
   options: OptionPayload;
   category: AlgoCategory;
   valid: boolean | undefined;
-  onChange: (e: AlgoPiece | null, cat: AlgoCategory, index: number) => void
+  onChange: (e: AlgoPiece | null, cat: AlgoCategory, index: number) => void;
 };
 const AlgorithmPiece = ({
   index,
@@ -26,31 +28,47 @@ const AlgorithmPiece = ({
   options,
   category,
   valid,
-  onChange: pieceUpdate
+  onChange: pieceUpdate,
 }: Props) => {
   const { dollData } = useContext(DollContext);
   const [nameLabel, setNameLabel] = useState(pieceData.name);
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
-  const [slot, setSlot] = useState<boolean[]>([false, false]);
-  const [piece, setPiece] = useState<AlgoPiece | null>(pieceData)
+  const [slot, setSlot] = useState<boolean[]>([false, false, false]);
+  const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
 
   // chaging unit
   useEffect(() => {
     setNameLabel(pieceData.name);
     setMainStatLabel(pieceData.stat);
-    setSlot(pieceData.slot);
+
+    // update slot info
+    // setSlot(pieceData.slot);
+    updateSlots(pieceData.name, pieceData.slot).then((e) => {
+      setSlot(e);
+    });
   }, [pieceData]);
+
+  async function updateSlots(
+    name: Algorithm,
+    currentSlots: boolean[]
+  ): Promise<boolean[]> {
+    let invoked_slots = invoke<boolean[]>("algo_slots_compute", {
+      name,
+      currentSlots,
+    });
+    return invoked_slots;
+  }
 
   // changing details, passed to parent's setDollData
   useEffect(() => {
-    pieceUpdate(piece, category, index)
-  }, [category, index, piece, pieceUpdate])
+    pieceUpdate(piece, category, index);
+  }, [category, index, piece, pieceUpdate]);
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
-    setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm })
+    setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm });
     setNameLabel(event.currentTarget.value as Algorithm);
   }
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
-    setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat })
+    setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat });
     setMainStatLabel(event.currentTarget.value as AlgoMainStat);
   }
   function slotHandler(
@@ -58,28 +76,38 @@ const AlgorithmPiece = ({
     checkboxIndex: number
   ) {
     let slot = pieceData.slot.map((item, index) => {
-      if (checkboxIndex == index) return e.target.checked
-      else return item
-    })
-    setPiece({ ...pieceData, slot })
+      if (checkboxIndex == index) return e.target.checked;
+      else return item;
+    });
+    if (pieceData.slot.length <= checkboxIndex) slot.push(e.target.checked)
+    setPiece({ ...pieceData, slot });
     setSlot(slot);
   }
 
   return (
     <>
       <div
-        className={`${valid === false ? `border border-red-500` : ``
-          } flex justify-between`}
+        className={`${
+          valid === false ? `border border-red-500` : ``
+        } flex justify-between`}
       >
-        <Select
-          value={nameLabel}
-          options={Object.values(options.algoTypes.algos)}
-          label={Object.values(options.algoTypes.algos).map(
-            (e) => ALGORITHM[e as Algorithm]
-          )}
-          onChangeHandler={pieceHandler}
-        />
-        <div className="m-2">
+        <div>
+          <Image
+            src={`algos/${nameLabel.toLowerCase()}.png`}
+            alt={"algo"}
+            width={64}
+            height={64}
+          />
+        </div>
+        <div className="m-2 flex flex-col">
+          <Select
+            value={nameLabel}
+            options={Object.values(options.algoTypes.algos)}
+            label={Object.values(options.algoTypes.algos).map(
+              (e) => ALGORITHM[e as Algorithm]
+            )}
+            onChangeHandler={pieceHandler}
+          />
           <Select
             value={mainStatLabel}
             options={options.mainStat}
