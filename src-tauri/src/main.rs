@@ -5,10 +5,9 @@
 
 mod api;
 pub mod impls;
-mod model;
+pub mod model;
 mod parser;
-mod screen;
-mod startup;
+mod state;
 mod validate;
 use tauri::Manager;
 
@@ -27,7 +26,7 @@ use crate::parser::requirement::{
 use crate::validate::validate;
 
 // will be invoked during startup
-use crate::startup::*;
+use crate::state::*;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
@@ -64,8 +63,6 @@ fn main() {
             import,
             export,
             set_default_file,
-            // startup
-            import_userdata,
             // builder
             update_chunk,
             new_unit,

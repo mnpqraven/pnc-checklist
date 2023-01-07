@@ -1,5 +1,5 @@
 use self::{algo::validate_algo, unit::validate_unit_name};
-use crate::model::{error::UnitValidationError, infomodel::Unit};
+use crate::model::{error::UnitValidationError, structs::Unit};
 
 mod algo;
 mod unit;

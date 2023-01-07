@@ -1,6 +1,7 @@
-use super::infomodel::AlgoCategory;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+
+use super::enums::AlgoCategory;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum RequirementError<T> {

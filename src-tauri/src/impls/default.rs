@@ -1,4 +1,4 @@
-use crate::{parser::requirement::NeuralExpansion, model::infomodel::{UnitSkill, Level}};
+use crate::model::structs::{UnitSkill, Level, NeuralExpansion};
 
 impl Default for NeuralExpansion {
     fn default() -> Self {

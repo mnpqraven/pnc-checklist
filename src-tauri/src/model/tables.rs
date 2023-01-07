@@ -1,4 +1,4 @@
-use super::infomodel::{AlgoCategory, Algorithm, Bonus, Class, Day};
+use super::structs::{AlgoCategory, Algorithm, Bonus, Class, Day};
 use crate::parser::parse::AlgoTypeDb;
 use serde::Serialize;
 

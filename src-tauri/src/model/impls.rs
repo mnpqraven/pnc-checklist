@@ -1,10 +1,7 @@
-use super::infomodel::*;
-use crate::parser::requirement::{
-    LevelRequirement, NeuralExpansion, NeuralResourceRequirement, UnitRequirement,
-    WidgetResourceRequirement,
-};
+pub use super::enums::*;
+use super::structs::*;
 use crate::requirement_slv;
-use crate::startup::Computed;
+use crate::state::Computed;
 use tauri::State;
 
 impl Algorithm {
@@ -247,7 +244,7 @@ impl Level {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::infomodel::{AlgoPiece, Algorithm};
+    use crate::model::structs::*;
 
     #[test]
     fn slots_small_to_big() {

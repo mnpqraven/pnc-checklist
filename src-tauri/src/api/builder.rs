@@ -1,9 +1,9 @@
 //! handles building stucts like unit, algos, resources
 //!
 use crate::{
-    model::{impls::update_reqs, infomodel::*},
-    parser::{file::localsave, requirement::GrandResource},
-    startup::{Computed, Storage},
+    model::{enums::*, impls::update_reqs, structs::*},
+    parser::file::localsave,
+    state::{Computed, Storage},
 };
 use tauri::State;
 
@@ -109,7 +109,8 @@ pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::infomodel::*;
+    use crate::model::enums::*;
+    use crate::model::structs::*;
 
     #[test]
     fn add_display() {

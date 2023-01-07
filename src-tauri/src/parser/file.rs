@@ -1,5 +1,5 @@
 use crate::model::error::TauriError;
-use crate::{model::infomodel::UserStore, startup::Storage};
+use crate::{model::structs::UserStore, state::Storage};
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 
@@ -77,10 +77,9 @@ pub fn set_default_file(_file: Option<&str>) -> Result<(), TauriError> {
         fs::write(Path::new(&pnc_dir).join("pnc_database.json"), t)
             .expect("cannot write to data_dir()");
         // write pointer to data_dir for startup read
-        // NOTE: not using
-        fs::write(Path::new(&pnc_dir).join("pointer"), filepath).unwrap();
+        // NOTE: not using, TBD
+        // fs::write(Path::new(&pnc_dir).join("pointer"), filepath).unwrap();
     }
-
     Ok(())
 }
 

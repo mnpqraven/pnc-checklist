@@ -1,9 +1,7 @@
-use crate::{
-    api::builder::default_slot_size,
-    model::infomodel::{algo_category_all, AlgoCategory, Unit},
-};
-
 use super::UnitValidationError;
+use crate::default_slot_size;
+use crate::model::enums::AlgoCategory;
+use crate::model::structs::{algo_category_all, Unit};
 
 /// NOTE: for now validate algo integrity when changing unit class
 /// only validate current set, goal TBA
@@ -49,8 +47,9 @@ pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
 #[cfg(test)]
 mod test {
     use crate::{
-        model::infomodel::{
-            AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Loadout, Unit, UnitSkill, Level,
+        model::structs::{
+            AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Level, Loadout, Unit,
+            UnitSkill,
         },
         validate::UnitValidationError,
     };
@@ -103,7 +102,7 @@ mod test {
         };
         let unit_false = Unit {
             name: "hubble".to_string(),
-            class: crate::model::infomodel::Class::Sniper,
+            class: crate::model::structs::Class::Sniper,
             current: Loadout {
                 skill_level: UnitSkill {
                     passive: 7,
@@ -112,7 +111,7 @@ mod test {
                 algo: algo_set.clone(),
                 level: Level(1),
                 neural: crate::parser::requirement::NeuralExpansion::Three,
-                frags: Some(0)
+                frags: Some(0),
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -138,7 +137,7 @@ mod test {
                     }],
                 },
                 level: Level(1),
-                frags: None
+                frags: None,
             },
         };
         let right: Vec<(AlgoCategory, Vec<usize>)> = vec![
@@ -156,7 +155,7 @@ mod test {
         scnd_set.special[2].slot = vec![false, false, false];
         let scnd_unit = Unit {
             name: "hubble".to_string(),
-            class: crate::model::infomodel::Class::Sniper,
+            class: crate::model::structs::Class::Sniper,
             current: Loadout {
                 skill_level: UnitSkill {
                     passive: 7,
@@ -165,7 +164,7 @@ mod test {
                 neural: crate::parser::requirement::NeuralExpansion::Three,
                 algo: scnd_set,
                 level: Level(1),
-                frags: Some(0)
+                frags: Some(0),
             },
             goal: Loadout {
                 skill_level: UnitSkill {
@@ -191,7 +190,7 @@ mod test {
                     }],
                 },
                 level: Level(1),
-                frags: None
+                frags: None,
             },
         };
         assert_eq!(validate_algo(&scnd_unit), Ok(()));

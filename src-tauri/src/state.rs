@@ -1,19 +1,13 @@
-use crate::{
-    model::infomodel::UserStore,
-    parser::{
-        file::import,
-        requirement::{DatabaseRequirement, GrandResource, UnitRequirement},
-    },
-};
-use std::{fs, path::Path, sync::Mutex};
-use tauri::{api::path::data_dir};
+use crate::{model::structs::{UserStore, GrandResource, DatabaseRequirement, UnitRequirement}, parser::file::import};
+use std::{path::Path, sync::Mutex};
+use tauri::api::path::data_dir;
 
+/// Main storage, state managed by tauri
 pub struct Storage {
-    pub store: Mutex<UserStore>, // User's JSON
+    pub store: Mutex<UserStore>,  // User's JSON
     pub db: Mutex<GrandResource>, // User's JSON
-                                 // pub database_req: Mutex<DatabaseRequirement>, // NOT in JSON
 }
-// data computed from the backend
+/// data computed from the backend, state managed by tauri
 pub struct Computed {
     pub database_req: Mutex<DatabaseRequirement>,
 }
@@ -44,17 +38,5 @@ impl Default for DatabaseRequirement {
             reqs.push(UnitRequirement::update_unit_req(unit))
         }
         Self { unit_req: reqs }
-    }
-}
-
-#[tauri::command]
-pub fn import_userdata(path: String) -> Result<UserStore, &'static str> {
-    match fs::read_to_string(path) {
-        Ok(content) => {
-            let data: UserStore = serde_json::from_str(&content).expect("unable to parse");
-            Ok(data)
-        }
-        // TODO: error handle. This will 100% eventually happen
-        Err(_) => panic!("panic during import, also TODO this"),
     }
 }

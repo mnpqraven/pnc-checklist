@@ -24,6 +24,9 @@
       ],
       "@tauri/*": [
         "./src-tauri/*"
+      ],
+      "@bindings/*": [
+        "./src-tauri/bindings/*"
       ]
     },
     "plugins": [
@@ -36,7 +39,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "./src-tauri/bindings/**/*.ts"
   ],
   "exclude": [
     "node_modules"

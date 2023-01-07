@@ -1,5 +1,5 @@
 use super::UnitValidationError;
-use crate::model::infomodel::Unit;
+use crate::model::structs::Unit;
 
 pub fn validate_unit_name(unit: &Unit) -> Result<(), UnitValidationError> {
     if unit.name.is_empty() {

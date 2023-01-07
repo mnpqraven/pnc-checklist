@@ -1,4 +1,4 @@
-use crate::model::infomodel::{AlgoMainStat, Algorithm};
+use crate::model::enums::{AlgoMainStat, Algorithm};
 use std::fmt::Display;
 
 impl Display for Algorithm {

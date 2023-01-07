@@ -1,4 +1,4 @@
-use crate::model::infomodel::{AlgoCategory, Algorithm};
+use crate::model::structs::{AlgoCategory, Algorithm};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -13,7 +13,7 @@ pub fn get_algo_types() -> Vec<AlgoTypeDb> {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::infomodel::UserStore;
+    use crate::model::structs::UserStore;
     use std::fs;
 
     use super::get_algo_types;

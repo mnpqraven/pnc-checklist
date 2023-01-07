@@ -1,79 +1,12 @@
+pub use crate::model::structs::*;
 use crate::model::{
     error::RequirementError,
-    infomodel::{Class, Coin, SkillCurrency, Unit, UnitSkill},
     tables::{
         REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
         REQ_SLV_TOKEN,
     },
 };
-use serde::{Deserialize, Serialize};
 
-/// Tokens and pivots a unit would need to max out its skill
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SkillResourceRequirement {
-    pub token: u32,
-    pub pivot: u32,
-    pub coin: Coin,
-}
-
-/// struct for the requirement screen, gathers all requirements needed, single
-///  requirement can be accessed by fields
-/// SoSoA
-#[derive(Debug)]
-pub struct DatabaseRequirement {
-    pub unit_req: Vec<UnitRequirement>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct Exp(pub u32);
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct GrandResource {
-    pub skill: SkillCurrency,
-    pub coin: Coin,
-    pub widgets: Vec<WidgetResource>,
-    pub exp: Exp,
-    pub neural_kits: u32,
-    // rolls ?
-}
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct WidgetResourceRequirement {
-    pub widget: WidgetResource,
-    pub coin: Coin,
-}
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct NeuralResourceRequirement {
-    pub frags: u32,
-    pub coin: Coin,
-}
-
-#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
-pub enum NeuralExpansion {
-    One,
-    OneHalf,
-    Two,
-    TwoHalf,
-    Three,
-    ThreeHalf,
-    Four,
-    FourHalf,
-    Five,
-}
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct WidgetResource {
-    class: Class,
-    widget_inventory: [u32; 6],
-}
-
-/// struct for single unit
-#[derive(Debug)]
-pub struct UnitRequirement {
-    pub skill: SkillResourceRequirement,
-    pub neural: NeuralResourceRequirement,
-    pub level: LevelRequirement,
-    pub breakthrough: WidgetResourceRequirement,
-    // TODO: AlgorithmRequirement, compare goal with current and generate
-    // missing algos from current
-}
 impl UnitRequirement {
     pub fn update_unit_req(unit: &Unit) -> Self {
         Self {
@@ -96,10 +29,6 @@ impl UnitRequirement {
             .unwrap(),
         }
     }
-}
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct LevelRequirement {
-    pub exp: Exp,
 }
 impl LevelRequirement {
     fn calculate(from: u32, to: u32) -> Result<Self, RequirementError<u32>> {
@@ -280,7 +209,7 @@ pub fn requirement_widget(
 #[cfg(test)]
 mod tests {
     use crate::{
-        model::infomodel::{Class, UnitSkill},
+        model::structs::*,
         parser::requirement::{requirement_slv, LevelRequirement},
     };
 
