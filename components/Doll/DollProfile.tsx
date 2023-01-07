@@ -1,14 +1,19 @@
-import { CLASS, LOADOUTTYPE } from "@/interfaces/datamodel";
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Select, Loadout } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
 import styles from "@/styles/Page.module.css";
 import { Class } from "@/src-tauri/bindings/enums/Class";
+import { invoke } from "@tauri-apps/api/tauri";
 
 const DollProfile = () => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
+  const [options, setOptions] = useState<string[]>([]);
   const defined = setDollData && updateDirtyList;
+
+  useEffect(() => {
+    invoke<string[]>("enum_ls", { name: "Class" }).then(setOptions);
+  }, []);
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined) {
@@ -41,23 +46,17 @@ const DollProfile = () => {
           </div>
           <div>
             <Select
-              options={Object.values(CLASS)}
+              options={options}
               value={dollData.class}
               onChangeHandler={handleClassChange}
             />
           </div>
         </div>
         <div className={styles.loadout}>
-          <Loadout
-            type={LOADOUTTYPE.current}
-            data={dollData.current}
-          />
+          <Loadout type={"current"} data={dollData.current} />
         </div>
         <div className={styles.loadout}>
-          <Loadout
-            type={LOADOUTTYPE.goal}
-            data={dollData.goal}
-          />
+          <Loadout type={"goal"} data={dollData.goal} />
         </div>
       </>
     );

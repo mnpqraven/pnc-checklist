@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import styles from "@/styles/Page.module.css";
 import Summary from "@/components/Resources/Summary";
 import { MILLIS_PER_DAY } from "@/components/Dashboard/ResetCalendar";
-import { invoke } from "@tauri-apps/api/tauri";
 
 // JS day array shifted left by 1 because we're getting the day before reset
 const list = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];

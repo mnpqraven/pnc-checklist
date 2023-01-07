@@ -13,13 +13,14 @@ enum All {
     AlgoSubStat,
     AlgoCategory,
     NeuralExpansion,
+    LoadoutType
 }
 
 #[tauri::command]
 /// produces enum as an array
-pub fn enum_ls(input: &str) -> Vec<String> {
+pub fn enum_ls(name: &str) -> Vec<String> {
     enum_list!(
-        &input,
+        &name,
         Class,
         Algorithm,
         Day,
@@ -27,7 +28,8 @@ pub fn enum_ls(input: &str) -> Vec<String> {
         AlgoMainStat,
         AlgoSubStat,
         AlgoCategory,
-        NeuralExpansion
+        NeuralExpansion,
+        LoadoutType
     )
 }
 

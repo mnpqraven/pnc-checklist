@@ -1,5 +1,4 @@
-import { Unit } from "@/interfaces/datamodel";
-import { Dispatch, SetStateAction } from "react";
+import { Unit } from "@/src-tauri/bindings/structs/Unit";
 
 type Props = {
   data: Unit,

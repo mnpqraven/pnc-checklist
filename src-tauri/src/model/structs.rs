@@ -152,3 +152,21 @@ pub struct UnitRequirement {
 pub struct LevelRequirement {
     pub exp: Exp,
 }
+
+#[derive(Serialize, Deserialize, Debug, TS)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct AlgoTypeDb {
+    pub category: AlgoCategory,
+    pub algos: Vec<Algorithm>,
+}
+
+#[derive(Serialize, ts_rs::TS)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct ResourceByDay {
+    pub day: Day,
+    pub coin: Option<Bonus>,
+    pub exp: Option<Bonus>,
+    pub skill: Option<Bonus>,
+    pub class: Option<Bonus>,
+    pub algos: Option<Vec<Algorithm>>,
+}

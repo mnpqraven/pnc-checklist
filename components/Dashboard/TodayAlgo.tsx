@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AlgoCategory, AlgoTypeDb, DAY } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { algo_src, parse_date_iso } from "@/utils/helper";
+import { algo_src } from "@/utils/helper";
+import { AlgoTypeDb } from "@/src-tauri/bindings/structs/AlgoTypeDb";
 
 type Props = {
   day: string;

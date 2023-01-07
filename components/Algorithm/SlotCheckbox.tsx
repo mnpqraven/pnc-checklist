@@ -1,4 +1,5 @@
-import { AlgoCategory, Class } from "@/interfaces/datamodel";
+import { AlgoCategory  } from "@/interfaces/datamodel";
+import { Class } from "@/src-tauri/bindings/enums/Class";
 import { invoke } from "@tauri-apps/api/tauri";
 import { ChangeEvent, useEffect, useState } from "react";
 

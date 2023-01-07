@@ -107,6 +107,25 @@ pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
     t
 }
 
+#[tauri::command]
+pub fn generate_algo_db() -> Vec<AlgoTypeDb> {
+    AlgoTypeDb::generate_algo_db()
+}
+#[tauri::command]
+pub fn get_algo_by_days(day: Day) -> Option<Vec<Algorithm>> {
+    Algorithm::get_bonuses(day)
+}
+
+#[tauri::command]
+pub fn get_algo_types() -> Vec<AlgoTypeDb> {
+    AlgoTypeDb::generate_algo_db()
+}
+
+#[tauri::command]
+pub fn get_bonuses(day: Day) -> ResourceByDay {
+    ResourceByDay::get_bonuses(day)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::model::enums::*;

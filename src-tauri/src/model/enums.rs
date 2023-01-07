@@ -59,7 +59,7 @@ pub enum Day {
     Sat,
     Sun,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum Bonus {
     Coin,
@@ -119,4 +119,12 @@ pub enum NeuralExpansion {
     Four,
     FourHalf,
     Five,
+}
+
+#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
+#[ts(export, export_to = "bindings/enums/")]
+#[ts(rename_all = "lowercase")]
+pub enum LoadoutType {
+    Current,
+    Goal
 }

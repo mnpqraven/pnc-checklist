@@ -1,14 +1,4 @@
 import {
-  AlgoCategory,
-  ALGOCATEGORY,
-  AlgoCategoryLower,
-  AlgoMainStat,
-  AlgoPiece,
-  AlgoSet,
-  AlgoTypeDb,
-  LoadoutType,
-} from "@/interfaces/datamodel";
-import {
   AlgoError,
   AlgoErrorContext,
   DollContext,
@@ -18,6 +8,12 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import styles from "@/styles/Page.module.css";
+import { AlgoMainStat } from "@/src-tauri/bindings/enums/AlgoMainStat";
+import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
+import { AlgoPiece } from "@/src-tauri/bindings/structs/AlgoPiece";
+import { AlgoSet } from "@/src-tauri/bindings/structs/AlgoSet";
+import { AlgoTypeDb } from "@/src-tauri/bindings/structs/AlgoTypeDb";
+import { LoadoutType } from "@/src-tauri/bindings/enums/LoadoutType";
 
 type Props = {
   algo: AlgoSet;
@@ -30,6 +26,7 @@ export type OptionPayload = {
 const AlgorithmSet = ({ algo, type }: Props) => {
   const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[]>([]);
+  const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([])
 
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
   const errList = (category: AlgoCategory): number[] => {
@@ -40,6 +37,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   };
 
   useEffect(() => {
+    invoke<string[]>('enum_ls', {name: 'AlgoCategory'}).then(setALGOCATEGORY)
     async function get_algo_types() {
       setAlgoTypes(await invoke<AlgoTypeDb[]>("get_algo_types"));
       setMainStat(await invoke<AlgoMainStat[]>("main_stat_all"));
@@ -52,19 +50,19 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   function handleAddPiece(e: AlgoPiece, cat: AlgoCategory, loadout: LoadoutType): void {
     if (setDollData)
       setDollData((draft) => {
-        if (draft) draft[loadout].algo[cat.toLowerCase() as AlgoCategoryLower].push(e)
+        if (draft) draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e)
       })
   }
   function handleUpdatePiece(e: AlgoPiece | null, cat: AlgoCategory, index: number): void {
     if (setDollData) {
       if (e) {
         setDollData((draft) => {
-          if (draft) draft[type].algo[cat.toLowerCase() as AlgoCategoryLower][index] = e
+          if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e
         })
       } else {
         // no piece passed, deletion
         setDollData((draft) => {
-          if (draft) draft[type].algo[cat.toLowerCase() as AlgoCategoryLower].splice(index, 1)
+          if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1)
         })
       }
     }
@@ -80,9 +78,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                 <AlgorithmPiece
                   index={index}
                   options={{ algoTypes: algoTypes[0], mainStat }}
-                  category={ALGOCATEGORY.Offense}
+                  category={"Offense"}
                   pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Offense).includes(index)}
+                  valid={!errList("Offense").includes(index)}
                   onChange={handleUpdatePiece}
                 />
               </div>
@@ -101,9 +99,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                 <AlgorithmPiece
                   index={index}
                   options={{ algoTypes: algoTypes[1], mainStat }}
-                  category={ALGOCATEGORY.Stability}
+                  category={"Stability"}
                   pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Stability).includes(index)}
+                  valid={!errList("Stability").includes(index)}
                   onChange={handleUpdatePiece}
                 />
               </div>
@@ -122,9 +120,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                 <AlgorithmPiece
                   index={index}
                   options={{ algoTypes: algoTypes[2], mainStat }}
-                  category={ALGOCATEGORY.Special}
+                  category={"Special"}
                   pieceData={piece}
-                  valid={!errList(ALGOCATEGORY.Special).includes(index)}
+                  valid={!errList("Special").includes(index)}
                   onChange={handleUpdatePiece}
                 />
               </div>
@@ -135,9 +133,9 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         </div>
       </div>
       <div className="flex flex-row justify-around">
-        <NewAlgoSet category={ALGOCATEGORY.Offense} loadout_type={type} addHandler={handleAddPiece} />
-        <NewAlgoSet category={ALGOCATEGORY.Stability} loadout_type={type} addHandler={handleAddPiece} />
-        <NewAlgoSet category={ALGOCATEGORY.Special} loadout_type={type} addHandler={handleAddPiece} />
+        <NewAlgoSet category={ALGOCATEGORY[0] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
+        <NewAlgoSet category={ALGOCATEGORY[1] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
+        <NewAlgoSet category={ALGOCATEGORY[2] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
       </div>
     </>
   );

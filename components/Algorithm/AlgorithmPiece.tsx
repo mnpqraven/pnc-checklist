@@ -1,11 +1,3 @@
-import {
-  Algorithm,
-  AlgoCategory,
-  AlgoPiece,
-  AlgoMainStat,
-  ALGOMAINSTAT,
-  ALGORITHM,
-} from "@/interfaces/datamodel";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Loading, Select } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
@@ -13,6 +5,10 @@ import SlotCheckbox from "./SlotCheckbox";
 import { DollContext } from "@/interfaces/payloads";
 import Image from "next/image";
 import { invoke } from "@tauri-apps/api/tauri";
+import { AlgoPiece } from "@/src-tauri/bindings/structs/AlgoPiece";
+import { Algorithm } from "@/src-tauri/bindings/enums/Algorithm";
+import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
+import { AlgoMainStat } from "@/src-tauri/bindings/enums/AlgoMainStat";
 
 type Props = {
   index: number;
@@ -35,7 +31,13 @@ const AlgorithmPiece = ({
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
+  const [ALGOMAINSTAT, setALGOMAINSTAT] = useState<string[]>([])
+  const [ALGORITHM, setALGORITHM] = useState<string[]>([])
 
+  useEffect(() => {
+    invoke<string[]>('enum_ls', {name: "AlgoMainStat"}).then(setALGOMAINSTAT)
+    invoke<string[]>('enum_ls', {name: "Algorithm"}).then(setALGORITHM)
+  }, [])
   // chaging unit
   useEffect(() => {
     setNameLabel(pieceData.name);
@@ -47,6 +49,10 @@ const AlgorithmPiece = ({
       setSlot(e);
     });
   }, [pieceData]);
+  // changing details, passed to parent's setDollData
+  useEffect(() => {
+    pieceUpdate(piece, category, index);
+  }, [category, index, piece, pieceUpdate]);
 
   async function updateSlots(
     name: Algorithm,
@@ -59,10 +65,6 @@ const AlgorithmPiece = ({
     return invoked_slots;
   }
 
-  // changing details, passed to parent's setDollData
-  useEffect(() => {
-    pieceUpdate(piece, category, index);
-  }, [category, index, piece, pieceUpdate]);
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
     setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm });
     setNameLabel(event.currentTarget.value as Algorithm);
@@ -84,6 +86,7 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
+  // TODO: consider integrate missing prop label with display trait
   return (
     <>
       <div
@@ -103,15 +106,11 @@ const AlgorithmPiece = ({
           <Select
             value={nameLabel}
             options={Object.values(options.algoTypes.algos)}
-            label={Object.values(options.algoTypes.algos).map(
-              (e) => ALGORITHM[e as Algorithm]
-            )}
             onChangeHandler={pieceHandler}
           />
           <Select
             value={mainStatLabel}
             options={options.mainStat}
-            label={options.mainStat.map((e) => ALGOMAINSTAT[e])}
             onChangeHandler={mainStatHandler}
           />
           {dollData ? (

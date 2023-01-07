@@ -1,26 +1,38 @@
-import { DAY, ResourceByDay } from "@/interfaces/datamodel";
 import { invoke } from "@tauri-apps/api/tauri";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { ResourceByDay } from "@/src-tauri/bindings/structs/ResourceByDay";
 
 const Timetable = () => {
   const [timetable, setTimetable] = useState<ResourceByDay[]>([]);
+  const [DAY, setDAY] = useState<string[]>([]);
 
-  async function get_timetable() {
+
+  useEffect(() => {
+    invoke<string[]>("enum_ls", { name: "Day" }).then(setDAY);
+  }, []);
+
+  const get_timetable = useCallback(async () => {
     let list: ResourceByDay[] = [];
-    for (const day in DAY) {
-      list.push(await invoke<ResourceByDay>("get_bonuses", { day }));
+    for (const day of DAY) {
+      await invoke<ResourceByDay>("get_bonuses", { day }).then(e => list.push(e));
     }
     setTimetable(list);
-  }
+    console.log(list)
+  }, [DAY]);
+
+  useEffect(() => {
+    get_timetable();
+  }, [get_timetable]);
+
   function get_current_bonus(day: ResourceByDay) {
     let cl = "";
     let x2 = [""];
     let grid = []; // 4 items
     if (day.class) cl = Object.values(day.class).toString();
-    if (day.coin != null) x2.push(day.coin);
-    if (day.exp != null) x2.push(day.exp);
-    if (day.skill != null) x2.push(day.skill);
+    if (day.coin != null) x2.push(day.coin.toString());
+    if (day.exp != null) x2.push(day.exp.toString());
+    if (day.skill != null) x2.push(day.skill.toString());
     grid.push(x2);
     grid.push(cl);
 
@@ -44,10 +56,6 @@ const Timetable = () => {
     );
   }
 
-  useEffect(() => {
-    // mount
-    get_timetable();
-  }, []);
   return (
     <>
       <table>

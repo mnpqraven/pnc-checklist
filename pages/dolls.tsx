@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
 import { StatusBar } from "@/components/Common";
-import { Unit } from "@/interfaces/datamodel";
 import {
   AlgoErrorContext,
   AlgoErrorContextPayload,
@@ -13,6 +12,7 @@ import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { UnitValidationError } from "@/interfaces/results";
 import { useImmer } from "use-immer";
+import { Unit } from "@/src-tauri/bindings/structs/Unit";
 
 const Dolls = () => {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);

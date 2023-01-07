@@ -1,6 +1,7 @@
+import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
+import { Unit } from "@/src-tauri/bindings/structs/Unit";
 import React from "react";
 import { Updater } from "use-immer";
-import { AlgoCategory, Unit } from "./datamodel"
 
 export type DollContextPayload = {
   dollData: Unit | null,

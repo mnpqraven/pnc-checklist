@@ -1,16 +1,11 @@
-import {
-  AlgoSet,
-  Loadout,
-  LOADOUTTYPE,
-  LoadoutType,
-  NeuralExpansion,
-  Unit,
-  UnitSkill,
-} from "@/interfaces/datamodel";
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
 import RaritySelect from "./Doll/RaritySelect";
+import { Loadout } from "@/src-tauri/bindings/structs/Loadout";
+import { NeuralExpansion } from "@/src-tauri/bindings/enums/NeuralExpansion";
+import { LoadoutType } from "@/src-tauri/bindings/enums/LoadoutType";
+import { Unit } from "@/src-tauri/bindings/structs/Unit";
 
 type Props = {
   type: LoadoutType;
@@ -22,7 +17,7 @@ type SkillType = keyof typeof SKILL_TYPE;
 const Loadout = ({ type, data }: Props) => {
   const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
   const defined = dollData && setDollData && updateDirtyList;
-  const { skill_level, algo, level, frags, neural } = data;
+  const { algo, neural } = data;
 
   function handleSlvChange(
     e: ChangeEvent<HTMLInputElement>,

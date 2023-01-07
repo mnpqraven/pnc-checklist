@@ -14,13 +14,12 @@ use tauri::Manager;
 
 use crate::api::builder::{
     algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-    get_needed_rsc, new_unit, save_units, update_chunk, view_store_units,
+    generate_algo_db, get_algo_by_days, get_needed_rsc, new_unit, save_units, update_chunk,
+    view_store_units, get_bonuses, get_algo_types,
 };
 use crate::model::cmdbindings::enum_ls;
 use crate::model::impls::main_stat_all;
-use crate::model::tables::{generate_algo_db, get_algo_by_days, get_bonuses};
 use crate::parser::file::{export, import, set_default_file};
-use crate::parser::parse::get_algo_types;
 use crate::parser::requirement::{
     requirement_level, requirement_neural, requirement_slv, requirement_widget,
     requirment_neural_kits,
@@ -67,9 +66,12 @@ fn main() {
             set_default_file,
             // builder
             update_chunk,
+            get_bonuses,
             new_unit,
             save_units,
             view_store_units,
+            generate_algo_db,
+            get_algo_by_days,
             // requirement
             requirement_slv,
             requirement_level,
@@ -77,7 +79,6 @@ fn main() {
             requirement_widget,
             requirment_neural_kits,
             // table
-            get_bonuses,
             default_slot_size,
             algo_set_new,
             algo_piece_new,
@@ -85,8 +86,6 @@ fn main() {
             get_needed_rsc,
             algorithm_all,
             get_algo_types,
-            generate_algo_db,
-            get_algo_by_days,
             // api
             algo_slots_compute,
             enum_ls,

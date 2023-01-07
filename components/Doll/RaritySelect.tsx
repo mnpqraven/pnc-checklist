@@ -1,24 +1,23 @@
-import { NEURALEXPANSION, NeuralExpansion } from "@/interfaces/datamodel";
+import { NeuralExpansion } from "@/src-tauri/bindings/enums/NeuralExpansion";
+import { invoke } from "@tauri-apps/api/tauri";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import Image from "next/image";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 type Props = {
-  onChange: (value: ValueOf<typeof NEURALEXPANSION>) => void;
+  onChange: (value: NeuralExpansion) => void;
   value: NeuralExpansion;
 };
 const RaritySelect = ({ onChange, value: neural }: Props) => {
-  const default_stars = [
-    "star-full",
-    "star-full",
-    "star-full",
-    "star-dark",
-    "star-dark",
-  ];
-  const [starClasses, setStarClasses] = useState(neural_class_conversion(neural));
-  const [starDirty, setStarDirty] = useState(neural_class_conversion(neural));
+  const [NEURALEXPANSION, setNEURALEXPANSION] = useState<string[]>([])
+  const [starClasses, setStarClasses] = useState<string[]>([]);
+  const [starDirty, setStarDirty] = useState<string[]>([]);
+  useEffect(() => {
+    invoke<string[]>('enum_ls', {name: 'NeuralExpansion'})
+    .then(setNEURALEXPANSION)
+  }, [])
 
-  function neural_class_conversion(neural: NeuralExpansion): string[] {
-    let neural_ind = Object.keys(NEURALEXPANSION).indexOf(neural); // a
+  const neural_conv = useCallback((neural: NeuralExpansion): string[] => {
+    let neural_ind = NEURALEXPANSION.indexOf(neural); // a
     let fulls = neural_ind / 2;
     let hasHalf = false;
     if (neural_ind % 2 == 1) {
@@ -30,17 +29,18 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
       if (index == fulls + 1 && hasHalf) return "star-half";
       else return "star-dark";
     });
-  }
+  }, [NEURALEXPANSION])
+
+  useEffect(() => {
+    setStarClasses(neural_conv(neural))
+    setStarDirty(neural_conv(neural))
+  }, [neural, neural_conv])
 
   function toEnum(stars: string[]) {
     let fulls = stars.filter((e) => e == "star-full").length;
     let half = stars.filter((e) => e == "star-half").length;
-    // ref
-    // const entity: ValueOf<typeof NEURALEXPANSION> = "Five";
     let true_ind = (fulls - 1) * 2 + half;
-    let rarity = Object.keys(NEURALEXPANSION)[true_ind];
-    // console.log(rarity)
-    onChange(rarity as NeuralExpansion);
+    onChange(NEURALEXPANSION[true_ind] as NeuralExpansion);
   }
 
   function mouseMove(

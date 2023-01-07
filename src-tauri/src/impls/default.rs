@@ -1,4 +1,4 @@
-use crate::model::structs::{UnitSkill, Level, NeuralExpansion};
+use crate::model::structs::{Level, NeuralExpansion, UnitSkill};
 
 impl Default for NeuralExpansion {
     fn default() -> Self {

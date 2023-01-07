@@ -1,5 +1,6 @@
 pub use super::enums::*;
 use super::structs::*;
+use super::tables::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY, BONUS_TABLE};
 use crate::requirement_slv;
 use crate::state::Computed;
 use tauri::State;
@@ -42,6 +43,47 @@ impl Algorithm {
             .into_iter()
             .chain(Algorithm::all_gen2().into_iter())
             .collect()
+    }
+    pub fn get_bonuses(day: Day) -> Option<Vec<Algorithm>> {
+        match day {
+            Day::Mon => Some(vec![
+                Algorithm::Encapsulate,
+                Algorithm::Iteration,
+                Algorithm::Perception,
+                Algorithm::Inspiration,
+                Algorithm::Stack,
+            ]),
+            Day::Tue => Some(vec![
+                Algorithm::LowerLimit,
+                Algorithm::Feedforward,
+                Algorithm::Overflow,
+                Algorithm::Rationality,
+                Algorithm::LimitValue,
+            ]),
+            Day::Wed => Some(vec![
+                Algorithm::Progression,
+                Algorithm::Connection,
+                Algorithm::LoopGain,
+                Algorithm::SVM,
+                Algorithm::Reflection,
+            ]),
+            Day::Thu => Some(vec![
+                Algorithm::Deduction,
+                Algorithm::DeltaV,
+                Algorithm::Paradigm,
+                Algorithm::Convolution,
+                Algorithm::Exploit,
+            ]),
+            Day::Fri => Some(vec![
+                Algorithm::DataRepair,
+                Algorithm::MLRMatrix,
+                Algorithm::Cluster,
+                Algorithm::Stratagem,
+                Algorithm::Resolve,
+            ]),
+            Day::Sat => None,
+            Day::Sun => None,
+        }
     }
 }
 
@@ -264,5 +306,39 @@ mod tests {
 
         let right = AlgoPiece::compute_slots(Algorithm::Feedforward, vec![false, true, false]);
         assert_eq!(vec![false, true], right);
+    }
+}
+
+impl ResourceByDay {
+    pub fn get_bonuses(day: Day) -> Self {
+        unsafe {
+            Self {
+                day,
+                coin: BONUS_TABLE.get_unchecked(day as usize)[0],
+                exp: BONUS_TABLE.get_unchecked(day as usize)[1],
+                skill: BONUS_TABLE.get_unchecked(day as usize)[2],
+                class: BONUS_TABLE.get_unchecked(day as usize)[3],
+                algos: Algorithm::get_bonuses(day),
+            }
+        }
+    }
+}
+
+impl AlgoTypeDb {
+    fn get_algo(category: AlgoCategory) -> Self {
+        let algos: Vec<Algorithm> = match category {
+            AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
+            AlgoCategory::Stability => ALGO_STABILITY.to_vec(),
+            AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
+        };
+        Self { category, algos }
+    }
+
+    pub fn generate_algo_db() -> Vec<AlgoTypeDb> {
+        vec![
+            AlgoTypeDb::get_algo(AlgoCategory::Offense),
+            AlgoTypeDb::get_algo(AlgoCategory::Stability),
+            AlgoTypeDb::get_algo(AlgoCategory::Special),
+        ]
     }
 }

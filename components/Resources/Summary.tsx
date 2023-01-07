@@ -1,12 +1,15 @@
-import { GrandResource } from "@/interfaces/datamodel";
+import { GrandResource } from "@/src-tauri/bindings/structs/GrandResource";
 import styles from "@/styles/Page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 
 const Summary = () => {
   const [req, setReg] = useState<GrandResource>({
-    skill: {token: 0, pivot: 0},
+    skill: { token: 0, pivot: 0 },
     coin: 0,
+    exp: 0,
+    neural_kits: 0,
+    widgets: [],
   });
 
   useEffect(() => {
