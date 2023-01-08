@@ -43,14 +43,17 @@ impl UnitRequirement {
         }
     }
     pub fn get_req(&self) -> GrandResource {
-        let skill = SkillCurrency { token: self.skill.token, pivot: self.skill.pivot };
-        let coin = self.breakthrough.coin.0 + self.neural.coin.0;
+        let skill = SkillCurrency {
+            token: self.skill.token,
+            pivot: self.skill.pivot,
+        };
+        let coin = self.breakthrough.coin.0 + self.neural.coin.0 + self.skill.coin.0;
         GrandResource {
             skill,
             coin: Coin(coin),
             widgets: vec![self.breakthrough.widget],
             exp: self.level.exp,
-            neural_kits: self.neural.frags
+            neural_kits: self.neural.frags,
         }
     }
 }

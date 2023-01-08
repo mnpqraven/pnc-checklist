@@ -1,6 +1,7 @@
 pub use super::enums::*;
 use super::structs::*;
 use super::tables::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY, BONUS_TABLE};
+use crate::parser::requirement::{requirement_level, requirement_neural, requirement_widget};
 use crate::requirement_slv;
 use crate::state::Computed;
 use strum::IntoEnumIterator;
@@ -214,11 +215,14 @@ pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &
     let mut req_guard = computed.database_req.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
     for unit in store.units.iter() {
+        // TODO: landmine or Err unwraps
         reqs.push(UnitRequirement {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
-            neural: NeuralResourceRequirement::default(), // TODO:
-            level: LevelRequirement::default(),
-            breakthrough: WidgetResourceRequirement::default(), // TODO:
+            neural: requirement_neural(unit.current.frags, unit.current.neural, unit.goal.neural)
+                .unwrap(),
+            level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
+            breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
+                .unwrap(),
         })
     }
     req_guard.unit_req = reqs;
@@ -354,7 +358,7 @@ impl GrandResource {
             neural_kits: 0,
         }
     }
-    pub fn combine(&mut self, with: Self)  {
+    pub fn combine(&mut self, with: Self) {
         let mut widgets: Vec<WidgetResource> = Vec::new();
         let coin = self.coin.0 + with.coin.0;
         for class in Class::iter() {
