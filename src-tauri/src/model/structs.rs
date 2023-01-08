@@ -105,7 +105,7 @@ pub struct SkillResourceRequirement {
 pub struct DatabaseRequirement {
     pub unit_req: Vec<UnitRequirement>,
 }
-#[derive(Debug, Serialize, Deserialize, Default, TS)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, Copy, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Exp(pub u32);
 #[derive(Debug, Serialize, Deserialize, Default, TS)]
@@ -130,7 +130,7 @@ pub struct NeuralResourceRequirement {
     pub frags: u32,
     pub coin: Coin,
 }
-#[derive(Debug, Serialize, Deserialize, Default, TS)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, Copy, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct WidgetResource {
     pub class: Class,

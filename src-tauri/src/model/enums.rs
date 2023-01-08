@@ -7,10 +7,10 @@ use ts_rs::TS;
 pub enum Class {
     #[default]
     Guard,
-    Warrior,
+    Medic,
     Sniper,
     Specialist,
-    Medic,
+    Warrior,
 }
 
 #[allow(clippy::upper_case_acronyms)]

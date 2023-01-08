@@ -7,6 +7,19 @@ use crate::model::{
     },
 };
 
+impl DatabaseRequirement {
+    pub fn generate_resource(&self) -> GrandResource {
+        // Vec<UnitRequirement> > GrandResource
+        let mut sum = GrandResource::new();
+        for unit in &self.unit_req {
+            sum.combine(unit.get_req());
+            dbg!(&sum);
+            // dbg!(sum.combine(unit.get_req()));
+        }
+        dbg!(&sum);
+        sum
+    }
+}
 impl UnitRequirement {
     pub fn update_unit_req(unit: &Unit) -> Self {
         Self {
@@ -27,6 +40,17 @@ impl UnitRequirement {
                 unit.goal.level.0,
             )
             .unwrap(),
+        }
+    }
+    pub fn get_req(&self) -> GrandResource {
+        let skill = SkillCurrency { token: self.skill.token, pivot: self.skill.pivot };
+        let coin = self.breakthrough.coin.0 + self.neural.coin.0;
+        GrandResource {
+            skill,
+            coin: Coin(coin),
+            widgets: vec![self.breakthrough.widget],
+            exp: self.level.exp,
+            neural_kits: self.neural.frags
         }
     }
 }

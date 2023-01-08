@@ -90,19 +90,22 @@ pub fn save_units(
 #[tauri::command]
 pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
     let guard_req = computed.database_req.lock().unwrap();
-    let (mut token, mut pivot, mut coin) = (0, 0, 0);
-    for req in guard_req.unit_req.iter() {
-        pivot += req.skill.pivot;
-        token += req.skill.token;
-        coin += req.skill.coin.0;
-    }
+    // let (mut token, mut pivot, mut coin) = (0, 0, 0);
+    // for req in guard_req.unit_req.iter() {
+    //     pivot += req.skill.pivot;
+    //     token += req.skill.token;
+    //     coin += req.skill.coin.0;
+    // }
 
-    // TODO: fill other fields
-    let t = GrandResource {
-        skill: SkillCurrency { token, pivot },
-        coin: Coin(coin),
-        ..Default::default()
-    };
+    // // TODO: fill other fields
+    // let t = GrandResource {
+    //     skill: SkillCurrency { token, pivot },
+    //     coin: Coin(coin),
+    //     ..Default::default()
+    // };
+    // println!("{:?}", t);
+    // t
+    let t = guard_req.generate_resource();
     println!("{:?}", t);
     t
 }

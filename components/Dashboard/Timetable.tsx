@@ -18,7 +18,6 @@ const Timetable = () => {
       await invoke<ResourceByDay>("get_bonuses", { day }).then(e => list.push(e));
     }
     setTimetable(list);
-    console.log(list)
   }, [DAY]);
 
   useEffect(() => {

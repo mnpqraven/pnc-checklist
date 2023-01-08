@@ -1,0 +1,134 @@
+.iconplate {
+  position: relative;
+  display: inline-block;
+  aspect-ratio: auto 1/1;
+  min-width: 64px;
+}
+.iconwrap {
+  --aspect: 90%;
+  position: absolute;
+  left: calc((100% - var(--aspect)) / 2);
+  top: calc((100% - var(--aspect)) / 2);
+  width: var(--aspect);
+  height: var(--aspect);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media screen {
+  .itemrarity-0 .plate {
+    background-color: #606060;
+  }
+  .itemrarity-0 .back {
+    background-color: #7d7d7d;
+  }
+  .itemrarity-1 .plate {
+    background-color: #507040;
+  }
+  .itemrarity-1 .back {
+    background-color: #60c030;
+  }
+  .itemrarity-2 .plate {
+    background-color: #256070;
+  }
+  .itemrarity-2 .back {
+    background-color: #5cb7ec;
+  }
+  .itemrarity-3 .plate {
+    background-color: #6c4466;
+  }
+  .itemrarity-3 .back {
+    background-color: #ba77ff;
+  }
+  .itemrarity-4 .plate {
+    background-color: #805530;
+  }
+  .itemrarity-4 .back {
+    background-color: #ff8000;
+  }
+  .itemrarity-5 .plate {
+    background: rgb(242, 197, 155);
+    background: radial-gradient(
+      circle,
+      rgba(242, 197, 155, 1) 24%,
+      rgba(242, 163, 172, 1) 50%,
+      rgba(140, 159, 223, 1) 76%,
+      rgba(105, 98, 174, 1) 100%
+    );
+  }
+  .itemrarity-5 .back {
+    background-color: #ff8000;
+  }
+}
+.mainicon {
+  /* height: auto; */
+  /* position: relative; */
+  z-index: 1;
+  /* background-repeat: no-repeat;
+  background-position: center; */
+  clip-path: polygon(
+    8.83% 97.5%,
+    2.5% 91.17%,
+    2.5% 8.83%,
+    8.83% 2.5%,
+    91.16% 2.5%,
+    97.49% 8.83%,
+    97.49% 91.16%,
+    91.16% 97.49%,
+    8.83% 97.49%
+  );
+}
+.plate {
+  clip-path: polygon(
+    8.83% 97.5%,
+    2.5% 91.17%,
+    2.5% 8.83%,
+    8.83% 2.5%,
+    91.16% 2.5%,
+    97.49% 8.83%,
+    97.49% 91.16%,
+    91.16% 97.49%,
+    8.83% 97.49%
+  );
+  position: absolute;
+  background-image: radial-gradient(
+    circle,
+    transparent 60%,
+    rgb(0 0 0 / 50%) 150%
+  );
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.back {
+  clip-path: polygon(
+    91.92% 0%,
+    8.08% 0%,
+    0% 8.08%,
+    0% 91.92%,
+    8.08% 100%,
+    42.19% 100%,
+    42.19% 96.87%,
+    9.38% 96.87%,
+    3.13% 90.62%,
+    3.13% 9.38%,
+    9.38% 3.13%,
+    90.63% 3.13%,
+    96.88% 9.38%,
+    96.88% 90.63%,
+    90.63% 96.88%,
+    42.19% 96.88%,
+    42.19% 100%,
+    91.92% 100%,
+    100% 91.92%,
+    100% 8.08%,
+    91.92% 0%
+  );
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}

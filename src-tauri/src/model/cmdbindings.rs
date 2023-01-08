@@ -60,7 +60,7 @@ mod tests {
     #[test]
     fn debug() {
         let t = enum_ls("Class");
-        assert_eq!(t, vec!["Guard", "Warrior", "Sniper", "Specialist", "Medic"]);
+        assert_eq!(t, vec!["Guard", "Medic", "Sniper", "Specialist", "Warrior"]);
     }
     #[test]
     fn playground() {
