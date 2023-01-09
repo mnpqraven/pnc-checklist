@@ -37,21 +37,28 @@ const Index = () => {
 
   return (
     <main>
-      <div className={`${styles.card} ${styles.component_space} w-fit`}>
-        <Timetable />
-      </div>
-      <div className={`${styles.card} ${styles.component_space} w-fit`}>
-        <TodayAlgo
-          day={day}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
-      </div>
-      <div className={`${styles.card} ${styles.component_space} w-fit`}>
-        <ResetCalendar prevDateHandler={setNextDate} />
-      </div>
-      <div className={`${styles.card} ${styles.component_space} w-fit`}>
-        <Summary />
+      <div className="flex flex-col">
+
+        <div className="flex flex-row">
+          <div className="flex flex-col">
+            <div className={`${styles.card} ${styles.component_space} w-fit`}>
+              <Timetable />
+            </div>
+            <div className={`${styles.card} ${styles.component_space} w-fit`}>
+              <ResetCalendar prevDateHandler={setNextDate} />
+            </div>
+          </div>
+          <div className={`${styles.card} ${styles.component_space}`}>
+            <TodayAlgo
+              day={day}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            />
+          </div>
+        </div>
+        <div className={`${styles.card} ${styles.component_space} w-min`}>
+          <Summary />
+        </div>
       </div>
     </main>
   );

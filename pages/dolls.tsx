@@ -21,7 +21,7 @@ const Dolls = () => {
   // immer refactor state:
   // TODO: refactor from AlgorithmSet onwards
   const [dollData, setDollData] = useImmer<Unit | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   const [errors, setErrors] = useState<UnitValidationError[]>([]);
   const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
@@ -43,42 +43,38 @@ const Dolls = () => {
   }
 
   useEffect(() => {
-    console.log("[mount] page dolls");
-    initUnitList();
-  }, []);
-
-  useEffect(() => {
-    console.log("@dolls.tsx[useEffect], dollData changed");
-    if (dollData) updateDirtyList(dollData);
-  }, [dollData]);
-
-  useEffect(() => {
-    let list: [Unit, number][] = [];
-    storeUnits.map((storeItem, index) => {
-      if (JSON.stringify(storeItem) != JSON.stringify(dirtyUnits[index])) {
-        let p: [Unit, number] = [dirtyUnits[index], index];
-        list.push(p);
-      }
-      return storeItem;
-    });
-    // setDirtyIndexTup(list);
-  }, [dirtyUnits, storeUnits]);
-
-  useEffect(() => {
+    console.warn("@[useEffect][currentIndex]");
     setDollData((draft) => {
       draft = dirtyUnits[currentIndex];
       return draft;
     });
   }, [currentIndex]);
 
+  useEffect(() => {
+    if(dollData) updateDirtyList(dollData)
+  }, [dollData])
+
+  useEffect(() => {
+    console.log("[mount] page dolls");
+    initUnitList();
+  }, []);
+
+  useEffect(() => {
+    console.log("@[useEffect][dirtyUnits, storeUnits]");
+    let list: [Unit, number][] = [];
+    storeUnits.map((storeItem, index) => {
+      if (canSave) {
+        let p: [Unit, number] = [dirtyUnits[index], index];
+        list.push(p);
+      }
+      return storeItem;
+    });
+    setDirtyIndexTup(list);
+  }, [dirtyUnits, storeUnits]);
+
   function handleUnitSave() {
     invoke<[Unit, number][]>("save_units", { units: dirtyIndexTup });
     initUnitList(); // async
-  }
-
-  function handleIndex(ind: number) {
-    setCurrentIndex(ind);
-    // setDollData(dirtyUnits[e]);
   }
 
   function updateDirtyList(e: Unit) {
@@ -107,7 +103,6 @@ const Dolls = () => {
       draft.push([e, ind]);
     });
     setCurrentIndex(ind);
-    // setDollData(e);
   }
   function handleDeleteUnit(
     ind: number,
@@ -117,11 +112,11 @@ const Dolls = () => {
     setDirtyUnits((draft) => {
       draft.splice(ind, 1);
     });
+    setDirtyIndexTup((draft) => {
+      draft.splice(ind, 1);
+    });
+    setDollData(dirtyUnits[ind > 0 ? ind-1 : 0])
   }
-  useEffect(() => {
-    const ind = currentIndex >= dirtyUnits.length ? dirtyUnits.length - 1 : currentIndex
-    setDollData(dirtyUnits[ind])
-  }, [handleDeleteUnit])
 
   return (
     <main>
@@ -129,15 +124,13 @@ const Dolls = () => {
         <div className={`${styles.panel_left} ${styles.component_space}`}>
           <DollList
             list={dirtyUnits}
-            indexHandler={handleIndex}
+            indexHandler={e => setCurrentIndex(e)}
             newUnitHandler={handleNewUnit}
             deleteUnitHandler={handleDeleteUnit}
           />
         </div>
         <div>
-          <DollContext.Provider
-            value={{ dollData, setDollData, updateDirtyList }}
-          >
+          <DollContext.Provider value={{ dollData, setDollData }}>
             <AlgoErrorContext.Provider value={algoValidation}>
               <DollProfile />
             </AlgoErrorContext.Provider>

@@ -13,6 +13,10 @@ type Props = {
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
   const [algos, setAlgos] = useState<AlgoTypeDb[]>([]); // [category: [algo]]
 
+  const isGrowNeeded: boolean[] = algos.map((cat) => {
+    if (cat.algos.length == 0) return true;
+    else return false;
+  });
   async function initdata() {
     let db = await invoke<AlgoTypeDb[]>("generate_algo_db");
     invoke<string[] | null>("get_algo_by_days", { day }).then((today) => {
@@ -38,24 +42,28 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
   return (
     <>
       <div>
-        <div className="flex">
+        <div className="flex justify-around w-60">
           <div
             onMouseEnter={() => onMouseEnter(-1)}
             onMouseLeave={onMouseLeave}
           >
-            yesterday
+            Prev
           </div>
           <div>{day}</div>
           <div onMouseEnter={() => onMouseEnter(1)} onMouseLeave={onMouseLeave}>
-            next
+            Next
           </div>
         </div>
 
         <div className="flex">
           {algos.length > 0 ? (
             algos.map((category, index_cat) => (
-              <div key={index_cat} className="px-2 text-center">
-                {/* TODO: table */}
+              <div
+                key={index_cat}
+                className={`flex flex-col px-2 text-center ${
+                  isGrowNeeded[index_cat] ? `grow` : ""
+                }`}
+              >
                 <p>{category.category}</p>
                 {category.algos.map((algo, index_alg) => (
                   <div

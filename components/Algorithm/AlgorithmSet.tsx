@@ -151,8 +151,8 @@ const NewAlgoSet = ({
   loadout_type: LoadoutType;
   addHandler: (value: AlgoPiece, category: AlgoCategory, loadout_type: LoadoutType) => void
 }) => {
-  const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
-  const defined = dollData && setDollData && updateDirtyList;
+  const { dollData, setDollData  } = useContext(DollContext);
+  const defined = dollData && setDollData;
   async function new_algo_set(
     category: AlgoCategory,
     loadout_type: LoadoutType

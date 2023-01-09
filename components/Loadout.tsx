@@ -15,8 +15,8 @@ const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
 const Loadout = ({ type, data }: Props) => {
-  const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
-  const defined = dollData && setDollData && updateDirtyList;
+  const { dollData, setDollData } = useContext(DollContext);
+  const defined = dollData && setDollData;
   const { algo, neural } = data;
 
   function handleSlvChange(

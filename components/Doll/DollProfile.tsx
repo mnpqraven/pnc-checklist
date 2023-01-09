@@ -7,9 +7,9 @@ import { Class } from "@/src-tauri/bindings/enums/Class";
 import { invoke } from "@tauri-apps/api/tauri";
 
 const DollProfile = () => {
-  const { dollData, setDollData, updateDirtyList } = useContext(DollContext);
+  const { dollData, setDollData } = useContext(DollContext);
   const [options, setOptions] = useState<string[]>([]);
-  const defined = setDollData && updateDirtyList;
+  const defined = setDollData;
 
   useEffect(() => {
     invoke<string[]>("enum_ls", { name: "Class" }).then(setOptions);
