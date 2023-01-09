@@ -28,6 +28,7 @@ pub enum TauriError {
     /// struct in the import file doesn't fit ImportChunk
     ImportStruct(String),
     Export,
+    UnitModification,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]

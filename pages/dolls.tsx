@@ -8,7 +8,7 @@ import {
 } from "@/interfaces/payloads";
 import styles from "@/styles/Page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
-import React from "react";
+import { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { UnitValidationError } from "@/interfaces/results";
 import { useImmer } from "use-immer";
@@ -41,6 +41,12 @@ const Dolls = () => {
     let t = await invoke<Unit[]>("view_store_units");
     setDirtyUnits(t);
   }
+
+  useEffect(() => {
+    console.log("[mount] page dolls");
+    initUnitList();
+  }, []);
+
   useEffect(() => {
     console.log("@dolls.tsx[useEffect], dollData changed");
     if (dollData) updateDirtyList(dollData);
@@ -58,14 +64,21 @@ const Dolls = () => {
     // setDirtyIndexTup(list);
   }, [dirtyUnits, storeUnits]);
 
+  useEffect(() => {
+    setDollData((draft) => {
+      draft = dirtyUnits[currentIndex];
+      return draft;
+    });
+  }, [currentIndex]);
+
   function handleUnitSave() {
     invoke<[Unit, number][]>("save_units", { units: dirtyIndexTup });
     initUnitList(); // async
   }
 
-  function handleIndex(e: number) {
-    setCurrentIndex(e);
-    setDollData(dirtyUnits[e]);
+  function handleIndex(ind: number) {
+    setCurrentIndex(ind);
+    // setDollData(dirtyUnits[e]);
   }
 
   function updateDirtyList(e: Unit) {
@@ -94,13 +107,21 @@ const Dolls = () => {
       draft.push([e, ind]);
     });
     setCurrentIndex(ind);
-    setDollData(e);
+    // setDollData(e);
   }
-
+  function handleDeleteUnit(
+    ind: number,
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) {
+    e.stopPropagation();
+    setDirtyUnits((draft) => {
+      draft.splice(ind, 1);
+    });
+  }
   useEffect(() => {
-    console.log("[mount] page dolls");
-    initUnitList();
-  }, []);
+    const ind = currentIndex >= dirtyUnits.length ? dirtyUnits.length - 1 : currentIndex
+    setDollData(dirtyUnits[ind])
+  }, [handleDeleteUnit])
 
   return (
     <main>
@@ -110,6 +131,7 @@ const Dolls = () => {
             list={dirtyUnits}
             indexHandler={handleIndex}
             newUnitHandler={handleNewUnit}
+            deleteUnitHandler={handleDeleteUnit}
           />
         </div>
         <div>

@@ -15,7 +15,7 @@ use tauri::Manager;
 use crate::api::builder::{
     algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
     generate_algo_db, get_algo_by_days, get_needed_rsc, new_unit, save_units, update_chunk,
-    view_store_units, get_bonuses, get_algo_types,
+    view_store_units, get_bonuses, get_algo_types, delete_unit,
 };
 use crate::model::cmdbindings::enum_ls;
 use crate::model::impls::main_stat_all;
@@ -68,6 +68,7 @@ fn main() {
             update_chunk,
             get_bonuses,
             new_unit,
+            delete_unit,
             save_units,
             view_store_units,
             generate_algo_db,

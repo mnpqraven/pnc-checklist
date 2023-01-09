@@ -1,7 +1,7 @@
 //! handles building stucts like unit, algos, resources
 //!
 use crate::{
-    model::{enums::*, impls::update_reqs, structs::*},
+    model::{enums::*, error::TauriError, impls::update_reqs, structs::*},
     parser::file::localsave,
     state::{Computed, Storage},
 };
@@ -67,6 +67,16 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
     let mut guard = store.store.lock().unwrap();
     guard.units.push(new_unit.clone());
     new_unit
+}
+#[tauri::command]
+pub fn delete_unit(index: usize, store: State<Storage>) -> Result<(), TauriError> {
+    let mut guard = store.store.lock().unwrap();
+    if index < guard.units.len() {
+        guard.units.remove(index);
+        Ok(())
+    } else {
+        Err(TauriError::UnitModification)
+    }
 }
 
 #[tauri::command]
