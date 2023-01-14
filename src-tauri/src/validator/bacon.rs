@@ -1,9 +1,9 @@
-use crate::{
-    model::structs::{
+use crate::model::{
+    error::UnitValidationError,
+    structs::{
         AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Level, Loadout, NeuralExpansion,
         NeuralFragment, Unit, UnitSkill,
     },
-    validate::UnitValidationError,
 };
 
 use super::validate_algo;

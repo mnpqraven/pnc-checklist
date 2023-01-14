@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
-import { AlgoTypeDb } from "@/src-tauri/bindings/structs/AlgoTypeDb";
+import { AlgoTypeDb } from "@/src-tauri/bindings/structs";
 
 type Props = {
   day: string;

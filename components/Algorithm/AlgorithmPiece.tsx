@@ -5,10 +5,8 @@ import SlotCheckbox from "./SlotCheckbox";
 import { DollContext } from "@/interfaces/payloads";
 import Image from "next/image";
 import { invoke } from "@tauri-apps/api/tauri";
-import { AlgoPiece } from "@/src-tauri/bindings/structs/AlgoPiece";
-import { Algorithm } from "@/src-tauri/bindings/enums/Algorithm";
-import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
-import { AlgoMainStat } from "@/src-tauri/bindings/enums/AlgoMainStat";
+import { AlgoPiece } from "@/src-tauri/bindings/structs";
+import { AlgoCategory, AlgoMainStat, Algorithm } from "@/src-tauri/bindings/enums";
 
 type Props = {
   index: number;
@@ -35,8 +33,8 @@ const AlgorithmPiece = ({
   const [ALGORITHM, setALGORITHM] = useState<string[]>([])
 
   useEffect(() => {
-    invoke<string[]>('enum_ls', {name: "AlgoMainStat"}).then(setALGOMAINSTAT)
-    invoke<string[]>('enum_ls', {name: "Algorithm"}).then(setALGORITHM)
+    invoke<string[]>('enum_ls', { name: "AlgoMainStat" }).then(setALGOMAINSTAT)
+    invoke<string[]>('enum_ls', { name: "Algorithm" }).then(setALGORITHM)
   }, [])
   // chaging unit
   useEffect(() => {
@@ -90,9 +88,8 @@ const AlgorithmPiece = ({
   return (
     <>
       <div
-        className={`${
-          valid === false ? `border border-red-500` : ``
-        } flex justify-between`}
+        className={`${valid === false ? `border border-red-500` : ``
+          } flex justify-between`}
       >
         <div>
           <Image

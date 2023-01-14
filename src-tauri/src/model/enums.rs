@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use strum::EnumIter;
+use strum::{EnumIter, Display};
 use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
@@ -14,18 +14,22 @@ pub enum Class {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display)]
 #[ts(export, export_to = "bindings/enums/")]
 /// List of algorithms
 pub enum Algorithm {
     //offense
+    #[strum(serialize = "Lower Limit")]
     LowerLimit,
     Feedforward,
     Deduction,
     Progression,
+    #[strum(serialize = "Data Repair")]
     DataRepair,
+    #[strum(serialize = "MLR Matrix")]
     MLRMatrix,
     Stack,
+    #[strum(serialize = "Limit Value")]
     LimitValue,
     //stability
     Encapsulate,
@@ -40,8 +44,10 @@ pub enum Algorithm {
     //special
     Inspiration,
     LoopGain,
+    #[strum(serialize = "S.V.M")]
     SVM,
     Paradigm,
+    #[strum(serialize = "Delta V")]
     DeltaV,
     Cluster,
     Stratagem,
@@ -69,25 +75,36 @@ pub enum Bonus {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoMainStat {
     Hashrate,
+    #[strum(serialize = "Hashrate %")]
     HashratePercent,
     Atk,
+    #[strum(serialize = "Atk %")]
     AtkPercent,
     Health,
+    #[strum(serialize = "Health %")]
     HealthPercent,
     Haste,
+    #[strum(serialize = "Crit %")]
     CritRate,
+    #[strum(serialize = "Crit Dmg %")]
     CritDmg,
+    #[strum(serialize = "Damage Inc.")]
     DamageInc,
     Dodge,
+    #[strum(serialize = "Heal Inc.")]
     HealInc,
+    #[strum(serialize = "Damage Mit.")]
     DamageReduction,
     Def,
+    #[strum(serialize = "Def %")]
     DefPercent,
+    #[strum(serialize = "Operand Def")]
     OperandDef,
+    #[strum(serialize = "Operand Def %")]
     OperandDefPercent,
 }
 #[derive(Debug, Serialize, Deserialize, TS, EnumIter)]

@@ -8,12 +8,8 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import styles from "@/styles/Page.module.css";
-import { AlgoMainStat } from "@/src-tauri/bindings/enums/AlgoMainStat";
-import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
-import { AlgoPiece } from "@/src-tauri/bindings/structs/AlgoPiece";
-import { AlgoSet } from "@/src-tauri/bindings/structs/AlgoSet";
-import { AlgoTypeDb } from "@/src-tauri/bindings/structs/AlgoTypeDb";
-import { LoadoutType } from "@/src-tauri/bindings/enums/LoadoutType";
+import { AlgoMainStat, AlgoCategory, LoadoutType } from "@/src-tauri/bindings/enums";
+import { AlgoPiece, AlgoSet, AlgoTypeDb } from "@/src-tauri/bindings/structs";
 
 type Props = {
   algo: AlgoSet;
@@ -37,7 +33,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   };
 
   useEffect(() => {
-    invoke<string[]>('enum_ls', {name: 'AlgoCategory'}).then(setALGOCATEGORY)
+    invoke<string[]>('enum_ls', { name: 'AlgoCategory' }).then(setALGOCATEGORY)
     async function get_algo_types() {
       setAlgoTypes(await invoke<AlgoTypeDb[]>("generate_algo_db"));
       setMainStat(await invoke<AlgoMainStat[]>("main_stat_all"));
@@ -151,7 +147,7 @@ const NewAlgoSet = ({
   loadout_type: LoadoutType;
   addHandler: (value: AlgoPiece, category: AlgoCategory, loadout_type: LoadoutType) => void
 }) => {
-  const { dollData, setDollData  } = useContext(DollContext);
+  const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;
   async function new_algo_set(
     category: AlgoCategory,

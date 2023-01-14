@@ -1,6 +1,5 @@
-import { NeuralExpansion } from "@/src-tauri/bindings/enums/NeuralExpansion";
+import { NeuralExpansion } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import Image from "next/image";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 type Props = {

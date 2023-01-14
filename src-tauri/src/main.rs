@@ -13,8 +13,8 @@ mod service;
 mod state;
 mod table;
 mod unit;
-mod validate;
-use crate::validate::validate;
+mod validator;
+use model::cmdbindings::{write_index_binding, AllEnums, AllStructs, Folder};
 use tauri::Manager;
 
 // will be invoked during startup
@@ -24,7 +24,7 @@ use crate::{
         get_algo_by_days, main_stat_all,
     },
     compute::{get_needed_rsc, update_chunk},
-    model::cmdbindings::enum_ls,
+    model::enum_ls,
     requirement::{
         requirement_level, requirement_neural, requirement_slv, requirement_widget,
         requirment_neural_kits,
@@ -33,10 +33,14 @@ use crate::{
     state::*,
     table::{generate_algo_db, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
+    validator::validate,
 };
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
+    // update TS binding index
+    write_index_binding::<AllEnums>(Folder::Enums).unwrap();
+    write_index_binding::<AllStructs>(Folder::Structs).unwrap();
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)]
@@ -98,7 +102,7 @@ fn main() {
             new_unit,
             delete_unit,
             save_units,
-            // validate
+            // validator
             validate
         ])
         .run(tauri::generate_context!())

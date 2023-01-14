@@ -1,11 +1,10 @@
-import { GrandResource } from "@/src-tauri/bindings/structs/GrandResource";
 import { invoke } from "@tauri-apps/api/tauri";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ItemPlate from "./ItemPlate";
 import Image from "next/image";
 import Loading from "../Loading";
 import { useImmer } from "use-immer";
-import { WidgetResource } from "@/src-tauri/bindings/structs/WidgetResource";
+import { WidgetResource, GrandResource } from "@/src-tauri/bindings/structs";
 
 const hide_empty = true; // toggle TBD
 const EMPTY_GRAND: GrandResource = {
@@ -71,9 +70,8 @@ const Summary = () => {
                     req.widgets[0].widget_inventory.map((item, index) => (
                       <th key={index}>
                         <ItemPlate
-                          src={`warehouse/widget_box_${
-                            index > 4 ? 4 : index
-                          }.png`}
+                          src={`warehouse/widget_box_${index > 4 ? 4 : index
+                            }.png`}
                           rarity={index}
                         />
                       </th>

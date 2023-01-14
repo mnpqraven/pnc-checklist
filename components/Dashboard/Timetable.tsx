@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ResourceByDay } from "@/src-tauri/bindings/structs/ResourceByDay";
+import { ResourceByDay } from "@/src-tauri/bindings/structs";
 
 const Timetable = () => {
   const [timetable, setTimetable] = useState<ResourceByDay[]>([]);

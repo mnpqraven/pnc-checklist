@@ -1,4 +1,3 @@
-"use client";
 import { parse_date_iso } from "@/utils/helper";
 import { useEffect, useState } from "react";
 

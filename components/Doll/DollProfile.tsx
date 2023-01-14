@@ -3,7 +3,7 @@ import { Select, Loadout } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
 import styles from "@/styles/Page.module.css";
-import { Class } from "@/src-tauri/bindings/enums/Class";
+import { Class } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
 
 const DollProfile = () => {

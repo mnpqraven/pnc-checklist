@@ -12,7 +12,7 @@ import { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { UnitValidationError } from "@/interfaces/results";
 import { useImmer } from "use-immer";
-import { Unit } from "@/src-tauri/bindings/structs/Unit";
+import { Unit } from "@/src-tauri/bindings/structs";
 
 const Dolls = () => {
   const [storeUnits, setStoreUnits] = useState<Unit[]>([]);

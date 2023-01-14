@@ -1,4 +1,3 @@
-use strum::IntoEnumIterator;
 use crate::{
     model::structs::{
         Class, Coin, DatabaseRequirement, Exp, GrandResource, SkillCurrency, UnitRequirement,
@@ -7,6 +6,7 @@ use crate::{
     service::file::import,
 };
 use std::path::Path;
+use strum::IntoEnumIterator;
 use tauri::api::path::data_dir;
 
 impl Default for UserStore {
@@ -58,7 +58,7 @@ impl GrandResource {
             let widget_inventory: [u32; 6] = match (in_self, in_with) {
                 (Some(a), Some(b)) => {
                     let mut sum: [u32; 6] = [0; 6];
-                    for index in (0..6).into_iter() {
+                    for (index, _) in (0..6).enumerate() {
                         sum[index] = a.widget_inventory[index] + b.widget_inventory[index];
                     }
                     sum

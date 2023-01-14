@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-
 use super::enums::AlgoCategory;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -17,7 +16,7 @@ impl<T: Display> Display for RequirementError<T> {
                 format!("Element {t} is out of range that can be calculated")
             }
             RequirementError::FromTo(a, b) => format!("{a} is bigger than {b}"),
-            RequirementError::None(t) => format!("{t} is None"),
+            RequirementError::None(t) => format!("Data field {t} is None"),
         };
         write!(f, "{}", err)
     }

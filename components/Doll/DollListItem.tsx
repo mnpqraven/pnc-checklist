@@ -1,4 +1,4 @@
-import { Unit } from "@/src-tauri/bindings/structs/Unit";
+import { Unit } from "@/src-tauri/bindings/structs";
 
 type Props = {
   data: Unit,

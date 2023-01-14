@@ -1,10 +1,12 @@
-use super::enums::*;
-use crate::enum_list;
-use std::{fmt::Debug, str::FromStr};
-use strum::{EnumIter, EnumString, IntoEnumIterator};
+use std::{
+    fmt::{Debug, Display},
+    fs::File,
+    io::Write,
+};
+use strum::{Display, EnumIter, EnumString, IntoEnumIterator};
 
-#[derive(Debug, EnumIter, EnumString)]
-enum All {
+#[derive(Debug, EnumIter, EnumString, Display)]
+pub enum AllEnums {
     Class,
     Algorithm,
     Day,
@@ -13,28 +15,34 @@ enum All {
     AlgoSubStat,
     AlgoCategory,
     NeuralExpansion,
-    LoadoutType
+    LoadoutType,
 }
-
-#[tauri::command]
-/// produces enum as an array
-pub fn enum_ls(name: &str) -> Vec<String> {
-    enum_list!(
-        &name,
-        Class,
-        Algorithm,
-        Day,
-        Bonus,
-        AlgoMainStat,
-        AlgoSubStat,
-        AlgoCategory,
-        NeuralExpansion,
-        LoadoutType
-    )
+#[derive(Debug, EnumIter, EnumString, Display)]
+pub enum AllStructs {
+    AlgoPiece,
+    AlgoSet,
+    AlgoTypeDb,
+    Coin,
+    Database,
+    Exp,
+    GrandResource,
+    Level,
+    LevelRequirement,
+    Loadout,
+    NeuralFragment,
+    NeuralResourceRequirement,
+    ResourceByDay,
+    SkillCurrency,
+    SkillResourceRequirement,
+    Unit,
+    UnitSkill,
+    UserStore,
+    WidgetResource,
+    WidgetResourceRequirement,
 }
 
 /// Generate a string array containing field names in a rust enum
-fn gen_vec<T>() -> Vec<String>
+pub(super) fn gen_vec<T>() -> Vec<String>
 where
     T: IntoEnumIterator + Debug,
 {
@@ -45,37 +53,29 @@ where
     list
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::model::cmdbindings::enum_ls;
-    use strum::{EnumIter, IntoEnumIterator};
+#[derive(EnumString, Display)]
+pub enum Folder {
+    #[strum(serialize = "enums")]
+    Enums,
+    #[strum(serialize = "structs")]
+    Structs,
+}
+pub fn write_index_binding<T>(folder: Folder) -> std::io::Result<()>
+where
+    T: Display + IntoEnumIterator,
+{
+    let path = format!("bindings/{folder}/index.ts");
+    let mut buffer = File::create(path).unwrap();
+    for payload in T::iter() {
+        let import_fmt = format!("import {{ {payload} }} from \"./{payload}\"\n");
+        write!(buffer, "{}", import_fmt)?;
+    }
 
-    #[derive(Debug, EnumIter, PartialEq, Eq)]
-    enum Direction {
-        NORTH,
-        SOUTH,
-        EAST,
-        WEST,
-    }
-    #[test]
-    fn debug() {
-        let t = enum_ls("Class");
-        assert_eq!(t, vec!["Guard", "Medic", "Sniper", "Specialist", "Warrior"]);
-    }
-    #[test]
-    fn playground() {
-        let mut dirs: Vec<Direction> = Vec::new();
-        for direction in Direction::iter() {
-            dirs.push(direction);
-        }
-        assert_eq!(
-            dirs,
-            vec![
-                Direction::NORTH,
-                Direction::SOUTH,
-                Direction::EAST,
-                Direction::WEST,
-            ]
-        );
-    }
+    let payloads = T::iter()
+        .map(|each| each.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
+    let export_fmt = format!("export type {{ {payloads} }}");
+    write!(buffer, "{}", export_fmt)?;
+    Ok(())
 }

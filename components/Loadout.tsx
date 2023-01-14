@@ -2,10 +2,8 @@ import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
 import RaritySelect from "./Doll/RaritySelect";
-import { Loadout } from "@/src-tauri/bindings/structs/Loadout";
-import { NeuralExpansion } from "@/src-tauri/bindings/enums/NeuralExpansion";
-import { LoadoutType } from "@/src-tauri/bindings/enums/LoadoutType";
-import { Unit } from "@/src-tauri/bindings/structs/Unit";
+import { Loadout } from "@/src-tauri/bindings/structs";
+import { LoadoutType, NeuralExpansion } from "@/src-tauri/bindings/enums";
 
 type Props = {
   type: LoadoutType;
