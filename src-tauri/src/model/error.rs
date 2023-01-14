@@ -7,6 +7,7 @@ use super::enums::AlgoCategory;
 pub enum RequirementError<T> {
     OutOfBound(T),
     FromTo(T, T),
+    None(T),
 }
 
 impl<T: Display> Display for RequirementError<T> {
@@ -16,6 +17,7 @@ impl<T: Display> Display for RequirementError<T> {
                 format!("Element {t} is out of range that can be calculated")
             }
             RequirementError::FromTo(a, b) => format!("{a} is bigger than {b}"),
+            RequirementError::None(t) => format!("{t} is None"),
         };
         write!(f, "{}", err)
     }

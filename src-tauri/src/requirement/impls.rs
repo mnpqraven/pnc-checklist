@@ -1,7 +1,7 @@
 pub use crate::model::structs::*;
-use crate::model::{
-    error::RequirementError,
-    tables::{
+use crate::{
+    model::error::RequirementError,
+    table::consts::{
         REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
         REQ_SLV_TOKEN,
     },
@@ -28,7 +28,7 @@ impl UnitRequirement {
                 unit.goal.skill_level,
             ),
             neural: NeuralResourceRequirement::calculate(
-                Some(unit.current.frags.unwrap()),
+                unit.current.frags,
                 unit.current.neural,
                 unit.goal.neural,
             )
@@ -53,12 +53,12 @@ impl UnitRequirement {
             coin: Coin(coin),
             widgets: vec![self.breakthrough.widget],
             exp: self.level.exp,
-            neural_kits: self.neural.frags,
+            neural_kits: self.neural.kits, // neural_kits: self.neural.frags,
         }
     }
 }
 impl LevelRequirement {
-    fn calculate(from: u32, to: u32) -> Result<Self, RequirementError<u32>> {
+    pub(super) fn calculate(from: u32, to: u32) -> Result<Self, RequirementError<u32>> {
         match &from.cmp(&to) {
             std::cmp::Ordering::Less => {
                 let (from_ind, to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
@@ -91,46 +91,55 @@ impl LevelRequirement {
 }
 
 impl NeuralResourceRequirement {
-    fn calculate(
-        current: Option<u32>,
+    pub fn calculate(
+        current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         match (from as usize).cmp(&(to as usize)) {
             std::cmp::Ordering::Less => {
-                let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
                 let sum_coin = &REQ_NEURAL_COIN[from as usize + 1..to as usize + 1];
                 Ok(NeuralResourceRequirement {
-                    frags: sum.iter().sum::<u32>() - current.unwrap_or(0),
+                    frags: Self::get_frags(current, from, to),
                     coin: Coin(sum_coin.iter().sum::<u32>()),
+                    kits: Self::calculate_kits_conversion(current, from, to)
+                        .unwrap(),
                 })
             }
             // TODO: handle
             _ => Ok(NeuralResourceRequirement::default()),
         }
     }
+    fn get_frags(current: NeuralFragment, from: NeuralExpansion, to: NeuralExpansion) -> NeuralFragment {
+        let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
+        NeuralFragment(Some(sum.iter().sum::<u32>() - current.0.unwrap_or(0)))
+    }
 
-    // TODO:
-    fn calculate_kits_conversion(
-        current: Option<u32>,
+    pub fn calculate_kits_conversion(
+        current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
-    ) -> Result<u32, RequirementError<u32>> {
-        let frags = NeuralResourceRequirement::calculate(current, from, to)?.frags;
+    ) -> Result<u32, RequirementError<NeuralFragment>> {
+        let frags = NeuralResourceRequirement::get_frags(current, from, to);
         println!("{:?}", frags);
-        // increases by 5 every 25 uses, cap 25
-        let (mut kits_cost, mut kits_req) = (5, 0);
-        for i in 1..=frags {
-            kits_req += kits_cost;
-            if i % 25 == 0 && kits_cost < 25 {
-                kits_cost += 5;
+        match frags.0 {
+            Some(frags) => {
+                // increases by 5 every 25 uses, cap 25
+                let (mut kits_cost, mut kits_req) = (5, 0);
+                for i in 1..=frags {
+                    kits_req += kits_cost;
+                    if i % 25 == 0 && kits_cost < 25 {
+                        kits_cost += 5;
+                    }
+                }
+                Ok(kits_req)
             }
+            None => Err(RequirementError::None(frags)),
         }
-        Ok(kits_req)
     }
 }
 impl SkillResourceRequirement {
-    fn calculate(from: UnitSkill, to: UnitSkill) -> Self {
+    pub(super) fn calculate(from: UnitSkill, to: UnitSkill) -> Self {
         /// returns needed resource for passive skill and auto skill from a range of slv
         fn slice_sum(mut vector: Vec<u32>, from: UnitSkill, to: UnitSkill) -> u32 {
             let v_passive: Vec<u32> = vector
@@ -157,7 +166,7 @@ impl SkillResourceRequirement {
 
 impl WidgetResourceRequirement {
     /// from, to are levels, LB stages are automatically converted
-    fn calculate(
+    pub fn calculate(
         class: Class,
         from: u32,
         to: u32,
@@ -194,226 +203,5 @@ impl WidgetResourceRequirement {
             std::cmp::Ordering::Equal => Ok(WidgetResourceRequirement::default()),
             std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to)),
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{
-        model::structs::*,
-        parser::requirement::{requirement_slv, LevelRequirement},
-    };
-
-    use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
-
-    #[test]
-    fn test_skill_total() {
-        let unit_skill = UnitSkill {
-            passive: 5,
-            auto: 8,
-        };
-        let calc = requirement_slv(
-            unit_skill,
-            UnitSkill {
-                passive: 10,
-                auto: 10,
-            },
-        );
-        assert_eq!(calc.token, 16680);
-        assert_eq!(calc.pivot, 44);
-    }
-    #[test]
-    fn test_skill_halfway() {
-        let unit_skill = UnitSkill {
-            passive: 5,
-            auto: 8,
-        };
-        let calc = requirement_slv(
-            unit_skill,
-            UnitSkill {
-                passive: 9,
-                auto: 9,
-            },
-        );
-        assert_eq!(calc.pivot, 20);
-    }
-
-    #[test]
-    fn levelreq() {
-        assert_eq!(43 / 10, 4);
-        assert_eq!(LevelRequirement::calculate(29, 30).unwrap().exp.0, 2190);
-        assert_eq!(
-            LevelRequirement::calculate(29, 31).unwrap().exp.0,
-            2190 + 2450
-        );
-        assert_eq!(
-            LevelRequirement::calculate(29, 41).unwrap().exp.0,
-            2190 + 30410 + 3990
-        );
-        assert_eq!(
-            LevelRequirement::calculate(27, 62).unwrap().exp.0,
-            1540 + 1930 + 2190 + 30410 + 54390 + 105490 + 17000 + 22000
-        );
-    }
-    #[test]
-    fn level_to60bound() {
-        assert_eq!(LevelRequirement::calculate(1, 60).unwrap().exp.0, 213540);
-        assert_eq!(
-            LevelRequirement::calculate(50, 69).unwrap().exp.0,
-            600000 + 105490 - 119000
-        );
-    }
-    #[test]
-    fn level_to70bound() {
-        assert_eq!(
-            LevelRequirement::calculate(50, 70).unwrap().exp.0,
-            600000 + 105490
-        );
-        assert_eq!(LevelRequirement::calculate(1, 70).unwrap().exp.0, 813540);
-        assert_eq!(LevelRequirement::calculate(60, 70).unwrap().exp.0, 600000);
-    }
-    #[test]
-    fn neuralreq() {
-        assert_eq!(
-            NeuralResourceRequirement::calculate(
-                Some(0),
-                NeuralExpansion::One,
-                NeuralExpansion::Five
-            )
-            .unwrap()
-            .frags,
-            400
-        );
-        assert_eq!(
-            NeuralResourceRequirement::calculate(
-                Some(0),
-                NeuralExpansion::Three,
-                NeuralExpansion::Five
-            )
-            .unwrap()
-            .frags,
-            320
-        );
-        assert_eq!(
-            NeuralResourceRequirement::calculate(
-                Some(0),
-                NeuralExpansion::Two,
-                NeuralExpansion::FourHalf
-            )
-            .unwrap()
-            .frags,
-            25 + 40 + 60 + 70 + 90
-        )
-    }
-    #[test]
-    fn widget_1() {
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 1, 11)
-                .unwrap()
-                .coin
-                .0,
-            500
-        );
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 1, 11)
-                .unwrap()
-                .widget
-                .widget_inventory,
-            [10, 0, 0, 0, 0, 0]
-        );
-    }
-    #[test]
-    fn widget_2() {
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 1, 70)
-                .unwrap()
-                .coin
-                .0,
-            7500 + 150000
-        );
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 1, 70)
-                .unwrap()
-                .widget
-                .widget_inventory,
-            [20, 30, 35, 45, 55, 35]
-        );
-    }
-    #[test]
-    fn widget_3() {
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 19, 40)
-                .unwrap()
-                .coin
-                .0,
-            17000
-        );
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 19, 40)
-                .unwrap()
-                .widget
-                .widget_inventory,
-            [10, 30, 35, 25, 0, 0]
-        );
-    }
-    #[test]
-    fn widget_4() {
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 19, 39)
-                .unwrap()
-                .coin
-                .0,
-            7000
-        );
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 19, 39)
-                .unwrap()
-                .widget
-                .widget_inventory,
-            [10, 30, 20, 0, 0, 0]
-        );
-    }
-    #[test]
-    fn widget_5() {
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 21, 28)
-                .unwrap()
-                .coin
-                .0,
-            0
-        );
-        assert_eq!(
-            WidgetResourceRequirement::calculate(Class::Guard, 21, 28)
-                .unwrap()
-                .widget
-                .widget_inventory,
-            [0, 0, 0, 0, 0, 0]
-        );
-    }
-    #[test]
-    fn kits_conversion() {
-        let t = NeuralResourceRequirement::calculate_kits_conversion(
-            None,
-            NeuralExpansion::Three,
-            NeuralExpansion::Five,
-        )
-        .unwrap();
-        // 320
-        let a = 25 * (5 + 10 + 15 + 20);
-        let b = (320 - 100) * 25;
-        assert_eq!(t, a + b);
-    }
-    #[test]
-    fn kits_2() {
-        let t = NeuralResourceRequirement::calculate_kits_conversion(
-            Some(10),
-            NeuralExpansion::Four,
-            NeuralExpansion::Five,
-        )
-        .unwrap();
-        // 90 + 100 - 10 = 180
-        let a = 25 * (5 + 10 + 15 + 20); // 100
-        let b = 25 * 80;
-        assert_eq!(t, a + b);
     }
 }

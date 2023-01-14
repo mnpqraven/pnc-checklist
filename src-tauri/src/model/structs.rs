@@ -62,12 +62,12 @@ pub struct Loadout {
     pub algo: AlgoSet,
     #[serde(default)]
     pub neural: NeuralExpansion,
-    #[serde(default = "default_unit_frags")]
-    pub frags: Option<u32>,
+    #[serde(default)]
+    pub frags: NeuralFragment,
 }
-fn default_unit_frags() -> Option<u32> {
-    Some(0)
-}
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, PartialEq)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct NeuralFragment(pub Option<u32>);
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, TS)]
 #[ts(export, export_to = "bindings/structs/")]
@@ -129,8 +129,9 @@ pub struct WidgetResourceRequirement {
 #[ts(export, export_to = "bindings/structs/")]
 pub struct NeuralResourceRequirement {
     #[serde(default)]
-    pub frags: u32,
+    pub frags: NeuralFragment,
     pub coin: Coin,
+    pub kits: u32
 }
 #[derive(Debug, Serialize, Deserialize, Default, Clone, Copy, TS)]
 #[ts(export, export_to = "bindings/structs/")]

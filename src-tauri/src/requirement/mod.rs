@@ -1,3 +1,7 @@
+use crate::{requirement::impls::*, model::error::RequirementError};
+
+#[cfg(test)]
+mod bacon;
 mod impls;
 
 /// calculates total tokens + pivots needed for a unit
@@ -13,7 +17,7 @@ pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, Require
 }
 #[tauri::command]
 pub fn requirement_neural(
-    current: Option<u32>,
+    current: NeuralFragment,
     from: NeuralExpansion,
     to: NeuralExpansion,
 ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
@@ -21,10 +25,10 @@ pub fn requirement_neural(
 }
 #[tauri::command]
 pub fn requirment_neural_kits(
-    current: Option<u32>,
+    current: NeuralFragment,
     from: NeuralExpansion,
     to: NeuralExpansion,
-) -> Result<u32, RequirementError<u32>> {
+) -> Result<u32, RequirementError<NeuralFragment>> {
     NeuralResourceRequirement::calculate_kits_conversion(current, from, to)
 }
 #[tauri::command]

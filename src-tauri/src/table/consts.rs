@@ -1,4 +1,4 @@
-use super::structs::{Algorithm, Bonus, Class};
+use crate::model::structs::*;
 
 /// cost of skill level token
 /// follow user-displayed slv so the 1st index will be 0 (slv always starts at 1)

@@ -2,6 +2,7 @@
 import type { AlgoSet } from "./AlgoSet";
 import type { Level } from "./Level";
 import type { NeuralExpansion } from "..\\enums\\NeuralExpansion";
+import type { NeuralFragment } from "./NeuralFragment";
 import type { UnitSkill } from "./UnitSkill";
 
-export interface Loadout { skill_level: UnitSkill, level: Level, algo: AlgoSet, neural: NeuralExpansion, frags: number | null, }
+export interface Loadout { skill_level: UnitSkill, level: Level, algo: AlgoSet, neural: NeuralExpansion, frags: NeuralFragment, }

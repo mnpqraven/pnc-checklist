@@ -82,20 +82,3 @@ pub fn set_default_file(_file: Option<&str>) -> Result<(), TauriError> {
     }
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    use std::fs;
-
-    use super::import;
-
-    #[test]
-    fn import_verbose() {
-        import("./data/user/schemadata.json".to_string()).unwrap();
-    }
-
-    #[test]
-    fn import_fs() {
-        fs::read_to_string("./data/user/schemadata.json".to_string()).unwrap();
-    }
-}

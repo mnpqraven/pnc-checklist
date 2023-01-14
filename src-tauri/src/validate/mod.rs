@@ -3,6 +3,8 @@ use crate::model::{error::UnitValidationError, structs::Unit};
 
 mod algo;
 mod unit;
+#[cfg(test)]
+mod bacon;
 
 #[tauri::command]
 pub fn validate(unit: Option<Unit>) -> Result<(), Vec<UnitValidationError>> {

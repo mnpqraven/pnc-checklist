@@ -3,32 +3,37 @@
     windows_subsystem = "windows"
 )]
 
-mod api;
-mod impls;
+mod algorithm;
+mod compute;
+mod loadout;
 mod macros;
 mod model;
-mod parser;
-mod state;
-mod validate;
+mod requirement;
 mod service;
+mod state;
+mod table;
+mod unit;
+mod validate;
+use crate::validate::validate;
 use tauri::Manager;
 
-use crate::api::builder::{
-    algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-    generate_algo_db, get_algo_by_days, get_needed_rsc, new_unit, save_units, update_chunk,
-    view_store_units, get_bonuses, get_algo_types, delete_unit,
-};
-use crate::model::cmdbindings::enum_ls;
-use crate::model::impls::main_stat_all;
-use crate::parser::file::{export, import, set_default_file};
-use crate::parser::requirement::{
-    requirement_level, requirement_neural, requirement_slv, requirement_widget,
-    requirment_neural_kits,
-};
-use crate::validate::validate;
-
 // will be invoked during startup
-use crate::state::*;
+use crate::{
+    algorithm::{
+        algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
+        get_algo_by_days, main_stat_all,
+    },
+    compute::{get_needed_rsc, update_chunk},
+    model::cmdbindings::enum_ls,
+    requirement::{
+        requirement_level, requirement_neural, requirement_slv, requirement_widget,
+        requirment_neural_kits,
+    },
+    service::file::{export, import, set_default_file},
+    state::*,
+    table::{generate_algo_db, get_bonuses},
+    unit::{delete_unit, new_unit, save_units, view_store_units},
+};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
@@ -53,46 +58,48 @@ fn main() {
             database_req: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
-            // TODO: refactor dir structure
+            // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
             // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
+            // TODO:
             // figure out validation return on frontend home
             // actual logging to frontend
             // rsc page inventory for frontend
             // relative search ? TBD
 
-            // file
-            import,
-            export,
-            set_default_file,
-            // builder
+            // algorithm
+            algorithm_all,
+            algo_set_new,
+            algo_piece_new,
+            algo_slots_compute,
+            default_slot_size,
+            get_algo_by_days, // probably move to table mod
+            main_stat_all,
+            // compute
+            get_needed_rsc,
             update_chunk,
-            get_bonuses,
-            new_unit,
-            delete_unit,
-            save_units,
-            view_store_units,
-            generate_algo_db,
-            get_algo_by_days,
+            // model
+            enum_ls,
             // requirement
             requirement_slv,
             requirement_level,
             requirement_neural,
-            requirement_widget,
             requirment_neural_kits,
+            requirement_widget,
+            // service
+            import,
+            export,
+            set_default_file,
             // table
-            default_slot_size,
-            algo_set_new,
-            algo_piece_new,
-            main_stat_all,
-            get_needed_rsc,
-            algorithm_all,
-            get_algo_types,
-            // api
-            algo_slots_compute,
-            enum_ls,
-            // validator
-            validate,
+            generate_algo_db,
+            get_bonuses,
+            // unit
+            view_store_units,
+            new_unit,
+            delete_unit,
+            save_units,
+            // validate
+            validate
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

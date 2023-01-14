@@ -39,7 +39,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   useEffect(() => {
     invoke<string[]>('enum_ls', {name: 'AlgoCategory'}).then(setALGOCATEGORY)
     async function get_algo_types() {
-      setAlgoTypes(await invoke<AlgoTypeDb[]>("get_algo_types"));
+      setAlgoTypes(await invoke<AlgoTypeDb[]>("generate_algo_db"));
       setMainStat(await invoke<AlgoMainStat[]>("main_stat_all"));
     }
     get_algo_types();
