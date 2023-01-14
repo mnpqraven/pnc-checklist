@@ -10,6 +10,7 @@ mod model;
 mod parser;
 mod state;
 mod validate;
+mod service;
 use tauri::Manager;
 
 use crate::api::builder::{

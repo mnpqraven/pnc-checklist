@@ -33,6 +33,7 @@ impl Default for DatabaseRequirement {
         // not used yet
         let _db: GrandResource = GrandResource::default();
         let mut reqs: Vec<UnitRequirement> = Vec::new();
+        dbg!(&store.units);
         for unit in store.units.iter() {
             // TODO: test
             reqs.push(UnitRequirement::update_unit_req(unit))

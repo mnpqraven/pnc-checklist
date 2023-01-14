@@ -3,13 +3,13 @@ import Link from "next/link";
 // const navigationRoutes = ['/', 'index_backup', 'about']
 const navigationRoutes = [
   { route: "/", name: "Home" },
-  { route: "dolls", name: "🍨🍨🍨" },
+  { route: "dolls", name: "Dolls" },
   // unimplemented
   // { route: "resources", name: "🍨🍨🍨" },
   // { route: 'summary', name: "Summary" },
   // { route: 'algo', name: "Algorithm" },
   // { route: 'about', name: "About" },
-  { route: "settings", name: "🍨🍨🍨" },
+  { route: "settings", name: "Settings" },
 ];
 
 const Navbar = () => {

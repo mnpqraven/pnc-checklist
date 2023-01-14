@@ -62,8 +62,11 @@ pub struct Loadout {
     pub algo: AlgoSet,
     #[serde(default)]
     pub neural: NeuralExpansion,
-    #[serde(default)]
+    #[serde(default = "default_unit_frags")]
     pub frags: Option<u32>,
+}
+fn default_unit_frags() -> Option<u32> {
+    Some(0)
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, TS)]
@@ -79,8 +82,6 @@ pub struct Unit {
     pub goal: Loadout,
 }
 
-// TODO: need another wrapper
-// ImportChunk has all the options > go through Option<> check into another struct
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct UserStore {
@@ -127,6 +128,7 @@ pub struct WidgetResourceRequirement {
 #[derive(Debug, Serialize, Deserialize, Default, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct NeuralResourceRequirement {
+    #[serde(default)]
     pub frags: u32,
     pub coin: Coin,
 }
