@@ -7,7 +7,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
-import styles from "@/styles/Page.module.css";
+import styles from "../../styles/Page.module.css";
 import { AlgoMainStat, AlgoCategory, LoadoutType } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet, AlgoTypeDb } from "@/src-tauri/bindings/structs";
 
@@ -19,6 +19,7 @@ export type OptionPayload = {
   algoTypes: AlgoTypeDb;
   mainStat: AlgoMainStat[];
 };
+
 const AlgorithmSet = ({ algo, type }: Props) => {
   const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[]>([]);
@@ -49,25 +50,22 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         if (draft) draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e)
       })
   }
+
   function handleUpdatePiece(e: AlgoPiece | null, cat: AlgoCategory, index: number): void {
-    if (setDollData) {
-      if (e) {
-        setDollData((draft) => {
-          if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e
-        })
-      } else {
-        // no piece passed, deletion
-        setDollData((draft) => {
-          if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1)
-        })
-      }
-    }
+    if (setDollData && e)
+      setDollData((draft) => {
+        if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e
+      })
+    else if (setDollData) // no piece passed, deletion
+      setDollData((draft) => {
+        if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1)
+      })
   }
 
   return (
     <>
-      <div className="flex">
-        <div className={styles.algocategory}>
+      <div className={styles.setContainer}>
+        <div className={`${styles.algocategory}`}>
           {algoTypes[0] !== undefined ? (
             algo.offense.map((piece, index) => (
               <div key={`offense-${index}`} className="m-1">
@@ -86,9 +84,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           )}
         </div>
 
-        <div className="mx-2" />
-
-        <div className={`${styles.algocategory} ${styles.list}`}>
+        <div className={`${styles.algocategory}`}>
           {algoTypes[1] !== undefined ? (
             algo.stability.map((piece, index) => (
               <div key={`stability-${index}`} className="m-1">
@@ -107,9 +103,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           )}
         </div>
 
-        <div className="mx-2" />
-
-        <div className={`${styles.algocategory} ${styles.list}`}>
+        <div className={`${styles.algocategory}`}>
           {algoTypes[2] !== undefined ? (
             algo.special.map((piece, index) => (
               <div key={`special-${index}`} className="m-1">

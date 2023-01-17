@@ -33,8 +33,10 @@ const DollList = ({
 
   return (
     <ul className={styles.dolllist}>
+      <li onClick={new_unit}>add new doll</li>
+      <li onClick={() => setDeleteMode(!deleteMode)}>Toggle delete</li>
       {list.map((unit, index) => (
-        <li key={index} onClick={(e) => indexChange(index)}>
+        <li key={index} onClick={(_) => indexChange(index)}>
           <div className="flex items-center">
             <div className="mx-2">
               <Image
@@ -61,8 +63,6 @@ const DollList = ({
           )}
         </li>
       ))}
-      <li onClick={new_unit}>add new doll</li>
-      <li onClick={() => setDeleteMode(!deleteMode)}>edit</li>
     </ul>
   );
 };

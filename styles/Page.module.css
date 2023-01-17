@@ -44,9 +44,21 @@
   border: 1px solid rgba(var(--card-border-rgb), 0.4);
   transition: background 200ms, border 200ms;
 }
+
+.setContainer {
+  display: inline-flex;
+  width: 100%;
+}
+
 .algocategory {
+  /* manage child*/
   display: flex;
   flex-direction: column;
+
+  /* manage parent */
+  flex-shrink: 0;
+  flex-basis: calc(100% / 3);
+  min-width: fit-content;
 }
 
 @media (hover: hover) and (pointer: fine) {

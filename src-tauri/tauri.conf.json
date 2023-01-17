@@ -61,10 +61,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 800,
+        "height": 1200,
         "resizable": true,
         "title": "pnc-checklist",
-        "width": 1280
+        "width": 1440
       }
     ]
   }

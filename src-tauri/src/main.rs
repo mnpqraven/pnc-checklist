@@ -14,7 +14,6 @@ mod state;
 mod table;
 mod unit;
 mod validator;
-use model::cmdbindings::{write_index_binding, AllEnums, AllStructs, Folder};
 use tauri::Manager;
 
 // will be invoked during startup
@@ -36,11 +35,7 @@ use crate::{
     validator::validate,
 };
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
-    // update TS binding index
-    write_index_binding::<AllEnums>(Folder::Enums).unwrap();
-    write_index_binding::<AllStructs>(Folder::Structs).unwrap();
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)]

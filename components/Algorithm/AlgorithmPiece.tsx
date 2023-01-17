@@ -16,6 +16,7 @@ type Props = {
   valid: boolean | undefined;
   onChange: (e: AlgoPiece | null, cat: AlgoCategory, index: number) => void;
 };
+
 const AlgorithmPiece = ({
   index,
   pieceData,
@@ -24,18 +25,13 @@ const AlgorithmPiece = ({
   valid,
   onChange: pieceUpdate,
 }: Props) => {
+
   const { dollData } = useContext(DollContext);
   const [nameLabel, setNameLabel] = useState(pieceData.name);
   const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
-  const [ALGOMAINSTAT, setALGOMAINSTAT] = useState<string[]>([])
-  const [ALGORITHM, setALGORITHM] = useState<string[]>([])
 
-  useEffect(() => {
-    invoke<string[]>('enum_ls', { name: "AlgoMainStat" }).then(setALGOMAINSTAT)
-    invoke<string[]>('enum_ls', { name: "Algorithm" }).then(setALGORITHM)
-  }, [])
   // chaging unit
   useEffect(() => {
     setNameLabel(pieceData.name);
@@ -47,10 +43,11 @@ const AlgorithmPiece = ({
       setSlot(e);
     });
   }, [pieceData]);
+
   // changing details, passed to parent's setDollData
   useEffect(() => {
     pieceUpdate(piece, category, index);
-  }, [category, index, piece, pieceUpdate]);
+  }, [category, index, piece]);
 
   async function updateSlots(
     name: Algorithm,
@@ -67,10 +64,12 @@ const AlgorithmPiece = ({
     setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm });
     setNameLabel(event.currentTarget.value as Algorithm);
   }
+
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
     setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat });
     setMainStatLabel(event.currentTarget.value as AlgoMainStat);
   }
+
   function slotHandler(
     e: ChangeEvent<HTMLInputElement>,
     checkboxIndex: number
@@ -88,15 +87,15 @@ const AlgorithmPiece = ({
   return (
     <>
       <div
-        className={`${valid === false ? `border border-red-500` : ``
-          } flex justify-between`}
+        className={` flex justify-center
+        ${valid === false ? `border border-red-500` : ``} `}
       >
         <div>
           <Image
             src={`algos/${nameLabel.toLowerCase()}.png`}
             alt={"algo"}
-            width={64}
-            height={64}
+            width={60}
+            height={60}
           />
         </div>
         <div className="m-2 flex flex-col">
@@ -110,22 +109,23 @@ const AlgorithmPiece = ({
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />
-          {dollData ? (
-            <SlotCheckbox
-              value={slot}
-              unitClass={dollData.class}
-              category={category}
-              onChangeHandler={slotHandler}
-            />
-          ) : (
-            <Loading />
-          )}
-        </div>
-        <div className="self-center">
-          <button onClick={() => setPiece(null)}>delete</button>
+          <div className="flex flex-row justify-between">
+            {dollData ? (
+              <SlotCheckbox
+                value={slot}
+                unitClass={dollData.class}
+                category={category}
+                onChangeHandler={slotHandler}
+              />
+            ) : (
+              <Loading />
+            )}
+            <button onClick={() => pieceUpdate(null, category, index)}>delete</button>
+          </div>
         </div>
       </div>
     </>
   );
 };
+
 export default AlgorithmPiece;
