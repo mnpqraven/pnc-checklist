@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, Display};
+use strum::{Display, EnumIter};
 use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
@@ -14,7 +14,7 @@ pub enum Class {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
 #[ts(export, export_to = "bindings/enums/")]
 /// List of algorithms
 pub enum Algorithm {
@@ -43,6 +43,7 @@ pub enum Algorithm {
     Resolve,
     //special
     Inspiration,
+    #[strum(serialize = "Loop Gain")]
     LoopGain,
     #[strum(serialize = "S.V.M")]
     SVM,
@@ -75,7 +76,7 @@ pub enum Bonus {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoMainStat {
     Hashrate,
@@ -143,5 +144,5 @@ pub enum NeuralExpansion {
 #[ts(rename_all = "lowercase")]
 pub enum LoadoutType {
     Current,
-    Goal
+    Goal,
 }

@@ -1,5 +1,3 @@
-import { AlgoCategory, Unit, AlgoPiece, ALGOCATEGORY, LoadoutType } from "@/interfaces/datamodel";
-
 /**
  * same as Object.keys() but with generic type return
  */
@@ -15,7 +13,8 @@ export function parse_date_iso(d: Date): string {
   const year = d.getFullYear();
   let month = String(d.getMonth() + 1).padStart(2, "0");
   let day = String(d.getDate()).padStart(2, "0");
-  // TODO: 20:00:00 JP 21:00:00 CN
+  // TODO: config for different server
+  // 20:00:00 JP 21:00:00 CN
   return `${year}-${month}-${day}T13:00:00Z`;
 }
 export function date_passed(d: Date): boolean {

@@ -9,6 +9,7 @@ pub mod error;
 // INFO: run tests to genrate bindings
 pub mod enums;
 pub mod structs;
+
 #[cfg(test)]
 mod indexbindings {
     use crate::model::cmdbindings::*;

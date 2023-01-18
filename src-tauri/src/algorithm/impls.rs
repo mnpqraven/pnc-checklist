@@ -116,6 +116,7 @@ impl AlgoPiece {
             },
         }
     }
+
     pub fn compute_slots(name: Algorithm, current_slots: Vec<bool>) -> Vec<bool> {
         let size: usize = match name {
             Algorithm::Perception
@@ -135,6 +136,14 @@ impl AlgoPiece {
             res.push(*current_slots.get(i).unwrap_or(&false));
         }
         res
+    }
+
+    pub fn get_category(&self) -> AlgoCategory {
+        match true {
+            true if ALGO_OFFENSE.contains(&self.name) => AlgoCategory::Offense,
+            true if ALGO_STABILITY.contains(&self.name) => AlgoCategory::Stability,
+            _ => AlgoCategory::Special,
+        }
     }
 }
 
@@ -156,4 +165,3 @@ impl AlgoTypeDb {
         ]
     }
 }
-

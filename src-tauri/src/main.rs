@@ -45,14 +45,12 @@ fn main() {
             }
             Ok(())
         })
+        // JSON data
         .manage(Storage {
-            // JSON data
             store: Default::default(),
             db: Default::default(),
-            // updated post launch
-            // NOTE: should put in separate state ?
-            // database_req: Default::default(),
         })
+        // updated post launch
         .manage(Computed {
             database_req: Default::default(),
         })
@@ -60,11 +58,6 @@ fn main() {
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
             // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
-            // TODO:
-            // figure out validation return on frontend home
-            // actual logging to frontend
-            // rsc page inventory for frontend
-            // relative search ? TBD
 
             // algorithm
             algorithm_all,

@@ -27,7 +27,8 @@ pub struct Database {
     pub skill: SkillCurrency,
     pub coin: Coin,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+
+#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct AlgoPiece {
     pub name: Algorithm,

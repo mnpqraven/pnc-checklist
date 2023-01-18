@@ -3,6 +3,7 @@ use crate::{requirement::impls::*, model::error::RequirementError};
 #[cfg(test)]
 mod bacon;
 mod impls;
+mod types;
 
 /// calculates total tokens + pivots needed for a unit
 ///

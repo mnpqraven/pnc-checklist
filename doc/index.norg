@@ -1,0 +1,56 @@
+@document.meta
+title: README
+description: Insert description here
+authors: Othi
+categories: README
+created: 2023-01-18
+updated: 2023-01-19
+version: 1.0.0
+@end
+
+* TODO
+** Frontend
+*** Features
+*** Current
+* NOTE
+  // actual logging to frontend
+  // rsc page inventory for frontend
+  // relative search ? TBD
+** Backend
+*** Changelog
+**** 19-01-2023
+*** Features
+*** Current
+    #implementing
+    - (-) Parse DB for needed algo pieces
+
+    #general
+    - ( ) error handle
+    -- ( ) requirement
+    -- ( ) compute
+
+    #bugs
+    - (!)
+
+    #maintenance
+    - ( ) refactors
+    -- ( ) model: structs that manage other structs (Storage, Unit,
+       Requirements, etc.) should be in their own modules
+
+    - (+) documentation
+    -- ( ) functions
+
+    #ideas
+    - (=) validation return on frontend home
+
+    - (=) how should we keep track of good algos that are being hoarded ?
+    -- (?) inventory state to keep track of all added algo pieces that has been
+       added to current ?
+    - any piece added to current will be added to inventory
+    - deletion window will have 'to inventory' option
+    - unequips gerenally defaults to inventory move
+    - (?) inventory will be later compared with requirement struct
+
+    - (?) should `UnitRequirement` or `Compute` has its own field of
+      requirement for algo
+

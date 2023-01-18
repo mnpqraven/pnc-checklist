@@ -1,6 +1,11 @@
+mod algo;
 mod impls;
+use crate::{
+    model::structs::{GrandResource, UnitRequirement, UserStore},
+    requirement::{requirement_level, requirement_neural, requirement_slv, requirement_widget},
+    state::{Computed, Storage},
+};
 use tauri::State;
-use crate::{model::structs::{UserStore, UnitRequirement, GrandResource}, state::{Computed, Storage}, requirement::{requirement_slv, requirement_neural, requirement_level, requirement_widget}};
 
 /// updates the requirement field in the store by reading the store field
 pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &'static str> {
