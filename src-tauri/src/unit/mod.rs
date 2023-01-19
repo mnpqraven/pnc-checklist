@@ -3,6 +3,8 @@ use tauri::State;
 use crate::{model::{structs::{Unit, Class}, error::TauriError}, state::{Storage, Computed}, service::file::localsave, compute::update_reqs};
 
 mod impls;
+#[cfg(test)]
+mod bacon;
 #[tauri::command]
 pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
     let guard = store.store.lock().unwrap();

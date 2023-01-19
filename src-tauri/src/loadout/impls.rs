@@ -1,7 +1,6 @@
-use crate::model::structs::{Loadout, UnitSkill, AlgoSet, NeuralExpansion, Level, NeuralFragment, AlgoPiece};
+use crate::model::structs::{AlgoSet, Level, Loadout, NeuralExpansion, NeuralFragment, UnitSkill};
 
 impl Loadout {
-
     pub fn new(maxed_slv: bool) -> Self {
         match maxed_slv {
             true => Self {
@@ -16,7 +15,7 @@ impl Loadout {
                 algo: AlgoSet::new(),
                 level: Level(1),
                 neural: NeuralExpansion::Three,
-                frags: NeuralFragment::default()
+                frags: NeuralFragment::default(),
             },
         }
     }
@@ -30,5 +29,16 @@ impl Loadout {
             frags: NeuralFragment(None),
         }
     }
+}
 
+impl Default for Loadout {
+    fn default() -> Self {
+        Self {
+            skill_level: Default::default(),
+            level: Default::default(),
+            algo: Default::default(),
+            neural: Default::default(),
+            frags: Default::default(),
+        }
+    }
 }

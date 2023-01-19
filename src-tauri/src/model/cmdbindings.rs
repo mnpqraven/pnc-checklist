@@ -60,6 +60,7 @@ pub enum Folder {
     #[strum(serialize = "structs")]
     Structs,
 }
+#[allow(dead_code)]
 pub fn write_index_binding<T>(folder: Folder) -> std::io::Result<()>
 where
     T: Display + IntoEnumIterator,

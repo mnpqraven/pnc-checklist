@@ -7,6 +7,8 @@ use crate::{
     },
 };
 
+use super::types::AlgorithmRequirement;
+
 impl DatabaseRequirement {
     pub fn generate_resource(&self) -> GrandResource {
         // Vec<UnitRequirement> > GrandResource
@@ -57,6 +59,16 @@ impl UnitRequirement {
         }
     }
 }
+
+impl AlgorithmRequirement {
+    pub(super) fn calculate(from_unit: Unit) -> Result<Self, RequirementError<Unit>>{
+        Ok(Self {
+            pieces: from_unit.get_missing_algos(),
+            from_unit
+        })
+    }
+}
+
 impl LevelRequirement {
     pub(super) fn calculate(from: u32, to: u32) -> Result<Self, RequirementError<u32>> {
         match &from.cmp(&to) {

@@ -31,29 +31,12 @@ impl Unit {
         }
     }
 
-    pub fn _get_missing_algos(&self) -> Vec<AlgoPiece> {
-        let mut v: Vec<AlgoPiece> = Vec::new();
-        // iterates over each category and checks for equality
-        let listcurrent = vec![
-            &self.current.algo.offense,
-            &self.current.algo.stability,
-            &self.current.algo.special,
-        ];
-        let listgoal = vec![
-            &self.goal.algo.offense,
-            &self.goal.algo.stability,
-            &self.goal.algo.special,
-        ];
-        // TODO: test
-        for (ind, cat_ptr) in listgoal.iter().enumerate() {
-            for piece_goal in cat_ptr.iter() {
-                if !listcurrent[ind].contains(piece_goal) {
-                    v.push(piece_goal.to_owned())
-                }
-            }
-        }
-
-        v
+    /// Returns a vector of AlgoPiece by checking unit's `current` and `goal`
+    /// Loadout struct
+    pub fn get_missing_algos(&self) -> Vec<AlgoPiece> {
+        let mut v = self.goal.algo.clone();
+        v.update_slots(self.current.algo.get_bucket());
+        v.get_bucket()
     }
 }
 impl Default for NeuralExpansion {

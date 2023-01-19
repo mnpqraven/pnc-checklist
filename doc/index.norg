@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-01-19
+updated: 2023-01-20
 version: 1.0.0
 @end
 
@@ -13,12 +13,13 @@ version: 1.0.0
 *** Features
 *** Current
 * NOTE
-  // actual logging to frontend
-  // rsc page inventory for frontend
-  // relative search ? TBD
+
+**  Ideas
+    - ( )  actual logging to frontend
+    - ( )  rsc page inventory for frontend
+    - ( )  relative search ? TBD
 ** Backend
 *** Changelog
-**** 19-01-2023
 *** Features
 *** Current
     #implementing
@@ -36,6 +37,7 @@ version: 1.0.0
     - ( ) refactors
     -- ( ) model: structs that manage other structs (Storage, Unit,
        Requirements, etc.) should be in their own modules
+    -- ( ) check for zombie code esp. in the algorithm/requirement section
 
     - (+) documentation
     -- ( ) functions
@@ -53,4 +55,5 @@ version: 1.0.0
 
     - (?) should `UnitRequirement` or `Compute` has its own field of
       requirement for algo
+    -- (x) We'll be using `AlgoRequirment` in `UnitRequirement`
 

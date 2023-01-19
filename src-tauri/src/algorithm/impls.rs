@@ -93,6 +93,75 @@ impl AlgoSet {
             special: vec![AlgoPiece::new(AlgoCategory::Special)],
         }
     }
+
+    /// returns all AlgoPieces from the set as a vector
+    /// can be used for later searches and filters
+    pub fn get_bucket(&self) -> Vec<AlgoPiece> {
+        let mut v: Vec<AlgoPiece> = Vec::new();
+        let cats = vec![&self.offense, &self.stability, &self.special];
+        for cat in cats {
+            for piece in cat {
+                v.push(piece.clone());
+            }
+        }
+        v
+    }
+
+    /// consumes a bucket of AlgoPiece to update the AlgoSet
+    fn set_from_bucket(&mut self, bucket: &Vec<AlgoPiece>) {
+        dbg!(&bucket);
+        self.offense = bucket
+            .iter()
+            .map(|e| e.clone())
+            .filter(|piece| piece.get_category() == AlgoCategory::Offense)
+            .collect();
+        self.stability = bucket
+            .iter()
+            .map(|e| e.clone())
+            .filter(|piece| piece.get_category() == AlgoCategory::Stability)
+            .collect();
+        self.special = bucket
+            .iter()
+            .map(|e| e.clone())
+            .filter(|piece| piece.get_category() == AlgoCategory::Special)
+            .collect();
+        dbg!(&self);
+    }
+
+    /// given an AlgoSet, toggles the slot vec to update what's still
+    /// needed
+    ///
+    /// * `current`: Algoset that self is getting its slot vector compared with
+    // EVAL: sees if it's better to just flatten the vec and get rid of
+    // categorization
+    pub fn update_slots(
+        // goal: &mut Vec<AlgoPiece>,
+        &mut self,
+        updatee: Vec<AlgoPiece>,
+    ) {
+        let goal: &mut Vec<AlgoPiece> = &mut self.get_bucket();
+        for goal_piece in goal.iter_mut() {
+            let same_piece_in_updatee: Vec<AlgoPiece> = updatee
+                .iter()
+                .map(|f| f.clone())
+                .filter(|e| e.name.eq(&goal_piece.name) && e.stat.eq(&goal_piece.stat))
+                .collect();
+            // 2d array [b, b, b][]
+            for updatee_piece in same_piece_in_updatee {
+                // current
+                for (ind, current_slot) in updatee_piece.slot.iter().enumerate() {
+                    // current.goal....needed
+                    // true    true  > false
+                    // false   true  > true
+                    // true    false > false
+                    // false   false > false
+                    goal_piece.slot[ind] = !*current_slot && goal_piece.slot[ind];
+                }
+            }
+        }
+        self.set_from_bucket(goal);
+        dbg!(&self);
+    }
 }
 
 impl AlgoPiece {
