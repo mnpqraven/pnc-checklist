@@ -1,25 +1,7 @@
-use crate::model::structs::{Level, Unit, Class, Loadout, UnitSkill, NeuralExpansion, NeuralFragment, AlgoPiece};
+use crate::model::structs::{
+    AlgoPiece, Class, Level, Loadout, NeuralExpansion, NeuralFragment, Unit, UnitSkill,
+};
 
-impl UnitSkill {
-    pub fn new() -> Self {
-        Self {
-            passive: 1,
-            auto: 1,
-        }
-    }
-    pub fn max() -> Self {
-        Self {
-            passive: 10,
-            auto: 10,
-        }
-    }
-}
-
-impl Level {
-    pub fn max() -> Self {
-        Self(70)
-    }
-}
 // UNIT
 impl Unit {
     pub fn new(name: String, class: Class) -> Self {
@@ -39,11 +21,24 @@ impl Unit {
         v.get_bucket()
     }
 }
+
+impl Default for Unit {
+    fn default() -> Self {
+        Self {
+            name: Default::default(),
+            class: Default::default(),
+            current: Default::default(),
+            goal: Default::default(),
+        }
+    }
+}
+
 impl Default for NeuralExpansion {
     fn default() -> Self {
         Self::Two
     }
 }
+
 impl Default for UnitSkill {
     fn default() -> Self {
         Self {
@@ -52,13 +47,36 @@ impl Default for UnitSkill {
         }
     }
 }
+
 impl Default for Level {
     fn default() -> Self {
         Self(1)
     }
 }
+
 impl Default for NeuralFragment {
     fn default() -> Self {
         Self(Some(0))
+    }
+}
+
+impl UnitSkill {
+    pub fn new() -> Self {
+        Self {
+            passive: 1,
+            auto: 1,
+        }
+    }
+    pub fn max() -> Self {
+        Self {
+            passive: 10,
+            auto: 10,
+        }
+    }
+}
+
+impl Level {
+    pub fn max() -> Self {
+        Self(70)
     }
 }

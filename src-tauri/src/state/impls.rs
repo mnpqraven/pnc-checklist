@@ -1,9 +1,6 @@
 use crate::{
-    model::structs::{
-        Class, Coin, DatabaseRequirement, Exp, GrandResource, SkillCurrency, UnitRequirement,
-        UserStore, WidgetResource,
-    },
-    service::file::import,
+    model::structs::{Class, Coin, Exp, GrandResource, SkillCurrency, UserStore, WidgetResource},
+    service::file::import, requirement::types::{DatabaseRequirement, UnitRequirement},
 };
 use std::path::Path;
 use strum::IntoEnumIterator;

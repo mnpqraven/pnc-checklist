@@ -108,24 +108,25 @@ impl AlgoSet {
     }
 
     /// consumes a bucket of AlgoPiece to update the AlgoSet
-    fn set_from_bucket(&mut self, bucket: &Vec<AlgoPiece>) {
+    fn get_set(bucket: &Vec<AlgoPiece>) -> Self {
         dbg!(&bucket);
-        self.offense = bucket
-            .iter()
-            .map(|e| e.clone())
-            .filter(|piece| piece.get_category() == AlgoCategory::Offense)
-            .collect();
-        self.stability = bucket
-            .iter()
-            .map(|e| e.clone())
-            .filter(|piece| piece.get_category() == AlgoCategory::Stability)
-            .collect();
-        self.special = bucket
-            .iter()
-            .map(|e| e.clone())
-            .filter(|piece| piece.get_category() == AlgoCategory::Special)
-            .collect();
-        dbg!(&self);
+        Self {
+            offense: bucket
+                .iter()
+                .map(|e| e.clone())
+                .filter(|piece| piece.get_category() == AlgoCategory::Offense)
+                .collect(),
+            stability: bucket
+                .iter()
+                .map(|e| e.clone())
+                .filter(|piece| piece.get_category() == AlgoCategory::Stability)
+                .collect(),
+            special: bucket
+                .iter()
+                .map(|e| e.clone())
+                .filter(|piece| piece.get_category() == AlgoCategory::Special)
+                .collect(),
+        }
     }
 
     /// given an AlgoSet, toggles the slot vec to update what's still
@@ -159,7 +160,7 @@ impl AlgoSet {
                 }
             }
         }
-        self.set_from_bucket(goal);
+        *self = Self::get_set(goal);
         dbg!(&self);
     }
 }

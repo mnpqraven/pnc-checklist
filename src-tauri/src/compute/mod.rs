@@ -1,10 +1,11 @@
 mod algo;
 mod impls;
 use crate::{
-    model::structs::{GrandResource, UnitRequirement, UserStore},
-    requirement::{requirement_level, requirement_neural, requirement_slv, requirement_widget},
+    model::structs::{GrandResource, UserStore},
+    requirement::{requirement_level, requirement_neural, requirement_slv, requirement_widget, requirement_algo},
     state::{Computed, Storage},
 };
+use crate::requirement::types::UnitRequirement;
 use tauri::State;
 
 /// updates the requirement field in the store by reading the store field
@@ -13,7 +14,7 @@ pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &
     let mut req_guard = computed.database_req.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
     for unit in store.units.iter() {
-        // TODO: landmine or Err unwraps
+        // WARN: landmine or Err unwraps
         reqs.push(UnitRequirement {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
             neural: requirement_neural(unit.current.frags, unit.current.neural, unit.goal.neural)
@@ -21,6 +22,7 @@ pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &
             level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
             breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
                 .unwrap(),
+            algo: requirement_algo(unit).unwrap()
         })
     }
     req_guard.unit_req = reqs;

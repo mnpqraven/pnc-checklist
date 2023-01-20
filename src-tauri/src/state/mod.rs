@@ -1,7 +1,8 @@
 // TODO: test tauri Mutex
 use std::sync::Mutex;
 
-use crate::model::structs::{GrandResource, UserStore, DatabaseRequirement};
+use crate::model::structs::{GrandResource, UserStore};
+use crate::requirement::types::DatabaseRequirement;
 
 mod impls;
 

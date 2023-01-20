@@ -1,5 +1,8 @@
 use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
-use crate::{model::structs::*, requirement::requirement_slv};
+use crate::{
+    model::structs::*,
+    requirement::{requirement_slv, types::*},
+};
 
 #[test]
 fn test_skill_total() {

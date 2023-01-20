@@ -1,9 +1,11 @@
-use crate::{requirement::impls::*, model::error::RequirementError};
+use crate::model::error::RequirementError;
+use self::{types::*, impls::*};
+
 
 #[cfg(test)]
 mod bacon;
 mod impls;
-mod types;
+pub mod types;
 
 /// calculates total tokens + pivots needed for a unit
 ///
@@ -12,10 +14,12 @@ mod types;
 pub fn requirement_slv(current_slv: UnitSkill, target_slv: UnitSkill) -> SkillResourceRequirement {
     SkillResourceRequirement::calculate(current_slv, target_slv)
 }
+
 #[tauri::command]
 pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, RequirementError<u32>> {
     LevelRequirement::calculate(from, to)
 }
+
 #[tauri::command]
 pub fn requirement_neural(
     current: NeuralFragment,
@@ -24,6 +28,7 @@ pub fn requirement_neural(
 ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
     NeuralResourceRequirement::calculate(current, from, to)
 }
+
 #[tauri::command]
 pub fn requirment_neural_kits(
     current: NeuralFragment,
@@ -32,6 +37,7 @@ pub fn requirment_neural_kits(
 ) -> Result<u32, RequirementError<NeuralFragment>> {
     NeuralResourceRequirement::calculate_kits_conversion(current, from, to)
 }
+
 #[tauri::command]
 pub fn requirement_widget(
     class: Class,
@@ -39,4 +45,10 @@ pub fn requirement_widget(
     to: u32,
 ) -> Result<WidgetResourceRequirement, RequirementError<u32>> {
     WidgetResourceRequirement::calculate(class, from, to)
+}
+
+pub fn requirement_algo(
+    from: &Unit
+    ) -> Result<AlgorithmRequirement, RequirementError<Unit>> {
+    AlgorithmRequirement::calculate(from)
 }

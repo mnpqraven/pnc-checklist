@@ -7,7 +7,7 @@ use crate::{
     },
 };
 
-use super::types::AlgorithmRequirement;
+use super::types::*;
 
 impl DatabaseRequirement {
     pub fn generate_resource(&self) -> GrandResource {
@@ -42,8 +42,10 @@ impl UnitRequirement {
                 unit.goal.level.0,
             )
             .unwrap(),
+            algo: AlgorithmRequirement::calculate(unit).unwrap(),
         }
     }
+
     pub fn get_req(&self) -> GrandResource {
         let skill = SkillCurrency {
             token: self.skill.token,
@@ -61,10 +63,10 @@ impl UnitRequirement {
 }
 
 impl AlgorithmRequirement {
-    pub(super) fn calculate(from_unit: Unit) -> Result<Self, RequirementError<Unit>>{
+    pub(super) fn calculate(from_unit: &Unit) -> Result<Self, RequirementError<Unit>> {
         Ok(Self {
             pieces: from_unit.get_missing_algos(),
-            from_unit
+            from_unit: from_unit.clone(),
         })
     }
 }
@@ -114,15 +116,19 @@ impl NeuralResourceRequirement {
                 Ok(NeuralResourceRequirement {
                     frags: Self::get_frags(current, from, to),
                     coin: Coin(sum_coin.iter().sum::<u32>()),
-                    kits: Self::calculate_kits_conversion(current, from, to)
-                        .unwrap(),
+                    kits: Self::calculate_kits_conversion(current, from, to).unwrap(),
                 })
             }
             // TODO: handle
             _ => Ok(NeuralResourceRequirement::default()),
         }
     }
-    fn get_frags(current: NeuralFragment, from: NeuralExpansion, to: NeuralExpansion) -> NeuralFragment {
+
+    fn get_frags(
+        current: NeuralFragment,
+        from: NeuralExpansion,
+        to: NeuralExpansion,
+    ) -> NeuralFragment {
         let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
         NeuralFragment(Some(sum.iter().sum::<u32>() - current.0.unwrap_or(0)))
     }
