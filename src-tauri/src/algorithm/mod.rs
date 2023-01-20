@@ -23,7 +23,7 @@ pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
 }
 #[tauri::command]
 pub fn algo_slots_compute(name: Algorithm, current_slots: Vec<bool>) -> Vec<bool> {
-    AlgoPiece::compute_slots(name, current_slots)
+    AlgoPiece::compute_slots(&name, &current_slots)
 }
 
 #[tauri::command]

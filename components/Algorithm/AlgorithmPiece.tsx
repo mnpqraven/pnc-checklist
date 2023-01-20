@@ -63,6 +63,9 @@ const AlgorithmPiece = ({
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
     setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm });
     setNameLabel(event.currentTarget.value as Algorithm);
+    // TODO: communicate with backend for slot info
+    // pass slot to backend for processing
+    console.warn(slot)
   }
 
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {

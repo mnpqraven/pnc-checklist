@@ -180,30 +180,30 @@ fn trait_algoset() {
             },
         ],
     };
-    assert_eq!(algo_set.input_validate(), Ok(()));
+    assert_eq!(algo_set.input_validate::<AlgoSet>(), Ok(None));
     algo_set.offense = Vec::new();
     algo_set.stability[1].name = Algorithm::DeltaV;
 
     let errs = vec![(Algorithm::DeltaV, AlgoCategory::Stability)];
     assert_eq!(
-        algo_set.input_validate(),
+        algo_set.input_validate::<AlgoSet>(),
         Err(ValidationError::ForeignAlgo(errs))
     );
 
     assert_eq!(
-        algo_set.stability[0].input_validate(),
-        Err(ValidationError::ForeignMainStat((
+        algo_set.stability[0].input_validate::<AlgoPiece>(),
+        Err::<Option<AlgoPiece>, ValidationError>(ValidationError::ForeignMainStat((
             AlgoMainStat::AtkPercent,
             AlgoCategory::Stability
         )))
     );
     assert_eq!(
-        algo_set.special[0].input_validate(),
-        Ok(())
+        algo_set.special[0].input_validate::<Vec<bool>>(),
+        Ok::<Option<Vec<bool>>, ValidationError>(None)
     );
     assert_eq!(
-        algo_set.special[1].input_validate(),
-        Err(ValidationError::ForeignMainStat((
+        algo_set.special[1].input_validate::<AlgoPiece>(),
+        Err::<Option<AlgoPiece>, ValidationError>(ValidationError::ForeignMainStat((
             AlgoMainStat::PostBattleRegen,
             AlgoCategory::Special
         )))

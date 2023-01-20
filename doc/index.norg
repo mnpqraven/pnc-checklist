@@ -44,6 +44,8 @@ version: 1.0.0
 
     #ideas
     - (=) validation return on frontend home
+    - (-) think more in pipes ? try to keep upcoming refactors with that in
+      mind
 
     - (=) how should we keep track of good algos that are being hoarded ?
     -- (?) inventory state to keep track of all added algo pieces that has been

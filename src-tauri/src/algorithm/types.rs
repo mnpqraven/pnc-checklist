@@ -60,7 +60,7 @@ pub struct AlgoPiece {
     pub slot: Vec<bool>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct AlgoSet {
     pub offense: Vec<AlgoPiece>,

@@ -1,9 +1,11 @@
 use super::ValidData;
 use crate::{algorithm::types::*, validator::ValidationError};
 
-impl ValidData for AlgoSet {
+/// probably only name
+impl ValidData<AlgoSet> for AlgoSet {
+    type U = AlgoSet;
     /// Ensures algos are in the right category
-    fn input_validate(&mut self) -> Result<(), ValidationError> {
+    fn input_validate<U>(&self) -> Result<Option<AlgoSet>, ValidationError> {
         let cats = vec![&self.offense, &self.stability, &self.special];
         let list = vec![
             AlgoTypeDb::get_algo(AlgoCategory::Offense),
@@ -19,15 +21,16 @@ impl ValidData for AlgoSet {
             }
         }
         match errs.is_empty() {
-            true => Ok(()),
+            true => Ok(None),
             false => Err(ValidationError::ForeignAlgo(errs)),
         }
     }
 }
 
-impl ValidData for AlgoPiece {
+impl ValidData<AlgoPiece> for AlgoPiece {
+    type U = AlgoPiece;
     /// Ensures the right main stats are placed in the algo
-    fn input_validate(&mut self) -> Result<(), ValidationError> {
+    fn input_validate<U>(&self) -> Result<Option<AlgoPiece>, ValidationError> {
         // INFO: checking name + stat
         let cat = self.name.get_category();
 
@@ -36,10 +39,19 @@ impl ValidData for AlgoPiece {
             // println!("VALIDATION ERROR: USING DEFAULT");
             // self.stat = AlgoMainStat::default(&cat);
             false => Err(ValidationError::ForeignMainStat((self.stat.clone(), cat))),
-            true => Ok(()),
+            true => Ok(None),
         }
+    }
+}
 
-        // INFO: checking slot
-        // TODO: integration after examining frontend's hook
+impl ValidData<Vec<bool>> for AlgoPiece {
+    type U = Vec<bool>;
+    // INFO: checking slots
+    fn input_validate<U>(&self) -> Result<Option<Vec<bool>>, ValidationError> {
+        let next_slot = AlgoPiece::compute_slots(&self.name, &self.slot);
+        match self.slot.eq(&next_slot) {
+            false => Ok(Some(next_slot)),
+            _ => Ok(None)
+        }
     }
 }

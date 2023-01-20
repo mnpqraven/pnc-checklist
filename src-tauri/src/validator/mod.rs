@@ -1,5 +1,5 @@
 use self::{algo::validate_algo, unit::validate_unit_name};
-use crate::{model::error::ValidationError, unit::types::Unit};
+use crate::{algorithm::types::AlgoPiece, model::error::ValidationError, unit::types::Unit};
 
 mod algo;
 #[cfg(test)]
@@ -9,11 +9,13 @@ mod unit;
 
 /// Trait that is implemented to all user-inputtable data and checks for
 /// irregularities
-/// If the data is valid, will return itself
-/// If the data is not valid, will try to transform into the closest acceptable
-/// data, otherwise return `ValidationError`
-pub trait ValidData {
-    fn input_validate(&mut self) -> Result<(), ValidationError>;
+/// If the data is valid, will return None (as in no changes needed)
+/// If the data is not valid, will try to return the closest acceptable data
+/// If the data is not valid but the backend can't suggest a fixable
+/// alternative, return `ValidationError`
+pub trait ValidData<T> {
+    type U;
+    fn input_validate<U>(&self) -> Result<Option<T>, ValidationError>;
 }
 
 #[tauri::command]
@@ -33,4 +35,9 @@ pub fn validate(unit: Option<Unit>) -> Result<(), Vec<ValidationError>> {
         return Err(errs);
     }
     Ok(())
+}
+
+#[tauri::command]
+pub fn validate_slots(piece: AlgoPiece) -> Result<Option<Vec<bool>>, ValidationError> {
+    piece.input_validate::<Vec<bool>>()
 }

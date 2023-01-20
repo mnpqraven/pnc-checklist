@@ -21,11 +21,12 @@ export type OptionPayload = {
 };
 
 const AlgorithmSet = ({ algo, type }: Props) => {
+
   const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[]>([]);
   const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([])
-
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
+
   const errList = (category: AlgoCategory): number[] => {
     // e: [ALGOCATEGORY, indexes[]]
     let find = algoError.find((e) => e[0] == category);

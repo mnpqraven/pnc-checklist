@@ -33,7 +33,7 @@ use crate::{
     state::*,
     table::{generate_algo_db, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
-    validator::validate,
+    validator::{validate, validate_slots},
 };
 
 fn main() {
@@ -92,6 +92,7 @@ fn main() {
             delete_unit,
             save_units,
             // validator
+            validate_slots,
             validate
         ])
         .run(tauri::generate_context!())

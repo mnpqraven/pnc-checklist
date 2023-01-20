@@ -9,10 +9,12 @@ type Props = {
   type: LoadoutType;
   data: Loadout;
 };
+
 const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
 const Loadout = ({ type, data }: Props) => {
+
   const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;
   const { algo, neural } = data;
@@ -27,24 +29,28 @@ const Loadout = ({ type, data }: Props) => {
           draft[type].skill_level[skill_type as SkillType] = +e.target.value;
       });
   }
+
   function handleLevelChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined)
       setDollData((draft) => {
         if (draft) draft[type].level = +e.target.value;
       });
   }
+
   function handleFragsChange(e: ChangeEvent<HTMLInputElement>) {
     if (defined)
       setDollData((draft) => {
         if (draft) draft[type].frags = +e.target.value;
       });
   }
+
   function handleRarityChange(e: string) {
     if (defined)
       setDollData((draft) => {
         if (draft) draft[type].neural = e as NeuralExpansion;
       });
   }
+
   return (
     <>
       <div className="flex flex-row">
@@ -72,7 +78,9 @@ const LevelBox = ({
   handleLevelChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFragsChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
+
   const { level, frags } = data;
+
   return (
     <div className="flex flex-col flex-grow-0">
       <p>level:</p>
@@ -100,6 +108,7 @@ const LevelBox = ({
     </div>
   );
 };
+
 const SkillBox = ({
   data,
   handleSlvChange,
@@ -110,7 +119,9 @@ const SkillBox = ({
     skill_type: SkillType
   ) => void;
 }) => {
+
   const { skill_level } = data;
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
@@ -129,8 +140,8 @@ const SkillBox = ({
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-        <p>Auto Skill: </p>
-        <p>{skill_level.auto}</p>
+          <p>Auto Skill: </p>
+          <p>{skill_level.auto}</p>
         </div>
         <input
           className="p-0"

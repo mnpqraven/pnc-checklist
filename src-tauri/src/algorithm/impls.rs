@@ -202,7 +202,7 @@ impl AlgoPiece {
         }
     }
 
-    pub fn compute_slots(name: Algorithm, current_slots: Vec<bool>) -> Vec<bool> {
+    pub fn compute_slots(name: &Algorithm, current_slots: &Vec<bool>) -> Vec<bool> {
         let size: usize = match name {
             Algorithm::Perception
             | Algorithm::Deduction
