@@ -56,4 +56,3 @@ version: 1.0.0
     - (?) should `UnitRequirement` or `Compute` has its own field of
       requirement for algo
     -- (x) We'll be using `AlgoRequirment` in `UnitRequirement`
-
