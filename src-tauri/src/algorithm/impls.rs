@@ -165,13 +165,13 @@ impl AlgoSet {
             // 2d array [b, b, b][]
             for updatee_piece in same_piece_in_updatee {
                 // current
-                for (ind, current_slot) in updatee_piece.slot.iter().enumerate() {
+                for (ind, current_slot) in updatee_piece.slot.0.iter().enumerate() {
                     // current.goal....needed
                     // true    true  > false
                     // false   true  > true
                     // true    false > false
                     // false   false > false
-                    goal_piece.slot[ind] = !*current_slot && goal_piece.slot[ind];
+                    goal_piece.slot.0[ind] = !*current_slot && goal_piece.slot.0[ind];
                 }
             }
         }
@@ -187,22 +187,22 @@ impl AlgoPiece {
             AlgoCategory::Offense => Self {
                 name: Algorithm::Feedforward,
                 stat: AlgoMainStat::AtkPercent,
-                slot: vec![false; 3],
+                slot: AlgoSlot(vec![false; 3]),
             },
             AlgoCategory::Stability => Self {
                 name: Algorithm::Encapsulate,
                 stat: AlgoMainStat::Health,
-                slot: vec![false; 3],
+                slot: AlgoSlot(vec![false; 3]),
             },
             AlgoCategory::Special => Self {
                 name: Algorithm::DeltaV,
                 stat: AlgoMainStat::Haste,
-                slot: vec![false; 3],
+                slot: AlgoSlot(vec![false; 3]),
             },
         }
     }
 
-    pub fn compute_slots(name: &Algorithm, current_slots: &Vec<bool>) -> Vec<bool> {
+    pub fn compute_slots(name: &Algorithm, current_slots: &AlgoSlot) -> AlgoSlot {
         let size: usize = match name {
             Algorithm::Perception
             | Algorithm::Deduction
@@ -218,9 +218,9 @@ impl AlgoPiece {
         };
         let mut res: Vec<bool> = Vec::new();
         for i in 0..size {
-            res.push(*current_slots.get(i).unwrap_or(&false));
+            res.push(*current_slots.0.get(i).unwrap_or(&false));
         }
-        res
+        AlgoSlot(res)
     }
 
     pub fn get_category(&self) -> AlgoCategory {

@@ -1,5 +1,9 @@
 use self::{algo::validate_algo, unit::validate_unit_name};
-use crate::{algorithm::types::AlgoPiece, model::error::ValidationError, unit::types::Unit};
+use crate::{
+    algorithm::types::{AlgoPiece, AlgoSlot},
+    model::error::ValidationError,
+    unit::types::Unit,
+};
 
 mod algo;
 #[cfg(test)]
@@ -38,6 +42,6 @@ pub fn validate(unit: Option<Unit>) -> Result<(), Vec<ValidationError>> {
 }
 
 #[tauri::command]
-pub fn validate_slots(piece: AlgoPiece) -> Result<Option<Vec<bool>>, ValidationError> {
-    piece.input_validate::<Vec<bool>>()
+pub fn validate_slots(piece: AlgoPiece) -> Result<Option<AlgoSlot>, ValidationError> {
+    piece.input_validate::<AlgoSlot>()
 }

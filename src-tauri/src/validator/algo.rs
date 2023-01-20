@@ -23,7 +23,7 @@ pub fn validate_algo(unit: &Unit) -> Result<(), ValidationError> {
         };
 
         for (index, item) in algo_set.iter().enumerate() {
-            let trues: usize = item.slot.iter().filter(|e| **e).count();
+            let trues: usize = item.slot.0.iter().filter(|e| **e).count();
             if trues > size {
                 println!(
                     "TODO: err @ index {}, cat {:?}, item {:?}",

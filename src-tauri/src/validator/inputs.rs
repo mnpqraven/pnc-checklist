@@ -44,10 +44,10 @@ impl ValidData<AlgoPiece> for AlgoPiece {
     }
 }
 
-impl ValidData<Vec<bool>> for AlgoPiece {
-    type U = Vec<bool>;
+impl ValidData<AlgoSlot> for AlgoPiece {
+    type U = AlgoSlot;
     // INFO: checking slots
-    fn input_validate<U>(&self) -> Result<Option<Vec<bool>>, ValidationError> {
+    fn input_validate<U>(&self) -> Result<Option<AlgoSlot>, ValidationError> {
         let next_slot = AlgoPiece::compute_slots(&self.name, &self.slot);
         match self.slot.eq(&next_slot) {
             false => Ok(Some(next_slot)),

@@ -6,33 +6,33 @@ fn missing_algo() {
         offense: vec![AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: vec![false, false, false],
+            slot: AlgoSlot(vec![false, false, false]),
         }], //feed atk%
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: vec![false, true, false],
+            slot: AlgoSlot(vec![false, true, false]),
         }], // enc hp
         special: vec![
             AlgoPiece {
                 name: Algorithm::DeltaV,
                 stat: AlgoMainStat::Haste,
-                slot: vec![true, false, false],
+                slot: AlgoSlot(vec![true, false, false]),
             },
             AlgoPiece {
                 name: Algorithm::SVM,
                 stat: AlgoMainStat::HealInc,
-                slot: vec![true, false, false],
+                slot: AlgoSlot(vec![true, false, false]),
             },
         ],
     };
     let mut set2 = set.clone();
-    set2.offense[0].slot = vec![true, true, false];
-    set2.stability[0].slot = vec![true, true, false];
+    set2.offense[0].slot.0 = vec![true, true, false];
+    set2.stability[0].slot.0 = vec![true, true, false];
     set2.special = vec![AlgoPiece {
         name: Algorithm::DeltaV,
         stat: AlgoMainStat::Haste,
-        slot: vec![true, true, true],
+        slot: AlgoSlot(vec![true, true, true]),
     }];
     let current = Loadout {
         algo: set,
@@ -54,17 +54,17 @@ fn missing_algo() {
         AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: vec![true, true, false],
+            slot: AlgoSlot(vec![true, true, false]),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: vec![true, false, false],
+            slot: AlgoSlot(vec![true, false, false]),
         },
         AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: vec![false, true, true],
+            slot: AlgoSlot(vec![false, true, true]),
         },
     ];
     let left = t.get_missing_algos();

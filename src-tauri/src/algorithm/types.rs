@@ -57,8 +57,12 @@ pub struct AlgoPiece {
     pub name: Algorithm,
     pub stat: AlgoMainStat,
     // sub_stat: Option<Vec<AlgoSubStat>>,
-    pub slot: Vec<bool>,
+    pub slot: AlgoSlot,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct AlgoSlot(pub Vec<bool>);
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq)]
 #[ts(export, export_to = "bindings/structs/")]

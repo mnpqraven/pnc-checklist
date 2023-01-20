@@ -26,21 +26,21 @@ impl UserStore {
                                 AlgoPiece {
                                     name: Algorithm::Deduction,
                                     stat: AlgoMainStat::HashratePercent,
-                                    slot: vec![true, true]
+                                    slot: AlgoSlot(vec![true, true])
                                 }
                             ],
                             stability: vec![
                                 AlgoPiece {
                                     name: Algorithm::Overflow,
                                     stat: AlgoMainStat::DefPercent,
-                                    slot: vec![true, true, true]
+                                    slot: AlgoSlot(vec![true, true, true])
                                 }
                             ],
                             special: vec![
                                 AlgoPiece {
                                     name: Algorithm::Stratagem,
                                     stat: AlgoMainStat::DefPercent,
-                                    slot: vec![true, true]
+                                    slot: AlgoSlot(vec![true, true])
                                 }
                             ]
                         },

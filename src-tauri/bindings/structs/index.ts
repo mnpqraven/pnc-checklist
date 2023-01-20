@@ -1,6 +1,7 @@
 import { AlgoPiece } from "./AlgoPiece"
 import { AlgoSet } from "./AlgoSet"
 import { AlgoTypeDb } from "./AlgoTypeDb"
+import { AlgoSlot } from "./AlgoSlot"
 import { Coin } from "./Coin"
 import { Database } from "./Database"
 import { Exp } from "./Exp"
@@ -18,4 +19,4 @@ import { UnitSkill } from "./UnitSkill"
 import { UserStore } from "./UserStore"
 import { WidgetResource } from "./WidgetResource"
 import { WidgetResourceRequirement } from "./WidgetResourceRequirement"
-export type { AlgoPiece, AlgoSet, AlgoTypeDb, Coin, Database, Exp, GrandResource, Level, LevelRequirement, Loadout, NeuralFragment, NeuralResourceRequirement, ResourceByDay, SkillCurrency, SkillResourceRequirement, Unit, UnitSkill, UserStore, WidgetResource, WidgetResourceRequirement }
+export type { AlgoPiece, AlgoSet, AlgoTypeDb, AlgoSlot, Coin, Database, Exp, GrandResource, Level, LevelRequirement, Loadout, NeuralFragment, NeuralResourceRequirement, ResourceByDay, SkillCurrency, SkillResourceRequirement, Unit, UnitSkill, UserStore, WidgetResource, WidgetResourceRequirement }
