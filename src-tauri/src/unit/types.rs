@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+#[derive(Serialize, Deserialize, Default, Debug, Clone, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Unit {
     pub name: String,
@@ -13,7 +13,7 @@ pub struct Unit {
     pub goal: Loadout,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS)]
+#[derive(Serialize, Deserialize, Default, Debug, Clone, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Loadout {
     #[serde(default)]

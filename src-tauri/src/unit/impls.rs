@@ -21,17 +21,6 @@ impl Unit {
     }
 }
 
-impl Default for Unit {
-    fn default() -> Self {
-        Self {
-            name: Default::default(),
-            class: Default::default(),
-            current: Default::default(),
-            goal: Default::default(),
-        }
-    }
-}
-
 impl Default for NeuralExpansion {
     fn default() -> Self {
         Self::Two

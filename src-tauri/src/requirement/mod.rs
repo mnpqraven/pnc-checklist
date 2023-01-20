@@ -1,4 +1,5 @@
 use self::types::*;
+use crate::algorithm::types::AlgoPiece;
 use crate::model::error::RequirementError;
 use crate::stats::types::{NeuralFragment, UnitSkill};
 use crate::unit::types::{Class, NeuralExpansion, Unit};
@@ -48,6 +49,7 @@ pub fn requirement_widget(
     WidgetResourceRequirement::calculate(class, from, to)
 }
 
-pub fn requirement_algo(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<Unit>> {
+#[tauri::command]
+pub fn requirement_algo(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<AlgoPiece>> {
     AlgorithmRequirement::calculate(from)
 }

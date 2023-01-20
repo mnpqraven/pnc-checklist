@@ -1,4 +1,4 @@
-use crate::algorithm::types::{AlgoCategory, Algorithm};
+use crate::algorithm::types::{AlgoCategory, Algorithm, AlgoMainStat};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -42,4 +42,5 @@ pub enum ValidationError {
     SkillLevel,
     Algorithm(Vec<(AlgoCategory, Vec<usize>)>),
     ForeignAlgo(Vec<(Algorithm, AlgoCategory)>),
+    ForeignMainStat((AlgoMainStat, AlgoCategory)),
 }

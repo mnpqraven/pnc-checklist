@@ -1,5 +1,5 @@
 use super::types::*;
-use crate::{algorithm::types::Algorithm, unit::types::Class};
+use crate::{algorithm::types::{Algorithm, AlgoMainStat}, unit::types::Class};
 
 /// cost of skill level token
 /// follow user-displayed slv so the 1st index will be 0 (slv always starts at 1)
@@ -82,6 +82,37 @@ pub const ALGO_SPECIAL: [Algorithm; 9] = [
     Algorithm::Stratagem,
     Algorithm::Exploit,
 ];
+
+pub const ALGO_MAINSTAT_OFFENSE: [AlgoMainStat; 8] = [
+    AlgoMainStat::Atk,
+    AlgoMainStat::AtkPercent,
+    AlgoMainStat::Hashrate,
+    AlgoMainStat::HashratePercent,
+    AlgoMainStat::PhysPen,
+    AlgoMainStat::PhysPenPercent,
+    AlgoMainStat::OperandPen,
+    AlgoMainStat::OperandPenPercent,
+];
+pub const ALGO_MAINSTAT_STABILITY: [AlgoMainStat; 7] = [
+    AlgoMainStat::Health,
+    AlgoMainStat::HealthPercent,
+    AlgoMainStat::Def,
+    AlgoMainStat::DefPercent,
+    AlgoMainStat::OperandDef,
+    AlgoMainStat::OperandDefPercent,
+    AlgoMainStat::PostBattleRegen
+];
+pub const ALGO_MAINSTAT_SPECIAL: [AlgoMainStat; 8] = [
+    AlgoMainStat::CritDmg,
+    AlgoMainStat::CritRate,
+    AlgoMainStat::Haste,
+    AlgoMainStat::HealInc,
+    AlgoMainStat::Def,
+    AlgoMainStat::DefPercent,
+    AlgoMainStat::OperandDef,
+    AlgoMainStat::OperandDefPercent,
+];
+
 
 // [ [coin, exp, skill, class]; ...days ]
 pub const BONUS_TABLE: [[Option<Bonus>; 4]; 7] = [

@@ -31,14 +31,3 @@ impl Loadout {
     }
 }
 
-impl Default for Loadout {
-    fn default() -> Self {
-        Self {
-            skill_level: Default::default(),
-            level: Default::default(),
-            algo: Default::default(),
-            neural: Default::default(),
-            frags: Default::default(),
-        }
-    }
-}

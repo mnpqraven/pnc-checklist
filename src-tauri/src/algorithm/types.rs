@@ -82,6 +82,14 @@ pub enum AlgoMainStat {
     #[strum(serialize = "Health %")]
     HealthPercent,
     Haste,
+    #[strum(serialize = "Physical Pen.")]
+    PhysPen,
+    #[strum(serialize = "Physical Pen. %")]
+    PhysPenPercent,
+    #[strum(serialize = "Operand Pen. %")]
+    OperandPen,
+    #[strum(serialize = "Operand Pen. %")]
+    OperandPenPercent,
     #[strum(serialize = "Crit %")]
     CritRate,
     #[strum(serialize = "Crit Dmg %")]
@@ -100,6 +108,8 @@ pub enum AlgoMainStat {
     OperandDef,
     #[strum(serialize = "Operand Def %")]
     OperandDefPercent,
+    #[strum(serialize = "Post Battle Regen")]
+    PostBattleRegen
 }
 
 #[derive(Debug, Serialize, Deserialize, TS, EnumIter)]

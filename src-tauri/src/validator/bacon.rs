@@ -1,6 +1,6 @@
 use crate::{algorithm::types::*, model::error::ValidationError, stats::types::*, unit::types::*};
 
-use super::validate_algo;
+use super::{validate_algo, ValidData};
 
 #[test]
 // TODO: needs helper fns
@@ -140,4 +140,72 @@ fn validalgo() {
         },
     };
     assert_eq!(validate_algo(&scnd_unit), Ok(()));
+}
+
+#[test]
+fn trait_algoset() {
+    let mut algo_set: AlgoSet = AlgoSet {
+        offense: vec![AlgoPiece {
+            name: Algorithm::Feedforward,
+            stat: AlgoMainStat::AtkPercent,
+            slot: vec![true, true, true],
+        }],
+        stability: vec![
+            AlgoPiece {
+                name: Algorithm::Overflow,
+                stat: AlgoMainStat::AtkPercent,
+                slot: vec![true, false, false],
+            },
+            AlgoPiece {
+                name: Algorithm::Overflow,
+                stat: AlgoMainStat::AtkPercent,
+                slot: vec![true, false, true],
+            },
+            AlgoPiece {
+                name: Algorithm::Overflow,
+                stat: AlgoMainStat::AtkPercent,
+                slot: vec![true, true, true], // mark
+            },
+        ],
+        special: vec![
+            AlgoPiece {
+                name: Algorithm::DeltaV,
+                stat: AlgoMainStat::Haste,
+                slot: vec![true, true, true], // mark
+            },
+            AlgoPiece {
+                name: Algorithm::Paradigm,
+                stat: AlgoMainStat::PostBattleRegen,
+                slot: vec![true, false, true],
+            },
+        ],
+    };
+    assert_eq!(algo_set.input_validate(), Ok(()));
+    algo_set.offense = Vec::new();
+    algo_set.stability[1].name = Algorithm::DeltaV;
+
+    let errs = vec![(Algorithm::DeltaV, AlgoCategory::Stability)];
+    assert_eq!(
+        algo_set.input_validate(),
+        Err(ValidationError::ForeignAlgo(errs))
+    );
+
+    assert_eq!(
+        algo_set.stability[0].input_validate(),
+        Err(ValidationError::ForeignMainStat((
+            AlgoMainStat::AtkPercent,
+            AlgoCategory::Stability
+        )))
+    );
+    assert_eq!(
+        algo_set.special[0].input_validate(),
+        Ok(())
+    );
+    assert_eq!(
+        algo_set.special[1].input_validate(),
+        Err(ValidationError::ForeignMainStat((
+            AlgoMainStat::PostBattleRegen,
+            AlgoCategory::Special
+        )))
+    );
 }

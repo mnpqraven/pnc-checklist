@@ -1,6 +1,9 @@
 use super::types::*;
 use crate::table::{
-    consts::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY},
+    consts::{
+        ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
+        ALGO_SPECIAL, ALGO_STABILITY,
+    },
     types::Day,
 };
 
@@ -44,6 +47,14 @@ impl Algorithm {
             .into_iter()
             .chain(Algorithm::all_gen2().into_iter())
             .collect()
+    }
+
+    pub fn get_category(&self) -> AlgoCategory {
+        match true {
+            true if ALGO_OFFENSE.contains(self) => AlgoCategory::Offense,
+            true if ALGO_STABILITY.contains(self) => AlgoCategory::Stability,
+            _ => AlgoCategory::Special,
+        }
     }
 
     pub fn get_bonuses(day: Day) -> Option<Vec<Algorithm>> {
@@ -117,17 +128,17 @@ impl AlgoSet {
         Self {
             offense: bucket
                 .iter()
-                .map(|e| e.clone())
+                .cloned()
                 .filter(|piece| piece.get_category() == AlgoCategory::Offense)
                 .collect(),
             stability: bucket
                 .iter()
-                .map(|e| e.clone())
+                .cloned()
                 .filter(|piece| piece.get_category() == AlgoCategory::Stability)
                 .collect(),
             special: bucket
                 .iter()
-                .map(|e| e.clone())
+                .cloned()
                 .filter(|piece| piece.get_category() == AlgoCategory::Special)
                 .collect(),
         }
@@ -148,7 +159,7 @@ impl AlgoSet {
         for goal_piece in goal.iter_mut() {
             let same_piece_in_updatee: Vec<AlgoPiece> = updatee
                 .iter()
-                .map(|f| f.clone())
+                .cloned()
                 .filter(|e| e.name.eq(&goal_piece.name) && e.stat.eq(&goal_piece.stat))
                 .collect();
             // 2d array [b, b, b][]
@@ -237,5 +248,35 @@ impl AlgoTypeDb {
             AlgoTypeDb::get_algo(AlgoCategory::Stability),
             AlgoTypeDb::get_algo(AlgoCategory::Special),
         ]
+    }
+}
+
+// TODO: refactor with chunk above
+// WARN: only after double checking with frontend
+impl AlgoCategory {
+    pub fn get_algos(&self) -> Vec<Algorithm> {
+        match self {
+            AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
+            AlgoCategory::Stability => ALGO_STABILITY.to_vec(),
+            AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
+        }
+    }
+
+    pub fn get_mainstat(&self) -> Vec<AlgoMainStat> {
+        match self {
+            AlgoCategory::Offense => ALGO_MAINSTAT_OFFENSE.to_vec(),
+            AlgoCategory::Stability => ALGO_MAINSTAT_STABILITY.to_vec(),
+            AlgoCategory::Special => ALGO_MAINSTAT_SPECIAL.to_vec(),
+        }
+    }
+}
+
+impl AlgoMainStat {
+    pub fn default(cat: &AlgoCategory) -> Self {
+        match cat {
+            AlgoCategory::Offense => Self::AtkPercent,
+            AlgoCategory::Stability => Self::Health,
+            AlgoCategory::Special => Self::Haste,
+        }
     }
 }

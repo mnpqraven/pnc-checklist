@@ -1,4 +1,5 @@
 use super::types::*;
+use crate::algorithm::types::AlgoPiece;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{model::error::RequirementError, stats::types::*, table::consts::*, unit::types::Unit};
 
@@ -56,7 +57,8 @@ impl UnitRequirement {
 }
 
 impl AlgorithmRequirement {
-    pub(super) fn calculate(from_unit: &Unit) -> Result<Self, RequirementError<Unit>> {
+    pub(super) fn calculate(from_unit: &Unit) -> Result<Self, RequirementError<AlgoPiece>> {
+        // TODO: handle error
         Ok(Self {
             pieces: from_unit.get_missing_algos(),
             from_unit: from_unit.clone(),
