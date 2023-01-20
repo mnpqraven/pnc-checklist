@@ -1,5 +1,5 @@
-use std::fs;
 use super::file::import;
+use std::fs;
 
 #[test]
 fn import_verbose() {

@@ -1,4 +1,4 @@
-use crate::model::structs::{AlgoSet, Level, Loadout, NeuralExpansion, NeuralFragment, UnitSkill};
+use crate::{algorithm::types::*, stats::types::*, unit::types::*};
 
 impl Loadout {
     pub fn new(maxed_slv: bool) -> Self {

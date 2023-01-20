@@ -1,6 +1,6 @@
+use crate::algorithm::types::{AlgoCategory, Algorithm};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use super::enums::AlgoCategory;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum RequirementError<T> {
@@ -22,6 +22,8 @@ impl<T: Display> Display for RequirementError<T> {
     }
 }
 
+/// Error concering the tauri runtime, should stop the application from
+/// continuing
 #[derive(Serialize, Deserialize, Debug)]
 pub enum TauriError {
     /// can't find the file specified in the import filepath
@@ -32,9 +34,12 @@ pub enum TauriError {
     UnitModification,
 }
 
+/// Error concerning validatino of data, should amend the data and not stop the
+/// application
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
-pub enum UnitValidationError {
-    Name,
+pub enum ValidationError {
+    UnitName,
     SkillLevel,
     Algorithm(Vec<(AlgoCategory, Vec<usize>)>),
+    ForeignAlgo(Vec<(Algorithm, AlgoCategory)>),
 }

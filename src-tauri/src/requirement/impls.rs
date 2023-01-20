@@ -1,13 +1,6 @@
-pub use crate::model::structs::*;
-use crate::{
-    model::error::RequirementError,
-    table::consts::{
-        REQ_BREAK_CHAIN, REQ_EXP_CHAIN, REQ_NEURAL, REQ_NEURAL_COIN, REQ_SLV_COIN, REQ_SLV_PIVOT,
-        REQ_SLV_TOKEN,
-    },
-};
-
 use super::types::*;
+use crate::unit::types::{Class, NeuralExpansion};
+use crate::{model::error::RequirementError, stats::types::*, table::consts::*, unit::types::Unit};
 
 impl DatabaseRequirement {
     pub fn generate_resource(&self) -> GrandResource {

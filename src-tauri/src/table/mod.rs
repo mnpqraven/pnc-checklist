@@ -1,7 +1,9 @@
-use crate::model::structs::{AlgoTypeDb, ResourceByDay, Day};
+use self::types::{Day, ResourceByDay};
+use crate::algorithm::types::AlgoTypeDb;
 
 pub mod consts;
 mod impls;
+pub mod types;
 
 #[tauri::command]
 pub fn generate_algo_db() -> Vec<AlgoTypeDb> {

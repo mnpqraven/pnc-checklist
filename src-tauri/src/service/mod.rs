@@ -1,3 +1,4 @@
-pub mod file;
 #[cfg(test)]
 mod bacon;
+pub mod file;
+

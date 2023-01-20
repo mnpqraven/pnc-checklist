@@ -1,10 +1,10 @@
 // TODO: test tauri Mutex
+use self::types::*;
+use crate::{requirement::types::DatabaseRequirement, stats::types::GrandResource};
 use std::sync::Mutex;
 
-use crate::model::structs::{GrandResource, UserStore};
-use crate::requirement::types::DatabaseRequirement;
-
 mod impls;
+pub mod types;
 
 /// Main storage, state managed by tauri
 pub struct Storage {

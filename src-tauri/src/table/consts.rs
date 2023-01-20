@@ -1,4 +1,5 @@
-use crate::model::structs::*;
+use super::types::*;
+use crate::{algorithm::types::Algorithm, unit::types::Class};
 
 /// cost of skill level token
 /// follow user-displayed slv so the 1st index will be 0 (slv always starts at 1)
@@ -123,5 +124,5 @@ pub const BONUS_TABLE: [[Option<Bonus>; 4]; 7] = [
     ],
 ];
 
-pub const VALID_LEVEL_MIN: u32  = 1;
-pub const VALID_LEVEL_MAX: u32  = 70;
+pub const VALID_LEVEL_MIN: u32 = 1;
+pub const VALID_LEVEL_MAX: u32 = 70;

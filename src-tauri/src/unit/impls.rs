@@ -1,6 +1,5 @@
-use crate::model::structs::{
-    AlgoPiece, Class, Level, Loadout, NeuralExpansion, NeuralFragment, Unit, UnitSkill,
-};
+use super::types::*;
+use crate::{algorithm::types::AlgoPiece, stats::types::*};
 
 // UNIT
 impl Unit {

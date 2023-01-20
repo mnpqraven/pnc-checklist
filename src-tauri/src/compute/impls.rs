@@ -1,4 +1,4 @@
-use crate::model::structs::*;
+use crate::{algorithm::types::*, state::types::*, stats::types::*, unit::types::*};
 
 impl UserStore {
     pub fn generate_example() -> Self {
@@ -53,3 +53,4 @@ impl UserStore {
         }
     }
 }
+

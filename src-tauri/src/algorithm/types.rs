@@ -2,15 +2,11 @@ use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
 use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-pub enum Class {
-    #[default]
-    Guard,
-    Medic,
-    Sniper,
-    Specialist,
-    Warrior,
+#[derive(Serialize, Deserialize, Debug, TS)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct AlgoTypeDb {
+    pub category: AlgoCategory,
+    pub algos: Vec<Algorithm>,
 }
 
 #[allow(clippy::upper_case_acronyms)]
@@ -55,24 +51,21 @@ pub enum Algorithm {
     Exploit,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-pub enum Day {
-    Mon,
-    Tue,
-    Wed,
-    Thu,
-    Fri,
-    Sat,
-    Sun,
+#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct AlgoPiece {
+    pub name: Algorithm,
+    pub stat: AlgoMainStat,
+    // sub_stat: Option<Vec<AlgoSubStat>>,
+    pub slot: Vec<bool>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-pub enum Bonus {
-    Coin,
-    Exp,
-    Skill,
-    Class(Class),
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TS)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct AlgoSet {
+    pub offense: Vec<AlgoPiece>,
+    pub stability: Vec<AlgoPiece>,
+    pub special: Vec<AlgoPiece>,
 }
 
 #[allow(clippy::upper_case_acronyms)]
@@ -108,6 +101,7 @@ pub enum AlgoMainStat {
     #[strum(serialize = "Operand Def %")]
     OperandDefPercent,
 }
+
 #[derive(Debug, Serialize, Deserialize, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoSubStat {
@@ -123,26 +117,4 @@ pub enum AlgoCategory {
     Offense,
     Stability,
     Special,
-}
-
-#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-pub enum NeuralExpansion {
-    One,
-    OneHalf,
-    Two,
-    TwoHalf,
-    Three,
-    ThreeHalf,
-    Four,
-    FourHalf,
-    Five,
-}
-
-#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-#[ts(rename_all = "lowercase")]
-pub enum LoadoutType {
-    Current,
-    Goal,
 }

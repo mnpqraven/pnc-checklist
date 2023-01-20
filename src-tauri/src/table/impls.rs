@@ -1,5 +1,6 @@
-use crate::model::structs::{ResourceByDay, Day, Algorithm};
-use super::consts::BONUS_TABLE;
+use super::{consts::BONUS_TABLE, types::ResourceByDay};
+use crate::algorithm::types::Algorithm;
+use crate::table::types::Day;
 
 impl ResourceByDay {
     pub fn get_bonuses(day: Day) -> Self {

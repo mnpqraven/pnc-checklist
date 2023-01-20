@@ -1,6 +1,4 @@
-use crate::model::structs::{
-    AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Class, Loadout, Unit,
-};
+use crate::{algorithm::types::*, unit::types::*};
 
 #[test]
 fn missing_algo() {

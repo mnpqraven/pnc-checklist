@@ -1,5 +1,5 @@
-use crate::model::error::TauriError;
-use crate::{model::structs::UserStore, state::Storage};
+use crate::Storage;
+use crate::{model::error::TauriError, state::types::UserStore};
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 

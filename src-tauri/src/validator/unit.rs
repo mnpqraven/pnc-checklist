@@ -1,9 +1,9 @@
-use super::UnitValidationError;
-use crate::model::structs::Unit;
+use super::ValidationError;
+use crate::unit::types::Unit;
 
-pub fn validate_unit_name(unit: &Unit) -> Result<(), UnitValidationError> {
+pub fn validate_unit_name(unit: &Unit) -> Result<(), ValidationError> {
     match unit.name.is_empty() {
-        true =>  Err(UnitValidationError::Name),
-        false => Ok(())
+        true => Err(ValidationError::UnitName),
+        false => Ok(()),
     }
 }

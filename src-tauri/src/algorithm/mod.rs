@@ -1,7 +1,11 @@
-mod impls;
+use self::types::*;
+use crate::table::types::Day;
+use crate::unit::types::Class;
+
 #[cfg(test)]
 mod bacon;
-use crate::model::structs::{Algorithm, AlgoSet, AlgoPiece, Class, AlgoCategory, AlgoMainStat, Day};
+mod impls;
+pub mod types;
 
 #[tauri::command]
 pub fn algorithm_all() -> Vec<Algorithm> {
@@ -56,5 +60,15 @@ pub fn main_stat_all() -> Vec<AlgoMainStat> {
         AlgoMainStat::DefPercent,
         AlgoMainStat::OperandDef,
         AlgoMainStat::OperandDefPercent,
+    ]
+}
+
+
+#[tauri::command]
+pub fn algo_category_all() -> Vec<AlgoCategory> {
+    vec![
+        AlgoCategory::Offense,
+        AlgoCategory::Stability,
+        AlgoCategory::Special,
     ]
 }

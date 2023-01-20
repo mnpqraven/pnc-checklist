@@ -1,6 +1,7 @@
-use crate::{
-    model::structs::{AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, AlgoTypeDb, Algorithm, Day},
-    table::consts::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY},
+use super::types::*;
+use crate::table::{
+    consts::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY},
+    types::Day,
 };
 
 impl Algorithm {
@@ -221,7 +222,7 @@ impl AlgoPiece {
 }
 
 impl AlgoTypeDb {
-    fn get_algo(category: AlgoCategory) -> Self {
+    pub fn get_algo(category: AlgoCategory) -> Self {
         let algos: Vec<Algorithm> = match category {
             AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
             AlgoCategory::Stability => ALGO_STABILITY.to_vec(),

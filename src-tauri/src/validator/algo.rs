@@ -1,7 +1,6 @@
-use super::UnitValidationError;
-use crate::algorithm::default_slot_size;
-use crate::model::enums::AlgoCategory;
-use crate::model::structs::{algo_category_all, Unit};
+use super::ValidationError;
+use crate::algorithm::{algo_category_all, default_slot_size, types::AlgoCategory};
+use crate::unit::types::Unit;
 
 /// NOTE: for now validate algo integrity when changing unit class
 /// only validate current set, goal TBA
@@ -9,7 +8,7 @@ use crate::model::structs::{algo_category_all, Unit};
 /// usize is the index of the error
 // TODO: finish other 2 + refactor
 #[tauri::command]
-pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
+pub fn validate_algo(unit: &Unit) -> Result<(), ValidationError> {
     println!("validate_algo");
     let mut errs: Vec<(AlgoCategory, Vec<usize>)> = Vec::new();
 
@@ -40,6 +39,6 @@ pub fn validate_algo(unit: &Unit) -> Result<(), UnitValidationError> {
     }
     match errs.is_empty() {
         true => Ok(()),
-        false => Err(UnitValidationError::Algorithm(errs)),
+        false => Err(ValidationError::Algorithm(errs)),
     }
 }

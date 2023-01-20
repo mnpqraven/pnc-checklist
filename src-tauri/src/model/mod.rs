@@ -1,14 +1,16 @@
-use std::str::FromStr;
-use crate::model::enums::*;
-use crate::enum_list;
+use crate::table::types::{Bonus, Day};
+use crate::{algorithm::types::Algorithm, unit::types::Class};
+use crate::{
+    algorithm::types::{AlgoCategory, AlgoMainStat, AlgoSubStat},
+    enum_list,
+    loadout::types::LoadoutType,
+    unit::types::NeuralExpansion,
+};
 use cmdbindings::{gen_vec, AllEnums};
+use std::str::FromStr;
 
 pub mod cmdbindings;
 pub mod error;
-
-// INFO: run tests to genrate bindings
-pub mod enums;
-pub mod structs;
 
 #[cfg(test)]
 mod indexbindings {

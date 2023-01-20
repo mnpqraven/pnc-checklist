@@ -11,6 +11,7 @@ mod model;
 mod requirement;
 mod service;
 mod state;
+mod stats;
 mod table;
 mod unit;
 mod validator;

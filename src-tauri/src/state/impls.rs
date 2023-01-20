@@ -1,6 +1,9 @@
+use crate::state::UserStore;
+use crate::stats::types::*;
+use crate::unit::types::Class;
 use crate::{
-    model::structs::{Class, Coin, Exp, GrandResource, SkillCurrency, UserStore, WidgetResource},
-    service::file::import, requirement::types::{DatabaseRequirement, UnitRequirement},
+    requirement::types::{DatabaseRequirement, UnitRequirement},
+    service::file::import,
 };
 use std::path::Path;
 use strum::IntoEnumIterator;

@@ -1,10 +1,4 @@
-use crate::model::{
-    error::UnitValidationError,
-    structs::{
-        AlgoCategory, AlgoMainStat, AlgoPiece, AlgoSet, Algorithm, Level, Loadout, NeuralExpansion,
-        NeuralFragment, Unit, UnitSkill,
-    },
-};
+use crate::{algorithm::types::*, model::error::ValidationError, stats::types::*, unit::types::*};
 
 use super::validate_algo;
 
@@ -54,7 +48,7 @@ fn validalgo() {
     };
     let unit_false = Unit {
         name: "hubble".to_string(),
-        class: crate::model::structs::Class::Sniper,
+        class: Class::Sniper,
         current: Loadout {
             skill_level: UnitSkill {
                 passive: 7,
@@ -98,7 +92,7 @@ fn validalgo() {
     ];
     assert_eq!(
         validate_algo(&unit_false),
-        Err(UnitValidationError::Algorithm(right))
+        Err(ValidationError::Algorithm(right))
     );
 
     let mut scnd_set = algo_set;
@@ -107,7 +101,7 @@ fn validalgo() {
     scnd_set.special[2].slot = vec![false, false, false];
     let scnd_unit = Unit {
         name: "hubble".to_string(),
-        class: crate::model::structs::Class::Sniper,
+        class: Class::Sniper,
         current: Loadout {
             skill_level: UnitSkill {
                 passive: 7,

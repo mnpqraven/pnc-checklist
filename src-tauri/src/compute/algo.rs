@@ -1,7 +1,4 @@
-use crate::{
-    model::{error::TauriError, structs::AlgoPiece},
-    state::Storage,
-};
+use crate::{algorithm::types::AlgoPiece, model::error::TauriError, state::Storage};
 use tauri::State;
 
 // WARN: potential zombie code

@@ -1,6 +1,7 @@
+use self::types::*;
 use crate::model::error::RequirementError;
-use self::{types::*, impls::*};
-
+use crate::stats::types::{NeuralFragment, UnitSkill};
+use crate::unit::types::{Class, NeuralExpansion, Unit};
 
 #[cfg(test)]
 mod bacon;
@@ -47,8 +48,6 @@ pub fn requirement_widget(
     WidgetResourceRequirement::calculate(class, from, to)
 }
 
-pub fn requirement_algo(
-    from: &Unit
-    ) -> Result<AlgorithmRequirement, RequirementError<Unit>> {
+pub fn requirement_algo(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<Unit>> {
     AlgorithmRequirement::calculate(from)
 }

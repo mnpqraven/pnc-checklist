@@ -1,11 +1,14 @@
 mod algo;
 mod impls;
-use crate::{
-    model::structs::{GrandResource, UserStore},
-    requirement::{requirement_level, requirement_neural, requirement_slv, requirement_widget, requirement_algo},
-    state::{Computed, Storage},
-};
 use crate::requirement::types::UnitRequirement;
+use crate::stats::types::GrandResource;
+use crate::{
+    requirement::{
+        requirement_algo, requirement_level, requirement_neural, requirement_slv,
+        requirement_widget,
+    },
+    state::{types::UserStore, Computed, Storage},
+};
 use tauri::State;
 
 /// updates the requirement field in the store by reading the store field
@@ -22,7 +25,7 @@ pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &
             level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
             breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
                 .unwrap(),
-            algo: requirement_algo(unit).unwrap()
+            algo: requirement_algo(unit).unwrap(),
         })
     }
     req_guard.unit_req = reqs;
