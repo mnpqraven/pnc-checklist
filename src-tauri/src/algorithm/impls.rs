@@ -27,6 +27,7 @@ impl Algorithm {
             Algorithm::Stratagem,
         ]
     }
+
     pub fn all_gen2() -> Vec<Algorithm> {
         vec![
             Algorithm::Stack,
@@ -36,12 +37,14 @@ impl Algorithm {
             Algorithm::Exploit,
         ]
     }
+
     pub fn all() -> Vec<Algorithm> {
         Algorithm::all_gen1()
             .into_iter()
             .chain(Algorithm::all_gen2().into_iter())
             .collect()
     }
+
     pub fn get_bonuses(day: Day) -> Option<Vec<Algorithm>> {
         match day {
             Day::Mon => Some(vec![

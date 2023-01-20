@@ -1,7 +1,7 @@
 use super::ValidData;
 use crate::{
-    model::structs::{Level, UnitSkill, Coin},
-    table::consts::{VALID_LEVEL_MAX, VALID_LEVEL_MIN},
+    model::structs::{AlgoCategory, AlgoSet, Coin, Level, UnitSkill},
+    table::consts::{ALGO_OFFENSE, ALGO_SPECIAL, ALGO_STABILITY, VALID_LEVEL_MAX, VALID_LEVEL_MIN},
 };
 
 impl ValidData for Level {
@@ -39,8 +39,30 @@ impl ValidData for Coin {
     type T = Coin;
 
     fn input_validate(&self) -> Result<Self::T, super::ValidationError> {
-        if self.0 < 0 {
-            Ok(Coin(0))
-        } else { Ok(Coin(self.0)) }
+        Ok(Coin(self.0))
+    }
+}
+
+// TODO: needs impl for
+// Set
+// slot in piece according to name
+impl ValidData for AlgoSet {
+    type T = AlgoSet;
+
+    fn input_validate(&self) -> Result<Self::T, super::ValidationError> {
+        let cats = vec![&self.offense, &self.stability, &self.special];
+        let list = vec![
+            ALGO_OFFENSE.to_vec(),
+            ALGO_STABILITY.to_vec(),
+            ALGO_SPECIAL.to_vec(),
+        ];
+        for (ind, cat) in cats.iter().enumerate() {
+            for piece in cat.into_iter() {
+                if !list.get(ind).unwrap().contains(&piece.name) {
+                    // handle not found
+                }
+            }
+        }
+        unimplemented!();
     }
 }
