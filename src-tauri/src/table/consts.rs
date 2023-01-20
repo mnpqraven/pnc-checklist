@@ -122,3 +122,6 @@ pub const BONUS_TABLE: [[Option<Bonus>; 4]; 7] = [
         None,
     ],
 ];
+
+pub const VALID_LEVEL_MIN: u32  = 1;
+pub const VALID_LEVEL_MAX: u32  = 70;

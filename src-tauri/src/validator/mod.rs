@@ -3,8 +3,24 @@ use crate::model::{error::UnitValidationError, structs::Unit};
 
 mod algo;
 mod unit;
+mod inputs;
 #[cfg(test)]
 mod bacon;
+
+enum ValidationError {
+    General,
+    ApplyError
+}
+
+/// Trait that is implemented to all user-inputtable data and checks for
+/// irregularities
+/// If the data is valid, will return itself
+/// If the data is not valid, will try to return the closest acceptable data,
+/// other will return `ValidationError`
+trait ValidData {
+    type T;
+    fn input_validate(&self) -> Result<Self::T, ValidationError>;
+}
 
 #[tauri::command]
 pub fn validate(unit: Option<Unit>) -> Result<(), Vec<UnitValidationError>> {
