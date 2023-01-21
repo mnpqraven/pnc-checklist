@@ -5,7 +5,7 @@ import SlotCheckbox from "./SlotCheckbox";
 import { DollContext } from "@/interfaces/payloads";
 import Image from "next/image";
 import { invoke } from "@tauri-apps/api/tauri";
-import { AlgoPiece } from "@/src-tauri/bindings/structs";
+import { AlgoPiece, AlgoSlot } from "@/src-tauri/bindings/structs";
 import { AlgoCategory, AlgoMainStat, Algorithm } from "@/src-tauri/bindings/enums";
 
 type Props = {
@@ -27,15 +27,15 @@ const AlgorithmPiece = ({
 }: Props) => {
 
   const { dollData } = useContext(DollContext);
-  const [nameLabel, setNameLabel] = useState(pieceData.name);
-  const [mainStatLabel, setMainStatLabel] = useState(pieceData.stat);
+  const [algorithm, setAlgorithm] = useState(pieceData.name);
+  const [mainStat, setMainStat] = useState(pieceData.stat);
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
 
   // chaging unit
   useEffect(() => {
-    setNameLabel(pieceData.name);
-    setMainStatLabel(pieceData.stat);
+    setAlgorithm(pieceData.name);
+    setMainStat(pieceData.stat);
 
     // update slot info
     // setSlot(pieceData.slot);
@@ -61,16 +61,20 @@ const AlgorithmPiece = ({
   }
 
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
-    setPiece({ ...pieceData, name: event.currentTarget.value as Algorithm });
-    setNameLabel(event.currentTarget.value as Algorithm);
-    // TODO: communicate with backend for slot info
-    // pass slot to backend for processing
-    console.warn(slot)
+    let name = event.currentTarget.value as Algorithm
+    invoke<AlgoSlot | null>('validate_slots', { piece: pieceData })
+      .then(slot => {
+        if (slot) {
+          setSlot(slot)
+          setPiece({ ...pieceData, name, slot })
+        } else setPiece({ ...pieceData, name });
+      })
+      .finally(() => setAlgorithm(name));
   }
 
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
     setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat });
-    setMainStatLabel(event.currentTarget.value as AlgoMainStat);
+    setMainStat(event.currentTarget.value as AlgoMainStat);
   }
 
   function slotHandler(
@@ -86,7 +90,6 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
-  // TODO: consider integrate missing prop label with display trait
   return (
     <>
       <div
@@ -95,7 +98,7 @@ const AlgorithmPiece = ({
       >
         <div>
           <Image
-            src={`algos/${nameLabel.toLowerCase()}.png`}
+            src={`algos/${algorithm.toLowerCase()}.png`}
             alt={"algo"}
             width={60}
             height={60}
@@ -103,12 +106,14 @@ const AlgorithmPiece = ({
         </div>
         <div className="m-2 flex flex-col">
           <Select
-            value={nameLabel}
+            value={algorithm}
+            labelPayload={{ method: 'print_algo', payload: category }}
             options={Object.values(options.algoTypes.algos)}
             onChangeHandler={pieceHandler}
           />
           <Select
-            value={mainStatLabel}
+            value={mainStat}
+            labelPayload={{ method: 'print_main_stat', payload: category }}
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />

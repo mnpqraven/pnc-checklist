@@ -191,8 +191,8 @@ fn trait_algoset() {
     );
 
     assert_eq!(
-        algo_set.stability[0].input_validate::<AlgoPiece>(),
-        Err::<Option<AlgoPiece>, ValidationError>(ValidationError::ForeignMainStat((
+        algo_set.stability[0].input_validate::<AlgoMainStat>(),
+        Err::<Option<AlgoMainStat>, ValidationError>(ValidationError::ForeignMainStat((
             AlgoMainStat::AtkPercent,
             AlgoCategory::Stability
         )))
@@ -202,8 +202,8 @@ fn trait_algoset() {
         Ok::<Option<AlgoSlot>, ValidationError>(None)
     );
     assert_eq!(
-        algo_set.special[1].input_validate::<AlgoPiece>(),
-        Err::<Option<AlgoPiece>, ValidationError>(ValidationError::ForeignMainStat((
+        algo_set.special[1].input_validate::<AlgoMainStat>(),
+        Err::<Option<AlgoMainStat>, ValidationError>(ValidationError::ForeignMainStat((
             AlgoMainStat::PostBattleRegen,
             AlgoCategory::Special
         )))

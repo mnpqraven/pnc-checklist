@@ -72,7 +72,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
               <div key={`offense-${index}`} className="m-1">
                 <AlgorithmPiece
                   index={index}
-                  options={{ algoTypes: algoTypes[0], mainStat }}
+                  options={{ algoTypes: algoTypes[0], mainStat: mainStat[0] }}
                   category={"Offense"}
                   pieceData={piece}
                   valid={!errList("Offense").includes(index)}
@@ -91,7 +91,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
               <div key={`stability-${index}`} className="m-1">
                 <AlgorithmPiece
                   index={index}
-                  options={{ algoTypes: algoTypes[1], mainStat }}
+                  options={{ algoTypes: algoTypes[1], mainStat: mainStat[1] }}
                   category={"Stability"}
                   pieceData={piece}
                   valid={!errList("Stability").includes(index)}
@@ -110,7 +110,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
               <div key={`special-${index}`} className="m-1">
                 <AlgorithmPiece
                   index={index}
-                  options={{ algoTypes: algoTypes[2], mainStat }}
+                  options={{ algoTypes: algoTypes[2], mainStat: mainStat[2] }}
                   category={"Special"}
                   pieceData={piece}
                   valid={!errList("Special").includes(index)}

@@ -171,3 +171,9 @@ button:hover {
 .star-full :last-child {
   visibility: hidden;
 }
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0.25rem;
+}
