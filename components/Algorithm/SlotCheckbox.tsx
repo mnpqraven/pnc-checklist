@@ -39,16 +39,19 @@ const SlotCheckbox = ({ unitClass, category, value, onChangeHandler }: Props) =>
     <div className="flex">
       {value.map((item, index) => (
         <div key={index}>
-          <input
-            type="checkbox"
-            onChange={e => { onChangeHandler(e, index); updateVisible(e) }}
-            checked={item}
-            disabled={item === false && clickable == 0}
-          />
-          <span> {index + 1} </span>
+          <label>
+            <input
+              type="checkbox"
+              onChange={e => { onChangeHandler(e, index); updateVisible(e) }}
+              checked={item}
+              disabled={item === false && clickable == 0}
+              className={item === false && clickable == 0 ? `` : `cursor-pointer`}
+            />
+          </label>
         </div>
-      ))}
-    </div>
+      ))
+      }
+    </div >
   )
 }
 export default SlotCheckbox

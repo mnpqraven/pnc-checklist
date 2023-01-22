@@ -1,4 +1,8 @@
 use self::types::*;
+use crate::table::consts::{
+    ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
+    ALGO_SPECIAL, ALGO_STABILITY,
+};
 use crate::table::types::Day;
 use crate::unit::types::Class;
 
@@ -41,28 +45,13 @@ pub fn get_algo_by_days(day: Day) -> Option<Vec<Algorithm>> {
 }
 
 #[tauri::command]
-pub fn main_stat_all() -> Vec<AlgoMainStat> {
+pub fn main_stat_all() -> Vec<Vec<AlgoMainStat>> {
     vec![
-        AlgoMainStat::Hashrate,
-        AlgoMainStat::HashratePercent,
-        AlgoMainStat::Atk,
-        AlgoMainStat::AtkPercent,
-        AlgoMainStat::Health,
-        AlgoMainStat::HealthPercent,
-        AlgoMainStat::Haste,
-        AlgoMainStat::CritRate,
-        AlgoMainStat::CritDmg,
-        AlgoMainStat::DamageInc,
-        AlgoMainStat::Dodge,
-        AlgoMainStat::HealInc,
-        AlgoMainStat::DamageReduction,
-        AlgoMainStat::Def,
-        AlgoMainStat::DefPercent,
-        AlgoMainStat::OperandDef,
-        AlgoMainStat::OperandDefPercent,
+        ALGO_MAINSTAT_OFFENSE.to_vec(),
+        ALGO_MAINSTAT_STABILITY.to_vec(),
+        ALGO_MAINSTAT_SPECIAL.to_vec(),
     ]
 }
-
 
 #[tauri::command]
 pub fn algo_category_all() -> Vec<AlgoCategory> {
@@ -71,4 +60,30 @@ pub fn algo_category_all() -> Vec<AlgoCategory> {
         AlgoCategory::Stability,
         AlgoCategory::Special,
     ]
+}
+
+#[tauri::command]
+pub fn print_algo(payload: AlgoCategory) -> Vec<String> {
+    let block: Vec<Algorithm> = match payload {
+        AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
+        AlgoCategory::Stability => ALGO_STABILITY.to_vec(),
+        AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
+    };
+    let t = block.iter().map(|f| f.to_string()).collect::<Vec<String>>();
+    dbg!(&t);
+    t
+}
+
+#[tauri::command]
+/// args has to be set as `payload` for less confusion about naming schemes
+/// across print methods
+pub fn print_main_stat(payload: AlgoCategory) -> Vec<String> {
+    let block: Vec<AlgoMainStat> = match payload {
+        AlgoCategory::Offense => ALGO_MAINSTAT_OFFENSE.to_vec(),
+        AlgoCategory::Stability => ALGO_MAINSTAT_STABILITY.to_vec(),
+        AlgoCategory::Special => ALGO_MAINSTAT_SPECIAL.to_vec(),
+    };
+    let t = block.iter().map(|f| f.to_string()).collect::<Vec<String>>();
+    dbg!(&t);
+    t
 }

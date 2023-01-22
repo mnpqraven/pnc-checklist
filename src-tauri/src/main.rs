@@ -22,7 +22,7 @@ use tauri::Manager;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        get_algo_by_days, main_stat_all,
+        get_algo_by_days, main_stat_all, print_algo, print_main_stat,
     },
     compute::{get_needed_rsc, update_chunk},
     model::enum_ls,
@@ -68,6 +68,8 @@ fn main() {
             default_slot_size,
             get_algo_by_days, // probably move to table mod
             main_stat_all,
+            print_algo,
+            print_main_stat,
             // compute
             get_needed_rsc,
             update_chunk,

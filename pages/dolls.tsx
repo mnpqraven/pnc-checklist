@@ -129,7 +129,7 @@ const Dolls = () => {
             deleteUnitHandler={handleDeleteUnit}
           />
         </div>
-        <div className="flex flex-col flex-grow"> {/* TODO: double check after*/}
+        <div className="flex flex-col flex-grow">
           <DollContext.Provider value={{ dollData, setDollData }}>
             <AlgoErrorContext.Provider value={algoValidation}>
               <DollProfile />

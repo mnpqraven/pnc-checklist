@@ -30,8 +30,6 @@ const DollProfile = () => {
     }
   }
 
-  // NOTE: probably move data stuct here to eliminate undefined case
-  // TODO: goal loadout
   if (dollData)
     return (
       <>
@@ -52,10 +50,10 @@ const DollProfile = () => {
             />
           </div>
         </div>
-        <div className={styles.loadout}>
+        <div className={`${styles.card} ${styles.component_space}`}>
           <Loadout type={"current"} data={dollData.current} />
         </div>
-        <div className={styles.loadout}>
+        <div className={`${styles.card} ${styles.component_space}`}>
           <Loadout type={"goal"} data={dollData.goal} />
         </div>
       </>
