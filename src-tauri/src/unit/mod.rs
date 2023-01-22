@@ -3,8 +3,7 @@ use tauri::State;
 use crate::{
     compute::update_reqs,
     model::error::TauriError,
-    service::file::localsave,
-    state::{Computed, Storage},
+    service::file::localsave, state::types::{Storage, Computed},
 };
 
 use self::types::{Class, Unit};

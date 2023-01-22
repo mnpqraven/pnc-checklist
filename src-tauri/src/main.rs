@@ -15,6 +15,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
+use state::types::{Storage, Computed};
 use tauri::Manager;
 
 // will be invoked during startup
@@ -30,7 +31,6 @@ use crate::{
         requirment_neural_kits,
     },
     service::file::{export, import, set_default_file},
-    state::*,
     table::{generate_algo_db, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
     validator::{validate, validate_slots},

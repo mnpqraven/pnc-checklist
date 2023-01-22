@@ -1,13 +1,13 @@
 mod algo;
 mod impls;
 use crate::requirement::types::UnitRequirement;
-use crate::stats::types::GrandResource;
+use crate::state::types::{Computed, Storage, GrandResource};
 use crate::{
     requirement::{
         requirement_algo, requirement_level, requirement_neural, requirement_slv,
         requirement_widget,
     },
-    state::{types::UserStore, Computed, Storage},
+    state::types::UserStore
 };
 use tauri::State;
 

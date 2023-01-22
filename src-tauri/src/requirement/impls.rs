@@ -1,5 +1,6 @@
 use super::types::*;
 use crate::algorithm::types::AlgoPiece;
+use crate::state::types::GrandResource;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{model::error::RequirementError, stats::types::*, table::consts::*, unit::types::Unit};
 

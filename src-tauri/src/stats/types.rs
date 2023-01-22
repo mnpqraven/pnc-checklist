@@ -6,17 +6,6 @@ use ts_rs::TS;
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Exp(pub u32);
 
-#[derive(Debug, Serialize, Deserialize, Default, TS)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct GrandResource {
-    pub skill: SkillCurrency,
-    pub coin: Coin,
-    pub widgets: Vec<WidgetResource>,
-    pub exp: Exp,
-    pub neural_kits: u32,
-    // rolls ?
-}
-
 #[derive(Serialize, Deserialize, Debug, Default, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct SkillCurrency {

@@ -1,4 +1,4 @@
-use crate::state::UserStore;
+use super::types::{UserStore, GrandResource};
 use crate::stats::types::*;
 use crate::unit::types::Class;
 use crate::{
