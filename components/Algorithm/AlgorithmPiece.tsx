@@ -6,7 +6,11 @@ import { DollContext } from "@/interfaces/payloads";
 import Image from "next/image";
 import { invoke } from "@tauri-apps/api/tauri";
 import { AlgoPiece, AlgoSlot } from "@/src-tauri/bindings/structs";
-import { AlgoCategory, AlgoMainStat, Algorithm } from "@/src-tauri/bindings/enums";
+import {
+  AlgoCategory,
+  AlgoMainStat,
+  Algorithm,
+} from "@/src-tauri/bindings/enums";
 
 type Props = {
   index: number;
@@ -25,7 +29,6 @@ const AlgorithmPiece = ({
   valid,
   onChange: pieceUpdate,
 }: Props) => {
-
   const { dollData } = useContext(DollContext);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
@@ -61,12 +64,12 @@ const AlgorithmPiece = ({
   }
 
   function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
-    let name = event.currentTarget.value as Algorithm
-    invoke<AlgoSlot | null>('validate_slots', { piece: pieceData })
-      .then(slot => {
+    let name = event.currentTarget.value as Algorithm;
+    invoke<AlgoSlot | null>("validate_slots", { piece: pieceData })
+      .then((slot) => {
         if (slot) {
-          setSlot(slot)
-          setPiece({ ...pieceData, name, slot })
+          setSlot(slot);
+          setPiece({ ...pieceData, name, slot });
         } else setPiece({ ...pieceData, name });
       })
       .finally(() => setAlgorithm(name));
@@ -85,7 +88,7 @@ const AlgorithmPiece = ({
       if (checkboxIndex == index) return e.target.checked;
       else return item;
     });
-    if (pieceData.slot.length <= checkboxIndex) slot.push(e.target.checked)
+    if (pieceData.slot.length <= checkboxIndex) slot.push(e.target.checked);
     setPiece({ ...pieceData, slot });
     setSlot(slot);
   }
@@ -107,13 +110,13 @@ const AlgorithmPiece = ({
         <div className="m-2 flex flex-col">
           <Select
             value={algorithm}
-            labelPayload={{ method: 'print_algo', payload: category }}
+            labelPayload={{ method: "print_algo", payload: category }}
             options={Object.values(options.algoTypes.algos)}
             onChangeHandler={pieceHandler}
           />
           <Select
             value={mainStat}
-            labelPayload={{ method: 'print_main_stat', payload: category }}
+            labelPayload={{ method: "print_main_stat", payload: category }}
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />
@@ -128,7 +131,9 @@ const AlgorithmPiece = ({
             ) : (
               <Loading />
             )}
-            <button onClick={() => pieceUpdate(null, category, index)}>delete</button>
+            <button onClick={() => pieceUpdate(null, category, index)}>
+              delete
+            </button>
           </div>
         </div>
       </div>

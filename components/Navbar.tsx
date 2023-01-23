@@ -4,12 +4,12 @@ import Link from "next/link";
 const navigationRoutes = [
   { route: "/", name: "Home" },
   { route: "dolls", name: "Dolls" },
+  { route: 'inventory', name: "Inventory" },
+  { route: "settings", name: "Settings" },
   // unimplemented
   // { route: "resources", name: "🍨🍨🍨" },
   // { route: 'summary', name: "Summary" },
-  // { route: 'algo', name: "Algorithm" },
   // { route: 'about', name: "About" },
-  { route: "settings", name: "Settings" },
 ];
 
 const Navbar = () => {

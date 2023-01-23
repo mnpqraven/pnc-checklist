@@ -23,7 +23,7 @@ export type OptionPayload = {
 const AlgorithmSet = ({ algo, type }: Props) => {
 
   const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([]);
-  const [mainStat, setMainStat] = useState<AlgoMainStat[]>([]);
+  const [mainStat, setMainStat] = useState<AlgoMainStat[][]>([]);
   const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([])
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
 
@@ -38,7 +38,8 @@ const AlgorithmSet = ({ algo, type }: Props) => {
     invoke<string[]>('enum_ls', { name: 'AlgoCategory' }).then(setALGOCATEGORY)
     async function get_algo_types() {
       setAlgoTypes(await invoke<AlgoTypeDb[]>("generate_algo_db"));
-      setMainStat(await invoke<AlgoMainStat[]>("main_stat_all"));
+      let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all")
+      setMainStat(mainstats);
     }
     get_algo_types();
   }, []);
@@ -65,6 +66,8 @@ const AlgorithmSet = ({ algo, type }: Props) => {
 
   return (
     <>
+    {/* TODO: better cond check */}
+    {mainStat.length > 0 ? <>
       <div className={styles.setContainer}>
         <div className={`${styles.algocategory}`}>
           {algoTypes[0] !== undefined ? (
@@ -128,6 +131,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         <NewAlgoSet category={ALGOCATEGORY[1] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
         <NewAlgoSet category={ALGOCATEGORY[2] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
       </div>
+    </> : <Loading /> }
     </>
   );
 };
