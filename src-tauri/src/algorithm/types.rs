@@ -2,13 +2,6 @@ use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
 use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Debug, TS)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct AlgoTypeDb {
-    pub category: AlgoCategory,
-    pub algos: Vec<Algorithm>,
-}
-
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
 #[ts(export, export_to = "bindings/enums/")]

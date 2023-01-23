@@ -6,16 +6,12 @@ impl ValidData<AlgoPiece> for AlgoSet {
     /// Ensures algos are in the right category
     fn input_validate<U>(&self) -> Result<Option<AlgoPiece>, ValidationError> {
         let cats = vec![&self.offense, &self.stability, &self.special];
-        let list = vec![
-            AlgoTypeDb::get_algo(AlgoCategory::Offense),
-            AlgoTypeDb::get_algo(AlgoCategory::Stability),
-            AlgoTypeDb::get_algo(AlgoCategory::Special),
-        ];
+        let list = AlgoCategory::generate_algo_db();
         let mut errs = Vec::new();
         for (ind, cat) in cats.iter().enumerate() {
             for piece in cat.iter() {
-                if !list.get(ind).unwrap().algos.contains(&piece.name) {
-                    errs.push((piece.name.to_owned(), list.get(ind).unwrap().category))
+                if !list.get(ind).unwrap().1.contains(&piece.name) {
+                    errs.push((piece.name.to_owned(), list.get(ind).unwrap().0))
                 }
             }
         }

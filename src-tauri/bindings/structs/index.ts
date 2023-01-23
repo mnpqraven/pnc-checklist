@@ -1,6 +1,5 @@
 import { AlgoPiece } from "./AlgoPiece"
 import { AlgoSet } from "./AlgoSet"
-import { AlgoTypeDb } from "./AlgoTypeDb"
 import { AlgoSlot } from "./AlgoSlot"
 import { Coin } from "./Coin"
 import { Database } from "./Database"
@@ -22,4 +21,4 @@ import { WidgetResourceRequirement } from "./WidgetResourceRequirement"
 import { Keychain } from "./Keychain"
 import { KeychainTable } from "./KeychainTable"
 import { Locker } from "./Locker"
-export type { AlgoPiece, AlgoSet, AlgoTypeDb, AlgoSlot, Coin, Database, Exp, GrandResource, Level, LevelRequirement, Loadout, NeuralFragment, NeuralResourceRequirement, ResourceByDay, SkillCurrency, SkillResourceRequirement, Unit, UnitSkill, UserStore, WidgetResource, WidgetResourceRequirement, Keychain, KeychainTable, Locker }
+export type { AlgoPiece, AlgoSet, AlgoSlot, Coin, Database, Exp, GrandResource, Level, LevelRequirement, Loadout, NeuralFragment, NeuralResourceRequirement, ResourceByDay, SkillCurrency, SkillResourceRequirement, Unit, UnitSkill, UserStore, WidgetResource, WidgetResourceRequirement, Keychain, KeychainTable, Locker }

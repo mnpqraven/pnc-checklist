@@ -232,28 +232,17 @@ impl AlgoPiece {
     }
 }
 
-impl AlgoTypeDb {
-    pub fn get_algo(category: AlgoCategory) -> Self {
-        let algos: Vec<Algorithm> = match category {
-            AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),
-            AlgoCategory::Stability => ALGO_STABILITY.to_vec(),
-            AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
-        };
-        Self { category, algos }
-    }
-
-    pub fn generate_algo_db() -> Vec<AlgoTypeDb> {
-        vec![
-            AlgoTypeDb::get_algo(AlgoCategory::Offense),
-            AlgoTypeDb::get_algo(AlgoCategory::Stability),
-            AlgoTypeDb::get_algo(AlgoCategory::Special),
-        ]
-    }
-}
-
 // TODO: refactor with chunk above
 // WARN: only after double checking with frontend
 impl AlgoCategory {
+    pub fn generate_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
+        vec![
+            (AlgoCategory::Offense, Self::get_algos(&AlgoCategory::Offense)),
+            (AlgoCategory::Stability, Self::get_algos(&AlgoCategory::Stability)),
+            (AlgoCategory::Special, Self::get_algos(&AlgoCategory::Special)),
+        ]
+    }
+
     pub fn get_algos(&self) -> Vec<Algorithm> {
         match self {
             AlgoCategory::Offense => ALGO_OFFENSE.to_vec(),

@@ -21,7 +21,6 @@ pub enum AllEnums {
 pub enum AllStructs {
     AlgoPiece,
     AlgoSet,
-    AlgoTypeDb,
     AlgoSlot,
     Coin,
     Database,

@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
-import { AlgoTypeDb } from "@/src-tauri/bindings/structs";
+import { AlgoCategory } from "@/src-tauri/bindings/enums";
 
 type Props = {
   day: string;
@@ -11,19 +11,19 @@ type Props = {
   onMouseLeave: () => void;
 };
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
-  const [algos, setAlgos] = useState<AlgoTypeDb[]>([]); // [category: [algo]]
+  const [algos, setAlgos] = useState<[AlgoCategory, Algorithm[]][]>([]); // [category: [algo]]
 
   const isGrowNeeded: boolean[] = algos.map((cat) => {
-    if (cat.algos.length == 0) return true;
+    if (cat[1].length == 0) return true;
     else return false;
   });
   async function initdata() {
-    let db = await invoke<AlgoTypeDb[]>("generate_algo_db");
+    let db = await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db");
     invoke<string[] | null>("get_algo_by_days", { day }).then((today) => {
       if (today) {
         setAlgos(
           db.map((item) => {
-            item.algos = item.algos.filter((e) => today.includes(e));
+            item[1] = item[1].filter((algo) => today.includes(algo.name));
             return item;
           })
         );
@@ -64,16 +64,16 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
                   isGrowNeeded[index_cat] ? `grow` : ""
                 }`}
               >
-                <p>{category.category}</p>
-                {category.algos.map((algo, index_alg) => (
+                <p>{category[0]}</p>
+                {category[1].map((algo, index_alg) => (
                   <div
                     key={index_alg}
                     className="w-[64px] h-[64px] flex items-center"
                   >
                     <Image
                       priority
-                      src={algo_src(algo)}
-                      alt={algo}
+                      src={algo_src(algo.name)}
+                      alt={algo.name}
                       height={128}
                       width={128}
                     />

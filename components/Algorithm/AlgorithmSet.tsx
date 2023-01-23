@@ -9,20 +9,20 @@ import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import styles from "../../styles/Page.module.css";
 import { AlgoMainStat, AlgoCategory, LoadoutType } from "@/src-tauri/bindings/enums";
-import { AlgoPiece, AlgoSet, AlgoTypeDb } from "@/src-tauri/bindings/structs";
+import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 
 type Props = {
   algo: AlgoSet;
   type: LoadoutType;
 };
 export type OptionPayload = {
-  algoTypes: AlgoTypeDb;
+  algoTypes: [AlgoCategory, Algorithm[]];
   mainStat: AlgoMainStat[];
 };
 
 const AlgorithmSet = ({ algo, type }: Props) => {
 
-  const [algoTypes, setAlgoTypes] = useState<AlgoTypeDb[]>([]);
+  const [algoTypes, setAlgoTypes] = useState<[AlgoCategory, Algorithm[]][]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[][]>([]);
   const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([])
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
@@ -37,7 +37,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   useEffect(() => {
     invoke<string[]>('enum_ls', { name: 'AlgoCategory' }).then(setALGOCATEGORY)
     async function get_algo_types() {
-      setAlgoTypes(await invoke<AlgoTypeDb[]>("generate_algo_db"));
+      setAlgoTypes(await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db"));
       let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all")
       setMainStat(mainstats);
     }

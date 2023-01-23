@@ -111,7 +111,7 @@ const AlgorithmPiece = ({
           <Select
             value={algorithm}
             labelPayload={{ method: "print_algo", payload: category }}
-            options={Object.values(options.algoTypes.algos)}
+            options={Object.values(options.algoTypes[1].toString())}
             onChangeHandler={pieceHandler}
           />
           <Select
