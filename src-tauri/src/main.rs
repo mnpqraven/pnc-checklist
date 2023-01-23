@@ -33,7 +33,7 @@ use crate::{
     service::file::{export, import, set_default_file},
     table::{generate_algo_db, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
-    validator::{validate, validate_slots},
+    validator::{validate, validate_slots}, state::view_inv_table,
 };
 
 fn main() {
@@ -50,6 +50,7 @@ fn main() {
         .manage(Storage {
             store: Default::default(),
             db: Default::default(),
+            inv_table: Default::default()
         })
         // updated post launch
         .manage(Computed {
@@ -81,6 +82,8 @@ fn main() {
             requirement_neural,
             requirment_neural_kits,
             requirement_widget,
+            // state
+            view_inv_table,
             // service
             import,
             export,

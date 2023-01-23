@@ -1,12 +1,12 @@
-use tauri::State;
-
+use self::types::{Class, Unit};
 use crate::{
     compute::update_reqs,
     model::error::TauriError,
-    service::file::localsave, state::types::{Storage, Computed},
+    service::file::localsave,
+    state::types::{Computed, InvTable, Locker, Storage},
 };
-
-use self::types::{Class, Unit};
+use std::sync::Arc;
+use tauri::State;
 
 #[cfg(test)]
 mod bacon;
@@ -24,6 +24,13 @@ pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
     let new_unit = Unit::new(name, class);
     let mut guard = store.store.lock().unwrap();
     guard.units.push(new_unit.clone());
+
+    // appending to locker
+    // TODO: test
+    let current = InvTable::get_current();
+    // let mut table = current.lock().unwrap();
+    // table.append(&Arc::new(new_unit.clone()), &Arc::new(Locker(Vec::new())));
+
     new_unit
 }
 #[tauri::command]

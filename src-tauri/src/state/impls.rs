@@ -1,11 +1,13 @@
-use super::types::{UserStore, GrandResource};
+use super::types::{UserStore, GrandResource, Locker, LockerKeychain, CURRENT_INV_TABLE, InvTable};
 use crate::stats::types::*;
-use crate::unit::types::Class;
+use crate::unit::types::{Class, Unit};
 use crate::{
     requirement::types::{DatabaseRequirement, UnitRequirement},
     service::file::import,
 };
 use std::path::Path;
+use std::rc::Rc;
+use std::sync::{Arc, Mutex};
 use strum::IntoEnumIterator;
 use tauri::api::path::data_dir;
 
@@ -25,6 +27,7 @@ impl Default for UserStore {
         .unwrap()
     }
 }
+
 impl Default for DatabaseRequirement {
     fn default() -> Self {
         let store: UserStore = UserStore::default();
@@ -82,5 +85,25 @@ impl GrandResource {
             exp: Exp(self.exp.0 + with.exp.0),
             neural_kits: self.neural_kits + with.neural_kits,
         };
+    }
+}
+
+impl InvTable {
+    /// Get the inventory table with an ArcMutex lock
+    pub fn get_current() -> Arc<Self> {
+        CURRENT_INV_TABLE.with(|c| c.lock().unwrap().clone())
+    }
+    pub fn set_current(self) {
+        CURRENT_INV_TABLE.with(|c| *c.lock().unwrap() = Arc::new(self))
+    }
+
+    pub fn append(&mut self, unit: &Arc<Unit>, locker: &Arc<Locker>) {
+        self.lockers.push(LockerKeychain {
+            unit: Arc::clone(unit),
+            locker: Arc::clone(locker)
+        })
+    }
+
+    pub fn remove() { // TODO:
     }
 }
