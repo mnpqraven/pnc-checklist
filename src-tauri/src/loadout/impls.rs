@@ -29,5 +29,13 @@ impl Loadout {
             frags: NeuralFragment(None),
         }
     }
-}
 
+    pub fn get_algos(&self) -> Vec<AlgoPiece> {
+        vec![
+            self.algo.offense.clone(),
+            self.algo.stability.clone(),
+            self.algo.special.clone(),
+        ]
+        .concat()
+    }
+}

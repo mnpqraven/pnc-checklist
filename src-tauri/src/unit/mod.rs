@@ -1,11 +1,12 @@
+use std::sync::MutexGuard;
+
 use self::types::{Class, Unit};
 use crate::{
     compute::update_reqs,
     model::error::TauriError,
     service::file::localsave,
-    state::types::{Computed, InvTable, Locker, Storage},
+    state::types::{Computed, KeychainTable, Locker, Storage},
 };
-use std::sync::Arc;
 use tauri::State;
 
 #[cfg(test)]
@@ -21,17 +22,23 @@ pub fn view_store_units(store: State<Storage>) -> Vec<Unit> {
 }
 #[tauri::command]
 pub fn new_unit(name: String, class: Class, store: State<Storage>) -> Unit {
-    let new_unit = Unit::new(name, class);
-    let mut guard = store.store.lock().unwrap();
-    guard.units.push(new_unit.clone());
+    let n_unit = Unit::new(name, class);
+    let mut g_store = store.store.lock().unwrap();
+    g_store.units.push(n_unit.clone());
 
-    // appending to locker
-    // TODO: test
-    let current = InvTable::get_current();
-    // let mut table = current.lock().unwrap();
-    // table.append(&Arc::new(new_unit.clone()), &Arc::new(Locker(Vec::new())));
+    let binding = KeychainTable::get_current();
+    let mut g_keychains: MutexGuard<KeychainTable> = binding.lock().unwrap();
+    let locker: Locker = Locker(n_unit.clone().current.get_algos());
+    // new keychain to table
+    g_keychains.append(
+        &n_unit.clone(),
+        &locker,
+    );
+    // add content to locker
+    let mut g_lockers = store.lockers.lock().unwrap();
+    g_lockers.push(locker);
 
-    new_unit
+    n_unit
 }
 #[tauri::command]
 pub fn delete_unit(index: usize, store: State<Storage>) -> Result<(), TauriError> {

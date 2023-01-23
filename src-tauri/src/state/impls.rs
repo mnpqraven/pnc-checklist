@@ -1,4 +1,4 @@
-use super::types::{UserStore, GrandResource, Locker, LockerKeychain, CURRENT_INV_TABLE, InvTable};
+use super::types::{GrandResource, KeychainTable, Locker, Keychain, Storage, UserStore};
 use crate::stats::types::*;
 use crate::unit::types::{Class, Unit};
 use crate::{
@@ -6,8 +6,7 @@ use crate::{
     service::file::import,
 };
 use std::path::Path;
-use std::rc::Rc;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, MutexGuard};
 use strum::IntoEnumIterator;
 use tauri::api::path::data_dir;
 
@@ -25,6 +24,30 @@ impl Default for UserStore {
             .to_owned(),
         )
         .unwrap()
+    }
+}
+impl Default for Storage {
+    /// NOTE: will be called during tauri's `manage` at startup
+    fn default() -> Self {
+        let store: Mutex<UserStore> = Mutex::new(Default::default());
+        let db: Mutex<GrandResource> = Mutex::new(Default::default());
+        // userstore locker mutex
+        let mut lockers: Vec<Locker> = Vec::new();
+        // computed inv_table mutex
+        let table = KeychainTable::get_current();
+        let mut guardtable: MutexGuard<KeychainTable> = table.lock().unwrap();
+
+        for unit in store.lock().unwrap().units.iter() {
+            let locker = Locker(unit.current.get_algos());
+            guardtable.append(&unit, &locker);
+            lockers.push(locker);
+        }
+
+        Self {
+            store,
+            db,
+            lockers: Mutex::new(lockers),
+        }
     }
 }
 
@@ -88,22 +111,27 @@ impl GrandResource {
     }
 }
 
-impl InvTable {
+thread_local! {
+    pub static CURRENT_INV_TABLE: Arc<Mutex<KeychainTable>> = Arc::new(Mutex::new(Default::default()));
+}
+impl KeychainTable {
     /// Get the inventory table with an ArcMutex lock
-    pub fn get_current() -> Arc<Self> {
-        CURRENT_INV_TABLE.with(|c| c.lock().unwrap().clone())
-    }
-    pub fn set_current(self) {
-        CURRENT_INV_TABLE.with(|c| *c.lock().unwrap() = Arc::new(self))
+    pub fn get_current() -> Arc<Mutex<KeychainTable>> {
+        CURRENT_INV_TABLE.with(|c| c.clone())
     }
 
-    pub fn append(&mut self, unit: &Arc<Unit>, locker: &Arc<Locker>) {
-        self.lockers.push(LockerKeychain {
-            unit: Arc::clone(unit),
-            locker: Arc::clone(locker)
+    // TODO: find use case
+    pub fn _set_current(self) {
+        CURRENT_INV_TABLE.with(|c| *c.lock().unwrap() = self)
+    }
+
+    pub fn append(&mut self, unit: &Unit, locker: &Locker) {
+        self.keychains.push(Keychain {
+            owner: Arc::new(unit.clone()),
+            locker: Arc::new(locker.clone()),
         })
     }
 
-    pub fn remove() { // TODO:
+    pub fn _remove() { // TODO:
     }
 }

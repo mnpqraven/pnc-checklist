@@ -2,6 +2,7 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
+#![feature(arc_unwrap_or_clone)]
 
 mod algorithm;
 mod compute;
@@ -15,7 +16,10 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-use state::types::{Storage, Computed};
+use std::sync::Mutex;
+
+use requirement::types::DatabaseRequirement;
+use state::types::{Computed, KeychainTable, Storage};
 use tauri::Manager;
 
 // will be invoked during startup
@@ -31,9 +35,10 @@ use crate::{
         requirment_neural_kits,
     },
     service::file::{export, import, set_default_file},
+    state::view_locker,
     table::{generate_algo_db, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
-    validator::{validate, validate_slots}, state::view_inv_table,
+    validator::{validate, validate_slots},
 };
 
 fn main() {
@@ -47,14 +52,16 @@ fn main() {
             Ok(())
         })
         // JSON data
-        .manage(Storage {
-            store: Default::default(),
-            db: Default::default(),
-            inv_table: Default::default()
-        })
+        .manage(Storage::default())
+        // .manage(Storage {
+        //     store: Mutex::new(UserStore::default()),
+        //     db: Mutex::new(GrandResource::default()),
+        //     lockers: Mutex::new(Default::default()),
+        // })
         // updated post launch
         .manage(Computed {
-            database_req: Default::default(),
+            database_req: Mutex::new(DatabaseRequirement::default()),
+            keychain_table: KeychainTable::get_current(),
         })
         .invoke_handler(tauri::generate_handler![
             // INFO:
@@ -83,7 +90,7 @@ fn main() {
             requirment_neural_kits,
             requirement_widget,
             // state
-            view_inv_table,
+            view_locker,
             // service
             import,
             export,

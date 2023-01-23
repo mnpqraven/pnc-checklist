@@ -70,7 +70,6 @@ pub fn print_algo(payload: AlgoCategory) -> Vec<String> {
         AlgoCategory::Special => ALGO_SPECIAL.to_vec(),
     };
     let t = block.iter().map(|f| f.to_string()).collect::<Vec<String>>();
-    dbg!(&t);
     t
 }
 
@@ -84,6 +83,5 @@ pub fn print_main_stat(payload: AlgoCategory) -> Vec<String> {
         AlgoCategory::Special => ALGO_MAINSTAT_SPECIAL.to_vec(),
     };
     let t = block.iter().map(|f| f.to_string()).collect::<Vec<String>>();
-    dbg!(&t);
     t
 }

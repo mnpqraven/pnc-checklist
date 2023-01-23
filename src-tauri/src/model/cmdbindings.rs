@@ -40,6 +40,9 @@ pub enum AllStructs {
     UserStore,
     WidgetResource,
     WidgetResourceRequirement,
+    Keychain,
+    KeychainTable,
+    Locker,
 }
 
 /// Generate a string array containing field names in a rust enum
