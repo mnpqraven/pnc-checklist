@@ -4,8 +4,8 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-01-21
-version: 1.0.0
+updated: 2023-01-25
+version: 0.1.2
 @end
 
 * TODO
@@ -24,12 +24,22 @@ version: 1.0.0
 *** Features
 *** Current
     #implementing
-    - (-) Parse DB for needed algo pieces
+    - (?) Parse DB for needed algo pieces
 
     #general
     - ( ) error handle
     -- ( ) requirement
     -- ( ) compute
+
+    #refactor
+    - ( ) `computed`
+    --- ( ) move unit from json struct to computed struct
+    ---- ( ) validate with old code
+    ----- (x) adding units
+    ----- (x) saving units
+    ----- ( ) removing units
+    ----- ( ) other fns
+    ---- ( ) retest
 
     #bugs
     - (=) layout when there's no algo piece is weird
