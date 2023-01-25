@@ -19,7 +19,6 @@ pub fn view_locker(computed: State<Computed>, keychain: State<KeychainTable>) ->
         v.push(g_unit.clone());
     }
 
-    let g_kc = keychain.keychains.lock().unwrap();
-    dbg!(&g_kc);
+    let _g_kc = keychain.keychains.lock().unwrap();
     v
 }

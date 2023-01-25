@@ -1,5 +1,6 @@
 mod algo;
 mod impls;
+use crate::model::error::TauriError;
 use crate::requirement::types::UnitRequirement;
 use crate::state::types::{Computed, JSONStorage, GrandResource};
 use crate::{
@@ -12,12 +13,14 @@ use crate::{
 use tauri::State;
 
 /// updates the requirement field in the store by reading the store field
-pub fn update_reqs(store: &UserJSON, computed: State<Computed>) -> Result<(), &'static str> {
+pub fn update_reqs(computed: State<Computed>) -> Result<(), TauriError> {
     // let store_guard = store.store.lock().expect("requesting mutex failed");
     let mut req_guard = computed.database_req.lock().unwrap();
+    let g_units = computed.units.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
-    for unit in store.units.iter() {
-        // WARN: landmine or Err unwraps
+    for unit in g_units.iter() {
+        let unit = unit.lock().unwrap();
+        // WARN: landmine of Err unwraps
         reqs.push(UnitRequirement {
             skill: requirement_slv(unit.current.skill_level, unit.goal.skill_level),
             neural: requirement_neural(unit.current.frags, unit.current.neural, unit.goal.neural)
@@ -25,7 +28,7 @@ pub fn update_reqs(store: &UserJSON, computed: State<Computed>) -> Result<(), &'
             level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
             breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
                 .unwrap(),
-            algo: requirement_algo(unit).unwrap(),
+            algo: requirement_algo(&unit).unwrap(),
         })
     }
     req_guard.unit_req = reqs;

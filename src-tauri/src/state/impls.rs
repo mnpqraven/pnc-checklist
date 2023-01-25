@@ -1,4 +1,6 @@
-use super::types::{Computed, GrandResource, JSONStorage, KeychainTable, Locker, UserJSON};
+use super::types::{
+    Computed, GrandResource, JSONStorage, Keychain, KeychainTable, Locker, UserJSON,
+};
 use crate::algorithm::types::AlgoPiece;
 use crate::stats::types::*;
 use crate::unit::types::{Class, Unit};
@@ -50,13 +52,13 @@ impl Default for JSONStorage {
 
 impl KeychainTable {
     // NOTE: important: using initialized store to produce `Arc`s
-    pub fn inject(store: &Vec<Arc<Mutex<Unit>>>) -> Self {
-        let mut keychains = Vec::new();
+    pub fn inject(store: &[Arc<Mutex<Unit>>]) -> Self {
+        let mut keychains: Vec<Keychain> = Vec::new();
         for unit in store.iter() {
             let t = unit.lock().unwrap().get_current_algos();
             // NOTE: AlgoPiece inside AlgoSet likely needs ArcMutexes
             // ALgoSet > AlgoPiece { offense: Vec<Arc<Mutex<AlgoPiece>>>, .. }
-            keychains.push((Arc::clone(unit), Arc::new(Mutex::new(Locker::new(t)))));
+            keychains.push(Keychain::new(unit, Locker::new(t)));
         }
         let keychains = Mutex::new(keychains);
         Self { keychains }
@@ -124,6 +126,16 @@ impl GrandResource {
     }
 }
 
+impl Keychain {
+    // TODO: locker uses clone, not new
+    pub fn new(unit: &Arc<Mutex<Unit>>, locker: Locker) -> Self {
+        Self {
+            unit: Arc::clone(unit),
+            locker: Arc::new(Mutex::new(locker)),
+        }
+    }
+}
+
 impl Locker {
     pub fn new(value: Vec<AlgoPiece>) -> Self {
         Self(value)
@@ -138,10 +150,7 @@ impl Computed {
         UserJSON {
             schema: current.schema.clone(),
             database: current.database.clone(),
-            units: lock
-                .iter()
-                .map(|c| c.lock().unwrap().clone())
-                .collect(),
+            units: lock.iter().map(|c| c.lock().unwrap().clone()).collect(),
         }
     }
 }
@@ -149,7 +158,10 @@ impl Computed {
 impl KeychainTable {
     pub fn append_unit(&self, unit: Unit, algos: Vec<AlgoPiece>) {
         let arc_unit = Arc::new(Mutex::new(unit));
-        let arc_algos = Arc::new(Mutex::new(Locker::new(algos)));
-        self.keychains.lock().unwrap().push((arc_unit, arc_algos));
+        // TODO: algos pointing to the wrong memory stack
+        self.keychains
+            .lock()
+            .unwrap()
+            .push(Keychain::new(&arc_unit, Locker::new(algos)));
     }
 }

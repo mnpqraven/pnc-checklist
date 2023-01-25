@@ -10,10 +10,7 @@ impl DatabaseRequirement {
         let mut sum = GrandResource::new();
         for unit in &self.unit_req {
             sum.combine(unit.get_req());
-            dbg!(&sum);
-            // dbg!(sum.combine(unit.get_req()));
         }
-        dbg!(&sum);
         sum
     }
 }
@@ -199,7 +196,6 @@ impl WidgetResourceRequirement {
 
                 let mut total: [u32; 7] = [0; 7];
                 for stage in REQ_BREAK_CHAIN[from_ind..=to_ind].iter() {
-                    // dbg!(stage);
                     // individual [u32; 7]
                     for (index, item) in stage.iter().enumerate() {
                         total[index] += item;

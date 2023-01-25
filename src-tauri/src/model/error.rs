@@ -32,6 +32,7 @@ pub enum TauriError {
     ImportStruct(String),
     Export,
     UnitModification,
+    RequestLockFailed
 }
 
 /// Error concerning validatino of data, should amend the data and not stop the

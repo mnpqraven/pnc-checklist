@@ -16,10 +16,10 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-use std::sync::{Mutex, Arc};
+use std::sync::{Arc, Mutex};
 
 use requirement::types::DatabaseRequirement;
-use state::types::{Computed, KeychainTable, JSONStorage, UserJSON};
+use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
 use tauri::Manager;
 use unit::types::Unit;
 
@@ -27,7 +27,7 @@ use unit::types::Unit;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        get_algo_by_days, main_stat_all, print_algo, print_main_stat,
+        main_stat_all, print_algo, print_main_stat,
     },
     compute::{get_needed_rsc, update_chunk},
     model::enum_ls,
@@ -37,15 +37,15 @@ use crate::{
     },
     service::file::{export, import, set_default_file},
     state::view_locker,
-    table::{generate_algo_db, get_bonuses},
+    table::{generate_algo_db, get_algo_by_days, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
     validator::{validate, validate_slots},
 };
 
 fn main() {
     // INFO: initial values
-    let userstore: Vec<Arc<Mutex<Unit>>> = UserJSON::compute_default();
-    let keychain_table: KeychainTable = KeychainTable::inject(&userstore);
+    let user_units_default: Vec<Arc<Mutex<Unit>>> = UserJSON::compute_default();
+    let keychain_table_default: KeychainTable = KeychainTable::inject(&user_units_default);
 
     tauri::Builder::default()
         .setup(|app| {
@@ -58,18 +58,11 @@ fn main() {
         })
         // JSON data
         .manage(JSONStorage::default())
-        // .manage(Storage {
-        //     store: Mutex::new(UserStore::default()),
-        //     db: Mutex::new(GrandResource::default()),
-        //     lockers: Mutex::new(Default::default()),
-        // })
-        // updated post launch
         .manage(Computed {
             database_req: Mutex::new(DatabaseRequirement::default()),
-            // keychain_table: Mutex::new(KeychainTable::default()),
-            units: Mutex::new(userstore),
+            units: Mutex::new(user_units_default),
         })
-        .manage(keychain_table)
+        .manage(keychain_table_default)
         .invoke_handler(tauri::generate_handler![
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
@@ -81,7 +74,6 @@ fn main() {
             algo_piece_new,
             algo_slots_compute,
             default_slot_size,
-            get_algo_by_days, // probably move to table mod
             main_stat_all,
             print_algo,
             print_main_stat,
@@ -105,6 +97,7 @@ fn main() {
             // table
             generate_algo_db,
             get_bonuses,
+            get_algo_by_days,
             // unit
             view_store_units,
             new_unit,

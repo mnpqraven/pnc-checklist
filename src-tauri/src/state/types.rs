@@ -48,16 +48,14 @@ pub struct Computed {
 #[derive(Debug, Serialize, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct KeychainTable {
-    pub keychains: Mutex<Vec<(Arc<Mutex<Unit>>, Arc<Mutex<Locker>>)>>,
+    pub keychains: Mutex<Vec<Keychain>>,
 }
-
-// NOTE: under development
-// #[derive(Debug, Default, Serialize, Clone, TS)]
-// #[ts(export, export_to = "bindings/structs/")]
-// pub struct Keychain {
-//     pub owner: Arc<Unit>,     // points to user's Unit vec
-//     pub locker: Arc<Locker>,  // points to Computed's Locker Vec
-// }
+#[derive(Debug, Serialize, TS)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct Keychain {
+    pub unit: Arc<Mutex<Unit>>,
+    pub locker: Arc<Mutex<Locker>>,
+}
 
 #[derive(Debug, Default, TS, Serialize, Deserialize, Clone)]
 #[ts(export, export_to = "bindings/structs/")]

@@ -13,6 +13,12 @@ version: 0.1.2
 *** Features
 *** Current
     - (x) use backend's `Display` for algo selection options
+    - ( ) doll select layout improvement
+    --- ( ) add and delete on the same row, replace tex with text above + icon
+        below
+    --- ( ) delete button on each doll to the side
+    --- ( ) option to filter class
+    - ( ) spacing on skill level sliders
 * NOTE
 
 **  Ideas
@@ -32,14 +38,16 @@ version: 0.1.2
     -- ( ) compute
 
     #refactor
-    - ( ) `computed`
-    --- ( ) move unit from json struct to computed struct
-    ---- ( ) validate with old code
+    - (-) `computed`
+    --- (-) move unit from json struct to computed struct
+    ---- (-) validate with old code
     ----- (x) adding units
     ----- (x) saving units
-    ----- ( ) removing units
+    ----- (x) removing units
     ----- ( ) other fns
-    ---- ( ) retest
+    ---- ( ) re-test
+    ---- ( ) point algos to correct memory stack in `append_unit` and
+         `Keychain::new()`
 
     #bugs
     - (=) layout when there's no algo piece is weird

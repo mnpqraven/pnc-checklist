@@ -3,7 +3,6 @@ use crate::table::consts::{
     ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
     ALGO_SPECIAL, ALGO_STABILITY,
 };
-use crate::table::types::Day;
 use crate::unit::types::Class;
 
 #[cfg(test)]
@@ -38,10 +37,6 @@ pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
         Class::Specialist | Class::Medic if category == AlgoCategory::Special => 3,
         _ => 2,
     }
-}
-#[tauri::command]
-pub fn get_algo_by_days(day: Day) -> Option<Vec<Algorithm>> {
-    Algorithm::get_bonuses(day)
 }
 
 #[tauri::command]

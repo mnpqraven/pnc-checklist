@@ -123,8 +123,7 @@ impl AlgoSet {
     }
 
     /// consumes a bucket of AlgoPiece to update the AlgoSet
-    fn get_set(bucket: &Vec<AlgoPiece>) -> Self {
-        dbg!(&bucket);
+    fn get_set(bucket: &[AlgoPiece]) -> Self {
         Self {
             offense: bucket
                 .iter()
@@ -176,7 +175,6 @@ impl AlgoSet {
             }
         }
         *self = Self::get_set(goal);
-        dbg!(&self);
     }
 }
 

@@ -26,13 +26,13 @@ pub trait ValidData<T> {
 pub fn validate(unit: Option<Unit>) -> Result<(), Vec<ValidationError>> {
     let mut errs: Vec<ValidationError> = Vec::new();
     if let Some(unit) = unit {
-        match validate_unit_name(&unit) {
-            Ok(()) => {}
-            Err(e) => errs.push(e),
-        }
-        match validate_algo(&unit) {
-            Ok(()) => {}
-            Err(e) => errs.push(e),
+        match (validate_unit_name(&unit), validate_algo(&unit)) {
+            (Ok(_), Ok(_)) => {}
+            (Ok(_), Err(e)) | (Err(e), Ok(_)) => errs.push(e),
+            (Err(e), Err(f)) => {
+                errs.push(e);
+                errs.push(f);
+            }
         }
     }
     if !errs.is_empty() {
