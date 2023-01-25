@@ -7,24 +7,21 @@ use std::sync::{Arc, Mutex};
 use ts_rs::TS;
 
 /// Main storage, state managed by tauri
-pub struct Storage {
-    pub store: Mutex<UserStore>,  // User's JSON
-    pub db: Mutex<GrandResource>, // User's JSON
-    /// list holding items of each unit in userstore.
-    /// Act as psuedo-inventory by transforming Vec<Locker> to <T> via impl fns
-    pub lockers: Mutex<Vec<Locker>>,
+pub struct JSONStorage {
+    pub store: Mutex<UserJSON>,   // User's JSON
+    pub db: Mutex<GrandResource>, // generated struct
 }
 
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export, export_to = "bindings/structs/")]
-pub struct UserStore {
+pub struct UserJSON {
     #[serde(rename = "$schema")]
     pub schema: String,
     pub database: Database,
     pub units: Vec<Unit>,
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Database {
     pub skill: SkillCurrency,
@@ -39,28 +36,28 @@ pub struct GrandResource {
     pub widgets: Vec<WidgetResource>,
     pub exp: Exp,
     pub neural_kits: u32,
-    // rolls ?
 }
 
 /// data computed from the backend, state managed by tauri
 pub struct Computed {
     pub database_req: Mutex<DatabaseRequirement>,
-    pub keychain_table: Arc<Mutex<KeychainTable>>,
+    pub units: Mutex<Vec<Arc<Mutex<Unit>>>>,
 }
 
 // -- structs for the InvTable and hookup management between user units and db
-#[derive(Debug, Default, Serialize, TS, Clone)]
+#[derive(Debug, Serialize, TS)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct KeychainTable {
-    pub keychains: Vec<Keychain>,
+    pub keychains: Mutex<Vec<(Arc<Mutex<Unit>>, Arc<Mutex<Locker>>)>>,
 }
 
-#[derive(Debug, Default, Serialize, Clone, TS)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct Keychain {
-    pub owner: Arc<Unit>,     // points to user's Unit vec
-    pub locker: Arc<Locker>,  // points to Computed's Locker Vec
-}
+// NOTE: under development
+// #[derive(Debug, Default, Serialize, Clone, TS)]
+// #[ts(export, export_to = "bindings/structs/")]
+// pub struct Keychain {
+//     pub owner: Arc<Unit>,     // points to user's Unit vec
+//     pub locker: Arc<Locker>,  // points to Computed's Locker Vec
+// }
 
 #[derive(Debug, Default, TS, Serialize, Deserialize, Clone)]
 #[ts(export, export_to = "bindings/structs/")]

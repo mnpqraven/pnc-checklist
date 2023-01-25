@@ -6,7 +6,7 @@ use ts_rs::TS;
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Exp(pub u32);
 
-#[derive(Serialize, Deserialize, Debug, Default, TS)]
+#[derive(Serialize, Deserialize, Debug, Default, TS, Clone)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct SkillCurrency {
     pub token: u32,
@@ -20,7 +20,7 @@ pub struct UnitSkill {
     pub auto: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default, TS)]
+#[derive(Serialize, Deserialize, Debug, Default, TS, Clone)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Coin(pub u32);
 

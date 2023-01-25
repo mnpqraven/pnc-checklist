@@ -19,6 +19,17 @@ impl Unit {
         v.update_slots(self.current.algo.get_bucket());
         v.get_bucket()
     }
+
+    pub fn get_current_algos(&self) -> Vec<AlgoPiece> {
+        let mut v = Vec::new();
+        let a = self.current.algo.offense.clone();
+        let b = self.current.algo.stability.clone();
+        let c = self.current.algo.special.clone();
+        v.extend(a);
+        v.extend(b);
+        v.extend(c);
+        v
+    }
 }
 
 impl Default for NeuralExpansion {

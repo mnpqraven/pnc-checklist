@@ -99,7 +99,7 @@ const AlgorithmPiece = ({
         className={` flex justify-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
-        <div>
+        <div className="w-auto h-auto">
           <Image
             src={`algos/${algorithm.toLowerCase()}.png`}
             alt={"algo"}
@@ -111,7 +111,7 @@ const AlgorithmPiece = ({
           <Select
             value={algorithm}
             labelPayload={{ method: "print_algo", payload: category }}
-            options={Object.values(options.algoTypes[1].toString())}
+            options={options.algoTypes[1].map(e => e.toString())}
             onChangeHandler={pieceHandler}
           />
           <Select

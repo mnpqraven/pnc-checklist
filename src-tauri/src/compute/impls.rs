@@ -1,6 +1,6 @@
 use crate::{algorithm::types::*, state::types::*, stats::types::*, unit::types::*};
 
-impl UserStore {
+impl UserJSON {
     pub fn generate_example() -> Self {
         Self {
             schema: String::from("https://raw.githubusercontent.com/mnpqraven/pnc-checklist/main/src-tauri/schemas/schema.jsonc"),

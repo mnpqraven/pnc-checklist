@@ -1,18 +1,18 @@
 mod algo;
 mod impls;
 use crate::requirement::types::UnitRequirement;
-use crate::state::types::{Computed, Storage, GrandResource};
+use crate::state::types::{Computed, JSONStorage, GrandResource};
 use crate::{
     requirement::{
         requirement_algo, requirement_level, requirement_neural, requirement_slv,
         requirement_widget,
     },
-    state::types::UserStore
+    state::types::UserJSON
 };
 use tauri::State;
 
 /// updates the requirement field in the store by reading the store field
-pub fn update_reqs(store: &UserStore, computed: State<Computed>) -> Result<(), &'static str> {
+pub fn update_reqs(store: &UserJSON, computed: State<Computed>) -> Result<(), &'static str> {
     // let store_guard = store.store.lock().expect("requesting mutex failed");
     let mut req_guard = computed.database_req.lock().unwrap();
     let mut reqs: Vec<UnitRequirement> = Vec::new();
@@ -41,7 +41,7 @@ pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
 }
 
 #[tauri::command]
-pub fn update_chunk(chunk: UserStore, store: State<Storage>) -> Result<(), &'static str> {
+pub fn update_chunk(chunk: UserJSON, store: State<JSONStorage>) -> Result<(), &'static str> {
     let mut store = store.store.lock().unwrap();
     *store = chunk;
     Ok(())

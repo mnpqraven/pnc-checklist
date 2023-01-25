@@ -16,11 +16,12 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-use std::sync::Mutex;
+use std::sync::{Mutex, Arc};
 
 use requirement::types::DatabaseRequirement;
-use state::types::{Computed, KeychainTable, Storage};
+use state::types::{Computed, KeychainTable, JSONStorage, UserJSON};
 use tauri::Manager;
+use unit::types::Unit;
 
 // will be invoked during startup
 use crate::{
@@ -42,6 +43,10 @@ use crate::{
 };
 
 fn main() {
+    // INFO: initial values
+    let userstore: Vec<Arc<Mutex<Unit>>> = UserJSON::compute_default();
+    let keychain_table: KeychainTable = KeychainTable::inject(&userstore);
+
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)]
@@ -52,7 +57,7 @@ fn main() {
             Ok(())
         })
         // JSON data
-        .manage(Storage::default())
+        .manage(JSONStorage::default())
         // .manage(Storage {
         //     store: Mutex::new(UserStore::default()),
         //     db: Mutex::new(GrandResource::default()),
@@ -61,8 +66,10 @@ fn main() {
         // updated post launch
         .manage(Computed {
             database_req: Mutex::new(DatabaseRequirement::default()),
-            keychain_table: KeychainTable::get_current(),
+            // keychain_table: Mutex::new(KeychainTable::default()),
+            units: Mutex::new(userstore),
         })
+        .manage(keychain_table)
         .invoke_handler(tauri::generate_handler![
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5

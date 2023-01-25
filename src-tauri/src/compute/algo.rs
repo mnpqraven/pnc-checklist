@@ -1,8 +1,8 @@
-use crate::{algorithm::types::AlgoPiece, model::error::TauriError, state::types::Storage};
+use crate::{algorithm::types::AlgoPiece, model::error::TauriError, state::types::JSONStorage};
 use tauri::State;
 
 // WARN: potential zombie code
-pub fn _get_needed_algos(computed: State<Storage>) -> Result<(), TauriError> {
+pub fn _get_needed_algos(computed: State<JSONStorage>) -> Result<(), TauriError> {
     let guard = computed.store.lock().unwrap();
     let mut needed_algo: Vec<AlgoPiece> = Vec::new();
     for unit in guard.units.iter() {

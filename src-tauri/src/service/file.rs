@@ -1,14 +1,14 @@
-use crate::Storage;
-use crate::{model::error::TauriError, state::types::UserStore};
+use crate::JSONStorage;
+use crate::{model::error::TauriError, state::types::UserJSON};
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 
 #[tauri::command]
-pub fn import(path: String) -> Result<UserStore, TauriError> {
+pub fn import(path: String) -> Result<UserJSON, TauriError> {
     println!("import");
     let file = fs::read_to_string(path);
     match file {
-        Ok(payload) => match serde_json::from_str::<UserStore>(&payload) {
+        Ok(payload) => match serde_json::from_str::<UserJSON>(&payload) {
             Ok(valid_data) => {
                 // generate new json in cache dir
                 Ok(valid_data)
@@ -21,7 +21,7 @@ pub fn import(path: String) -> Result<UserStore, TauriError> {
             fs::create_dir_all(pnc_dir_data).unwrap();
 
             // create example chunk
-            let example: UserStore = UserStore::generate_example();
+            let example: UserJSON = UserJSON::generate_example();
             fs::write(
                 Path::new(&pnc_dir_data.join("pnc_database.json")),
                 serde_json::to_string_pretty(&example).unwrap(),
@@ -36,7 +36,7 @@ pub fn import(path: String) -> Result<UserStore, TauriError> {
 }
 
 #[tauri::command]
-pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriError> {
+pub fn export(path: Option<&str>, store: State<JSONStorage>) -> Result<(), TauriError> {
     let store = store.store.lock().unwrap();
     if let Some(path) = path {
         let new_path = Path::new(path).join("pnc_database.json");
@@ -49,7 +49,7 @@ pub fn export(path: Option<&str>, store: State<Storage>) -> Result<(), TauriErro
     Ok(())
 }
 
-pub fn localsave(store: &UserStore) -> Result<(), TauriError> {
+pub fn localsave(store: &UserJSON) -> Result<(), TauriError> {
     // let store = store.store.lock().unwrap();
     let localjson = data_dir()
         .unwrap()
@@ -57,7 +57,7 @@ pub fn localsave(store: &UserStore) -> Result<(), TauriError> {
         .join("pnc_database.json");
     let payload =
         serde_json::to_string_pretty(&store).expect("can't convert UserStore struct to string");
-    println!("{:?}", payload);
+    println!("saved to {:?}", localjson);
     fs::write(Path::new(&localjson), payload).expect("cannot write to file");
     Ok(())
 }
