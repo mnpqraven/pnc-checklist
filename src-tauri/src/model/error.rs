@@ -1,6 +1,6 @@
-use crate::algorithm::types::{AlgoCategory, Algorithm, AlgoMainStat};
+use crate::algorithm::types::{AlgoCategory, AlgoMainStat, Algorithm};
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
+use std::fmt::{Debug, Display};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum RequirementError<T> {
@@ -32,7 +32,21 @@ pub enum TauriError {
     ImportStruct(String),
     Export,
     UnitModification,
-    RequestLockFailed
+    RequestLockFailed,
+}
+impl Display for TauriError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let err = match self {
+            TauriError::ImportPath(str) => format!("{str} is not a valid file"),
+            TauriError::ImportStruct(_) => "Invalid data in import file".to_string(),
+            TauriError::Export => {
+                "Cannot export to selected location, check read/write permission".to_string()
+            }
+            TauriError::UnitModification => "Couldn't modify unit".to_string(),
+            TauriError::RequestLockFailed => "Requesting lock failed".to_string(),
+        };
+        write!(f, "{}", err)
+    }
 }
 
 /// Error concerning validatino of data, should amend the data and not stop the

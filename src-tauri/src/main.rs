@@ -16,7 +16,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use requirement::types::DatabaseRequirement;
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
@@ -44,9 +44,16 @@ use crate::{
 
 fn main() {
     // INFO: initial values
-    let user_units_default: Vec<Arc<Mutex<Unit>>> = UserJSON::compute_default();
-    let keychain_table_default: KeychainTable = KeychainTable::inject(&user_units_default);
-
+    // NOTE: we should handle importing in a separate fn, before default()
+    let initial_units: Vec<Unit> = UserJSON::default().units;
+    let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);
+    let state_computed = Computed {
+        database_req: Mutex::new(
+            DatabaseRequirement::process_list(&initial_am_units)
+                .expect("process_list stack should not have any blocking thread"),
+        ),
+        units: Mutex::new(initial_am_units),
+    };
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)]
@@ -58,11 +65,8 @@ fn main() {
         })
         // JSON data
         .manage(JSONStorage::default())
-        .manage(Computed {
-            database_req: Mutex::new(DatabaseRequirement::default()),
-            units: Mutex::new(user_units_default),
-        })
-        .manage(keychain_table_default)
+        .manage(state_computed)
+        .manage(state_kc_table)
         .invoke_handler(tauri::generate_handler![
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5

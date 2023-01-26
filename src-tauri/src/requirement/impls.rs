@@ -1,8 +1,10 @@
 use super::types::*;
 use crate::algorithm::types::AlgoPiece;
+use crate::model::error::TauriError;
 use crate::state::types::GrandResource;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{model::error::RequirementError, stats::types::*, table::consts::*, unit::types::Unit};
+use std::sync::{Arc, Mutex};
 
 impl DatabaseRequirement {
     pub fn generate_resource(&self) -> GrandResource {
@@ -15,26 +17,31 @@ impl DatabaseRequirement {
     }
 }
 impl UnitRequirement {
-    pub fn update_unit_req(unit: &Unit) -> Self {
-        Self {
-            skill: SkillResourceRequirement::calculate(
-                unit.current.skill_level,
-                unit.goal.skill_level,
-            ),
-            neural: NeuralResourceRequirement::calculate(
-                unit.current.frags,
-                unit.current.neural,
-                unit.goal.neural,
-            )
-            .unwrap(),
-            level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0).unwrap(),
-            breakthrough: WidgetResourceRequirement::calculate(
-                unit.class,
-                unit.current.level.0,
-                unit.goal.level.0,
-            )
-            .unwrap(),
-            algo: AlgorithmRequirement::calculate(unit).unwrap(),
+    pub fn update_unit_req(unit: &Arc<Mutex<Unit>>) -> Result<Self, TauriError> {
+        if let Ok(unit) = unit.lock() {
+            Ok(Self {
+                skill: SkillResourceRequirement::calculate(
+                    unit.current.skill_level,
+                    unit.goal.skill_level,
+                ),
+                neural: NeuralResourceRequirement::calculate(
+                    unit.current.frags,
+                    unit.current.neural,
+                    unit.goal.neural,
+                )
+                .unwrap(),
+                level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0)
+                    .unwrap(),
+                breakthrough: WidgetResourceRequirement::calculate(
+                    unit.class,
+                    unit.current.level.0,
+                    unit.goal.level.0,
+                )
+                .unwrap(),
+                algo: AlgorithmRequirement::calculate(&unit).unwrap(),
+            })
+        } else {
+            Err(TauriError::RequestLockFailed)
         }
     }
 

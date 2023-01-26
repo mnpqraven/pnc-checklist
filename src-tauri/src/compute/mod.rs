@@ -2,14 +2,15 @@ mod algo;
 mod impls;
 use crate::model::error::TauriError;
 use crate::requirement::types::UnitRequirement;
-use crate::state::types::{Computed, JSONStorage, GrandResource};
+use crate::state::types::{Computed, GrandResource, JSONStorage};
 use crate::{
     requirement::{
         requirement_algo, requirement_level, requirement_neural, requirement_slv,
         requirement_widget,
     },
-    state::types::UserJSON
+    state::types::UserJSON,
 };
+use std::sync::Arc;
 use tauri::State;
 
 /// updates the requirement field in the store by reading the store field
@@ -28,7 +29,7 @@ pub fn update_reqs(computed: State<Computed>) -> Result<(), TauriError> {
             level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
             breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
                 .unwrap(),
-            algo: requirement_algo(&unit).unwrap(),
+            algo: requirement_algo(&Arc::new(unit)).unwrap(),
         })
     }
     req_guard.unit_req = reqs;

@@ -1,7 +1,6 @@
-use super::types::{
-    Computed, GrandResource, JSONStorage, Keychain, KeychainTable, Locker, UserJSON,
-};
+use super::types::{Computed, GrandResource, JSONStorage, Keychain, KeychainTable, UserJSON};
 use crate::algorithm::types::AlgoPiece;
+use crate::model::error::TauriError;
 use crate::stats::types::*;
 use crate::unit::types::{Class, Unit};
 use crate::{
@@ -9,11 +8,12 @@ use crate::{
     service::file::import,
 };
 use std::path::Path;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, MutexGuard, Weak};
 use strum::IntoEnumIterator;
 use tauri::api::path::data_dir;
 
 impl Default for UserJSON {
+    // TODO: separate import handler, test on windows first
     fn default() -> Self {
         import(
             Path::new(
@@ -29,16 +29,6 @@ impl Default for UserJSON {
         .unwrap()
     }
 }
-impl UserJSON {
-    pub fn compute_default() -> Vec<Arc<Mutex<Unit>>> {
-        let mut v = Vec::new();
-        let units = UserJSON::default().units;
-        for unit in units.into_iter() {
-            v.push(Arc::new(Mutex::new(unit)));
-        }
-        v
-    }
-}
 
 impl Default for JSONStorage {
     /// NOTE: will be called during tauri's `manage` at startup
@@ -51,32 +41,64 @@ impl Default for JSONStorage {
 }
 
 impl KeychainTable {
-    // NOTE: important: using initialized store to produce `Arc`s
-    pub fn inject(store: &[Arc<Mutex<Unit>>]) -> Self {
+    /// NOTE: important: using initialized store to produce `Arc`s
+    /// AlgoPiece will always be cloned, will be separated with the AlgoPiece
+    /// in each unit and therefore need a dedicated update function
+    pub fn inject(store: Vec<Unit>) -> (Self, Vec<Arc<Mutex<Unit>>>) {
+        // arc mutex option unit
         let mut keychains: Vec<Keychain> = Vec::new();
+        let mut am_units: Vec<Arc<Mutex<Unit>>> = Vec::new();
         for unit in store.iter() {
-            let t = unit.lock().unwrap().get_current_algos();
-            // NOTE: AlgoPiece inside AlgoSet likely needs ArcMutexes
-            // ALgoSet > AlgoPiece { offense: Vec<Arc<Mutex<AlgoPiece>>>, .. }
-            keychains.push(Keychain::new(unit, Locker::new(t)));
+            let am_unit: Arc<Mutex<Unit>> = Arc::new(Mutex::new(unit.clone()));
+            am_units.push(Arc::clone(&am_unit));
+
+            for algo in unit.get_current_algos().into_iter() {
+                let am_algo: Arc<Mutex<AlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
+
+                keychains.push(Keychain::new(&Arc::clone(&am_unit), &am_algo));
+            }
         }
         let keychains = Mutex::new(keychains);
-        Self { keychains }
+        (Self { keychains }, am_units)
+    }
+
+    /// Update the keychain table by finding all keys with the provided `Unit`
+    /// (that should be already updated) and replace found keys with new data
+    /// from the `Unit`
+    ///
+    /// * `g_kcs`: the mutex guard for the `Vec<Keychain>`
+    /// * `unit`: Keychains having the strong ptr of this `Unit` will be
+    /// replace by the data inside this `Unit`
+    pub fn update_keychain(mut g_kcs: MutexGuard<Vec<Keychain>>, unit: &Weak<Mutex<Unit>>) {
+        println!("update_keychain");
+        // INFO: discard current keychains tied to the unit
+        g_kcs.retain(|e| !e.unit.ptr_eq(unit));
+
+        // INFO: append new keychains
+        let try_upgrade_unit = Weak::upgrade(unit);
+        if let Some(am_unit) = try_upgrade_unit {
+            let g_unit = am_unit.lock().unwrap();
+            for algo in g_unit.get_current_algos().into_iter() {
+                let am_algo: Arc<Mutex<AlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
+                g_kcs.push(Keychain::new(&am_unit, &am_algo));
+            }
+        }
     }
 }
 
-impl Default for DatabaseRequirement {
-    // TODO: use new store and injection
-    fn default() -> Self {
-        let store: UserJSON = UserJSON::default();
-        // not used yet
-        let _db: GrandResource = GrandResource::default();
-        let mut reqs: Vec<UnitRequirement> = Vec::new();
-        for unit in store.units.iter() {
-            // TODO: test
-            reqs.push(UnitRequirement::update_unit_req(unit))
-        }
-        Self { unit_req: reqs }
+impl DatabaseRequirement {
+    /// Generate a new `DatabaseRequirement`, having all neccesary requiring
+    /// parameters in `GrandResource` from the provided units
+    ///
+    /// * `units`: list of units. If only `Unit` without an Arc wrapper, try to
+    /// use `Arc::clone()` instead of `Arc::new()`
+    pub fn process_list(units: &[Arc<Mutex<Unit>>]) -> Result<Self, TauriError> {
+        let unit_req: Vec<UnitRequirement> = units
+            .iter()
+            .map(UnitRequirement::update_unit_req)
+            .collect::<Result<Vec<UnitRequirement>, TauriError>>(
+        )?;
+        Ok(Self { unit_req })
     }
 }
 
@@ -127,18 +149,16 @@ impl GrandResource {
 }
 
 impl Keychain {
-    // TODO: locker uses clone, not new
-    pub fn new(unit: &Arc<Mutex<Unit>>, locker: Locker) -> Self {
+    /// Creates a new `Keychain`, holding a `Weak` reference to unit
+    ///
+    /// * `unit`: Unit inside an `Arc<Mutex<T>>` that will be downgraded with
+    /// `Weak`, so that the keychain owner can be `None` if the unit is deleted
+    /// * `piece`:
+    pub fn new(unit: &Arc<Mutex<Unit>>, piece: &Arc<Mutex<AlgoPiece>>) -> Self {
         Self {
-            unit: Arc::clone(unit),
-            locker: Arc::new(Mutex::new(locker)),
+            unit: Arc::downgrade(unit),
+            locker: Arc::clone(piece),
         }
-    }
-}
-
-impl Locker {
-    pub fn new(value: Vec<AlgoPiece>) -> Self {
-        Self(value)
     }
 }
 
@@ -156,12 +176,17 @@ impl Computed {
 }
 
 impl KeychainTable {
-    pub fn append_unit(&self, unit: Unit, algos: Vec<AlgoPiece>) {
-        let arc_unit = Arc::new(Mutex::new(unit));
-        // TODO: algos pointing to the wrong memory stack
-        self.keychains
-            .lock()
-            .unwrap()
-            .push(Keychain::new(&arc_unit, Locker::new(algos)));
+    /// Assigns a new keychain, linking a holder of the keychain (`Unit`) and
+    /// its contents (slice of `AlgoPiece` for now)
+    ///
+    /// * `unit`:
+    /// * `lockers`:
+    pub fn assign(&self, unit: &Arc<Mutex<Unit>>, lockers: &[Arc<Mutex<AlgoPiece>>]) {
+        for locker in lockers.iter() {
+            self.keychains
+                .lock()
+                .unwrap()
+                .push(Keychain::new(unit, locker));
+        }
     }
 }

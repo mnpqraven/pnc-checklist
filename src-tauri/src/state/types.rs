@@ -3,7 +3,7 @@ use crate::{
     unit::types::*,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, Weak};
 use ts_rs::TS;
 
 /// Main storage, state managed by tauri
@@ -45,18 +45,13 @@ pub struct Computed {
 }
 
 // -- structs for the InvTable and hookup management between user units and db
-#[derive(Debug, Serialize, TS)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Debug, Serialize)]
 pub struct KeychainTable {
     pub keychains: Mutex<Vec<Keychain>>,
 }
-#[derive(Debug, Serialize, TS)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct Keychain {
-    pub unit: Arc<Mutex<Unit>>,
-    pub locker: Arc<Mutex<Locker>>,
-}
 
-#[derive(Debug, Default, TS, Serialize, Deserialize, Clone)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct Locker(pub Vec<AlgoPiece>); // expand point here for future fields
+#[derive(Debug, Serialize)]
+pub struct Keychain {
+    pub unit: Weak<Mutex<Unit>>,
+    pub locker: Arc<Mutex<AlgoPiece>>, // piece items in above unit
+}

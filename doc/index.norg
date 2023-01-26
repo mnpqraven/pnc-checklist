@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-01-25
+updated: 2023-01-27
 version: 0.1.2
 @end
 
@@ -14,12 +14,15 @@ version: 0.1.2
 *** Current
     - (x) use backend's `Display` for algo selection options
     - ( ) doll select layout improvement
-    --- ( ) add and delete on the same row, replace tex with text above + icon
+    --- ( ) add and delete on the same row, replace text with text above + icon
         below
     --- ( ) delete button on each doll to the side
     --- ( ) option to filter class
     - ( ) spacing on skill level sliders
-* NOTE
+    - (-) refactor old `interfaces` types (errors and results)
+    - (=) validation return on frontend home
+    #bugs
+    - (=) layout when there's no algo piece is weird
 
 **  Ideas
     - ( )  actual logging to frontend
@@ -40,17 +43,17 @@ version: 0.1.2
     #refactor
     - (-) `computed`
     --- (-) move unit from json struct to computed struct
-    ---- (-) validate with old code
+    ---- (x) validate with old code
     ----- (x) adding units
     ----- (x) saving units
     ----- (x) removing units
-    ----- ( ) other fns
+    ----- (x) other fns
     ---- ( ) re-test
-    ---- ( ) point algos to correct memory stack in `append_unit` and
+    ---- (x) point algos to correct memory stack in `append_unit` and
          `Keychain::new()`
-
-    #bugs
-    - (=) layout when there's no algo piece is weird
+    ----- (x) `AlgoPiece` inside `Locker` will always be cloned, remember to
+          keep track of the new cloned value for `Arc`.
+    ---- (-) restabilize requirement fns
 
     #maintenance
     - (-) refactors
@@ -62,19 +65,18 @@ version: 0.1.2
     - (+) documentation
     -- ( ) functions
 
-    #ideas
-    - (=) validation return on frontend home
-    - (-) think more in pipes ? try to keep upcoming refactors with that in
-      mind
+****    ideas
+        - (-) think more in pipes ? try to keep upcoming refactors with that in
+          mind
 
-    - (=) how should we keep track of good algos that are being hoarded ?
-    -- (?) inventory state to keep track of all added algo pieces that has been
-       added to current ?
-    - any piece added to current will be added to inventory
-    - deletion window will have 'to inventory' option
-    - unequips gerenally defaults to inventory move
-    - (?) inventory will be later compared with requirement struct
+        - (=) how should we keep track of good algos that are being hoarded ?
+        -- (?) inventory state to keep track of all added algo pieces that has been
+           added to current ?
+        - any piece added to current will be added to inventory
+        - deletion window will have 'to inventory' option
+        - unequips gerenally defaults to inventory move
+        - (?) inventory will be later compared with requirement struct
 
-    - (x) should `UnitRequirement` or `Compute` has its own field of
-      requirement for algo
-    -- (x) We'll be using `AlgoRequirment` in `UnitRequirement`
+        - (x) should `UnitRequirement` or `Compute` has its own field of
+          requirement for algo
+        -- (x) We'll be using `AlgoRequirment` in `UnitRequirement`

@@ -1,5 +1,5 @@
-use self::types::Computed;
-use crate::{state::types::KeychainTable, unit::types::Unit};
+use crate::{algorithm::types::AlgoPiece, state::types::KeychainTable, unit::types::Unit};
+use std::sync::{Weak, Arc};
 use tauri::State;
 
 mod impls;
@@ -7,18 +7,21 @@ pub mod types;
 
 #[tauri::command]
 /// dev: traverse locker tree and return content with respective owner
-pub fn view_locker(computed: State<Computed>, keychain: State<KeychainTable>) -> Vec<Unit> {
+pub fn view_locker(keychain: State<KeychainTable>) -> Vec<(AlgoPiece, Option<Unit>)> {
     println!("VIEW LOCKER");
-    let g_computed = computed.units.lock().unwrap();
-    dbg!(&g_computed);
+    let mut v: Vec<(AlgoPiece, Option<Unit>)> = Vec::new();
 
-    let mut v: Vec<Unit> = Vec::new();
-    for keychain in g_computed.iter() {
-        let g_unit = keychain.lock().unwrap();
-        println!("{:?}", g_unit.name);
-        v.push(g_unit.clone());
+    let g_kc = keychain.keychains.lock().unwrap();
+    for chain in g_kc.iter() {
+        dbg!(&Arc::strong_count(&chain.locker));
+        dbg!(&Weak::strong_count(&chain.unit));
+        // let attempt_algo = Arc::upgrade(&chain.locker);
+        let algo = chain.locker.lock().unwrap();
+        let attempt_unit = Weak::upgrade(&chain.unit);
+        match attempt_unit {
+            Some(val) => v.push(( algo.clone() , Some(val.lock().unwrap().clone()) )),
+            None => v.push((algo.clone(), None))
+        }
     }
-
-    let _g_kc = keychain.keychains.lock().unwrap();
     v
 }
