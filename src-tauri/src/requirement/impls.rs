@@ -7,9 +7,9 @@ use crate::{model::error::RequirementError, stats::types::*, table::consts::*, u
 use std::sync::{Arc, Mutex};
 
 impl DatabaseRequirement {
+    /// generate total resouces required from `DatabaseRequirement`
     pub fn generate_resource(&self) -> GrandResource {
-        // Vec<UnitRequirement> > GrandResource
-        let mut sum = GrandResource::new();
+        let mut sum = GrandResource::default();
         for unit in &self.unit_req {
             sum.combine(unit.get_req());
         }

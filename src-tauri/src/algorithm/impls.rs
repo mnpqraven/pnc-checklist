@@ -185,21 +185,26 @@ impl AlgoPiece {
             AlgoCategory::Offense => Self {
                 name: Algorithm::Feedforward,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![false; 3]),
+                slot: AlgoSlot::default(),
             },
             AlgoCategory::Stability => Self {
                 name: Algorithm::Encapsulate,
                 stat: AlgoMainStat::Health,
-                slot: AlgoSlot(vec![false; 3]),
+                slot: AlgoSlot::default()
             },
             AlgoCategory::Special => Self {
                 name: Algorithm::DeltaV,
                 stat: AlgoMainStat::Haste,
-                slot: AlgoSlot(vec![false; 3]),
+                slot: AlgoSlot::default()
             },
         }
     }
 
+    /// Compute current slots and edit it to match the spec of the new
+    /// `Algorithm`
+    ///
+    /// * `name`: New `Algorithm` that the `AlgoPiece` is being changed to
+    /// * `current_slots`:
     pub fn compute_slots(name: &Algorithm, current_slots: &AlgoSlot) -> AlgoSlot {
         let size: usize = match name {
             Algorithm::Perception
@@ -235,9 +240,18 @@ impl AlgoPiece {
 impl AlgoCategory {
     pub fn generate_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
         vec![
-            (AlgoCategory::Offense, Self::get_algos(&AlgoCategory::Offense)),
-            (AlgoCategory::Stability, Self::get_algos(&AlgoCategory::Stability)),
-            (AlgoCategory::Special, Self::get_algos(&AlgoCategory::Special)),
+            (
+                AlgoCategory::Offense,
+                Self::get_algos(&AlgoCategory::Offense),
+            ),
+            (
+                AlgoCategory::Stability,
+                Self::get_algos(&AlgoCategory::Stability),
+            ),
+            (
+                AlgoCategory::Special,
+                Self::get_algos(&AlgoCategory::Special),
+            ),
         ]
     }
 
@@ -265,5 +279,11 @@ impl AlgoMainStat {
             AlgoCategory::Stability => Self::Health,
             AlgoCategory::Special => Self::Haste,
         }
+    }
+}
+
+impl Default for AlgoSlot {
+    fn default() -> Self {
+        Self(vec![false; 3])
     }
 }

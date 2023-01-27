@@ -11,7 +11,7 @@ impl Loadout {
                 frags: NeuralFragment::default(),
             },
             false => Self {
-                skill_level: UnitSkill::new(),
+                skill_level: UnitSkill::default(),
                 algo: AlgoSet::new(),
                 level: Level(1),
                 neural: NeuralExpansion::Three,

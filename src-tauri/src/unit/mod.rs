@@ -1,6 +1,5 @@
 use self::types::{Class, Unit};
 use crate::{
-    algorithm::types::AlgoPiece,
     compute::update_reqs,
     model::error::TauriError,
     service::file::localsave,
@@ -32,20 +31,15 @@ pub fn new_unit(
     computed: State<Computed>,
     keyc: State<KeychainTable>,
 ) -> Result<Unit, TauriError> {
+    println!("[invoke] new_unit");
     let n_unit = Unit::new(name, class);
     let res = if let Ok(mut g_computed) = computed.units.lock() {
-        let arc_unit = Arc::new(Mutex::new(n_unit.clone()));
-        g_computed.push(Arc::clone(&arc_unit));
+        let am_unit = Arc::new(Mutex::new(n_unit.clone()));
 
-        let lockers: Vec<Arc<Mutex<AlgoPiece>>> = arc_unit
-            .lock()
-            .unwrap()
-            .get_current_algos()
-            .into_iter()
-            .cloned()
-            .map(|e| Arc::new(Mutex::new(e)))
-            .collect();
-        keyc.assign(&arc_unit, &lockers);
+        g_computed.push(Arc::clone(&am_unit));
+
+        let lockers = Unit::create_lockers(&am_unit)?;
+        keyc.assign(&am_unit, &lockers);
         Ok(n_unit)
     } else {
         Err(TauriError::UnitModification)
@@ -89,7 +83,7 @@ pub fn save_units(
                 } else {
                     return Err(TauriError::RequestLockFailed);
                 }
-                KeychainTable::update_keychain(g_kc, &Arc::downgrade(am_unit));
+                KeychainTable::update_keychain(g_kc, am_unit);
             }
         } else {
             return Err(TauriError::RequestLockFailed); // early return
