@@ -9,7 +9,10 @@ type Props = {
   list: Unit[];
   indexHandler: (value: number) => void;
   newUnitHandler: (unit: Unit, index: number) => void;
-  deleteUnitHandler: (index: number, e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
+  deleteUnitHandler: (
+    index: number,
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) => void;
 };
 const DollList = ({
   list,
@@ -26,17 +29,23 @@ const DollList = ({
     });
     newUnitHandler(unit, list.length);
   }
-  function deleteUnit(index: number, e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
+
+  function deleteUnit(
+    index: number,
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) {
     invoke("delete_unit", { index });
     deleteUnitHandler(index, e);
   }
 
   return (
     <ul className={styles.dolllist}>
-      <li onClick={new_unit}>add new doll</li>
-      <li onClick={() => setDeleteMode(!deleteMode)}>Toggle delete</li>
+      <div className="flex">
+        <li onClick={new_unit}>New</li>
+        <li onClick={() => setDeleteMode(!deleteMode)}>Delete</li>
+      </div>
       {list.map((unit, index) => (
-        <li key={index} onClick={(_) => indexChange(index)}>
+        <li key={index} onClick={() => indexChange(index)}>
           <div className="flex items-center">
             <div className="mx-2">
               <Image
@@ -56,7 +65,7 @@ const DollList = ({
           </div>
           {deleteMode ? (
             <>
-              <button onClick={e => deleteUnit(index, e)}>delete</button>
+              <button onClick={(e) => deleteUnit(index, e)}>delete</button>
             </>
           ) : (
             <></>

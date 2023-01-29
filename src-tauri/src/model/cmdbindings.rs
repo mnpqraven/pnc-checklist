@@ -22,6 +22,7 @@ pub enum AllStructs {
     AlgoPiece,
     AlgoSet,
     AlgoSlot,
+    AlgorithmRequirement,
     Coin,
     Database,
     Exp,

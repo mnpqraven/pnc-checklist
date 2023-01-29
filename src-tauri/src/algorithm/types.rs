@@ -96,8 +96,6 @@ pub enum AlgoMainStat {
     Dodge,
     #[strum(serialize = "Heal Inc.")]
     HealInc,
-    #[strum(serialize = "Damage Mit.")]
-    DamageReduction,
     Def,
     #[strum(serialize = "Def %")]
     DefPercent,

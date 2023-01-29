@@ -69,6 +69,15 @@ impl AlgorithmRequirement {
             from_unit: from_unit.clone(),
         })
     }
+
+    pub(super) fn is_empty(&self) -> bool {
+        for piece in self.pieces.iter() {
+            for value in piece.slot.0.iter() {
+                if *value == true { return true }
+            }
+        }
+        false
+    }
 }
 
 impl LevelRequirement {

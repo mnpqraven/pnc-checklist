@@ -96,11 +96,11 @@ pub const ALGO_MAINSTAT_OFFENSE: [AlgoMainStat; 8] = [
 pub const ALGO_MAINSTAT_STABILITY: [AlgoMainStat; 7] = [
     AlgoMainStat::Health,
     AlgoMainStat::HealthPercent,
+    AlgoMainStat::PostBattleRegen,
     AlgoMainStat::Def,
     AlgoMainStat::DefPercent,
     AlgoMainStat::OperandDef,
     AlgoMainStat::OperandDefPercent,
-    AlgoMainStat::PostBattleRegen
 ];
 pub const ALGO_MAINSTAT_SPECIAL: [AlgoMainStat; 8] = [
     AlgoMainStat::CritDmg,

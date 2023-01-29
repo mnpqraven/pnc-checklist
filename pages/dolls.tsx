@@ -27,14 +27,12 @@ const Dolls = () => {
   const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
     []
   );
-  const [dirtyIndexTup, setDirtyIndexTup] = useImmer<[Unit, number][]>([]);
-
   const canSave = useMemo(() => {
     return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnits); // shallow cmp
   }, [dirtyUnits, storeUnits]);
 
   async function initUnitList() {
-    console.warn("initUnitList");
+    console.log("initUnitList");
     // NOTE: needs double await here
     // if we assign await to a variable it will be a shallow copy
     setStoreUnits(await invoke<Unit[]>("view_store_units"));
@@ -43,41 +41,33 @@ const Dolls = () => {
   }
 
   useEffect(() => {
-    console.warn("@[useEffect][currentIndex]");
-    setDollData((draft) => {
-      draft = dirtyUnits[currentIndex];
-      return draft;
-    });
+    console.log("@[useEffect][currentIndex]");
+    setDollData(dirtyUnits[currentIndex]);
   }, [currentIndex]);
 
   useEffect(() => {
-    if(dollData) updateDirtyList(dollData)
-  }, [dollData])
+    console.log("@[useEffect][dollData]");
+    if (dollData) {
+      // validateUnit(dollData);
+      setDirtyUnits((draft) => {
+        if (currentIndex >= 0) draft[currentIndex] = dollData;
+      });
+    }
+  }, [dollData]);
 
   useEffect(() => {
-    console.log("[mount] page dolls");
+    console.log("@[useEffect][]");
     initUnitList();
   }, []);
 
-  useEffect(() => {
-    console.log("@[useEffect][dirtyUnits, storeUnits]");
-    let list: [Unit, number][] = [];
-    storeUnits.map((storeItem, index) => {
-      if (canSave) {
-        let p: [Unit, number] = [dirtyUnits[index], index];
-        list.push(p);
-      }
-      return storeItem;
-    });
-    setDirtyIndexTup(list);
-  }, [dirtyUnits, storeUnits]);
-
   function handleUnitSave() {
-    invoke<[Unit, number][]>("save_units", { units: dirtyIndexTup });
+    invoke<[Unit, number][]>("save_units", {
+      units: dirtyUnits.map((e, index) => [e, index]),
+    });
     initUnitList(); // async
   }
 
-  function updateDirtyList(e: Unit) {
+  function validateUnit(e: Unit) {
     // setDollData(e);
     // TODO: implement validation
     invoke("validate", { unit: e }).catch((err) =>
@@ -90,17 +80,11 @@ const Dolls = () => {
         else return unit;
       })
     );
-    setDirtyIndexTup((draft) => {
-      draft.push([e, currentIndex]);
-    });
   }
 
   function handleNewUnit(e: Unit, ind: number) {
     setDirtyUnits((draft) => {
       draft.push(e);
-    });
-    setDirtyIndexTup((draft) => {
-      draft.push([e, ind]);
     });
     setCurrentIndex(ind);
   }
@@ -109,13 +93,10 @@ const Dolls = () => {
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) {
     e.stopPropagation();
+    setCurrentIndex(ind > 0 ? ind - 1 : 0);
     setDirtyUnits((draft) => {
       draft.splice(ind, 1);
     });
-    setDirtyIndexTup((draft) => {
-      draft.splice(ind, 1);
-    });
-    setDollData(dirtyUnits[ind > 0 ? ind-1 : 0])
   }
 
   return (
@@ -124,7 +105,7 @@ const Dolls = () => {
         <div className={`${styles.panel_left} ${styles.component_space}`}>
           <DollList
             list={dirtyUnits}
-            indexHandler={e => setCurrentIndex(e)}
+            indexHandler={(e) => setCurrentIndex(e)}
             newUnitHandler={handleNewUnit}
             deleteUnitHandler={handleDeleteUnit}
           />

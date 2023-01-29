@@ -14,7 +14,7 @@ const navigationRoutes = [
 
 const Navbar = () => {
   return (
-    <nav className="h-full flex flex-col items-center fixed justify-center bg-gray-400">
+    <nav className="w-full flex items-center fixed justify-center bg-gray-400">
       {navigationRoutes.map((route) => {
         return (
           <Link href={route.route} key={route.route}>

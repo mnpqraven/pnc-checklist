@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
+import { Algorithm } from "@/src-tauri/bindings/enums";
 
 type Props = {
   day: string;
@@ -11,7 +12,7 @@ type Props = {
   onMouseLeave: () => void;
 };
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
-  const [algos, setAlgos] = useState<[AlgoCategory, Algorithm[]][]>([]); // [category: [algo]]
+  const [algos, setAlgos] = useState<[AlgoCategory, Algorithm[]][]>([]);
 
   const isGrowNeeded: boolean[] = algos.map((cat) => {
     if (cat[1].length == 0) return true;
@@ -19,14 +20,13 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
   });
   async function initdata() {
     let db = await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db");
-    invoke<string[] | null>("get_algo_by_days", { day }).then((today) => {
-      if (today) {
-        setAlgos(
-          db.map((item) => {
-            item[1] = item[1].filter((algo) => today.includes(algo.name));
-            return item;
-          })
-        );
+    invoke<Algorithm[]>("get_algo_by_days", { day }).then((option_algos) => {
+      if (option_algos) {
+        let t = db.map((item) => {
+          item[1] = item[1].filter((algo) => option_algos.includes(algo));
+          return item;
+        });
+        setAlgos(t);
       } else setAlgos([]);
     });
   }
@@ -65,20 +65,21 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
                 }`}
               >
                 <p>{category[0]}</p>
-                {category[1].map((algo, index_alg) => (
-                  <div
-                    key={index_alg}
-                    className="w-[64px] h-[64px] flex items-center"
-                  >
-                    <Image
-                      priority
-                      src={algo_src(algo.name)}
-                      alt={algo.name}
-                      height={128}
-                      width={128}
-                    />
-                  </div>
-                ))}
+                {category[1].length > 0 &&
+                  category[1].map((algo, index_alg) => (
+                    <div
+                      key={index_alg}
+                      className="w-[64px] h-[64px] flex items-center"
+                    >
+                      <Image
+                        priority
+                        src={algo_src(algo)}
+                        alt={algo}
+                        height={128}
+                        width={128}
+                      />
+                    </div>
+                  ))}
               </div>
             ))
           ) : (

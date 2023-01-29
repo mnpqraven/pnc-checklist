@@ -80,6 +80,7 @@ pub fn save_units(
     {
         if let Ok(g_computed_units) = computed.units.lock() {
             for (unit, index) in units.iter() {
+                dbg!(&unit.class);
                 let am_unit = g_computed_units.get(*index).unwrap();
 
                 let g_kc = kc.keychains.lock().unwrap();

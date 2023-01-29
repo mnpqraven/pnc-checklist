@@ -33,10 +33,10 @@ use crate::{
     model::enum_ls,
     requirement::{
         requirement_level, requirement_neural, requirement_slv, requirement_widget,
-        requirment_neural_kits,
+        requirment_neural_kits, dev_algo, algo_req_is_empty,
     },
     service::file::{export, import, set_default_file},
-    state::view_locker,
+    state::{view_locker, remove_kc, clear_ownerless},
     table::{generate_algo_db, get_algo_by_days, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
     validator::{validate, validate_slots},
@@ -92,8 +92,13 @@ fn main() {
             requirement_neural,
             requirment_neural_kits,
             requirement_widget,
+            // requirement_algo, // TODO: conflict with Dese
+            dev_algo,
+            algo_req_is_empty,
             // state
             view_locker,
+            remove_kc,
+            clear_ownerless,
             // service
             import,
             export,

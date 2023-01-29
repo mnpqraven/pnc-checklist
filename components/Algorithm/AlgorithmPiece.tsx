@@ -50,6 +50,8 @@ const AlgorithmPiece = ({
   // changing details, passed to parent's setDollData
   useEffect(() => {
     pieceUpdate(piece, category, index);
+    // NOTE: do NOT put pieceUpdate in the depency Array
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, index, piece]);
 
   async function updateSlots(
