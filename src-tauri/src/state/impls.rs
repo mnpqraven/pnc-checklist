@@ -8,7 +8,7 @@ use crate::{
     service::file::import,
 };
 use std::path::Path;
-use std::sync::{Arc, Mutex, MutexGuard, Weak};
+use std::sync::{Arc, Mutex, MutexGuard};
 use strum::IntoEnumIterator;
 use tauri::api::path::data_dir;
 
@@ -67,21 +67,35 @@ impl KeychainTable {
     /// from the `Unit`
     ///
     /// * `g_kcs`: the mutex guard for the `Vec<Keychain>`
-    /// * `unit`: Keychains having the strong ptr of this `Unit` will be
-    /// replace by the data inside this `Unit`
-    pub fn update_keychain(mut g_kcs: MutexGuard<Vec<Keychain>>, unit: &Weak<Mutex<Unit>>) {
+    /// * `unit`: `Unit` that will have its data replaced by its new value
+    pub fn update_keychain(mut g_kcs: MutexGuard<Vec<Keychain>>, am_unit: &Arc<Mutex<Unit>>) {
         println!("update_keychain");
+
+        // will be finding unit using `Weak`
+        let unit = &Arc::downgrade(am_unit);
+
         // INFO: discard current keychains tied to the unit
         g_kcs.retain(|e| !e.unit.ptr_eq(unit));
 
         // INFO: append new keychains
-        let try_upgrade_unit = Weak::upgrade(unit);
-        if let Some(am_unit) = try_upgrade_unit {
-            let g_unit = am_unit.lock().unwrap();
-            for algo in g_unit.get_current_algos().into_iter() {
-                let am_algo: Arc<Mutex<AlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
-                g_kcs.push(Keychain::new(&am_unit, &am_algo));
-            }
+        let g_unit = am_unit.lock().unwrap();
+        for algo in g_unit.get_current_algos().into_iter() {
+            let am_algo: &Arc<Mutex<AlgoPiece>> = &Arc::new(Mutex::new(algo.clone()));
+            g_kcs.push(Keychain::new(am_unit, am_algo));
+        }
+    }
+
+    /// Assigns a new keychain, linking a holder of the keychain (`Unit`) and
+    /// its contents (slice of `AlgoPiece` for now)
+    ///
+    /// * `unit`:
+    /// * `lockers`:
+    pub fn assign(&self, am_unit: &Arc<Mutex<Unit>>, am_lockers: &[Arc<Mutex<AlgoPiece>>]) {
+        for am_locker in am_lockers.iter() {
+            self.keychains
+                .lock()
+                .unwrap()
+                .push(Keychain::new(am_unit, am_locker));
         }
     }
 }
@@ -103,15 +117,8 @@ impl DatabaseRequirement {
 }
 
 impl GrandResource {
-    pub fn new() -> Self {
-        Self {
-            skill: SkillCurrency { token: 0, pivot: 0 },
-            coin: Coin(0),
-            widgets: Vec::new(),
-            exp: Exp(0),
-            neural_kits: 0,
-        }
-    }
+    /// Combines with another `GrandResource`, appending all values from the
+    /// other to self. This works the same as `Vec::append()`
     pub fn combine(&mut self, with: Self) {
         let mut widgets: Vec<WidgetResource> = Vec::new();
         let coin = self.coin.0 + with.coin.0;
@@ -148,20 +155,6 @@ impl GrandResource {
     }
 }
 
-impl Keychain {
-    /// Creates a new `Keychain`, holding a `Weak` reference to unit
-    ///
-    /// * `unit`: Unit inside an `Arc<Mutex<T>>` that will be downgraded with
-    /// `Weak`, so that the keychain owner can be `None` if the unit is deleted
-    /// * `piece`:
-    pub fn new(unit: &Arc<Mutex<Unit>>, piece: &Arc<Mutex<AlgoPiece>>) -> Self {
-        Self {
-            unit: Arc::downgrade(unit),
-            locker: Arc::clone(piece),
-        }
-    }
-}
-
 impl Computed {
     // only update the units field for now
     pub fn to_user_json(&self, current: &UserJSON) -> UserJSON {
@@ -175,18 +168,16 @@ impl Computed {
     }
 }
 
-impl KeychainTable {
-    /// Assigns a new keychain, linking a holder of the keychain (`Unit`) and
-    /// its contents (slice of `AlgoPiece` for now)
+impl Keychain {
+    /// Creates a new `Keychain`, holding a `Weak` reference to unit
     ///
-    /// * `unit`:
-    /// * `lockers`:
-    pub fn assign(&self, unit: &Arc<Mutex<Unit>>, lockers: &[Arc<Mutex<AlgoPiece>>]) {
-        for locker in lockers.iter() {
-            self.keychains
-                .lock()
-                .unwrap()
-                .push(Keychain::new(unit, locker));
+    /// * `unit`: Unit inside an `Arc<Mutex<T>>` that will be downgraded with
+    /// `Weak`, so that the keychain owner can be `None` if the unit is deleted
+    /// * `piece`:
+    pub fn new(am_unit: &Arc<Mutex<Unit>>, am_piece: &Arc<Mutex<AlgoPiece>>) -> Self {
+        Self {
+            unit: Arc::downgrade(am_unit),
+            locker: Arc::clone(am_piece),
         }
     }
 }

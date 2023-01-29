@@ -54,6 +54,8 @@ version: 0.1.2
     ----- (x) `AlgoPiece` inside `Locker` will always be cloned, remember to
           keep track of the new cloned value for `Arc`.
     ---- (-) restabilize requirement fns
+    ---- (-) refactor new `Arc<Mutex<T>>` generating functions to make it
+         easier to read.
 
     #maintenance
     - (-) refactors
@@ -62,8 +64,8 @@ version: 0.1.2
     -- ( ) check for zombie code esp. in the algorithm/requirement section
     -- (!) clear out old validate code in unit + algorithm
 
-    - (+) documentation
-    -- ( ) functions
+    - (-) documentation
+    -- (-) functions
 
 ****    ideas
         - (-) think more in pipes ? try to keep upcoming refactors with that in

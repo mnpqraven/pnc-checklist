@@ -1,5 +1,6 @@
 use super::types::*;
-use crate::{algorithm::types::AlgoPiece, stats::types::*};
+use crate::{algorithm::types::AlgoPiece, model::error::TauriError, stats::types::*};
+use std::sync::{Arc, Mutex};
 
 // UNIT
 impl Unit {
@@ -14,6 +15,7 @@ impl Unit {
 
     /// Returns a vector of AlgoPiece by checking unit's `current` and `goal`
     /// Loadout struct
+    // TODO: return vec of references
     pub fn get_missing_algos(&self) -> Vec<AlgoPiece> {
         let mut v = self.goal.algo.clone();
         v.update_slots(self.current.algo.get_bucket());
@@ -30,20 +32,28 @@ impl Unit {
             .chain(self.current.algo.special.iter())
             .collect::<Vec<&AlgoPiece>>()
     }
+
+    /// creates a `Vec` of new `Arc<Mutex<T>>>` for lockers that should belong to
+    /// this `Unit`
+    pub fn create_lockers(
+        am_unit: &Arc<Mutex<Unit>>,
+    ) -> Result<Vec<Arc<Mutex<AlgoPiece>>>, TauriError> {
+        if let Ok(g_unit) = am_unit.lock() {
+            Ok(g_unit
+                .get_current_algos()
+                .into_iter()
+                .cloned()
+                .map(|e| Arc::new(Mutex::new(e)))
+                .collect())
+        } else {
+            Err(TauriError::RequestLockFailed)
+        }
+    }
 }
 
 impl Default for NeuralExpansion {
     fn default() -> Self {
-        Self::Two
-    }
-}
-
-impl Default for UnitSkill {
-    fn default() -> Self {
-        Self {
-            passive: 1,
-            auto: 1,
-        }
+        Self::Three
     }
 }
 
@@ -60,16 +70,22 @@ impl Default for NeuralFragment {
 }
 
 impl UnitSkill {
-    pub fn new() -> Self {
-        Self {
-            passive: 1,
-            auto: 1,
-        }
+    pub fn new(passive: u32, auto: u32) -> Self {
+        Self { passive, auto }
     }
     pub fn max() -> Self {
         Self {
             passive: 10,
             auto: 10,
+        }
+    }
+}
+
+impl Default for UnitSkill {
+    fn default() -> Self {
+        Self {
+            passive: 1,
+            auto: 1,
         }
     }
 }
