@@ -19,6 +19,7 @@ const Select = ({ options, value, onChangeHandler, labelPayload }: Props) => {
 
   return (
     <select
+      data-testid={value} // value for jest
       onChange={e => onChangeHandler(e)}
       value={value}
     >

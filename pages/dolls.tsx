@@ -88,6 +88,7 @@ const Dolls = () => {
     });
     setCurrentIndex(ind);
   }
+
   function handleDeleteUnit(
     ind: number,
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
