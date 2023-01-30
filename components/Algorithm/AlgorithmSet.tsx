@@ -8,7 +8,7 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import styles from "../../styles/Page.module.css";
-import { AlgoMainStat, AlgoCategory, LoadoutType } from "@/src-tauri/bindings/enums";
+import { AlgoMainStat, AlgoCategory, LoadoutType, Algorithm } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 
 type Props = {

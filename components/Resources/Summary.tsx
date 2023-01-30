@@ -46,15 +46,15 @@ const Summary = () => {
       <div className="flex flex-col items-center">
         <div className="flex flex-row">
           <div>
-            <ItemPlate src={"warehouse/skill_token.png"} rarity={0} />
+            <ItemPlate src={"/warehouse/skill_token.png"} rarity={0} />
             <p>{req.skill.token}</p>
           </div>
           <div>
-            <ItemPlate src={"warehouse/skill_pivot.png"} rarity={4} />
+            <ItemPlate src={"/warehouse/skill_pivot.png"} rarity={4} />
             <p>{req.skill.pivot}</p>
           </div>
           <div>
-            <ItemPlate src={"warehouse/coin.png"} rarity={4} />
+            <ItemPlate src={"/warehouse/coin.png"} rarity={4} />
             <p>{req.coin}</p>
           </div>
         </div>
@@ -70,7 +70,7 @@ const Summary = () => {
                     req.widgets[0].widget_inventory.map((item, index) => (
                       <th key={index}>
                         <ItemPlate
-                          src={`warehouse/widget_box_${index > 4 ? 4 : index
+                          src={`/warehouse/widget_box_${index > 4 ? 4 : index
                             }.png`}
                           rarity={index}
                         />
@@ -86,7 +86,7 @@ const Summary = () => {
                   <tr key={index}>
                     <td>
                       <Image
-                        src={`class/${item.class.toLowerCase()}.png`}
+                        src={`/class/${item.class.toLowerCase()}.png`}
                         alt={item.class}
                         width={24}
                         height={24}

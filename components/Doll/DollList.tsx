@@ -49,7 +49,7 @@ const DollList = ({
           <div className="flex items-center">
             <div className="mx-2">
               <Image
-                src={`class/${unit.class.toLowerCase()}.png`}
+                src={`/class/${unit.class.toLowerCase()}.png`}
                 alt={unit.class}
                 width={24}
                 height={24}

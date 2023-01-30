@@ -6,7 +6,7 @@ export function getKeys<T extends object>(obj: T): Array<keyof T> {
 }
 
 export function algo_src(item: string): string {
-  return `algos/${item.toLowerCase()}.png`
+  return `/algos/${item.toLowerCase()}.png`
 }
 
 export function parse_date_iso(d: Date): string {

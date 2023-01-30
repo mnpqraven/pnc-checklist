@@ -87,7 +87,7 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
             {["star-full", "star-half"].map((name, index2) => (
               <Image
                 key={index2}
-                src={`common/${name}.png`}
+                src={`/common/${name}.png`}
                 alt={`${name}-${index2}`}
                 width={51}
                 height={55}

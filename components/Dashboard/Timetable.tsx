@@ -41,7 +41,7 @@ const Timetable = () => {
           <div key={index}>
             {item ? (
               <Image
-                src={`class/${item.toLowerCase()}.png`}
+                src={`/class/${item.toLowerCase()}.png`}
                 alt={item}
                 width={24}
                 height={24}

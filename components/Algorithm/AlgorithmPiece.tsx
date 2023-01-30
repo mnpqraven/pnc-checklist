@@ -103,7 +103,7 @@ const AlgorithmPiece = ({
       >
         <div className="w-auto h-auto">
           <Image
-            src={`algos/${algorithm.toLowerCase()}.png`}
+            src={`/algos/${algorithm.toLowerCase()}.png`}
             alt={"algo"}
             width={60}
             height={60}
