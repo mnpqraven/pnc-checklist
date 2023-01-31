@@ -38,8 +38,8 @@ const Inventory = () => {
   }
 
   async function clear_ownerless() {
-    await invoke('clear_ownerless')
-    fetchLockerData()
+    await invoke("clear_ownerless");
+    fetchLockerData();
   }
 
   async function algo_req_is_empty(
@@ -117,7 +117,7 @@ const RequiredAlgo = ({ algos }: { algos: AlgoPiece[] }) => {
         (algo, index) =>
           hasReq(algo) && (
             <div key={index} className="flex">
-              <div className="w-auto h-auto">
+              <div className="h-auto w-auto">
                 <Image
                   src={algo_src(algo.name)}
                   alt={algo.name}

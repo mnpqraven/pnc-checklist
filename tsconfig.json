@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,15 +15,9 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@tauri/*": [
-        "./src-tauri/*"
-      ],
-      "@bindings/*": [
-        "./src-tauri/bindings/*"
-      ]
+      "@/*": ["./*"],
+      "@tauri/*": ["./src-tauri/*"],
+      "@bindings/*": ["./src-tauri/bindings/*"]
     },
     "plugins": [
       {
@@ -42,7 +32,5 @@
     ".next/types/**/*.ts",
     "./src-tauri/bindings/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

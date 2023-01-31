@@ -8,72 +8,116 @@
     "coin": 100000
   },
   "units": [
-      {
-        "name": "Croque",
-        "class": "Guard",
-        "current": {
-          "algo": {
-            "offense": [
-              { "name": "Feedforward", "stat": "Hashrate", "slot": [true, true, false] }
-            ],
-            "stability": [
-              { "name": "Overflow", "stat": "Health", "slot": [ true, false, true ] },
-              { "name": "Overflow", "stat": "HealthPercent", "slot": [ false, true, false ] }
-            ],
-            "special": [
-              { "name": "SVM", "stat": "Haste", "slot": [ true, true, false ] }
-            ]
-          },
-          "skill_level": { "passive": 8, "auto": 8 },
-          "level": 1
+    {
+      "name": "Croque",
+      "class": "Guard",
+      "current": {
+        "algo": {
+          "offense": [
+            {
+              "name": "Feedforward",
+              "stat": "Hashrate",
+              "slot": [true, true, false]
+            }
+          ],
+          "stability": [
+            {
+              "name": "Overflow",
+              "stat": "Health",
+              "slot": [true, false, true]
+            },
+            {
+              "name": "Overflow",
+              "stat": "HealthPercent",
+              "slot": [false, true, false]
+            }
+          ],
+          "special": [
+            { "name": "SVM", "stat": "Haste", "slot": [true, true, false] }
+          ]
         },
-        "goal": {
-          "algo": {
-            "offense": [
-              { "name": "Progression", "stat": "HashratePercent", "slot": [ true, true, false ] }
-            ],
-            "stability": [
-              { "name": "Overflow", "stat": "HealthPercent", "slot": [ true, true, true ] }
-            ],
-            "special": [
-              { "name": "Stratagem", "stat": "Haste", "slot": [ true, true, false ] }
-            ]
-          },
-          "skill_level": { "passive": 10, "auto": 10 },
-          "level": 60
-        }
+        "skill_level": { "passive": 8, "auto": 8 },
+        "level": 1
       },
-      {
-        "name": "Hubble",
-        "class": "Sniper",
-        "current": {
-          "algo": {
-            "offense": [
-              { "name": "Feedforward", "stat": "HashratePercent", "slot": [true, true, true] }
-            ],
-            "stability": [
-              { "name": "Encapsulate", "stat": "Health", "slot": [ true,true, false ] }
-            ],
-            "special": [
-              { "name": "DeltaV", "stat": "Haste", "slot": [ true,true, false ] }
-            ]
-          },
-          "skill_level": { "passive": 2, "auto": 6 }
+      "goal": {
+        "algo": {
+          "offense": [
+            {
+              "name": "Progression",
+              "stat": "HashratePercent",
+              "slot": [true, true, false]
+            }
+          ],
+          "stability": [
+            {
+              "name": "Overflow",
+              "stat": "HealthPercent",
+              "slot": [true, true, true]
+            }
+          ],
+          "special": [
+            {
+              "name": "Stratagem",
+              "stat": "Haste",
+              "slot": [true, true, false]
+            }
+          ]
         },
-        "goal": {
-          "algo": {
-            "offense": [
-              { "name": "Progression", "stat": "HashratePercent", "slot": [ true,true, false ] }
-            ],
-            "stability": [
-              { "name": "Overflow", "stat": "HealthPercent", "slot": [ true,true, true ] }
-            ],
-            "special": [
-              { "name": "Stratagem", "stat": "Haste", "slot": [ true,true, false ] }
-            ]
-          },
-          "skill_level": { "passive": 10, "auto": 10 }
-        }
+        "skill_level": { "passive": 10, "auto": 10 },
+        "level": 60
       }
+    },
+    {
+      "name": "Hubble",
+      "class": "Sniper",
+      "current": {
+        "algo": {
+          "offense": [
+            {
+              "name": "Feedforward",
+              "stat": "HashratePercent",
+              "slot": [true, true, true]
+            }
+          ],
+          "stability": [
+            {
+              "name": "Encapsulate",
+              "stat": "Health",
+              "slot": [true, true, false]
+            }
+          ],
+          "special": [
+            { "name": "DeltaV", "stat": "Haste", "slot": [true, true, false] }
+          ]
+        },
+        "skill_level": { "passive": 2, "auto": 6 }
+      },
+      "goal": {
+        "algo": {
+          "offense": [
+            {
+              "name": "Progression",
+              "stat": "HashratePercent",
+              "slot": [true, true, false]
+            }
+          ],
+          "stability": [
+            {
+              "name": "Overflow",
+              "stat": "HealthPercent",
+              "slot": [true, true, true]
+            }
+          ],
+          "special": [
+            {
+              "name": "Stratagem",
+              "stat": "Haste",
+              "slot": [true, true, false]
+            }
+          ]
+        },
+        "skill_level": { "passive": 10, "auto": 10 }
+      }
+    }
   ]
 }

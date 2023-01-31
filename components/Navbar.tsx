@@ -4,7 +4,7 @@ import Link from "next/link";
 const navigationRoutes = [
   { route: "/", name: "Home" },
   { route: "dolls", name: "Dolls" },
-  { route: 'inventory', name: "Inventory" },
+  { route: "inventory", name: "Inventory" },
   { route: "settings", name: "Settings" },
   // unimplemented
   // { route: "resources", name: "🍨🍨🍨" },
@@ -14,7 +14,7 @@ const navigationRoutes = [
 
 const Navbar = () => {
   return (
-    <nav className="w-full flex items-center fixed justify-center bg-gray-400">
+    <nav className="fixed flex w-full items-center justify-center bg-gray-400">
       {navigationRoutes.map((route) => {
         return (
           <Link href={route.route} key={route.route}>
@@ -24,5 +24,5 @@ const Navbar = () => {
       })}
     </nav>
   );
-}
-export default Navbar
+};
+export default Navbar;

@@ -51,7 +51,7 @@ const AlgorithmPiece = ({
   useEffect(() => {
     pieceUpdate(piece, category, index);
     // NOTE: do NOT put pieceUpdate in the depency Array
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, index, piece]);
 
   async function updateSlots(
@@ -101,7 +101,7 @@ const AlgorithmPiece = ({
         className={` flex justify-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
-        <div className="w-auto h-auto">
+        <div className="h-auto w-auto">
           <Image
             src={`/algos/${algorithm.toLowerCase()}.png`}
             alt={"algo"}
@@ -113,7 +113,7 @@ const AlgorithmPiece = ({
           <Select
             value={algorithm}
             labelPayload={{ method: "print_algo", payload: category }}
-            options={options.algoTypes[1].map(e => e.toString())}
+            options={options.algoTypes[1].map((e) => e.toString())}
             onChangeHandler={pieceHandler}
           />
           <Select

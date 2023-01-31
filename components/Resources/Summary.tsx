@@ -70,8 +70,9 @@ const Summary = () => {
                     req.widgets[0].widget_inventory.map((item, index) => (
                       <th key={index}>
                         <ItemPlate
-                          src={`/warehouse/widget_box_${index > 4 ? 4 : index
-                            }.png`}
+                          src={`/warehouse/widget_box_${
+                            index > 4 ? 4 : index
+                          }.png`}
                           rarity={index}
                         />
                       </th>

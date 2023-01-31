@@ -4,16 +4,20 @@ import React from "react";
 import { Updater } from "use-immer";
 
 export type DollContextPayload = {
-  dollData: Unit | null,
-  setDollData: Updater<Unit | null> | undefined,
-}
+  dollData: Unit | null;
+  setDollData: Updater<Unit | null> | undefined;
+};
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: null,
   setDollData: undefined,
 });
 
-export type AlgoError = [ // ???
-  category: AlgoCategory, indexes: number[]
-]
-export type AlgoErrorContextPayload = AlgoError[]
-export const AlgoErrorContext = React.createContext<AlgoErrorContextPayload>([]);
+export type AlgoError = [
+  // ???
+  category: AlgoCategory,
+  indexes: number[]
+];
+export type AlgoErrorContextPayload = AlgoError[];
+export const AlgoErrorContext = React.createContext<AlgoErrorContextPayload>(
+  []
+);

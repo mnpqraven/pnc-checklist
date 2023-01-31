@@ -14,7 +14,6 @@ const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
 const Loadout = ({ type, data }: Props) => {
-
   const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;
   const { algo, neural } = data;
@@ -78,11 +77,10 @@ const LevelBox = ({
   handleLevelChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFragsChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
-
   const { level, frags } = data;
 
   return (
-    <div className="flex flex-col flex-grow-0">
+    <div className="flex flex-grow-0 flex-col">
       <p>level:</p>
       <input
         type="number"
@@ -119,7 +117,6 @@ const SkillBox = ({
     skill_type: SkillType
   ) => void;
 }) => {
-
   const { skill_level } = data;
 
   return (

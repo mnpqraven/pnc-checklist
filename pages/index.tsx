@@ -38,7 +38,6 @@ const Index = () => {
   return (
     <main>
       <div className="flex flex-col">
-
         <div className="flex flex-row">
           <div className="flex flex-col">
             <div className={`${styles.card} ${styles.component_space} w-fit`}>

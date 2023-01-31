@@ -7,7 +7,6 @@ const Timetable = () => {
   const [timetable, setTimetable] = useState<ResourceByDay[]>([]);
   const [DAY, setDAY] = useState<string[]>([]);
 
-
   useEffect(() => {
     invoke<string[]>("enum_ls", { name: "Day" }).then(setDAY);
   }, []);
@@ -15,7 +14,9 @@ const Timetable = () => {
   const get_timetable = useCallback(async () => {
     let list: ResourceByDay[] = [];
     for (const day of DAY) {
-      await invoke<ResourceByDay>("get_bonuses", { day }).then(e => list.push(e));
+      await invoke<ResourceByDay>("get_bonuses", { day }).then((e) =>
+        list.push(e)
+      );
     }
     setTimetable(list);
   }, [DAY]);

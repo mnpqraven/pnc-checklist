@@ -7,33 +7,39 @@ type Props = {
   value: NeuralExpansion;
 };
 const RaritySelect = ({ onChange, value: neural }: Props) => {
-  const [NEURALEXPANSION, setNEURALEXPANSION] = useState<string[]>([])
+  const [NEURALEXPANSION, setNEURALEXPANSION] = useState<string[]>([]);
   const [starClasses, setStarClasses] = useState<string[]>([]);
   const [starDirty, setStarDirty] = useState<string[]>([]);
   useEffect(() => {
-    invoke<string[]>('enum_ls', {name: 'NeuralExpansion'})
-    .then(setNEURALEXPANSION)
-  }, [])
+    invoke<string[]>("enum_ls", { name: "NeuralExpansion" }).then(
+      setNEURALEXPANSION
+    );
+  }, []);
 
-  const neural_conv = useCallback((neural: NeuralExpansion): string[] => {
-    let neural_ind = NEURALEXPANSION.indexOf(neural); // a
-    let fulls = neural_ind / 2;
-    let hasHalf = false;
-    if (neural_ind % 2 == 1) {
-      fulls = (neural_ind - 1) / 2;
-      hasHalf = true;
-    }
-    return Array(5).fill("").map((_, index) => {
-      if (index <= fulls) return "star-full";
-      if (index == fulls + 1 && hasHalf) return "star-half";
-      else return "star-dark";
-    });
-  }, [NEURALEXPANSION])
+  const neural_conv = useCallback(
+    (neural: NeuralExpansion): string[] => {
+      let neural_ind = NEURALEXPANSION.indexOf(neural); // a
+      let fulls = neural_ind / 2;
+      let hasHalf = false;
+      if (neural_ind % 2 == 1) {
+        fulls = (neural_ind - 1) / 2;
+        hasHalf = true;
+      }
+      return Array(5)
+        .fill("")
+        .map((_, index) => {
+          if (index <= fulls) return "star-full";
+          if (index == fulls + 1 && hasHalf) return "star-half";
+          else return "star-dark";
+        });
+    },
+    [NEURALEXPANSION]
+  );
 
   useEffect(() => {
-    setStarClasses(neural_conv(neural))
-    setStarDirty(neural_conv(neural))
-  }, [neural, neural_conv])
+    setStarClasses(neural_conv(neural));
+    setStarDirty(neural_conv(neural));
+  }, [neural, neural_conv]);
 
   function toEnum(stars: string[]) {
     let fulls = stars.filter((e) => e == "star-full").length;

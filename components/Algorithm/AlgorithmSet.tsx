@@ -8,7 +8,12 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import styles from "../../styles/Page.module.css";
-import { AlgoMainStat, AlgoCategory, LoadoutType, Algorithm } from "@/src-tauri/bindings/enums";
+import {
+  AlgoMainStat,
+  AlgoCategory,
+  LoadoutType,
+  Algorithm,
+} from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 
 type Props = {
@@ -21,10 +26,9 @@ export type OptionPayload = {
 };
 
 const AlgorithmSet = ({ algo, type }: Props) => {
-
   const [algoTypes, setAlgoTypes] = useState<[AlgoCategory, Algorithm[]][]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[][]>([]);
-  const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([])
+  const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([]);
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
 
   const errList = (category: AlgoCategory): number[] => {
@@ -35,103 +39,142 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   };
 
   useEffect(() => {
-    invoke<string[]>('enum_ls', { name: 'AlgoCategory' }).then(setALGOCATEGORY)
+    invoke<string[]>("enum_ls", { name: "AlgoCategory" }).then(setALGOCATEGORY);
     async function get_algo_types() {
-      setAlgoTypes(await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db"));
-      let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all")
+      setAlgoTypes(
+        await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db")
+      );
+      let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all");
       setMainStat(mainstats);
     }
     get_algo_types();
   }, []);
 
-  const { setDollData } = useContext(DollContext)
+  const { setDollData } = useContext(DollContext);
 
-  function handleAddPiece(e: AlgoPiece, cat: AlgoCategory, loadout: LoadoutType): void {
+  function handleAddPiece(
+    e: AlgoPiece,
+    cat: AlgoCategory,
+    loadout: LoadoutType
+  ): void {
     if (setDollData)
       setDollData((draft) => {
-        if (draft) draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e)
-      })
+        if (draft)
+          draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e);
+      });
   }
 
-  function handleUpdatePiece(e: AlgoPiece | null, cat: AlgoCategory, index: number): void {
+  function handleUpdatePiece(
+    e: AlgoPiece | null,
+    cat: AlgoCategory,
+    index: number
+  ): void {
     if (setDollData && e)
       setDollData((draft) => {
-        if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e
-      })
-    else if (setDollData) // no piece passed, deletion
+        if (draft)
+          draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
+      });
+    else if (setDollData)
+      // no piece passed, deletion
       setDollData((draft) => {
-        if (draft) draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1)
-      })
+        if (draft)
+          draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1);
+      });
   }
 
   return (
     <>
-    {/* TODO: better cond check */}
-    {mainStat.length > 0 ? <>
-      <div className={styles.setContainer}>
-        <div className={`${styles.algocategory}`}>
-          {algoTypes[0] !== undefined ? (
-            algo.offense.map((piece, index) => (
-              <div key={`offense-${index}`} className="m-1">
-                <AlgorithmPiece
-                  index={index}
-                  options={{ algoTypes: algoTypes[0], mainStat: mainStat[0] }}
-                  category={"Offense"}
-                  pieceData={piece}
-                  valid={!errList("Offense").includes(index)}
-                  onChange={handleUpdatePiece}
-                />
-              </div>
-            ))
-          ) : (
-            <Loading />
-          )}
-        </div>
+      {/* TODO: better cond check */}
+      {mainStat.length > 0 ? (
+        <>
+          <div className={styles.setContainer}>
+            <div className={`${styles.algocategory}`}>
+              {algoTypes[0] !== undefined ? (
+                algo.offense.map((piece, index) => (
+                  <div key={`offense-${index}`} className="m-1">
+                    <AlgorithmPiece
+                      index={index}
+                      options={{
+                        algoTypes: algoTypes[0],
+                        mainStat: mainStat[0],
+                      }}
+                      category={"Offense"}
+                      pieceData={piece}
+                      valid={!errList("Offense").includes(index)}
+                      onChange={handleUpdatePiece}
+                    />
+                  </div>
+                ))
+              ) : (
+                <Loading />
+              )}
+            </div>
 
-        <div className={`${styles.algocategory}`}>
-          {algoTypes[1] !== undefined ? (
-            algo.stability.map((piece, index) => (
-              <div key={`stability-${index}`} className="m-1">
-                <AlgorithmPiece
-                  index={index}
-                  options={{ algoTypes: algoTypes[1], mainStat: mainStat[1] }}
-                  category={"Stability"}
-                  pieceData={piece}
-                  valid={!errList("Stability").includes(index)}
-                  onChange={handleUpdatePiece}
-                />
-              </div>
-            ))
-          ) : (
-            <Loading />
-          )}
-        </div>
+            <div className={`${styles.algocategory}`}>
+              {algoTypes[1] !== undefined ? (
+                algo.stability.map((piece, index) => (
+                  <div key={`stability-${index}`} className="m-1">
+                    <AlgorithmPiece
+                      index={index}
+                      options={{
+                        algoTypes: algoTypes[1],
+                        mainStat: mainStat[1],
+                      }}
+                      category={"Stability"}
+                      pieceData={piece}
+                      valid={!errList("Stability").includes(index)}
+                      onChange={handleUpdatePiece}
+                    />
+                  </div>
+                ))
+              ) : (
+                <Loading />
+              )}
+            </div>
 
-        <div className={`${styles.algocategory}`}>
-          {algoTypes[2] !== undefined ? (
-            algo.special.map((piece, index) => (
-              <div key={`special-${index}`} className="m-1">
-                <AlgorithmPiece
-                  index={index}
-                  options={{ algoTypes: algoTypes[2], mainStat: mainStat[2] }}
-                  category={"Special"}
-                  pieceData={piece}
-                  valid={!errList("Special").includes(index)}
-                  onChange={handleUpdatePiece}
-                />
-              </div>
-            ))
-          ) : (
-            <Loading />
-          )}
-        </div>
-      </div>
-      <div className="flex flex-row justify-around">
-        <NewAlgoSet category={ALGOCATEGORY[0] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
-        <NewAlgoSet category={ALGOCATEGORY[1] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
-        <NewAlgoSet category={ALGOCATEGORY[2] as AlgoCategory} loadout_type={type} addHandler={handleAddPiece} />
-      </div>
-    </> : <Loading /> }
+            <div className={`${styles.algocategory}`}>
+              {algoTypes[2] !== undefined ? (
+                algo.special.map((piece, index) => (
+                  <div key={`special-${index}`} className="m-1">
+                    <AlgorithmPiece
+                      index={index}
+                      options={{
+                        algoTypes: algoTypes[2],
+                        mainStat: mainStat[2],
+                      }}
+                      category={"Special"}
+                      pieceData={piece}
+                      valid={!errList("Special").includes(index)}
+                      onChange={handleUpdatePiece}
+                    />
+                  </div>
+                ))
+              ) : (
+                <Loading />
+              )}
+            </div>
+          </div>
+          <div className="flex flex-row justify-around">
+            <NewAlgoSet
+              category={ALGOCATEGORY[0] as AlgoCategory}
+              loadout_type={type}
+              addHandler={handleAddPiece}
+            />
+            <NewAlgoSet
+              category={ALGOCATEGORY[1] as AlgoCategory}
+              loadout_type={type}
+              addHandler={handleAddPiece}
+            />
+            <NewAlgoSet
+              category={ALGOCATEGORY[2] as AlgoCategory}
+              loadout_type={type}
+              addHandler={handleAddPiece}
+            />
+          </div>
+        </>
+      ) : (
+        <Loading />
+      )}
     </>
   );
 };
@@ -140,11 +183,15 @@ export default AlgorithmSet;
 const NewAlgoSet = ({
   category,
   loadout_type,
-  addHandler
+  addHandler,
 }: {
   category: AlgoCategory;
   loadout_type: LoadoutType;
-  addHandler: (value: AlgoPiece, category: AlgoCategory, loadout_type: LoadoutType) => void
+  addHandler: (
+    value: AlgoPiece,
+    category: AlgoCategory,
+    loadout_type: LoadoutType
+  ) => void;
 }) => {
   const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;

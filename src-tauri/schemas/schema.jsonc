@@ -59,7 +59,7 @@
               "type": "number"
             }
           },
-          "required": ["algo","skill_level", "level"]
+          "required": ["algo", "skill_level", "level"]
         },
         "goal": {
           "type": "object",
@@ -72,7 +72,7 @@
           "required": ["algo"]
         }
       },
-      "required": [ "name", "class", "current", "goal" ]
+      "required": ["name", "class", "current", "goal"]
     },
     "algo_piece": {
       "type": "object",
@@ -114,7 +114,5 @@
       "required": ["offense", "stability", "special"]
     }
   },
-  "required": [
-    "units"
-  ]
+  "required": ["units"]
 }

@@ -42,7 +42,7 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
   return (
     <>
       <div>
-        <div className="flex justify-around w-60">
+        <div className="flex w-60 justify-around">
           <div
             onMouseEnter={() => onMouseEnter(-1)}
             onMouseLeave={onMouseLeave}
@@ -69,7 +69,7 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
                   category[1].map((algo, index_alg) => (
                     <div
                       key={index_alg}
-                      className="w-[64px] h-[64px] flex items-center"
+                      className="flex h-[64px] w-[64px] items-center"
                     >
                       <Image
                         priority

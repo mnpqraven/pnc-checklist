@@ -4,5 +4,4 @@ export const UNITVALIDATIONERROR = {
   SkillLevelError: "SkillLevelError",
   AlgorithmError: "AlgorithmError",
 } as const;
-export type UnitValidationError = keyof typeof UNITVALIDATIONERROR
-
+export type UnitValidationError = keyof typeof UNITVALIDATIONERROR;

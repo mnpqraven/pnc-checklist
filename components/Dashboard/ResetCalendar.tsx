@@ -12,7 +12,9 @@ type Props = {
 };
 const ResetCalendar = ({ prevDateHandler }: Props) => {
   // needs to be static else hydration error
-  const [nextReset, setNextReset] = useState(new Date(parse_date_iso(new Date())));
+  const [nextReset, setNextReset] = useState(
+    new Date(parse_date_iso(new Date()))
+  );
   const [timer, setTimer] = useState<Clock>({
     hours: "00",
     minutes: "00",
@@ -55,7 +57,7 @@ const ResetCalendar = ({ prevDateHandler }: Props) => {
     const interval = setInterval(() => {
       setTimer(till_reset());
       // prevDateHandler(nextReset);
-      prevDateHandler(new Date(+nextReset + MILLIS_PER_DAY))
+      prevDateHandler(new Date(+nextReset + MILLIS_PER_DAY));
       // console.log(new Date(+nextReset + MILLIS_PER_DAY))
     }, 1000);
 

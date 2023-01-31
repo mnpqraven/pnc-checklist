@@ -52,7 +52,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .dolllist li:hover  {
+  .dolllist li:hover {
     background: rgba(var(--card-rgb), 0.2);
     border: 1px solid rgba(var(--card-border-rgb), 0.15);
   }
