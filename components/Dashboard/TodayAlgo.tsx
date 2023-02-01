@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { invoke } from "@tauri-apps/api/tauri";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
 import { Algorithm } from "@/src-tauri/bindings/enums";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../Loading";
 
 type Props = {
   day: string;
@@ -12,32 +12,29 @@ type Props = {
   onMouseLeave: () => void;
 };
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
-  const [algos, setAlgos] = useState<[AlgoCategory, Algorithm[]][]>([]);
+  const algoDb = useQuery({
+    queryKey: ["algoDb"],
+    queryFn: () => invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db"),
+  });
 
-  const isGrowNeeded: boolean[] = algos.map((cat) => {
+  const algoByDays = useQuery({
+    queryKey: ["algo_by_days", algoDb, day], // query again when day changes
+    queryFn: () => invoke<Algorithm[] | null>("get_algo_by_days", { day }).then(data => data === null ? [] : data),
+    enabled: !!algoDb,
+  });
+
+  if (algoDb.isLoading || algoByDays.isLoading) return <Loading />;
+  if (algoDb.isError || algoByDays.isError) return <p>Error encountered</p>;
+
+  const filteredDb: [AlgoCategory, Algorithm[]][] = algoDb.data.map((item) => [
+    item[0],
+    item[1].filter((algo) => algoByDays.data.includes(algo)),
+  ]);
+
+  const isGrowNeeded: boolean[] = algoDb.data.map((cat) => {
     if (cat[1].length == 0) return true;
     else return false;
   });
-  async function initdata() {
-    let db = await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db");
-    invoke<Algorithm[]>("get_algo_by_days", { day }).then((option_algos) => {
-      if (option_algos) {
-        let t = db.map((item) => {
-          item[1] = item[1].filter((algo) => option_algos.includes(algo));
-          return item;
-        });
-        setAlgos(t);
-      } else setAlgos([]);
-    });
-  }
-
-  useEffect(() => {
-    initdata();
-  }, [day]);
-
-  useEffect(() => {
-    initdata();
-  }, []);
 
   return (
     <>
@@ -56,8 +53,8 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
         </div>
 
         <div className="flex">
-          {algos.length > 0 ? (
-            algos.map((category, index_cat) => (
+          {filteredDb.length > 0 ? (
+            filteredDb.map((category, index_cat) => (
               <div
                 key={index_cat}
                 className={`flex flex-col px-2 text-center ${
