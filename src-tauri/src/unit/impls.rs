@@ -8,7 +8,7 @@ impl Unit {
         Self {
             name,
             class,
-            current: Loadout::new(false),
+            current: Loadout::new(false, false),
             goal: Loadout::new_goal(),
         }
     }
@@ -22,17 +22,6 @@ impl Unit {
         v.get_bucket()
     }
 
-    /// NOTE: gather all the `AlgoPiece`s in an unit
-    pub fn get_current_algos(&self) -> Vec<&AlgoPiece> {
-        self.current
-            .algo
-            .offense
-            .iter()
-            .chain(self.current.algo.stability.iter())
-            .chain(self.current.algo.special.iter())
-            .collect::<Vec<&AlgoPiece>>()
-    }
-
     /// creates a `Vec` of new `Arc<Mutex<T>>>` for lockers that should belong to
     /// this `Unit`
     pub fn create_lockers(
@@ -40,7 +29,8 @@ impl Unit {
     ) -> Result<Vec<Arc<Mutex<AlgoPiece>>>, TauriError> {
         if let Ok(g_unit) = am_unit.lock() {
             Ok(g_unit
-                .get_current_algos()
+                .current
+                .get_algos()
                 .into_iter()
                 .cloned()
                 .map(|e| Arc::new(Mutex::new(e)))
@@ -70,9 +60,6 @@ impl Default for NeuralFragment {
 }
 
 impl UnitSkill {
-    pub fn new(passive: u32, auto: u32) -> Self {
-        Self { passive, auto }
-    }
     pub fn max() -> Self {
         Self {
             passive: 10,

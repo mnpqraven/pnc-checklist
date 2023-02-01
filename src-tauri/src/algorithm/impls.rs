@@ -1,3 +1,5 @@
+use strum::IntoEnumIterator;
+
 use super::types::*;
 use crate::table::{
     consts::{
@@ -8,6 +10,13 @@ use crate::table::{
 };
 
 impl Algorithm {
+    pub fn default(category: &AlgoCategory) -> Self {
+        match category {
+            AlgoCategory::Offense => Algorithm::MLRMatrix,
+            AlgoCategory::Stability => Algorithm::Encapsulate,
+            AlgoCategory::Special => Algorithm::DeltaV,
+        }
+    }
     pub fn all_gen1() -> Vec<Algorithm> {
         vec![
             Algorithm::LowerLimit,
@@ -101,11 +110,11 @@ impl Algorithm {
 }
 
 impl AlgoSet {
-    pub fn new() -> Self {
+    pub fn new(checked_slots: bool) -> Self {
         Self {
-            offense: vec![AlgoPiece::new(AlgoCategory::Offense)],
-            stability: vec![AlgoPiece::new(AlgoCategory::Stability)],
-            special: vec![AlgoPiece::new(AlgoCategory::Special)],
+            offense: vec![AlgoPiece::new(AlgoCategory::Offense, checked_slots)],
+            stability: vec![AlgoPiece::new(AlgoCategory::Stability, checked_slots)],
+            special: vec![AlgoPiece::new(AlgoCategory::Special, checked_slots)],
         }
     }
 
@@ -180,23 +189,11 @@ impl AlgoSet {
 
 impl AlgoPiece {
     /// creates an empty Algo piece with specified slots
-    pub fn new(category: AlgoCategory) -> Self {
-        match category {
-            AlgoCategory::Offense => Self {
-                name: Algorithm::Feedforward,
-                stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot::default(),
-            },
-            AlgoCategory::Stability => Self {
-                name: Algorithm::Encapsulate,
-                stat: AlgoMainStat::Health,
-                slot: AlgoSlot::default()
-            },
-            AlgoCategory::Special => Self {
-                name: Algorithm::DeltaV,
-                stat: AlgoMainStat::Haste,
-                slot: AlgoSlot::default()
-            },
+    pub fn new(category: AlgoCategory, checked_slots: bool) -> Self {
+        Self {
+            name: Algorithm::default(&category),
+            stat: AlgoMainStat::default(&category),
+            slot: AlgoSlot::new(checked_slots),
         }
     }
 
@@ -239,20 +236,7 @@ impl AlgoPiece {
 // WARN: only after double checking with frontend
 impl AlgoCategory {
     pub fn generate_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
-        vec![
-            (
-                AlgoCategory::Offense,
-                Self::get_algos(&AlgoCategory::Offense),
-            ),
-            (
-                AlgoCategory::Stability,
-                Self::get_algos(&AlgoCategory::Stability),
-            ),
-            (
-                AlgoCategory::Special,
-                Self::get_algos(&AlgoCategory::Special),
-            ),
-        ]
+        AlgoCategory::iter().map(|cat| (cat, cat.get_algos())).collect()
     }
 
     pub fn get_algos(&self) -> Vec<Algorithm> {
@@ -273,8 +257,8 @@ impl AlgoCategory {
 }
 
 impl AlgoMainStat {
-    pub fn default(cat: &AlgoCategory) -> Self {
-        match cat {
+    pub fn default(category: &AlgoCategory) -> Self {
+        match category {
             AlgoCategory::Offense => Self::AtkPercent,
             AlgoCategory::Stability => Self::Health,
             AlgoCategory::Special => Self::Haste,
@@ -282,8 +266,8 @@ impl AlgoMainStat {
     }
 }
 
-impl Default for AlgoSlot {
-    fn default() -> Self {
-        Self(vec![false; 3])
+impl AlgoSlot {
+    pub fn new(value: bool) -> Self {
+        Self(vec![value; 3])
     }
 }

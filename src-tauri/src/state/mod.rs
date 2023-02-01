@@ -2,7 +2,7 @@ use crate::{
     algorithm::types::AlgoPiece, model::error::TauriError, state::types::KeychainTable,
     unit::types::Unit,
 };
-use std::sync::{Arc, Weak};
+use std::sync::Weak;
 use tauri::State;
 
 use self::types::Keychain;
@@ -18,8 +18,8 @@ pub fn view_locker(keychain: State<KeychainTable>) -> Vec<(AlgoPiece, Option<Uni
 
     let g_kc = keychain.keychains.lock().unwrap();
     for chain in g_kc.iter() {
-        dbg!(&Arc::strong_count(&chain.locker));
-        dbg!(&Weak::strong_count(&chain.unit));
+        // dbg!(&Arc::strong_count(&chain.locker));
+        // dbg!(&Weak::strong_count(&chain.unit));
         // let attempt_algo = Arc::upgrade(&chain.locker);
         let algo = chain.locker.lock().unwrap();
         let attempt_unit = Weak::upgrade(&chain.unit);

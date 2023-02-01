@@ -52,7 +52,7 @@ impl KeychainTable {
             let am_unit: Arc<Mutex<Unit>> = Arc::new(Mutex::new(unit.clone()));
             am_units.push(Arc::clone(&am_unit));
 
-            for algo in unit.get_current_algos().into_iter() {
+            for algo in unit.current.get_algos().into_iter() {
                 let am_algo: Arc<Mutex<AlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
 
                 keychains.push(Keychain::new(&Arc::clone(&am_unit), &am_algo));
@@ -79,7 +79,7 @@ impl KeychainTable {
 
         // INFO: append new keychains
         let g_unit = am_unit.lock().unwrap();
-        for algo in g_unit.get_current_algos().into_iter() {
+        for algo in g_unit.current.get_algos().into_iter() {
             let am_algo: &Arc<Mutex<AlgoPiece>> = &Arc::new(Mutex::new(algo.clone()));
             g_kcs.push(Keychain::new(am_unit, am_algo));
         }

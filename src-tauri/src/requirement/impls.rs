@@ -73,7 +73,7 @@ impl AlgorithmRequirement {
     pub(super) fn is_empty(&self) -> bool {
         for piece in self.pieces.iter() {
             for value in piece.slot.0.iter() {
-                if *value == true { return true }
+                if *value { return true }
             }
         }
         false

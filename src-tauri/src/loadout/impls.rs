@@ -1,22 +1,17 @@
 use crate::{algorithm::types::*, stats::types::*, unit::types::*};
 
 impl Loadout {
-    pub fn new(maxed_slv: bool) -> Self {
-        match maxed_slv {
-            true => Self {
-                skill_level: UnitSkill::max(),
-                algo: AlgoSet::new(),
-                level: Level(1),
-                neural: NeuralExpansion::Three,
-                frags: NeuralFragment::default(),
-            },
-            false => Self {
-                skill_level: UnitSkill::default(),
-                algo: AlgoSet::new(),
-                level: Level(1),
-                neural: NeuralExpansion::Three,
-                frags: NeuralFragment::default(),
-            },
+    pub fn new(maxed_slv: bool, checked_slots: bool) -> Self {
+        let skill_level = match maxed_slv {
+            true => UnitSkill::max(),
+            false => UnitSkill::default(),
+        };
+        Self {
+            skill_level,
+            algo: AlgoSet::new(checked_slots),
+            level: Level(1),
+            neural: NeuralExpansion::Three,
+            frags: NeuralFragment::default(),
         }
     }
 
@@ -24,18 +19,18 @@ impl Loadout {
         Self {
             skill_level: UnitSkill::max(),
             level: Level::max(),
-            algo: AlgoSet::new(),
+            algo: AlgoSet::new(true),
             neural: NeuralExpansion::Five,
             frags: NeuralFragment(None),
         }
     }
 
-    pub fn get_algos(&self) -> Vec<AlgoPiece> {
-        vec![
-            self.algo.offense.clone(),
-            self.algo.stability.clone(),
-            self.algo.special.clone(),
-        ]
-        .concat()
+    pub fn get_algos(&self) -> Vec<&AlgoPiece> {
+        self.algo
+            .offense
+            .iter()
+            .chain(self.algo.stability.iter())
+            .chain(self.algo.special.iter())
+            .collect::<Vec<&AlgoPiece>>()
     }
 }

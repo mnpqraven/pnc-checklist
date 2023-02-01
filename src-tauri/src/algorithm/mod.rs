@@ -16,13 +16,13 @@ pub fn algorithm_all() -> Vec<Algorithm> {
 }
 
 #[tauri::command]
-pub fn algo_set_new() -> AlgoSet {
-    AlgoSet::new()
+pub fn algo_set_new(checked_slots: bool) -> AlgoSet {
+    AlgoSet::new(checked_slots)
 }
 
 #[tauri::command]
-pub fn algo_piece_new(category: AlgoCategory) -> AlgoPiece {
-    AlgoPiece::new(category)
+pub fn algo_piece_new(category: AlgoCategory, checked_slots: bool) -> AlgoPiece {
+    AlgoPiece::new(category, checked_slots)
 }
 #[tauri::command]
 pub fn algo_slots_compute(name: Algorithm, current_slots: AlgoSlot) -> AlgoSlot {
