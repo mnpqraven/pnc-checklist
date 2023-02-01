@@ -28,7 +28,6 @@ export type OptionPayload = {
 const AlgorithmSet = ({ algo, type }: Props) => {
   const [algoTypes, setAlgoTypes] = useState<[AlgoCategory, Algorithm[]][]>([]);
   const [mainStat, setMainStat] = useState<AlgoMainStat[][]>([]);
-  const [ALGOCATEGORY, setALGOCATEGORY] = useState<string[]>([]);
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
 
   const errList = (category: AlgoCategory): number[] => {
@@ -39,7 +38,6 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   };
 
   useEffect(() => {
-    invoke<string[]>("enum_ls", { name: "AlgoCategory" }).then(setALGOCATEGORY);
     async function get_algo_types() {
       setAlgoTypes(
         await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db")
@@ -48,6 +46,10 @@ const AlgorithmSet = ({ algo, type }: Props) => {
       setMainStat(mainstats);
     }
     get_algo_types();
+
+    for (const cat in algo) {
+      console.warn(cat);
+    }
   }, []);
 
   const { setDollData } = useContext(DollContext);
@@ -82,109 +84,53 @@ const AlgorithmSet = ({ algo, type }: Props) => {
       });
   }
 
-  return (
-    <>
-      {/* TODO: better cond check */}
-      {mainStat.length > 0 ? (
-        <>
-          <div className={styles.setContainer}>
-            <div className={`${styles.algocategory}`}>
-              {algoTypes[0] !== undefined ? (
-                algo.offense.map((piece, index) => (
-                  <div key={`offense-${index}`} className="m-1">
-                    <AlgorithmPiece
-                      index={index}
-                      options={{
-                        algoTypes: algoTypes[0],
-                        mainStat: mainStat[0],
-                      }}
-                      category={"Offense"}
-                      pieceData={piece}
-                      valid={!errList("Offense").includes(index)}
-                      onChange={handleUpdatePiece}
-                    />
-                  </div>
-                ))
-              ) : (
-                <Loading />
-              )}
-            </div>
+  if (algoTypes.length > 0)
+    return (
+      <>
+        <div className={styles.setContainer}>
+          {algoTypes
+            .map((e) => e[0] as AlgoCategory)
+            .map((category, catindex) => (
+              <div className={styles.algocategory} key={catindex}>
+                {algo[category.toLowerCase() as keyof AlgoSet].map(
+                  (piece, pieceind) => (
+                    <div key={pieceind} className="m-1">
+                      <AlgorithmPiece
+                        index={pieceind}
+                        options={{
+                          algoTypes: algoTypes[catindex],
+                          mainStat: mainStat[catindex],
+                        }}
+                        category={category}
+                        pieceData={piece}
+                        valid={!errList(category).includes(pieceind)}
+                        onChange={handleUpdatePiece}
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            ))}
+        </div>
 
-            <div className={`${styles.algocategory}`}>
-              {algoTypes[1] !== undefined ? (
-                algo.stability.map((piece, index) => (
-                  <div key={`stability-${index}`} className="m-1">
-                    <AlgorithmPiece
-                      index={index}
-                      options={{
-                        algoTypes: algoTypes[1],
-                        mainStat: mainStat[1],
-                      }}
-                      category={"Stability"}
-                      pieceData={piece}
-                      valid={!errList("Stability").includes(index)}
-                      onChange={handleUpdatePiece}
-                    />
-                  </div>
-                ))
-              ) : (
-                <Loading />
-              )}
-            </div>
+        <div className="flex flex-row justify-around">
+          {[0, 1, 2].map((index) => (
+            <NewAlgoSet
+              key={index}
+              category={algoTypes[index][0]}
+              loadout_type={type}
+              addHandler={handleAddPiece}
+            />
+          ))}
+        </div>
+      </>
+    );
 
-            <div className={`${styles.algocategory}`}>
-              {algoTypes[2] !== undefined ? (
-                algo.special.map((piece, index) => (
-                  <div key={`special-${index}`} className="m-1">
-                    <AlgorithmPiece
-                      index={index}
-                      options={{
-                        algoTypes: algoTypes[2],
-                        mainStat: mainStat[2],
-                      }}
-                      category={"Special"}
-                      pieceData={piece}
-                      valid={!errList("Special").includes(index)}
-                      onChange={handleUpdatePiece}
-                    />
-                  </div>
-                ))
-              ) : (
-                <Loading />
-              )}
-            </div>
-          </div>
-          <div className="flex flex-row justify-around">
-            <NewAlgoSet
-              category={ALGOCATEGORY[0] as AlgoCategory}
-              loadout_type={type}
-              addHandler={handleAddPiece}
-            />
-            <NewAlgoSet
-              category={ALGOCATEGORY[1] as AlgoCategory}
-              loadout_type={type}
-              addHandler={handleAddPiece}
-            />
-            <NewAlgoSet
-              category={ALGOCATEGORY[2] as AlgoCategory}
-              loadout_type={type}
-              addHandler={handleAddPiece}
-            />
-          </div>
-        </>
-      ) : (
-        <Loading />
-      )}
-    </>
-  );
+  return <Loading />;
 };
 export default AlgorithmSet;
 
-const NewAlgoSet = ({
-  category,
-  loadout_type,
-  addHandler,
-}: {
+type NewAlgoSetProps = {
   category: AlgoCategory;
   loadout_type: LoadoutType;
   addHandler: (
@@ -192,18 +138,30 @@ const NewAlgoSet = ({
     category: AlgoCategory,
     loadout_type: LoadoutType
   ) => void;
-}) => {
+};
+
+const NewAlgoSet = ({
+  category,
+  loadout_type,
+  addHandler,
+}: NewAlgoSetProps) => {
   const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;
+
   async function new_algo_set(
     category: AlgoCategory,
     loadout_type: LoadoutType
   ) {
     if (defined) {
-      let t = await invoke<AlgoPiece>("algo_piece_new", { category });
+      let checkedSlots = loadout_type === "goal" ? true : false;
+      let t = await invoke<AlgoPiece>("algo_piece_new", {
+        category,
+        checkedSlots,
+      });
       addHandler(t, category, loadout_type);
     }
   }
+
   return (
     <button onClick={() => new_algo_set(category, loadout_type)}>
       New {category} algorithm

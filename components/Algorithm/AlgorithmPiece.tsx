@@ -11,6 +11,7 @@ import {
   AlgoMainStat,
   Algorithm,
 } from "@/src-tauri/bindings/enums";
+import { algo_src } from "@/utils/helper";
 
 type Props = {
   index: number;
@@ -98,12 +99,12 @@ const AlgorithmPiece = ({
   return (
     <>
       <div
-        className={` flex justify-center
+        className={` flex justify-center items-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
-        <div className="h-auto w-auto">
+        <div className="h-auto w-auto self-center">
           <Image
-            src={`/algos/${algorithm.toLowerCase()}.png`}
+            src={algo_src(algorithm)}
             alt={"algo"}
             width={60}
             height={60}
@@ -122,7 +123,7 @@ const AlgorithmPiece = ({
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between items-center">
             {dollData ? (
               <SlotCheckbox
                 value={slot}

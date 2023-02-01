@@ -4,6 +4,7 @@ import styles from "@/styles/Page.module.css";
 import Image from "next/image";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { MouseEvent, useState } from "react";
+import { class_src } from "@/utils/helper";
 
 type Props = {
   list: Unit[];
@@ -49,7 +50,7 @@ const DollList = ({
           <div className="flex items-center">
             <div className="mx-2">
               <Image
-                src={`/class/${unit.class.toLowerCase()}.png`}
+                src={class_src(unit.class)}
                 alt={unit.class}
                 width={24}
                 height={24}

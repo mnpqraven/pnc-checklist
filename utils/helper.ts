@@ -1,12 +1,10 @@
+import { Algorithm, Class } from "@/src-tauri/bindings/enums";
+
 /**
  * same as Object.keys() but with generic type return
  */
 export function getKeys<T extends object>(obj: T): Array<keyof T> {
   return Object.keys(obj) as Array<keyof T>;
-}
-
-export function algo_src(item: string): string {
-  return `/algos/${item.toLowerCase()}.png`;
 }
 
 export function parse_date_iso(d: Date): string {
@@ -19,4 +17,12 @@ export function parse_date_iso(d: Date): string {
 }
 export function date_passed(d: Date): boolean {
   return new Date() > new Date(parse_date_iso(d));
+}
+
+export function algo_src(item: Algorithm): string {
+  return `/algos/${item.toLowerCase()}.png`;
+}
+
+export function class_src(item: Class): string {
+  return `/class/${item.toLowerCase()}.png`;
 }

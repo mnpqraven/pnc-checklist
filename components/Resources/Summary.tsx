@@ -5,6 +5,7 @@ import Image from "next/image";
 import Loading from "../Loading";
 import { useImmer } from "use-immer";
 import { WidgetResource, GrandResource } from "@/src-tauri/bindings/structs";
+import { class_src } from "@/utils/helper";
 
 const hide_empty = true; // toggle TBD
 const EMPTY_GRAND: GrandResource = {
@@ -87,7 +88,7 @@ const Summary = () => {
                   <tr key={index}>
                     <td>
                       <Image
-                        src={`/class/${item.class.toLowerCase()}.png`}
+                        src={class_src(item.class)}
                         alt={item.class}
                         width={24}
                         height={24}
