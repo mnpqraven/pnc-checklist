@@ -1,45 +1,14 @@
-import { invoke } from "@tauri-apps/api/tauri";
-import { useEffect } from "react";
 import ItemPlate from "./ItemPlate";
 import Image from "next/image";
 import Loading from "../Loading";
-import { useImmer } from "use-immer";
-import { WidgetResource, GrandResource } from "@/src-tauri/bindings/structs";
 import { class_src } from "@/utils/helper";
+import { useNeededRscQuery } from "@/utils/queryHooks";
 
-const hide_empty = true; // toggle TBD
-const EMPTY_GRAND: GrandResource = {
-  skill: { token: 0, pivot: 0 },
-  coin: 0,
-  exp: 0,
-  neural_kits: 0,
-  widgets: [],
-};
 const Summary = () => {
-  const [req, setReg] = useImmer<GrandResource>(EMPTY_GRAND);
+  const { data: req } = useNeededRscQuery();
 
-  useEffect(() => {
-    console.log("[mount] page resources");
-
-    invoke<GrandResource>("get_needed_rsc").then((e) => {
-      if (hide_empty) {
-        let noempty: WidgetResource[] = [];
-        e.widgets.map((classchunk) => {
-          if (!classchunk.widget_inventory.every((t) => t == 0)) {
-            noempty.push(classchunk);
-          }
-        });
-        setReg((draft) => {
-          draft = { ...e };
-          draft.widgets = noempty;
-          return draft;
-        });
-      } else setReg(e);
-    });
-  }, []);
-  useEffect(() => {
-    console.log(req);
-  }, [req]);
+  // if (isLoading) return <Loading />;
+  // if (isError) return <Loading />;
 
   return (
     <div className="w-min">

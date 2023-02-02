@@ -2,38 +2,52 @@ import Image from "next/image";
 import { algo_src } from "@/utils/helper";
 import Loading from "../Loading";
 import { useAlgoByDayQuery } from "@/utils/queryHooks";
+import { DEFAULT_DAYS } from "@/utils/defaults";
+import { useState } from "react";
 
 type Props = {
-  day: string;
   onMouseEnter: (offset: number) => void;
-  onMouseLeave: () => void;
+  dayIndex: number;
 };
-const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
-  const { isLoading, isError, data: algoByDay } = useAlgoByDayQuery(day);
+
+const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
+  const [offset, setOffset] = useState(0);
+  const { isLoading, isError, data: algoByDay } = useAlgoByDayQuery(dayIndex);
 
   const isGrowNeeded = algoByDay.map((tuple) => tuple[1].length == 0);
+  const isWeekday = !isGrowNeeded.every((cat) => cat);
 
   if (isLoading) return <Loading />;
   if (isError) return <p>Error encountered</p>;
 
+  function mouseInteract(changes: number = -offset) {
+    onMouseEnter(offset + changes);
+    setOffset(offset + changes);
+  }
+
   return (
     <>
       <div>
-        <div className="flex w-60 justify-around">
-          <div
-            onMouseEnter={() => onMouseEnter(-1)}
-            onMouseLeave={onMouseLeave}
+        <div className="flex w-60 justify-between px-2">
+          <button
+            onMouseEnter={() => mouseInteract(-1)}
+            onClick={() => mouseInteract(-1)}
+            onMouseLeave={() => mouseInteract(undefined)}
           >
             Prev
-          </div>
-          <div>{day}</div>
-          <div onMouseEnter={() => onMouseEnter(1)} onMouseLeave={onMouseLeave}>
+          </button>
+          <div>{DEFAULT_DAYS[dayIndex]}</div>
+          <button
+            onMouseEnter={() => mouseInteract(1)}
+            onClick={() => mouseInteract(1)}
+            onMouseLeave={() => mouseInteract(undefined)}
+          >
             Next
-          </div>
+          </button>
         </div>
 
-        <div className="flex">
-          {algoByDay.length > 0 ? (
+        <div className="flex justify-center">
+          {isWeekday ? (
             algoByDay.map(([category, algos], index_cat) => (
               <div
                 key={index_cat}
@@ -41,26 +55,25 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
                   isGrowNeeded[index_cat] ? `grow` : ""
                 }`}
               >
-                <p>{category[0]}</p>
-                {category.length > 0 &&
-                  algos.map((algo, index_alg) => (
-                    <div
-                      key={index_alg}
-                      className="flex h-[64px] w-[64px] items-center"
-                    >
-                      <Image
-                        priority
-                        src={algo_src(algo)}
-                        alt={algo}
-                        height={128}
-                        width={128}
-                      />
-                    </div>
-                  ))}
+                <p>{category}</p>
+                {algos.map((algo, index_alg) => (
+                  <div
+                    key={index_alg}
+                    className="flex h-[64px] w-[64px] items-center"
+                  >
+                    <Image
+                      priority
+                      src={algo_src(algo)}
+                      alt={algo}
+                      height={128}
+                      width={128}
+                    />
+                  </div>
+                ))}
               </div>
             ))
           ) : (
-            <p>Weekend, no algo farm</p>
+            <p>Weekend</p>
           )}
         </div>
       </div>

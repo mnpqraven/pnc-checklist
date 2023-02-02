@@ -27,6 +27,8 @@ version: 0.1.2
         data
     #bugs
     - (=) layout when there's no algo piece is weird
+    #refactors
+    - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)
 
 **  Ideas
     - ( )  actual logging to frontend

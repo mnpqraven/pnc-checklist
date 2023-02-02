@@ -7,6 +7,11 @@ export function getKeys<T extends object>(obj: T): Array<keyof T> {
   return Object.keys(obj) as Array<keyof T>;
 }
 
+/**
+ * converts the given date to an ISO date string
+ * @param d date to convert
+ * @returns ISO-compliant date string in UTC timezone
+ */
 export function parse_date_iso(d: Date): string {
   const year = d.getFullYear();
   let month = String(d.getMonth() + 1).padStart(2, "0");
@@ -15,6 +20,11 @@ export function parse_date_iso(d: Date): string {
   // 20:00:00 JP 21:00:00 CN
   return `${year}-${month}-${day}T13:00:00Z`;
 }
+
+/**
+ * Whether if the given date is before or after the time this function is ran
+ * @param d date to compare to
+ */
 export function date_passed(d: Date): boolean {
   return new Date() > new Date(parse_date_iso(d));
 }

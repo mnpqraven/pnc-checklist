@@ -88,7 +88,6 @@ beforeEach(() => {
             "DamageInc",
             "Dodge",
             "HealInc",
-            "DamageReduction",
           ],
           [
             "Def",

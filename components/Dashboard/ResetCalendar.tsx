@@ -7,10 +7,7 @@ export const MILLIS_PER_HOUR = 1000 * 60 * 60;
 export const MILLIS_PER_MIN = 1000 * 60;
 export const MILLIS_PER_SEC = 1000;
 
-type Props = {
-  prevDateHandler: (e: Date) => void;
-};
-const ResetCalendar = ({ prevDateHandler }: Props) => {
+const ResetCalendar = () => {
   // needs to be static else hydration error
   const [nextReset, setNextReset] = useState(
     new Date(parse_date_iso(new Date()))
@@ -37,6 +34,7 @@ const ResetCalendar = ({ prevDateHandler }: Props) => {
     };
     return cock;
   }
+
   function till_reset(): Clock {
     if (+nextReset - +new Date() < 0) {
       // passed
@@ -56,18 +54,14 @@ const ResetCalendar = ({ prevDateHandler }: Props) => {
 
     const interval = setInterval(() => {
       setTimer(till_reset());
-      // prevDateHandler(nextReset);
-      prevDateHandler(new Date(+nextReset + MILLIS_PER_DAY));
       // console.log(new Date(+nextReset + MILLIS_PER_DAY))
     }, 1000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {/* <p>{time.getHours()}:{time.getMinutes()}:{time.getSeconds()}</p> */}
       <p>Next reset in:</p>
       <p>
         {timer.hours} : {timer.minutes} : {timer.seconds}
