@@ -39,17 +39,11 @@ const AlgorithmSet = ({ algo, type }: Props) => {
 
   useEffect(() => {
     async function get_algo_types() {
-      setAlgoTypes(
-        await invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db")
-      );
+      setAlgoTypes(await invoke<[AlgoCategory, Algorithm[]][]>("get_algo_db"));
       let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all");
       setMainStat(mainstats);
     }
     get_algo_types();
-
-    for (const cat in algo) {
-      console.warn(cat);
-    }
   }, []);
 
   const { setDollData } = useContext(DollContext);

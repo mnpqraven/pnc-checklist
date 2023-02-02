@@ -22,7 +22,7 @@ beforeEach(() => {
         return "async";
       case "view_store_units":
         return [MOCK_CROQUE, MOCK_HUBBLE];
-      case "generate_algo_db": {
+      case "get_algo_db": {
         let t: [AlgoCategory, Algorithm[]][] = [
           [
             "Offense",

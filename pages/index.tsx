@@ -3,7 +3,7 @@ import { date_passed, parse_date_iso } from "@/utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import styles from "@/styles/Page.module.css";
 import Summary from "@/components/Resources/Summary";
-import { MILLIS_PER_DAY } from "@/components/Dashboard/ResetCalendar";
+import { MILLIS_PER_DAY } from "@/components/Dashboard/hooks/useClock";
 
 // JS day array shifted left by 1 because we're getting the day before reset
 const Index = () => {

@@ -13,9 +13,10 @@ const StatusBar = ({ saveHandle, isSaveVisible }: Props) => {
   }
   return (
     <>
-      <p>status bar</p>
       {isSaveVisible ? (
-        <button onClick={() => saveHandle()}>update changes</button>
+        <button className="animate-pulse" onClick={() => saveHandle()}>
+          update changes
+        </button>
       ) : (
         <></>
       )}

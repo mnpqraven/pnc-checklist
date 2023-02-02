@@ -4,6 +4,7 @@ type Props = {
   width?: number;
   src: string;
   rarity: number;
+  badge?: string; // TODO: TBD
 };
 const ItemPlate = ({ width, src, rarity }: Props) => {
   return (

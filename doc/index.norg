@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-02
+updated: 2023-02-03
 version: 0.1.2
 @end
 
@@ -26,6 +26,15 @@ version: 0.1.2
     --- (-) replace existing `useEffect` calls only for fetching `invoke`
         data
     #bugs
+    #UXUI
+    - (-) Doll page:
+    --- (-) Loadout: wrench icon top right, slides out for more options: select
+        all/none algo, set skill/level/frags to max/min. probably a good spot
+        to put loadout name (current/goal) on top
+    --- (-) AlgoPiece: click on icon to open up image selection div, combobox
+        is too tiring to read
+    --- (-) probably the same with main stat
+    --- (-) select all button in loadout
     - (=) layout when there's no algo piece is weird
     #refactors
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)

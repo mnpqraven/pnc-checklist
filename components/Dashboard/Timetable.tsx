@@ -1,60 +1,9 @@
-import { invoke } from "@tauri-apps/api/tauri";
-import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ResourceByDay } from "@/src-tauri/bindings/structs";
+import { useTimetable } from "./hooks/useTimetable";
 
 const Timetable = () => {
-  const [timetable, setTimetable] = useState<ResourceByDay[]>([]);
-  const [DAY, setDAY] = useState<string[]>([]);
-
-  useEffect(() => {
-    invoke<string[]>("enum_ls", { name: "Day" }).then(setDAY);
-  }, []);
-
-  const get_timetable = useCallback(async () => {
-    let list: ResourceByDay[] = [];
-    for (const day of DAY) {
-      await invoke<ResourceByDay>("get_bonuses", { day }).then((e) =>
-        list.push(e)
-      );
-    }
-    setTimetable(list);
-  }, [DAY]);
-
-  useEffect(() => {
-    get_timetable();
-  }, [get_timetable]);
-
-  function get_current_bonus(day: ResourceByDay) {
-    let cl = "";
-    let x2 = [""];
-    let grid = []; // 4 items
-    if (day.class) cl = Object.values(day.class).toString();
-    if (day.coin != null) x2.push(day.coin.toString());
-    if (day.exp != null) x2.push(day.exp.toString());
-    if (day.skill != null) x2.push(day.skill.toString());
-    grid.push(x2);
-    grid.push(cl);
-
-    return (
-      <div className="flex flex-col">
-        {grid.flat().map((item, index) => (
-          <div key={index}>
-            {item ? (
-              <Image
-                src={`/class/${item.toLowerCase()}.png`}
-                alt={item}
-                width={24}
-                height={24}
-              />
-            ) : (
-              <></>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const timetable: ResourceByDay[] = useTimetable();
 
   return (
     <>
@@ -69,12 +18,44 @@ const Timetable = () => {
         <tbody>
           <tr>
             {timetable.map((day, index) => (
-              <td key={index}>{get_current_bonus(day)}</td>
+              <td key={index}>
+                <DailyBonus day={day} />
+              </td>
             ))}
           </tr>
         </tbody>
       </table>
     </>
+  );
+};
+const DailyBonus = ({ day }: { day: ResourceByDay }) => {
+  let cl = "";
+  let x2 = [""];
+  let grid: string[] = []; // 4 items
+  if (day.class) cl = Object.values(day.class).toString();
+  if (day.coin != null) x2.push(day.coin.toString());
+  if (day.exp != null) x2.push(day.exp.toString());
+  if (day.skill != null) x2.push(day.skill.toString());
+  grid.push(...x2);
+  grid.push(cl);
+
+  return (
+    <div className="flex flex-col">
+      {grid.flat().map((item, index) => (
+        <div key={index}>
+          {item ? (
+            <Image
+              src={`/class/${item.toLowerCase()}.png`}
+              alt={item}
+              width={24}
+              height={24}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 export default Timetable;
