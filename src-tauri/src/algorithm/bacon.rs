@@ -39,6 +39,6 @@ fn algodb_refactor() {
             AlgoCategory::get_algos(&AlgoCategory::Special),
         ),
     ];
-    let after = AlgoCategory::generate_algo_db();
+    let after = AlgoCategory::get_algo_db();
     assert_eq!(before, after);
 }

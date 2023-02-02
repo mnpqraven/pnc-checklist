@@ -6,7 +6,7 @@ impl ValidData<AlgoPiece> for AlgoSet {
     /// Ensures algos are in the right category
     fn input_validate<U>(&self) -> Result<Option<AlgoPiece>, ValidationError> {
         let cats = vec![&self.offense, &self.stability, &self.special];
-        let list = AlgoCategory::generate_algo_db();
+        let list = AlgoCategory::get_algo_db();
         let mut errs = Vec::new();
         for (ind, cat) in cats.iter().enumerate() {
             for piece in cat.iter() {

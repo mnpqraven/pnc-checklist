@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-01-27
+updated: 2023-02-02
 version: 0.1.2
 @end
 
@@ -21,6 +21,10 @@ version: 0.1.2
     - ( ) spacing on skill level sliders
     - (-) refactor old `interfaces` types (errors and results)
     - (=) validation return on frontend home
+    - (-) implement React Query
+    --- (-) create custom hook
+    --- (-) replace existing `useEffect` calls only for fetching `invoke`
+        data
     #bugs
     - (=) layout when there's no algo piece is weird
 

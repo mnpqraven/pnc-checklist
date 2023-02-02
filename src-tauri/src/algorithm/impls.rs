@@ -66,45 +66,45 @@ impl Algorithm {
         }
     }
 
-    pub fn get_bonuses(day: Day) -> Option<Vec<Algorithm>> {
+    pub fn get_bonuses(day: Day) -> Vec<Algorithm> {
         match day {
-            Day::Mon => Some(vec![
+            Day::Mon => vec![
                 Algorithm::Encapsulate,
                 Algorithm::Iteration,
                 Algorithm::Perception,
                 Algorithm::Inspiration,
                 Algorithm::Stack,
-            ]),
-            Day::Tue => Some(vec![
+            ],
+            Day::Tue => vec![
                 Algorithm::LowerLimit,
                 Algorithm::Feedforward,
                 Algorithm::Overflow,
                 Algorithm::Rationality,
                 Algorithm::LimitValue,
-            ]),
-            Day::Wed => Some(vec![
+            ],
+            Day::Wed => vec![
                 Algorithm::Progression,
                 Algorithm::Connection,
                 Algorithm::LoopGain,
                 Algorithm::SVM,
                 Algorithm::Reflection,
-            ]),
-            Day::Thu => Some(vec![
+            ],
+            Day::Thu => vec![
                 Algorithm::Deduction,
                 Algorithm::DeltaV,
                 Algorithm::Paradigm,
                 Algorithm::Convolution,
                 Algorithm::Exploit,
-            ]),
-            Day::Fri => Some(vec![
+            ],
+            Day::Fri => vec![
                 Algorithm::DataRepair,
                 Algorithm::MLRMatrix,
                 Algorithm::Cluster,
                 Algorithm::Stratagem,
                 Algorithm::Resolve,
-            ]),
-            Day::Sat => None,
-            Day::Sun => None,
+            ],
+            Day::Sat => Vec::new(),
+            Day::Sun => Vec::new(),
         }
     }
 }
@@ -235,7 +235,7 @@ impl AlgoPiece {
 // TODO: refactor with chunk above
 // WARN: only after double checking with frontend
 impl AlgoCategory {
-    pub fn generate_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
+    pub fn get_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
         AlgoCategory::iter().map(|cat| (cat, cat.get_algos())).collect()
     }
 

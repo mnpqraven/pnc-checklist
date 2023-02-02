@@ -23,7 +23,7 @@ pub struct ResourceByDay {
     pub exp: Option<Bonus>,
     pub skill: Option<Bonus>,
     pub class: Option<Bonus>,
-    pub algos: Option<Vec<Algorithm>>,
+    pub algos: Vec<Algorithm>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, TS, EnumIter)]

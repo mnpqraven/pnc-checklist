@@ -37,7 +37,7 @@ use crate::{
     },
     service::file::{export, import, set_default_file},
     state::{view_locker, remove_kc, clear_ownerless},
-    table::{generate_algo_db, get_algo_by_days, get_bonuses},
+    table::{get_algo_db, get_algo_by_days, get_bonuses},
     unit::{delete_unit, new_unit, save_units, view_store_units},
     validator::{validate, validate_slots},
 };
@@ -104,7 +104,7 @@ fn main() {
             export,
             set_default_file,
             // table
-            generate_algo_db,
+            get_algo_db,
             get_bonuses,
             get_algo_by_days,
             // unit

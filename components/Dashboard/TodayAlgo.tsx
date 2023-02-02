@@ -1,10 +1,7 @@
-import { invoke } from "@tauri-apps/api/tauri";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
-import { AlgoCategory } from "@/src-tauri/bindings/enums";
-import { Algorithm } from "@/src-tauri/bindings/enums";
-import { useQuery } from "@tanstack/react-query";
 import Loading from "../Loading";
+import { useAlgoByDayQuery } from "@/utils/queryHooks";
 
 type Props = {
   day: string;
@@ -12,29 +9,12 @@ type Props = {
   onMouseLeave: () => void;
 };
 const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
-  const algoDb = useQuery({
-    queryKey: ["algoDb"],
-    queryFn: () => invoke<[AlgoCategory, Algorithm[]][]>("generate_algo_db"),
-  });
+  const { isLoading, isError, data: algoByDay } = useAlgoByDayQuery(day);
 
-  const algoByDays = useQuery({
-    queryKey: ["algo_by_days", algoDb, day], // query again when day changes
-    queryFn: () => invoke<Algorithm[] | null>("get_algo_by_days", { day }).then(data => data === null ? [] : data),
-    enabled: !!algoDb,
-  });
+  const isGrowNeeded = algoByDay.map((tuple) => tuple[1].length == 0);
 
-  if (algoDb.isLoading || algoByDays.isLoading) return <Loading />;
-  if (algoDb.isError || algoByDays.isError) return <p>Error encountered</p>;
-
-  const filteredDb: [AlgoCategory, Algorithm[]][] = algoDb.data.map((item) => [
-    item[0],
-    item[1].filter((algo) => algoByDays.data.includes(algo)),
-  ]);
-
-  const isGrowNeeded: boolean[] = algoDb.data.map((cat) => {
-    if (cat[1].length == 0) return true;
-    else return false;
-  });
+  if (isLoading) return <Loading />;
+  if (isError) return <p>Error encountered</p>;
 
   return (
     <>
@@ -53,8 +33,8 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
         </div>
 
         <div className="flex">
-          {filteredDb.length > 0 ? (
-            filteredDb.map((category, index_cat) => (
+          {algoByDay.length > 0 ? (
+            algoByDay.map(([category, algos], index_cat) => (
               <div
                 key={index_cat}
                 className={`flex flex-col px-2 text-center ${
@@ -62,8 +42,8 @@ const TodayAlgo = ({ day, onMouseEnter, onMouseLeave }: Props) => {
                 }`}
               >
                 <p>{category[0]}</p>
-                {category[1].length > 0 &&
-                  category[1].map((algo, index_alg) => (
+                {category.length > 0 &&
+                  algos.map((algo, index_alg) => (
                     <div
                       key={index_alg}
                       className="flex h-[64px] w-[64px] items-center"

@@ -6,8 +6,8 @@ mod impls;
 pub mod types;
 
 #[tauri::command]
-pub fn generate_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
-    AlgoCategory::generate_algo_db()
+pub fn get_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
+    AlgoCategory::get_algo_db()
 }
 
 #[tauri::command]
@@ -16,6 +16,6 @@ pub fn get_bonuses(day: Day) -> ResourceByDay {
 }
 
 #[tauri::command]
-pub fn get_algo_by_days(day: Day) -> Option<Vec<Algorithm>> {
+pub fn get_algo_by_days(day: Day) -> Vec<Algorithm> {
     Algorithm::get_bonuses(day)
 }
