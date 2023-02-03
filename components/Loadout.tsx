@@ -2,7 +2,7 @@ import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
 import RaritySelect from "./Doll/RaritySelect";
-import { Loadout } from "@/src-tauri/bindings/structs";
+import { Loadout, UnitSkill } from "@/src-tauri/bindings/structs";
 import { LoadoutType, NeuralExpansion } from "@/src-tauri/bindings/enums";
 
 type Props = {
@@ -13,19 +13,18 @@ type Props = {
 const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
-const Loadout = ({ type, data }: Props) => {
+const LoadoutContainer = ({ type, data }: Props) => {
   const { dollData, setDollData } = useContext(DollContext);
   const defined = dollData && setDollData;
   const { algo, neural } = data;
 
   function handleSlvChange(
     e: ChangeEvent<HTMLInputElement>,
-    skill_type: string
+    skill_type: SkillType
   ) {
     if (defined)
       setDollData((draft) => {
-        if (draft)
-          draft[type].skill_level[skill_type as SkillType] = +e.target.value;
+        if (draft) draft[type].skill_level[skill_type] = +e.target.value;
       });
   }
 
@@ -54,7 +53,10 @@ const Loadout = ({ type, data }: Props) => {
     <>
       <div className="flex flex-row">
         <div className="flex">
-          <SkillBox data={data} handleSlvChange={handleSlvChange} />
+          <SkillBox
+            skill_level={data.skill_level}
+            handleSlvChange={handleSlvChange}
+          />
           <LevelBox
             data={data}
             handleFragsChange={handleFragsChange}
@@ -108,17 +110,15 @@ const LevelBox = ({
 };
 
 const SkillBox = ({
-  data,
+  skill_level,
   handleSlvChange,
 }: {
-  data: Loadout;
+  skill_level: UnitSkill;
   handleSlvChange: (
     e: ChangeEvent<HTMLInputElement>,
     skill_type: SkillType
   ) => void;
 }) => {
-  const { skill_level } = data;
-
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
@@ -153,4 +153,4 @@ const SkillBox = ({
   );
 };
 
-export default Loadout;
+export default LoadoutContainer;
