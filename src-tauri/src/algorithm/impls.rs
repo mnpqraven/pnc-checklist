@@ -153,37 +153,52 @@ impl AlgoSet {
     }
 
     /// given an AlgoSet, toggles the slot vec to update what's still
-    /// needed
+    /// needed, consuming the other vec
     ///
-    /// * `current`: Algoset that self is getting its slot vector compared with
-    // EVAL: sees if it's better to just flatten the vec and get rid of
-    // categorization
-    pub fn update_slots(
+    /// * `with_goal`: Vec of `AlgoPiece` that will be pitched for comparison with
+    /// the current `AlgoSet`
+    pub fn apply_checkbox(
         // goal: &mut Vec<AlgoPiece>,
         &mut self,
-        updatee: Vec<AlgoPiece>,
+        mut with_goal: Vec<AlgoPiece>,
     ) {
-        let goal: &mut Vec<AlgoPiece> = &mut self.get_bucket();
-        for goal_piece in goal.iter_mut() {
-            let same_piece_in_updatee: Vec<AlgoPiece> = updatee
+        let current: &Vec<AlgoPiece> = &self.get_bucket();
+        let same_filter = |a: &AlgoPiece, b: &AlgoPiece| a.name.eq(&b.name) && a.stat.eq(&b.stat);
+        // check for contains
+        // algopiece is the piece from the other struct (current)
+        let contain = |piece: &AlgoPiece| -> (bool, Option<Vec<&AlgoPiece>>) {
+            let cont_bucket = current
                 .iter()
-                .cloned()
-                .filter(|e| e.name.eq(&goal_piece.name) && e.stat.eq(&goal_piece.stat))
-                .collect();
-            // 2d array [b, b, b][]
-            for updatee_piece in same_piece_in_updatee {
-                // current
-                for (ind, current_slot) in updatee_piece.slot.0.iter().enumerate() {
-                    // current.goal....needed
-                    // true    true  > false
-                    // false   true  > true
-                    // true    false > false
-                    // false   false > false
-                    goal_piece.slot.0[ind] = !*current_slot && goal_piece.slot.0[ind];
+                .filter(|current_piece| same_filter(current_piece, piece))
+                .collect::<Vec<&AlgoPiece>>();
+            match !cont_bucket.is_empty() {
+                true => (true, Some(cont_bucket)),
+                false => (false, None),
+            }
+        };
+
+        for goal_piece in with_goal.iter_mut() {
+            let (is_contained, in_commons) = contain(goal_piece);
+            // doesn't contain, whole goal piece is processed (flip values)
+            match !is_contained {
+                true => {
+                    goal_piece.slot.flip_values();
+                }
+                false => {
+                    // does contain, truth table below
+                    let mut current_list = in_commons
+                        .unwrap()
+                        .into_iter()
+                        .filter(|piece| same_filter(piece, &*goal_piece))
+                        .collect::<Vec<&AlgoPiece>>();
+
+                    for current_piece in current_list.iter_mut() {
+                        goal_piece.slot.check_off_current(&current_piece.slot);
+                    }
                 }
             }
         }
-        *self = Self::get_set(goal);
+        *self = Self::get_set(&with_goal);
     }
 }
 
@@ -236,7 +251,9 @@ impl AlgoPiece {
 // WARN: only after double checking with frontend
 impl AlgoCategory {
     pub fn get_algo_db() -> Vec<(AlgoCategory, Vec<Algorithm>)> {
-        AlgoCategory::iter().map(|cat| (cat, cat.get_algos())).collect()
+        AlgoCategory::iter()
+            .map(|cat| (cat, cat.get_algos()))
+            .collect()
     }
 
     pub fn get_algos(&self) -> Vec<Algorithm> {
@@ -269,5 +286,31 @@ impl AlgoMainStat {
 impl AlgoSlot {
     pub fn new(value: bool) -> Self {
         Self(vec![value; 3])
+    }
+
+    /// updates the (goal) AlgoSlot with the given (current) slot
+    ///
+    /// * `current_slot`: [TODO:parameter]
+    /// Truth table:
+    /// self  .. current
+    /// true  .. true   -> true
+    /// false .. true   -> true
+    /// true  .. false  -> false
+    /// false .. false  -> true
+    pub fn check_off_current(&mut self, current_slot: &AlgoSlot) {
+        for (i, goal_slot) in self.0.iter_mut().enumerate() {
+            *goal_slot = match (current_slot.0.get(i), *goal_slot) {
+                (None, true) => false,
+                (Some(true), true) => true,
+                (Some(false), true) => false,
+                (_, false) => true,
+            };
+        }
+    }
+
+    pub fn flip_values(&mut self) {
+        for val in self.0.iter_mut() {
+            *val = !*val;
+        }
     }
 }

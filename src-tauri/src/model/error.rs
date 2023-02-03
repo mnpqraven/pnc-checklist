@@ -33,6 +33,7 @@ pub enum TauriError {
     Export,
     UnitModification,
     RequestLockFailed,
+    UnitNotFound
 }
 impl Display for TauriError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -44,6 +45,7 @@ impl Display for TauriError {
             }
             TauriError::UnitModification => "Couldn't modify unit".to_string(),
             TauriError::RequestLockFailed => "Requesting lock failed".to_string(),
+            TauriError::UnitNotFound => "No unit found".to_string(),
         };
         write!(f, "{}", err)
     }

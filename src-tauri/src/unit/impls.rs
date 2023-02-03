@@ -17,8 +17,8 @@ impl Unit {
     /// Loadout struct
     // TODO: return vec of references
     pub fn get_missing_algos(&self) -> Vec<AlgoPiece> {
-        let mut v = self.goal.algo.clone();
-        v.update_slots(self.current.algo.get_bucket());
+        let mut v = self.current.algo.clone();
+        v.apply_checkbox(self.goal.algo.get_bucket());
         v.get_bucket()
     }
 
