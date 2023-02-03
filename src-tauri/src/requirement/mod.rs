@@ -75,6 +75,6 @@ pub fn dev_algo(
 }
 
 #[tauri::command]
-pub fn algo_req_is_empty(algo_req: AlgorithmRequirement) -> bool {
-    algo_req.is_empty()
+pub fn algo_req_fulfilled(algo_req: AlgorithmRequirement) -> bool {
+    algo_req.is_fulfilled()
 }

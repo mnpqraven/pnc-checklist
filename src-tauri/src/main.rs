@@ -33,7 +33,7 @@ use crate::{
     model::enum_ls,
     requirement::{
         requirement_level, requirement_neural, requirement_slv, requirement_widget,
-        requirment_neural_kits, dev_algo, algo_req_is_empty,
+        requirment_neural_kits, dev_algo, algo_req_fulfilled,
     },
     service::file::{export, import, set_default_file},
     state::{view_locker, remove_kc, clear_ownerless},
@@ -94,7 +94,7 @@ fn main() {
             requirement_widget,
             // requirement_algo, // TODO: conflict with Dese
             dev_algo,
-            algo_req_is_empty,
+            algo_req_fulfilled,
             // state
             view_locker,
             remove_kc,

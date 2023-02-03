@@ -70,10 +70,10 @@ impl AlgorithmRequirement {
         })
     }
 
-    pub(super) fn is_empty(&self) -> bool {
+    pub(super) fn is_fulfilled(&self) -> bool {
         for piece in self.pieces.iter() {
-            for value in piece.slot.0.iter() {
-                if *value { return true }
+            if piece.slot.0.iter().all(|slot| *slot) {
+                return true;
             }
         }
         false
