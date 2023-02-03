@@ -1,5 +1,5 @@
+import { useClock } from "@/utils/hooks/useClock";
 import { useEffect } from "react";
-import { useClock } from "./hooks/useClock";
 
 const ResetCalendar = () => {
   const { timer, updateDailyReset } = useClock();

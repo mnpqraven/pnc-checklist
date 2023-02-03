@@ -1,5 +1,5 @@
-import { invoke } from "@tauri-apps/api/tauri";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useLabel } from "@/utils/hooks/useLabel";
+import { ChangeEvent } from "react";
 
 type Props = {
   options: string[];
@@ -8,14 +8,7 @@ type Props = {
   onChangeHandler: (value: ChangeEvent<HTMLSelectElement>) => void;
 };
 const Select = ({ options, value, onChangeHandler, labelPayload }: Props) => {
-  const [label, setLabel] = useState<string[]>([]);
-  useEffect(() => {
-    if (labelPayload) {
-      invoke<string[]>(labelPayload.method, {
-        payload: labelPayload.payload,
-      }).then(setLabel);
-    }
-  }, []);
+  const label = useLabel(labelPayload);
 
   return (
     <select

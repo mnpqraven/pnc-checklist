@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ResourceByDay } from "@/src-tauri/bindings/structs";
-import { useTimetable } from "./hooks/useTimetable";
+import { Bonus } from "@/src-tauri/bindings/enums";
+import { useTimetable } from "@/utils/hooks/useTimetable";
 
 const Timetable = () => {
   const timetable: ResourceByDay[] = useTimetable();
@@ -28,16 +29,15 @@ const Timetable = () => {
     </>
   );
 };
+
 const DailyBonus = ({ day }: { day: ResourceByDay }) => {
-  let cl = "";
-  let x2 = [""];
-  let grid: string[] = []; // 4 items
-  if (day.class) cl = Object.values(day.class).toString();
+  let x2: string[] = [];
+  let grid: (Bonus | string)[] = []; // 4 items
+  if (day.class && typeof day.class == "object") grid.push(day.class.Class);
   if (day.coin != null) x2.push(day.coin.toString());
   if (day.exp != null) x2.push(day.exp.toString());
   if (day.skill != null) x2.push(day.skill.toString());
   grid.push(...x2);
-  grid.push(cl);
 
   return (
     <div className="flex flex-col">
@@ -45,8 +45,8 @@ const DailyBonus = ({ day }: { day: ResourceByDay }) => {
         <div key={index}>
           {item ? (
             <Image
-              src={`/class/${item.toLowerCase()}.png`}
-              alt={item}
+              src={`/class/${item.toString().toLowerCase()}.png`}
+              alt={item.toString()}
               width={24}
               height={24}
             />
