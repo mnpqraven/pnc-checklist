@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-03
+updated: 2023-02-04
 version: 0.1.2
 @end
 
@@ -13,18 +13,16 @@ version: 0.1.2
 *** Features
 *** Current
     - (x) use backend's `Display` for algo selection options
-    - ( ) doll select layout improvement
-    --- ( ) add and delete on the same row, replace text with text above + icon
+    - (-) doll select layout improvement
+    --- (x) add and delete on the same row, replace text with text above + icon
         below
-    --- ( ) delete button on each doll to the side
+    --- ( ) delete button to the side of each doll entry
     --- ( ) option to filter class
     - ( ) spacing on skill level sliders
     - (-) refactor old `interfaces` types (errors and results)
     - (=) validation return on frontend home
     - (-) implement React Query
     --- (-) create custom hook
-    --- (-) replace existing `useEffect` calls only for fetching `invoke`
-        data
     #bugs
     #UXUI
     - (-) Doll page:
@@ -37,6 +35,16 @@ version: 0.1.2
     --- (-) select all button in loadout
     - (=) layout when there's no algo piece is weird
     #refactors
+    - (-) replace existing `useEffect` calls only for fetching `invoke`
+        data
+    --- current progress on refactoring:
+    --- (x) `Dashboard`
+    --- (-) `Algorithm`
+    --- (-) `Doll` components (mutations)
+    --- (x) `Requirement`
+    --- (x) `Summary`
+    --- (-) `pages`
+
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)
 
 **  Ideas
@@ -68,9 +76,11 @@ version: 0.1.2
          `Keychain::new()`
     ----- (x) `AlgoPiece` inside `Locker` will always be cloned, remember to
           keep track of the new cloned value for `Arc`.
-    ---- (-) restabilize requirement fns
+    ---- (x) restabilize requirement fns
     ---- (-) refactor new `Arc<Mutex<T>>` generating functions to make it
          easier to read.
+    - (x) inverting bools in `AlgoRequirment` feels unintuitive, maybe flip
+      value
 
     #maintenance
     - (-) refactors
@@ -83,7 +93,7 @@ version: 0.1.2
     -- (-) functions
 
 ****    ideas
-        - (-) think more in pipes ? try to keep upcoming refactors with that in
+        - (x) think more in pipes ? try to keep upcoming refactors with that in
           mind
 
         - (=) how should we keep track of good algos that are being hoarded ?
