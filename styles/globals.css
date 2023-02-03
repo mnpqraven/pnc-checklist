@@ -146,29 +146,6 @@ button:hover {
   }
 }
 
-#stars {
-  display: flex;
-  cursor: pointer;
-}
-#stars div {
-  height: 55px;
-  position: relative;
-  width: 51px;
-}
-#stars img {
-  position: absolute;
-}
-.star-dark {
-  opacity: 0.5;
-}
-.star-half :first-child {
-  visibility: hidden;
-}
-.star-dark :last-child,
-.star-full :last-child {
-  visibility: hidden;
-}
-
 input[type="checkbox"] {
   width: 20px;
   height: 20px;

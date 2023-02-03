@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
-import styles from "@/styles/Page.module.css";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -50,7 +49,7 @@ export default function Settings() {
 
   return (
     <main>
-      <div className={`${styles.component_space}  flex flex-col`}>
+      <div className="component_space flex flex-col">
         <h1>setting page</h1>
         <p>{log}</p>
         <label>

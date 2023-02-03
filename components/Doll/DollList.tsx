@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import DollListItem from "./DollListItem";
-import styles from "@/styles/Page.module.css";
 import Image from "next/image";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { MouseEvent, useState } from "react";
@@ -40,7 +39,7 @@ const DollList = ({
   }
 
   return (
-    <ul className={styles.dolllist}>
+    <ul id='dolllist'>
       <div className="flex">
         <li onClick={new_unit}>New</li>
         <li onClick={() => setDeleteMode(!deleteMode)}>Delete</li>

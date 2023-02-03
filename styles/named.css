@@ -1,3 +1,73 @@
+.big_container {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+}
+.component_space {
+  padding: 1rem 1.25rem;
+  margin: 0.5rem 0.6rem;
+}
+.panel_left {
+  border: 1px solid rgba(var(--card-border-rgb), 0.4);
+  border-radius: var(--border-radius);
+  transition: background 200ms, border 200ms;
+}
+.panel_right {
+  border: 1px solid rgba(var(--card-border-rgb), 0.4);
+  border-radius: var(--border-radius);
+}
+#dolllist {
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0);
+  transition: background 200ms, border 200ms;
+}
+#dolllist li {
+  padding: 10px 12px;
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0);
+}
+.card {
+  border-radius: var(--border-radius);
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0.4);
+  transition: background 200ms, border 200ms;
+}
+
+.setContainer {
+  display: inline-flex;
+  width: 100%;
+}
+
+.algocategory {
+  /* manage child*/
+  display: flex;
+  flex-direction: column;
+
+  /* manage parent */
+  flex-shrink: 0;
+  flex-basis: calc(100% / 3);
+  min-width: fit-content;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #dolllist li:hover {
+    background: rgba(var(--card-rgb), 0.2);
+    border: 1px solid rgba(var(--card-border-rgb), 0.15);
+  }
+
+  .panel_left:hover {
+    border: 1px solid rgba(var(--card-border-rgb), 1);
+  }
+
+  .card:hover {
+    border: 1px solid rgba(var(--card-border-rgb), 1);
+  }
+}
+
+/* ItemPlate */
+
 .iconplate {
   position: relative;
   display: inline-block;
@@ -132,3 +202,27 @@
   height: 100%;
   z-index: 3;
 }
+
+#stars {
+  display: flex;
+  cursor: pointer;
+}
+#stars div {
+  height: 55px;
+  position: relative;
+  width: 51px;
+}
+#stars img {
+  position: absolute;
+}
+.star-dark {
+  opacity: 0.5;
+}
+.star-half :first-child {
+  visibility: hidden;
+}
+.star-dark :last-child,
+.star-full :last-child {
+  visibility: hidden;
+}
+

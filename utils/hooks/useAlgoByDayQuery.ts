@@ -1,8 +1,7 @@
 import { AlgoCategory, Algorithm, Day } from "@/src-tauri/bindings/enums";
-import { GrandResource, WidgetResource } from "@/src-tauri/bindings/structs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
-import { DEFAULT_DAYS, DEFAULT_GRAND_RESOURCE } from "./defaults";
+import { DEFAULT_DAYS } from "../defaults";
 
 type AlgoTuple = [AlgoCategory, Algorithm[]];
 export const useAlgoByDayQuery = (dayIndex: number) => {
@@ -44,31 +43,5 @@ export const useAlgoByDayQuery = (dayIndex: number) => {
     isLoading: algoDb.isLoading || algoByDays.isLoading,
     isError: algoDb.isError || algoByDays.isError,
     data: processData(algoDb.data, algoByDays.data),
-  };
-};
-
-export const useNeededRscQuery = () => {
-  const neededRsc = useQuery({
-    queryKey: ["neededRsc"],
-    queryFn: () => invoke<GrandResource>("get_needed_rsc"),
-    placeholderData: DEFAULT_GRAND_RESOURCE,
-  });
-
-  function processData(
-    data: GrandResource = DEFAULT_GRAND_RESOURCE
-  ): GrandResource {
-    let noempty: WidgetResource[] = [];
-    data.widgets.forEach(
-      (byClass) =>
-        byClass.widget_inventory.every((e) => e !== 0) && noempty.push(byClass)
-    );
-    return { ...data, widgets: noempty };
-  }
-
-  return {
-    data: processData(neededRsc.data),
-    isLoading: neededRsc.isLoading,
-    isError: neededRsc.isError,
-    isPlaceholderData: neededRsc.isPlaceholderData,
   };
 };

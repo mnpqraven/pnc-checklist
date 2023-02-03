@@ -1,9 +1,8 @@
 import { Timetable, TodayAlgo, ResetCalendar } from "@/components/Dashboard";
 import { date_passed, parse_date_iso } from "@/utils/helper";
 import { useCallback, useEffect, useState } from "react";
-import styles from "@/styles/Page.module.css";
 import Summary from "@/components/Resources/Summary";
-import { MILLIS_PER_DAY } from "@/components/Dashboard/hooks/useClock";
+import { MILLIS_PER_DAY } from "@/utils/hooks/useClock";
 
 // JS day array shifted left by 1 because we're getting the day before reset
 const Index = () => {
@@ -32,21 +31,18 @@ const Index = () => {
       <div className="flex flex-col">
         <div className="flex flex-row">
           <div className="flex flex-col">
-            <div className={`${styles.card} ${styles.component_space} w-fit`}>
+            <div className="card component_space w-fit">
               <Timetable />
             </div>
-            <div className={`${styles.card} ${styles.component_space} w-fit`}>
+            <div className="card component_space w-fit">
               <ResetCalendar />
             </div>
           </div>
-          <div className={`${styles.card} ${styles.component_space}`}>
-            <TodayAlgo
-              dayIndex={ind}
-              onMouseEnter={handleMouseEnter}
-            />
+          <div className="card component_space">
+            <TodayAlgo dayIndex={ind} onMouseEnter={handleMouseEnter} />
           </div>
         </div>
-        <div className={`${styles.card} ${styles.component_space} w-min`}>
+        <div className="card component_space w-min">
           <Summary />
         </div>
       </div>

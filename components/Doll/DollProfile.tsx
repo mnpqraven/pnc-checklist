@@ -1,8 +1,7 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Select, Loadout } from "@/components/Common";
+import { Select, LoadoutContainer } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
-import styles from "@/styles/Page.module.css";
 import { Class } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -50,11 +49,12 @@ const DollProfile = () => {
             />
           </div>
         </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
-          <Loadout type={"current"} data={dollData.current} />
+        {/* NOTE: named css */}
+        <div className="card component_space">
+          <LoadoutContainer type={"current"} data={dollData.current} />
         </div>
-        <div className={`${styles.card} ${styles.component_space}`}>
-          <Loadout type={"goal"} data={dollData.goal} />
+        <div className="card component_space">
+          <LoadoutContainer type={"goal"} data={dollData.goal} />
         </div>
       </>
     );

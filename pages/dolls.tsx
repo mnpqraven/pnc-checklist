@@ -6,7 +6,6 @@ import {
   AlgoErrorContextPayload,
   DollContext,
 } from "@/interfaces/payloads";
-import styles from "@/styles/Page.module.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -102,8 +101,8 @@ const Dolls = () => {
 
   return (
     <main>
-      <div className={styles.big_container}>
-        <div className={`${styles.panel_left} ${styles.component_space}`}>
+      <div className="big_container">
+        <div className="panel_left component_space">
           <DollList
             list={dirtyUnits}
             indexHandler={(e) => setCurrentIndex(e)}
@@ -117,7 +116,7 @@ const Dolls = () => {
               <DollProfile />
             </AlgoErrorContext.Provider>
           </DollContext.Provider>
-          <div className={`${styles.card} ${styles.component_space}`}>
+          <div className="card component_space">
             <StatusBar isSaveVisible={canSave} saveHandle={handleUnitSave} />
           </div>
         </div>

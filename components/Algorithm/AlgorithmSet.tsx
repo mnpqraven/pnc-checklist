@@ -7,7 +7,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
-import styles from "../../styles/Page.module.css";
+
 import {
   AlgoMainStat,
   AlgoCategory,
@@ -81,11 +81,14 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   if (algoTypes.length > 0)
     return (
       <>
-        <div className={styles.setContainer}>
+        <div className="setContainer">
           {algoTypes
             .map((e) => e[0] as AlgoCategory)
             .map((category, catindex) => (
-              <div className={styles.algocategory} key={catindex}>
+              <div
+                className="flex min-w-fit shrink-0 basis-1/3 flex-col"
+                key={catindex}
+              >
                 {algo[category.toLowerCase() as keyof AlgoSet].map(
                   (piece, pieceind) => (
                     <div key={pieceind} className="m-1">

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "@/styles/ItemPlate.module.css";
+
 type Props = {
   width?: number;
   src: string;
@@ -8,15 +8,16 @@ type Props = {
 };
 const ItemPlate = ({ width, src, rarity }: Props) => {
   return (
+    // NOTE: named css
     <div
-      className={`${styles.iconplate} ${styles[`itemrarity-${rarity}`]}`}
+      className={`iconplate itemrarity-${rarity}`}
       style={width ? { width: width } : {}}
     >
-      <div className={styles.iconwrap}>
+      <div className="iconwrap">
         <Image className="mainicon" src={src} alt={"widget"} fill />
       </div>
-      <div className={styles.plate}></div>
-      <div className={styles.back}></div>
+      <div className="plate"></div>
+      <div className="back"></div>
     </div>
   );
 };
