@@ -1,6 +1,5 @@
-use crate::algorithm::types::{AlgoPiece, AlgoSlot, Algorithm};
-
-use super::types::AlgoCategory;
+use super::types::{AlgoCategory, AlgoSet};
+use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
 
 #[test]
 fn slots_small_to_big() {
@@ -41,4 +40,129 @@ fn algodb_refactor() {
     ];
     let after = AlgoCategory::get_algo_db();
     assert_eq!(before, after);
+}
+
+#[test]
+fn update_slots_pass() {
+    let mut current_set: AlgoSet = AlgoSet {
+        offense: vec![
+            AlgoPiece {
+                name: Algorithm::Feedforward,
+                stat: AlgoMainStat::AtkPercent,
+                slot: AlgoSlot(vec![false, true]),
+            },
+            AlgoPiece {
+                name: Algorithm::MLRMatrix,
+                stat: AlgoMainStat::HashratePercent,
+                slot: AlgoSlot(vec![false, false, true]),
+            },
+        ],
+        stability: vec![AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, false]),
+        }],
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![false, false, true]),
+        }],
+    };
+
+    let with_goal: Vec<AlgoPiece> = vec![
+        AlgoPiece {
+            name: Algorithm::MLRMatrix,
+            stat: AlgoMainStat::AtkPercent,
+            slot: AlgoSlot(vec![true, true, true]),
+        },
+        AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![true, true, false]),
+        },
+        AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![true, true, false]),
+        },
+    ];
+    current_set.apply_checkbox(with_goal);
+
+    let right: AlgoSet = AlgoSet {
+        offense: vec![AlgoPiece {
+            name: Algorithm::MLRMatrix,
+            stat: AlgoMainStat::AtkPercent,
+            slot: AlgoSlot(vec![false, false, false]),
+        }],
+        stability: vec![AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, true]),
+        }],
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![false, false, true]),
+        }],
+    };
+    assert_eq!(current_set.offense, right.offense);
+    assert_eq!(current_set.stability, right.stability);
+    assert_eq!(current_set.special, right.special);
+}
+
+#[test]
+fn update_slots_pass_partial() {
+    let mut set: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: vec![AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, false]),
+        }],
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![false, false, true]),
+        }],
+    };
+
+    let with_goal: Vec<AlgoPiece> = vec![
+        AlgoPiece {
+            name: Algorithm::MLRMatrix,
+            stat: AlgoMainStat::AtkPercent,
+            slot: AlgoSlot(vec![true, true, true]),
+        },
+        AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![true, true, false]),
+        },
+        AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![true, true, false]),
+        },
+    ];
+    set.apply_checkbox(with_goal);
+
+    let right: AlgoSet = AlgoSet {
+        offense: vec![AlgoPiece {
+            name: Algorithm::MLRMatrix,
+            stat: AlgoMainStat::AtkPercent,
+            slot: AlgoSlot(vec![false, false, false]),
+        }],
+        stability: vec![AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, true]),
+        }],
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![false, false, true]),
+        }],
+    };
+    assert_eq!(set.offense, right.offense);
+    assert_eq!(set.stability, right.stability);
+    assert_eq!(set.special, right.special);
 }

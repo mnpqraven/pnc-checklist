@@ -54,17 +54,17 @@ fn missing_algo() {
         AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![true, true, false]),
+            slot: AlgoSlot(vec![false, false, true]),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![true, false, false]),
+            slot: AlgoSlot(vec![false, true, true]),
         },
         AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![false, true, true]),
+            slot: AlgoSlot(vec![true, false, false]),
         },
     ];
     let left = t.get_missing_algos();

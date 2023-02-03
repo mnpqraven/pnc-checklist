@@ -1,8 +1,10 @@
 use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
+use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSet, AlgoSlot, Algorithm};
+use crate::requirement::types::AlgorithmRequirement;
 use crate::requirement::LevelRequirement;
 use crate::requirement_slv;
 use crate::stats::types::*;
-use crate::unit::types::Class;
+use crate::unit::types::{Class, Unit};
 
 #[test]
 fn test_skill_total() {
@@ -212,4 +214,82 @@ fn kits_2() {
     let a = 25 * (5 + 10 + 15 + 20); // 100
     let b = 25 * 80;
     assert_eq!(t.unwrap(), a + b);
+}
+
+#[test]
+fn missing_display() {
+    let pieces: Vec<AlgoPiece> = vec![
+        AlgoPiece {
+            name: Algorithm::Feedforward,
+            stat: AlgoMainStat::AtkPercent,
+            slot: AlgoSlot(vec![false, false, true]),
+        },
+        AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, true]),
+        },
+        AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![true, false, false]),
+        },
+    ];
+    let from_unit = Unit::default();
+    let algo_req = AlgorithmRequirement { pieces, from_unit };
+    dbg!(algo_req.is_fulfilled());
+    assert_eq!(1, 1);
+}
+
+#[test]
+fn fulfilled() {
+    let mut set: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: vec![AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, false]),
+        }],
+        special: vec![],
+    };
+
+    let with_goal: Vec<AlgoPiece> = vec![
+        AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, false, false]),
+        },
+        AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot(vec![false, true, false]),
+        },
+    ];
+    set.apply_checkbox(with_goal);
+
+    // NOTE: goal pieces are not checked for duplication for now
+    let right: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: vec![
+            AlgoPiece {
+                name: Algorithm::Encapsulate,
+                stat: AlgoMainStat::Health,
+                slot: AlgoSlot(vec![true, true, true]),
+            },
+            AlgoPiece {
+                name: Algorithm::Encapsulate,
+                stat: AlgoMainStat::Health,
+                slot: AlgoSlot(vec![true, true, true]),
+            },
+        ],
+        special: vec![],
+    };
+    assert_eq!(set.offense, right.offense);
+    assert_eq!(set.stability, right.stability);
+    assert_eq!(set.special, right.special);
+    let req = AlgorithmRequirement {
+        pieces: set.get_bucket(),
+        from_unit: Unit::default(),
+    };
+    assert!(req.is_fulfilled())
 }

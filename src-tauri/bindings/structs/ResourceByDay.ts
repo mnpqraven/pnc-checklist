@@ -3,4 +3,4 @@ import type { Algorithm } from "../enums/Algorithm";
 import type { Bonus } from "../enums/Bonus";
 import type { Day } from "../enums/Day";
 
-export interface ResourceByDay { day: Day, coin: Bonus | null, exp: Bonus | null, skill: Bonus | null, class: Bonus | null, algos: Array<Algorithm> | null, }
+export interface ResourceByDay { day: Day, coin: Bonus | null, exp: Bonus | null, skill: Bonus | null, class: Bonus | null, algos: Array<Algorithm>, }
