@@ -18,7 +18,7 @@ const WidgetTable = ({ widgets }: { widgets: WidgetResource[] }) => {
               </th>
               {widgets[0] ? (
                 widgets[0].widget_inventory.map((_, rarity) => (
-                  <th key={rarity}>
+                  <th className="px-1" key={rarity}>
                     <ItemPlate
                       src={`/warehouse/widget_box_${lowerOf(4, rarity)}.png`}
                       rarity={rarity}

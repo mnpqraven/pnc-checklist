@@ -1,4 +1,4 @@
-import { useLabel } from "@/utils/hooks/useLabel";
+import { useEnumLabel } from "@/utils/hooks/useEnumLabel";
 import { ChangeEvent } from "react";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   onChangeHandler: (value: ChangeEvent<HTMLSelectElement>) => void;
 };
 const Select = ({ options, value, onChangeHandler, labelPayload }: Props) => {
-  const label = useLabel(labelPayload);
+  const label = useEnumLabel(labelPayload);
 
   return (
     <select

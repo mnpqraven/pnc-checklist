@@ -105,6 +105,7 @@ const AlgorithmPiece = ({
     setModal(!openModal);
   }
 
+  console.warn(mainStat, options.mainStat)
   return (
     <>
       <div

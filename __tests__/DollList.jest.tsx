@@ -4,10 +4,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("DollList", () => {
   it("should render", () => {
+    const setStore = jest.fn();
     render(
       <DollList
         store={[MOCK_CROQUE, MOCK_HUBBLE]}
         indexChange={() => {}}
+        setStore={setStore}
       />
     );
     const croque = screen.queryByText(/Croque/i);
@@ -22,10 +24,12 @@ describe("DollList", () => {
     const indexHandler = jest.fn();
     const newUnitHandler = jest.fn();
     const deleteUnitHandler = jest.fn();
+    const setStore = jest.fn();
     render(
       <DollList
         store={[MOCK_CROQUE, MOCK_HUBBLE]}
         indexChange={indexHandler}
+        setStore={setStore}
       />
     );
     const croqueElement = screen.getByText(/Croque/i);

@@ -1,30 +1,10 @@
 import { Timetable, TodayAlgo, ResetCalendar } from "@/components/Dashboard";
-import { date_passed, parse_date_iso } from "@/utils/helper";
-import { useCallback, useEffect, useState } from "react";
 import Summary from "@/components/Resources/Summary";
-import { MILLIS_PER_DAY } from "@/utils/hooks/useClock";
+import { useDay } from "@/utils/hooks/useDay";
 
 // JS day array shifted left by 1 because we're getting the day before reset
 const Index = () => {
-  const [ind, setInd] = useState(0);
-
-  const updateDay = useCallback((offset: number) => {
-    let now = new Date();
-    let next: Date = new Date(parse_date_iso(now));
-    if (date_passed(now)) {
-      next = new Date(parse_date_iso(new Date(+now + MILLIS_PER_DAY)));
-    }
-    let ree = (next.getUTCDay() + 7 + offset) % 7;
-    setInd(ree);
-  }, []);
-
-  useEffect(() => {
-    updateDay(0);
-  }, []);
-
-  function handleMouseEnter(offset: number) {
-    updateDay(offset);
-  }
+  const {day, updateDay} = useDay()
 
   return (
     <main>
@@ -39,7 +19,7 @@ const Index = () => {
             </div>
           </div>
           <div className="card component_space">
-            <TodayAlgo dayIndex={ind} onMouseEnter={handleMouseEnter} />
+            <TodayAlgo dayIndex={day} onMouseEnter={updateDay} />
           </div>
         </div>
         <div className="card component_space w-min">

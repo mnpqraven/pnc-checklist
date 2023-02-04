@@ -16,7 +16,7 @@ const deleteUnitPostProcess = (
   });
 };
 
-const useDeleteUnitMutation = (
+export const useDeleteUnitMutation = (
   setStore: Updater<Unit[]>,
   setIndex: Updater<number> | ((index: number) => void)
 ) => {
@@ -32,4 +32,3 @@ const useDeleteUnitMutation = (
 
   return deleteUnit;
 };
-export default useDeleteUnitMutation;
