@@ -33,6 +33,7 @@ version: 0.1.2
         is too tiring to read
     --- (-) probably the same with main stat
     --- (-) select all button in loadout
+    --- (-) Wrap `<Loading />` inside `<Suspense>`
     - (=) layout when there's no algo piece is weird
     #refactors
     - (-) replace existing `useEffect` calls only for fetching `invoke`
@@ -40,10 +41,12 @@ version: 0.1.2
     --- current progress on refactoring:
     --- (x) `Dashboard`
     --- (-) `Algorithm`
-    --- (-) `Doll` components (mutations)
     --- (x) `Requirement`
     --- (x) `Summary`
     --- (-) `pages`
+    --- (-) `Doll` components (mutations)
+    ----- (-) migrate to using `useQuery` in main page `dolls.tsx` first
+    ----- (=) then drill to sub components
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)
 

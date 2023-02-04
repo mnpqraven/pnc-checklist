@@ -4,11 +4,11 @@ import React from "react";
 import { Updater } from "use-immer";
 
 export type DollContextPayload = {
-  dollData: Unit | null;
-  setDollData: Updater<Unit | null> | undefined;
+  dollData: Unit | undefined;
+  setDollData: Updater<Unit | undefined> | undefined;
 };
 export const DollContext = React.createContext<DollContextPayload>({
-  dollData: null,
+  dollData: undefined,
   setDollData: undefined,
 });
 

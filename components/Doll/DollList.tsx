@@ -4,47 +4,27 @@ import Image from "next/image";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { MouseEvent, useState } from "react";
 import { class_src } from "@/utils/helper";
+import useNewUnitMutation from "@/utils/hooks/mutations/newUnit";
+import { Updater } from "use-immer";
+import useDeleteUnitMutation from "@/utils/hooks/mutations/deleteUnit";
 
 type Props = {
-  list: Unit[];
-  indexHandler: (value: number) => void;
-  newUnitHandler: (unit: Unit, index: number) => void;
-  deleteUnitHandler: (
-    index: number,
-    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
-  ) => void;
+  store: Unit[];
+  setStore: Updater<Unit[]>;
+  indexChange: (value: number) => void;
 };
-const DollList = ({
-  list,
-  indexHandler: indexChange,
-  newUnitHandler,
-  deleteUnitHandler,
-}: Props) => {
+const DollList = ({ store, setStore, indexChange }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-
-  async function new_unit() {
-    let unit: Unit = await invoke<Unit>("new_unit", {
-      name: `Doll #${list.length + 1}`,
-      class: "Guard",
-    });
-    newUnitHandler(unit, list.length);
-  }
-
-  function deleteUnit(
-    index: number,
-    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
-  ) {
-    invoke("delete_unit", { index });
-    deleteUnitHandler(index, e);
-  }
+  const newUnit = useNewUnitMutation(setStore, indexChange);
+  const deleteUnit = useDeleteUnitMutation(setStore, indexChange);
 
   return (
-    <ul id='dolllist'>
+    <ul id="dolllist">
       <div className="flex">
-        <li onClick={new_unit}>New</li>
+        <li onClick={() => newUnit({ length: store.length })}>New</li>
         <li onClick={() => setDeleteMode(!deleteMode)}>Delete</li>
       </div>
-      {list.map((unit, index) => (
+      {store.map((unit, index) => (
         <li key={index} onClick={() => indexChange(index)}>
           <div className="flex items-center">
             <div className="mx-2">
@@ -65,7 +45,14 @@ const DollList = ({
           </div>
           {deleteMode ? (
             <>
-              <button onClick={(e) => deleteUnit(index, e)}>delete</button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteUnit({ index });
+                }}
+              >
+                delete
+              </button>
             </>
           ) : (
             <></>

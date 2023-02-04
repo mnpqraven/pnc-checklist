@@ -1,97 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
-import { StatusBar } from "@/components/Common";
-import {
-  AlgoErrorContext,
-  AlgoErrorContextPayload,
-  DollContext,
-} from "@/interfaces/payloads";
-import { invoke } from "@tauri-apps/api/tauri";
-import { MouseEvent } from "react";
+import { Loading, StatusBar } from "@/components/Common";
+import { AlgoErrorContext, DollContext } from "@/interfaces/payloads";
+import { MouseEvent, Suspense } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { UnitValidationError } from "@/interfaces/results";
 import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
+import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
+import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
+import useNewUnitMutation from "@/utils/hooks/mutations/newUnit";
+import useDeleteUnitMutation from "@/utils/hooks/mutations/deleteUnit";
 
 const Dolls = () => {
-  const [storeUnits, setStoreUnits] = useState<Unit[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-
-  // immer refactor state:
-  // TODO: refactor from AlgorithmSet onwards
-  const [dollData, setDollData] = useImmer<Unit | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(-1);
-
-  const [errors, setErrors] = useState<UnitValidationError[]>([]);
-  const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
-    []
+  const [dollData, setDollData] = useImmer<Unit | undefined>(
+    dirtyUnits[currentIndex]
   );
-  const canSave = useMemo(() => {
-    return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnits); // shallow cmp
-  }, [dirtyUnits, storeUnits]);
+  const storeUnitsQuery = useStoreUnitsQuery();
 
-  async function initUnitList() {
-    console.log("initUnitList");
-    // NOTE: needs double await here
-    // if we assign await to a variable it will be a shallow copy
-    setStoreUnits(await invoke<Unit[]>("view_store_units"));
-    let t = await invoke<Unit[]>("view_store_units");
-    setDirtyUnits(t);
-  }
+  // TODO: not used yet
+  // const [errors, setErrors] = useState<UnitValidationError[]>([]);
+  // const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
+  //   []
+  // );
 
-  useEffect(() => {
-    console.log("@[useEffect][currentIndex]");
-    setDollData(dirtyUnits[currentIndex]);
-  }, [currentIndex]);
-
-  useEffect(() => {
-    console.log("@[useEffect][dollData]");
-    if (dollData) {
-      // validateUnit(dollData);
-      setDirtyUnits((draft) => {
-        if (currentIndex >= 0) draft[currentIndex] = dollData;
-      });
-    }
-  }, [dollData]);
-
-  useEffect(() => {
-    console.log("@[useEffect][]");
-    initUnitList();
-  }, []);
-
-  function handleUnitSave() {
-    invoke<[Unit, number][]>("save_units", {
-      units: dirtyUnits.map((e, index) => [e, index]),
-    });
-    initUnitList(); // async
-  }
-
-  function validateUnit(e: Unit) {
-    // setDollData(e);
-    // TODO: implement validation
-    invoke("validate", { unit: e }).catch((err) =>
-      console.log(`[invoke] validate Err: ${err}`)
-    );
-
-    setDirtyUnits(
-      dirtyUnits.map((unit, index) => {
-        if (index === currentIndex) return e;
-        else return unit;
-      })
-    );
-  }
-
-  function handleNewUnit(e: Unit, ind: number) {
-    setDirtyUnits((draft) => {
-      draft.push(e);
-    });
-    setCurrentIndex(ind);
-  }
+  // NOTE: see if it's better to move this to util hooks
+  // const newUnitPostProcess = (e: Unit, ind: number) => {
+  //   console.log(`New Unit: ${e.name} created at index ${ind}`);
+  //   setDirtyUnits((draft) => {
+  //     draft.push(e);
+  //   });
+  //   setCurrentIndex(ind);
+  // };
+  // const newUnit = useNewUnitMutation(newUnitPostProcess);
+  //
+  const { deleteUnit } = useDeleteUnitMutation();
 
   function handleDeleteUnit(
     ind: number,
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) {
+    deleteUnit(ind);
     e.stopPropagation();
     setCurrentIndex(ind > 0 ? ind - 1 : 0);
     setDirtyUnits((draft) => {
@@ -99,25 +49,54 @@ const Dolls = () => {
     });
   }
 
+  // NOTE: HOOKS ---------------
+  const canSave = useMemo(() => {
+    return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnitsQuery.data);
+  }, [dirtyUnits, storeUnitsQuery.data]);
+
+  useEffect(() => {
+    console.warn("storeunitquery.data");
+    if (storeUnitsQuery.isSuccess) {
+      setDirtyUnits(storeUnitsQuery.data);
+      setDollData(storeUnitsQuery.data[currentIndex]);
+    }
+  }, [storeUnitsQuery.data]);
+
+  useEffect(() => {
+    console.log("@[useEffect][dollData]");
+    if (dollData && currentIndex >= 0)
+      setDirtyUnits((draft) => {
+        draft[currentIndex] = dollData;
+        return draft;
+      });
+  }, [dollData]);
+
+  useEffect(() => {
+    setDollData(dirtyUnits[currentIndex]);
+  }, [currentIndex]);
+
+  if (storeUnitsQuery.isLoading) return <Loading />;
+  if (storeUnitsQuery.isError) return <p>error</p>;
+
   return (
     <main>
       <div className="big_container">
         <div className="panel_left component_space">
           <DollList
-            list={dirtyUnits}
-            indexHandler={(e) => setCurrentIndex(e)}
-            newUnitHandler={handleNewUnit}
+            store={dirtyUnits}
+            setStore={setDirtyUnits}
+            indexChange={setCurrentIndex}
             deleteUnitHandler={handleDeleteUnit}
           />
         </div>
         <div className="flex flex-grow flex-col">
           <DollContext.Provider value={{ dollData, setDollData }}>
-            <AlgoErrorContext.Provider value={algoValidation}>
-              <DollProfile />
-            </AlgoErrorContext.Provider>
+            <DollProfile />
+            {/* <AlgoErrorContext.Provider value={[]}> */}
+            {/* </AlgoErrorContext.Provider> */}
           </DollContext.Provider>
           <div className="card component_space">
-            <StatusBar isSaveVisible={canSave} saveHandle={handleUnitSave} />
+            <StatusBar isSaveVisible={canSave} dirtyUnits={dirtyUnits} />
           </div>
         </div>
       </div>

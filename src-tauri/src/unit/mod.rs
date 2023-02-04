@@ -15,6 +15,7 @@ pub mod types;
 
 #[tauri::command]
 pub fn view_store_units(computed: State<Computed>) -> Result<Vec<Unit>, TauriError> {
+    println!("[invoke] view_store_units");
     match computed.units.lock() {
         Ok(units) => Ok(units.iter().map(|c| c.lock().unwrap().clone()).collect()),
         _ => Err(TauriError::RequestLockFailed),
@@ -30,17 +31,18 @@ pub fn new_unit(
     class: Class,
     computed: State<Computed>,
     keyc: State<KeychainTable>,
-) -> Result<Unit, TauriError> {
+) -> Result<(Unit, usize), TauriError> {
     println!("[invoke] new_unit");
     let n_unit = Unit::new(name, class);
     let res = if let Ok(mut g_computed) = computed.units.lock() {
+        let ind = g_computed.len();
         let am_unit = Arc::new(Mutex::new(n_unit.clone()));
 
         g_computed.push(Arc::clone(&am_unit));
 
         let lockers = Unit::create_lockers(&am_unit)?;
         keyc.assign(&am_unit, &lockers);
-        Ok(n_unit)
+        Ok((n_unit, ind))
     } else {
         Err(TauriError::UnitModification)
     };
@@ -49,18 +51,41 @@ pub fn new_unit(
 }
 
 #[tauri::command]
-pub fn delete_unit(index: usize, computed: State<Computed>) -> Result<(), TauriError> {
+pub fn delete_unit(index: usize, computed: State<Computed>) -> Result<usize, TauriError> {
     println!("[invoke] delete_units");
     let res = match computed.units.lock() {
         Ok(mut g_units) if index < g_units.len() => {
+            let i_to_land = match index {
+                0 => 0,
+                x if x == g_units.len() - 1 => index - 1,
+                _ => index,
+            };
             g_units.remove(index);
-            Ok(())
+            Ok(i_to_land)
         }
         Ok(_) => Err(TauriError::UnitModification),
         _ => Err(TauriError::RequestLockFailed),
     };
     update_reqs(computed)?;
     res
+}
+
+#[tauri::command]
+pub fn get_unit(index: usize, computed: State<Computed>) -> Result<Unit, TauriError> {
+    if let Ok(g_computed) = computed.units.lock() {
+        match g_computed.get(index) {
+            Some(unit) => {
+                if let Ok(g_unit) = unit.lock() {
+                    Ok(g_unit.clone())
+                } else {
+                    Err(TauriError::RequestLockFailed)
+                }
+            }
+            None => Err(TauriError::UnitNotFound),
+        }
+    } else {
+        Err(TauriError::RequestLockFailed)
+    }
 }
 
 #[tauri::command]

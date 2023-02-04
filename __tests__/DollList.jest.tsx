@@ -1,16 +1,13 @@
 import { DollList } from "@/components/Doll";
 import { MOCK_CROQUE, MOCK_HUBBLE } from "@/jest.setup";
-import { invoke } from "@tauri-apps/api/tauri";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("DollList", () => {
   it("should render", () => {
     render(
       <DollList
-        list={[MOCK_CROQUE, MOCK_HUBBLE]}
-        indexHandler={() => {}}
-        newUnitHandler={() => {}}
-        deleteUnitHandler={() => {}}
+        store={[MOCK_CROQUE, MOCK_HUBBLE]}
+        indexChange={() => {}}
       />
     );
     const croque = screen.queryByText(/Croque/i);
@@ -27,10 +24,8 @@ describe("DollList", () => {
     const deleteUnitHandler = jest.fn();
     render(
       <DollList
-        list={[MOCK_CROQUE, MOCK_HUBBLE]}
-        indexHandler={indexHandler}
-        newUnitHandler={newUnitHandler}
-        deleteUnitHandler={deleteUnitHandler}
+        store={[MOCK_CROQUE, MOCK_HUBBLE]}
+        indexChange={indexHandler}
       />
     );
     const croqueElement = screen.getByText(/Croque/i);
