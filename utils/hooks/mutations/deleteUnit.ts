@@ -9,7 +9,6 @@ const deleteUnitPostProcess = (
   setIndex: Updater<number> | ((index: number) => void),
   ind: number
 ) => {
-  console.warn(ind);
   setIndex(ind);
   setStore((draft) => {
     draft.splice(ind, 1);

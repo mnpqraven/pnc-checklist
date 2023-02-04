@@ -1,8 +1,8 @@
 import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
-import { useAlgoDbQuery } from "@/utils/hooks/useAlgoByDayQuery";
 import Loading from "../Loading";
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
+import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 
 type Props = {
   open: boolean;

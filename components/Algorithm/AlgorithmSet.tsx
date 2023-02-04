@@ -3,11 +3,9 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { invoke } from "@tauri-apps/api/tauri";
-import { useState, useEffect, useContext } from "react";
+import { useCallback, useContext } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
-
 import {
   AlgoMainStat,
   AlgoCategory,
@@ -15,7 +13,9 @@ import {
   Algorithm,
 } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
-import PieceModal from "./PieceModal";
+import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
+import { useAlgoMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
+import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 
 type Props = {
   algo: AlgoSet;
@@ -27,27 +27,17 @@ export type OptionPayload = {
 };
 
 const AlgorithmSet = ({ algo, type }: Props) => {
-  const [algoTypes, setAlgoTypes] = useState<[AlgoCategory, Algorithm[]][]>([]);
-  const [mainStat, setMainStat] = useState<AlgoMainStat[][]>([]);
-  const algoError: AlgoError[] = useContext(AlgoErrorContext);
+  const algoDbQuery = useAlgoDbQuery();
+  const mainStatQuery = useAlgoMainStatQuery();
+  const { setDollData } = useContext(DollContext);
 
+  const algoError: AlgoError[] = useContext(AlgoErrorContext);
   const errList = (category: AlgoCategory): number[] => {
     // e: [ALGOCATEGORY, indexes[]]
     let find = algoError.find((e) => e[0] == category);
     if (find === undefined) return [];
     return find[1];
   };
-
-  useEffect(() => {
-    async function get_algo_types() {
-      setAlgoTypes(await invoke<[AlgoCategory, Algorithm[]][]>("get_algo_db"));
-      let mainstats = await invoke<AlgoMainStat[][]>("main_stat_all");
-      setMainStat(mainstats);
-    }
-    get_algo_types();
-  }, []);
-
-  const { setDollData } = useContext(DollContext);
 
   function handleAddPiece(
     e: AlgoPiece,
@@ -61,11 +51,11 @@ const AlgorithmSet = ({ algo, type }: Props) => {
       });
   }
 
-  function handleUpdatePiece(
+  const handleUpdatePiece = useCallback((
     e: AlgoPiece | null,
     cat: AlgoCategory,
     index: number
-  ): void {
+  ): void => {
     if (setDollData && e)
       setDollData((draft) => {
         if (draft)
@@ -77,13 +67,18 @@ const AlgorithmSet = ({ algo, type }: Props) => {
         if (draft)
           draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1);
       });
-  }
+  }, [setDollData, type])
 
-  if (algoTypes.length > 0)
+  if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
+  if (algoDbQuery.isError || mainStatQuery.isError) return <p>err</p>;
+  const { data: mainStat } = mainStatQuery;
+  const { data: algoDb } = algoDbQuery;
+
+  if (algoDb.length > 0)
     return (
       <>
         <div className="setContainer">
-          {algoTypes
+          {algoDb
             .map((e) => e[0] as AlgoCategory)
             .map((category, catindex) => (
               <div
@@ -96,7 +91,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                       <AlgorithmPiece
                         index={pieceind}
                         options={{
-                          algoTypes: algoTypes[catindex],
+                          algoTypes: algoDb[catindex],
                           mainStat: mainStat[catindex],
                         }}
                         category={category}
@@ -115,7 +110,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           {[0, 1, 2].map((index) => (
             <NewAlgoSet
               key={index}
-              category={algoTypes[index][0]}
+              category={algoDb[index][0]}
               loadout_type={type}
               addHandler={handleAddPiece}
             />
@@ -143,26 +138,16 @@ const NewAlgoSet = ({
   loadout_type,
   addHandler,
 }: NewAlgoSetProps) => {
-  const { dollData, setDollData } = useContext(DollContext);
-  const defined = dollData && setDollData;
-
-  async function new_algo_set(
-    category: AlgoCategory,
-    loadout_type: LoadoutType
-  ) {
-    if (defined) {
-      let checkedSlots = loadout_type === "goal" ? true : false;
-      let t = await invoke<AlgoPiece>("algo_piece_new", {
-        category,
-        checkedSlots,
-      });
-      addHandler(t, category, loadout_type);
-    }
-  }
+  const { newAlgorithmPiece } = useNewAlgoMutation(
+    addHandler,
+    category,
+    loadout_type
+  );
+  const checkedSlots = loadout_type === "goal";
 
   return (
-    <button onClick={() => new_algo_set(category, loadout_type)}>
-      New {category} algorithm
+    <button onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
+      New {category} piece
     </button>
   );
 };

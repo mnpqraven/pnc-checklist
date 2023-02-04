@@ -54,8 +54,8 @@ const AlgorithmPiece = ({
   useEffect(() => {
     pieceUpdate(piece, category, index);
     // NOTE: do NOT put pieceUpdate in the depency Array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, index, piece]);
+    // TODO: test
+  }, [category, index, piece, pieceUpdate]);
 
   async function updateSlots(
     name: Algorithm,
@@ -100,12 +100,6 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
-  function toggleModal() {
-    console.warn("tick");
-    setModal(!openModal);
-  }
-
-  console.warn(mainStat, options.mainStat)
   return (
     <>
       <div
@@ -114,7 +108,7 @@ const AlgorithmPiece = ({
       >
         <PieceModal
           open={openModal}
-          onLeave={toggleModal}
+          onLeave={() => setModal(!openModal)}
           category={category}
           onSelect={pieceHandler}
         />
@@ -124,20 +118,10 @@ const AlgorithmPiece = ({
             alt={"algo"}
             width={64}
             height={64}
-            onClick={toggleModal}
+            onClick={() => setModal(!openModal)}
           />
         </div>
         <div className="m-2 flex flex-col">
-          {/*
-          <Select
-            value={algorithm}
-            labelPayload={{ method: "print_algo", payload: category }}
-            options={options.algoTypes[1].map((e) => e.toString())}
-            onChangeHandler={(e) =>
-              pieceHandler(e.currentTarget.value as Algorithm)
-            }
-          />
-          */}
           <Select
             value={mainStat}
             labelPayload={{ method: "print_main_stat", payload: category }}

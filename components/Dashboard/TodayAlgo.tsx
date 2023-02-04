@@ -3,7 +3,7 @@ import { algo_src } from "@/utils/helper";
 import Loading from "../Loading";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useState } from "react";
-import { useAlgoByDayQuery } from "@/utils/hooks/useAlgoByDayQuery";
+import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
 
 type Props = {
   onMouseEnter: (offset: number) => void;

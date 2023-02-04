@@ -1,25 +1,17 @@
 import { AlgoCategory, Algorithm, Day } from "@/src-tauri/bindings/enums";
+import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
-import { DEFAULT_DAYS } from "../defaults";
+import { useAlgoDbQuery } from "./useAlgoDbQuery";
 
 type AlgoTuple = [AlgoCategory, Algorithm[]];
-
-export const useAlgoDbQuery = () => {
-  const algoDb = useQuery({
-    queryKey: ["algoDb"],
-    queryFn: () => invoke<AlgoTuple[]>("get_algo_db"),
-  });
-    return algoDb
-}
-
 export const useAlgoByDayQuery = (dayIndex: number) => {
   const client = useQueryClient();
   const day = DEFAULT_DAYS[dayIndex];
   const algoDb = useAlgoDbQuery();
 
   const prefetchOpt = (day: Day) => ({
-    queryKey: ["algo_by_days", algoDb.data, day],
+    queryKey: ["algo_by_days", algoDb, day],
     queryFn: () => invoke<Algorithm[]>("get_algo_by_days", { day }),
   });
 
@@ -46,7 +38,7 @@ export const useAlgoByDayQuery = (dayIndex: number) => {
 
   return {
     isLoading: algoDb.isLoading || algoByDays.isLoading,
-    isError: algoDb.isError || algoByDays.isError,
+    isError: algoDb.isLoading || algoByDays.isError,
     data: processData(algoDb.data, algoByDays.data),
   };
 };
