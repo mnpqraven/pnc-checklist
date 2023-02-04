@@ -1,13 +1,8 @@
-import { DollList, DollProfile } from "@/components/Doll";
-import {
-  fireEvent,
-  render,
-  act,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, act, screen } from "@testing-library/react";
 import Dolls from "@/pages/dolls";
 import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 const Dev = () => {
   const [dev, setDev] = useState("bruh");
@@ -40,8 +35,13 @@ describe("Template for tests needing act", () => {
 
 describe("dolls page", () => {
   it("should render", async () => {
+    const queryClient = new QueryClient();
     await act(async () => {
-      render(<Dolls />);
+      render(
+        <QueryClientProvider client={queryClient}>
+          <Dolls />
+        </QueryClientProvider>
+      );
     });
 
     const hubbleElement = screen.getByText("Hubble");
@@ -51,8 +51,13 @@ describe("dolls page", () => {
   });
 
   it("should avoid calling pieceUpdate() twice", async () => {
+    const queryClient = new QueryClient();
     await act(async () => {
-      render(<Dolls />);
+      render(
+        <QueryClientProvider client={queryClient}>
+          <Dolls />
+        </QueryClientProvider>
+      );
     });
 
     const hubbleElement = screen.getByText("Hubble");

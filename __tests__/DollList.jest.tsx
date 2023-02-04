@@ -1,16 +1,20 @@
 import { DollList } from "@/components/Doll";
 import { MOCK_CROQUE, MOCK_HUBBLE } from "@/jest.setup";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("DollList", () => {
   it("should render", () => {
+    const queryClient = new QueryClient();
     const setStore = jest.fn();
     render(
-      <DollList
-        store={[MOCK_CROQUE, MOCK_HUBBLE]}
-        indexChange={() => {}}
-        setStore={setStore}
-      />
+      <QueryClientProvider client={queryClient}>
+        <DollList
+          store={[MOCK_CROQUE, MOCK_HUBBLE]}
+          indexChange={() => {}}
+          setStore={setStore}
+        />
+      </QueryClientProvider>
     );
     const croque = screen.queryByText(/Croque/i);
     expect(croque).toBeInTheDocument();
@@ -21,16 +25,19 @@ describe("DollList", () => {
   });
 
   it("handles indexChange", () => {
+    const queryClient = new QueryClient();
     const indexHandler = jest.fn();
     const newUnitHandler = jest.fn();
     const deleteUnitHandler = jest.fn();
     const setStore = jest.fn();
     render(
-      <DollList
-        store={[MOCK_CROQUE, MOCK_HUBBLE]}
-        indexChange={indexHandler}
-        setStore={setStore}
-      />
+      <QueryClientProvider client={queryClient}>
+        <DollList
+          store={[MOCK_CROQUE, MOCK_HUBBLE]}
+          indexChange={indexHandler}
+          setStore={setStore}
+        />
+      </QueryClientProvider>
     );
     const croqueElement = screen.getByText(/Croque/i);
     fireEvent.click(croqueElement);
