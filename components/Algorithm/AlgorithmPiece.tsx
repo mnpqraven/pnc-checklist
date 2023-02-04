@@ -12,6 +12,7 @@ import {
   Algorithm,
 } from "@/src-tauri/bindings/enums";
 import { algo_src } from "@/utils/helper";
+import PieceModal from "./PieceModal";
 
 type Props = {
   index: number;
@@ -35,6 +36,7 @@ const AlgorithmPiece = ({
   const [mainStat, setMainStat] = useState(pieceData.stat);
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
+  const [openModal, setModal] = useState(false);
 
   // chaging unit
   useEffect(() => {
@@ -66,8 +68,7 @@ const AlgorithmPiece = ({
     return invoked_slots;
   }
 
-  function pieceHandler(event: ChangeEvent<HTMLSelectElement>) {
-    let name = event.currentTarget.value as Algorithm;
+  function pieceHandler(name: Algorithm) {
     invoke<AlgoSlot | null>("validate_slots", { piece: pieceData })
       .then((slot) => {
         if (slot) {
@@ -75,7 +76,10 @@ const AlgorithmPiece = ({
           setPiece({ ...pieceData, name, slot });
         } else setPiece({ ...pieceData, name });
       })
-      .finally(() => setAlgorithm(name));
+      .finally(() => {
+        setModal(false);
+        setAlgorithm(name);
+      });
   }
 
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
@@ -96,34 +100,50 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
+  function toggleModal() {
+    console.warn("tick");
+    setModal(!openModal);
+  }
+
   return (
     <>
       <div
-        className={` flex justify-center items-center
+        className={` flex items-center justify-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
-        <div className="h-auto w-auto self-center">
+        <PieceModal
+          open={openModal}
+          onLeave={toggleModal}
+          category={category}
+          onSelect={pieceHandler}
+        />
+        <div className="cursor-pointer self-center">
           <Image
             src={algo_src(algorithm)}
             alt={"algo"}
-            width={60}
-            height={60}
+            width={64}
+            height={64}
+            onClick={toggleModal}
           />
         </div>
         <div className="m-2 flex flex-col">
+          {/*
           <Select
             value={algorithm}
             labelPayload={{ method: "print_algo", payload: category }}
             options={options.algoTypes[1].map((e) => e.toString())}
-            onChangeHandler={pieceHandler}
+            onChangeHandler={(e) =>
+              pieceHandler(e.currentTarget.value as Algorithm)
+            }
           />
+          */}
           <Select
             value={mainStat}
             labelPayload={{ method: "print_main_stat", payload: category }}
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center justify-between">
             {dollData ? (
               <SlotCheckbox
                 value={slot}
@@ -135,7 +155,7 @@ const AlgorithmPiece = ({
               <Loading />
             )}
             <button onClick={() => pieceUpdate(null, category, index)}>
-              delete
+              Del
             </button>
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
   Algorithm,
 } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
+import PieceModal from "./PieceModal";
 
 type Props = {
   algo: AlgoSet;

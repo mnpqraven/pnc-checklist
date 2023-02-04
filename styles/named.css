@@ -226,3 +226,16 @@
   visibility: hidden;
 }
 
+.modal-overlay {
+  position: absolute;
+  /* NOTE: overkill */
+  z-index: 999;
+  width: 300px;
+  /* height: 200px; */
+  background-color: grey;
+  box-shadow: 0px 0px 18px 0px rgba(255, 255, 255, 0.75);
+  border-radius: 10px;
+}
+.modal-overlay img {
+  margin: auto;
+}

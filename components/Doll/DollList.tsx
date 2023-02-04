@@ -51,7 +51,7 @@ const DollList = ({ store, setStore, indexChange }: Props) => {
                   deleteUnit({ index });
                 }}
               >
-                delete
+                Del
               </button>
             </>
           ) : (

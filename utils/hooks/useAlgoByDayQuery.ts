@@ -4,18 +4,23 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { DEFAULT_DAYS } from "../defaults";
 
 type AlgoTuple = [AlgoCategory, Algorithm[]];
+
+export const useAlgoDbQuery = () => {
+  const algoDb = useQuery({
+    queryKey: ["algoDb"],
+    queryFn: () => invoke<AlgoTuple[]>("get_algo_db"),
+  });
+    return algoDb
+}
+
 export const useAlgoByDayQuery = (dayIndex: number) => {
   const client = useQueryClient();
   const day = DEFAULT_DAYS[dayIndex];
+  const algoDb = useAlgoDbQuery();
 
   const prefetchOpt = (day: Day) => ({
     queryKey: ["algo_by_days", algoDb.data, day],
     queryFn: () => invoke<Algorithm[]>("get_algo_by_days", { day }),
-  });
-
-  const algoDb = useQuery({
-    queryKey: ["algoDb"],
-    queryFn: () => invoke<AlgoTuple[]>("get_algo_db"),
   });
 
   const algoByDays = useQuery({
