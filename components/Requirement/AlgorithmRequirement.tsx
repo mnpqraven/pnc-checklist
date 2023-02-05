@@ -7,6 +7,7 @@ import { algo_src } from "@/utils/helper";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 import Image from "next/image";
+import ErrorContainer from "../Error";
 import Loading from "../Loading";
 
 const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
@@ -23,7 +24,7 @@ const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
   });
 
   if (isLoading) return <Loading />;
-  if (isError) return <>error</>;
+  if (isError) return <ErrorContainer />
 
   if (!isFulfilled)
     return (

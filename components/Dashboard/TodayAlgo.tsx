@@ -4,6 +4,7 @@ import Loading from "../Loading";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useState } from "react";
 import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
+import ErrorContainer from "../Error";
 
 type Props = {
   onMouseEnter: (offset: number) => void;
@@ -18,7 +19,7 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   const isWeekday = !isGrowNeeded.every((cat) => cat);
 
   if (isLoading) return <Loading />;
-  if (isError) return <p>Error encountered</p>;
+  if (isError) return <ErrorContainer />
 
   function mouseInteract(changes: number = -offset) {
     onMouseEnter(offset + changes);

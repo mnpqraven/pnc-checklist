@@ -5,7 +5,7 @@ import { Updater } from "use-immer";
 
 export type DollContextPayload = {
   dollData: Unit | undefined;
-  setDollData: Updater<Unit | undefined> | undefined;
+  setDollData: Updater<Unit> | undefined;
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,

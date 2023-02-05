@@ -1,6 +1,7 @@
 import { AlgorithmRequirement } from "@/src-tauri/bindings/structs";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
+import ErrorContainer from "../Error";
 import Loading from "../Loading";
 import AlgoRequirement from "./AlgorithmRequirement";
 
@@ -11,7 +12,7 @@ const AlgoRequirementContainer = () => {
   });
 
   if (algoRequirementQuery.isLoading) return <Loading />;
-  if (algoRequirementQuery.isError) return <p>error</p>;
+  if (algoRequirementQuery.isError) return <ErrorContainer />
 
   return (
     <>

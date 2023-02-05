@@ -1,155 +1,39 @@
 import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
-import { ChangeEvent, useContext } from "react";
+import { useContext } from "react";
 import { DollContext } from "@/interfaces/payloads";
-import RaritySelect from "./Doll/RaritySelect";
-import { Loadout, UnitSkill } from "@/src-tauri/bindings/structs";
-import { LoadoutType, NeuralExpansion } from "@/src-tauri/bindings/enums";
+import { Loadout } from "@/src-tauri/bindings/structs";
+import { LoadoutType } from "@/src-tauri/bindings/enums";
+import { LevelBox, RaritySelect, SkillBox } from "./Doll";
+import Loading from "./Loading";
+import useLoadoutController from "@/utils/hooks/useLoadoutController";
 
 type Props = {
   type: LoadoutType;
   data: Loadout;
 };
 
-const SKILL_TYPE = { passive: "passive", auto: "auto" };
-type SkillType = keyof typeof SKILL_TYPE;
-
 const LoadoutContainer = ({ type, data }: Props) => {
-  const { dollData, setDollData } = useContext(DollContext);
-  const defined = dollData && setDollData;
-  const { algo, neural } = data;
+  const { setDollData } = useContext(DollContext);
+  const { algo, neural, skill_level: slv } = data;
 
-  function handleSlvChange(
-    e: ChangeEvent<HTMLInputElement>,
-    skill_type: SkillType
-  ) {
-    if (defined)
-      setDollData((draft) => {
-        if (draft) draft[type].skill_level[skill_type] = +e.target.value;
-      });
-  }
+  if (!setDollData) return <Loading />;
 
-  function handleLevelChange(e: ChangeEvent<HTMLInputElement>) {
-    if (defined)
-      setDollData((draft) => {
-        if (draft) draft[type].level = +e.target.value;
-      });
-  }
-
-  function handleFragsChange(e: ChangeEvent<HTMLInputElement>) {
-    if (defined)
-      setDollData((draft) => {
-        if (draft) draft[type].frags = +e.target.value;
-      });
-  }
-
-  function handleRarityChange(e: string) {
-    if (defined)
-      setDollData((draft) => {
-        if (draft) draft[type].neural = e as NeuralExpansion;
-      });
-  }
-
+  const control = useLoadoutController(setDollData, type);
   return (
     <>
       <div className="flex flex-row">
-        <div className="flex">
-          <SkillBox
-            skill_level={data.skill_level}
-            handleSlvChange={handleSlvChange}
-          />
+        <div className="flex items-center">
+          <SkillBox skill_level={slv} handleSlvChange={control.slv} />
           <LevelBox
             data={data}
-            handleFragsChange={handleFragsChange}
-            handleLevelChange={handleLevelChange}
+            handleFragsChange={control.frags}
+            handleLevelChange={control.level}
           />
+          <RaritySelect value={neural} onChange={control.rarity} />
         </div>
-        <RaritySelect value={neural} onChange={handleRarityChange} />
       </div>
       <AlgorithmSet algo={algo} type={type} />
     </>
-  );
-};
-
-const LevelBox = ({
-  data,
-  handleLevelChange,
-  handleFragsChange,
-}: {
-  data: Loadout;
-  handleLevelChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleFragsChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  const { level, frags } = data;
-
-  return (
-    <div className="flex flex-grow-0 flex-col">
-      <p>level:</p>
-      <input
-        type="number"
-        value={level}
-        min={1}
-        max={70}
-        onChange={handleLevelChange}
-      />
-      {frags != null ? (
-        <>
-          <p>frags:</p>
-          <input
-            type="number"
-            value={frags}
-            min={0}
-            max={999}
-            onChange={handleFragsChange}
-          />
-        </>
-      ) : (
-        <></>
-      )}
-    </div>
-  );
-};
-
-const SkillBox = ({
-  skill_level,
-  handleSlvChange,
-}: {
-  skill_level: UnitSkill;
-  handleSlvChange: (
-    e: ChangeEvent<HTMLInputElement>,
-    skill_type: SkillType
-  ) => void;
-}) => {
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-col">
-        <div className="flex justify-between">
-          <p>Passive Skill: </p>
-          <p>{skill_level.passive}</p>
-        </div>
-        <input
-          className="p-0"
-          type="range"
-          min={1}
-          max={10}
-          value={skill_level.passive}
-          onChange={(e) => handleSlvChange(e, SKILL_TYPE.passive as SkillType)}
-        />
-      </div>
-      <div className="flex flex-col">
-        <div className="flex justify-between">
-          <p>Auto Skill: </p>
-          <p>{skill_level.auto}</p>
-        </div>
-        <input
-          className="p-0"
-          type="range"
-          min={1}
-          max={10}
-          value={skill_level.auto}
-          onChange={(e) => handleSlvChange(e, SKILL_TYPE.auto as SkillType)}
-        />
-      </div>
-    </div>
   );
 };
 
