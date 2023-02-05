@@ -6,29 +6,33 @@ import { Updater } from "use-immer";
 const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
-const useLoadoutController = (setUnit: Updater<Unit>, type: LoadoutType) => {
+const useLoadoutController = (setUnit: Updater<Unit> | undefined, type: LoadoutType) => {
   function slv(e: ChangeEvent<HTMLInputElement>, skill_type: SkillType) {
-    setUnit((draft) => {
-      if (draft) draft[type].skill_level[skill_type] = +e.target.value;
-    });
+    if (setUnit)
+      setUnit((draft) => {
+        if (draft) draft[type].skill_level[skill_type] = +e.target.value;
+      });
   }
 
   function level(e: ChangeEvent<HTMLInputElement>) {
-    setUnit((draft) => {
-      if (draft) draft[type].level = +e.target.value;
-    });
+    if (setUnit)
+      setUnit((draft) => {
+        if (draft) draft[type].level = +e.target.value;
+      });
   }
 
   function frags(e: ChangeEvent<HTMLInputElement>) {
-    setUnit((draft) => {
-      if (draft) draft[type].frags = +e.target.value;
-    });
+    if (setUnit)
+      setUnit((draft) => {
+        if (draft) draft[type].frags = +e.target.value;
+      });
   }
 
   function rarity(e: string) {
-    setUnit((draft) => {
-      if (draft) draft[type].neural = e as NeuralExpansion;
-    });
+    if (setUnit)
+      setUnit((draft) => {
+        if (draft) draft[type].neural = e as NeuralExpansion;
+      });
   }
 
   return { slv, level, frags, rarity };

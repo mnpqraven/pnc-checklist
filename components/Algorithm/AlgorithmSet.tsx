@@ -75,7 +75,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   );
 
   if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
-  if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />
+  if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />;
 
   const { data: mainStat } = mainStatQuery;
   const { data: algoDb } = algoDbQuery;

@@ -11,7 +11,7 @@ export const Backdrop = ({ children, onClick }: Props) => {
       className="backdrop"
       onClick={onClick}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.8 }}
+      animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       {children}

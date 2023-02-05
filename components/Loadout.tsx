@@ -15,10 +15,10 @@ type Props = {
 const LoadoutContainer = ({ type, data }: Props) => {
   const { setDollData } = useContext(DollContext);
   const { algo, neural, skill_level: slv } = data;
+  const control = useLoadoutController(setDollData, type);
 
   if (!setDollData) return <Loading />;
 
-  const control = useLoadoutController(setDollData, type);
   return (
     <>
       <div className="flex flex-row">

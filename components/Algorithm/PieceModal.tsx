@@ -24,28 +24,28 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
 
   return (
     <>
-      <motion.div
-        className="modal grid grid-cols-4 place-items-center bg-gray-600"
-        onClick={(e) => e.stopPropagation()}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {algos.map((algo, index) => (
-          <motion.div
-            className="cursor-pointer"
-            key={index}
-            onClick={() => selectAlgo(algo)}
-            initial={{ scale: 0.9 }}
-            whileHover={{ scale: 1.0 }}
-            whileTap={{ scale: 0.8 }}
-          >
-            <Image src={algo_src(algo)} alt={algo} width={72} height={72} />
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <Backdrop onClick={handleClose}>{}</Backdrop>
+      <Backdrop onClick={handleClose}>
+        <motion.div
+          className="modal grid grid-cols-4 place-items-center bg-gray-600"
+          onClick={(e) => e.stopPropagation()}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {algos.map((algo, index) => (
+            <motion.div
+              className="cursor-pointer"
+              key={index}
+              onClick={() => selectAlgo(algo)}
+              initial={{ scale: 0.9 }}
+              whileHover={{ scale: 1.0 }}
+              whileTap={{ scale: 0.8 }}
+            >
+              <Image src={algo_src(algo)} alt={algo} width={72} height={72} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </Backdrop>
     </>
   );
 };
