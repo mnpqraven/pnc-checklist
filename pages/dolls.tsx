@@ -1,17 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
 import { Loading, StatusBar } from "@/components/Common";
-import {  DollContext } from "@/interfaces/payloads";
+import { DollContext } from "@/interfaces/payloads";
 import { useEffect, useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
+import { DEFAULT_UNIT } from "@/utils/defaults";
+import ErrorContainer from "@/components/Error";
+// import { MOCK_CROQUE } from "@/jest.setup";
 
 const Dolls = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-  const [dollData, setDollData] = useImmer<Unit | undefined>(
-    dirtyUnits[currentIndex]
+  const [dollData, setDollData] = useImmer<Unit>(
+    dirtyUnits[currentIndex] !== undefined
+      ? dirtyUnits[currentIndex]
+      : DEFAULT_UNIT
   );
   const storeUnitsQuery = useStoreUnitsQuery();
 
@@ -48,7 +53,7 @@ const Dolls = () => {
   }, [currentIndex]);
 
   if (storeUnitsQuery.isLoading) return <Loading />;
-  if (storeUnitsQuery.isError) return <p>error</p>;
+  if (storeUnitsQuery.isError) return <ErrorContainer />
 
   return (
     <main>

@@ -13,6 +13,7 @@ import {
 } from "@/src-tauri/bindings/enums";
 import { algo_src } from "@/utils/helper";
 import PieceModal from "./PieceModal";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
   index: number;
@@ -100,18 +101,31 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
+  function close() {
+    console.warn("modal closed");
+    setModal(false);
+  }
+  function open() {
+    console.warn("modal closed");
+    setModal(true);
+  }
+
   return (
     <>
       <div
+        id="algo-piece"
         className={` flex items-center justify-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
-        <PieceModal
-          open={openModal}
-          onLeave={() => setModal(!openModal)}
-          category={category}
-          onSelect={pieceHandler}
-        />
+        <AnimatePresence initial={false} mode="wait">
+          {openModal && (
+            <PieceModal
+              handleClose={close}
+              category={category}
+              onSelect={pieceHandler}
+            />
+          )}
+        </AnimatePresence>
         <div className="cursor-pointer self-center">
           <Image
             src={algo_src(algorithm)}

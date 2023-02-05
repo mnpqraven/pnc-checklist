@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import AlgoRequirementContainer from "@/components/Requirement/AlgorithmRequirementContainer";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
+import ErrorContainer from "@/components/Error";
 
 const Inventory = () => {
   const client = useQueryClient();
@@ -22,7 +23,7 @@ const Inventory = () => {
   }
 
   if (lockerDataQuery.isLoading) return <Loading />;
-  if (lockerDataQuery.isError) return <p>error</p>;
+  if (lockerDataQuery.isError) return <ErrorContainer />
 
   return (
     <main>

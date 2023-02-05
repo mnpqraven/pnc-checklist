@@ -3,7 +3,7 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import {
@@ -16,6 +16,9 @@ import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useAlgoMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
+import { AnimatePresence } from "framer-motion";
+import PieceModal from "./PieceModal";
+import ErrorContainer from "../Error";
 
 type Props = {
   algo: AlgoSet;
@@ -51,26 +54,29 @@ const AlgorithmSet = ({ algo, type }: Props) => {
       });
   }
 
-  const handleUpdatePiece = useCallback((
-    e: AlgoPiece | null,
-    cat: AlgoCategory,
-    index: number
-  ): void => {
-    if (setDollData && e)
-      setDollData((draft) => {
-        if (draft)
-          draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
-      });
-    else if (setDollData)
-      // no piece passed, deletion
-      setDollData((draft) => {
-        if (draft)
-          draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(index, 1);
-      });
-  }, [setDollData, type])
+  const handleUpdatePiece = useCallback(
+    (e: AlgoPiece | null, cat: AlgoCategory, index: number): void => {
+      if (setDollData && e)
+        setDollData((draft) => {
+          if (draft)
+            draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
+        });
+      else if (setDollData)
+        // no piece passed, deletion
+        setDollData((draft) => {
+          if (draft)
+            draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(
+              index,
+              1
+            );
+        });
+    },
+    [setDollData, type]
+  );
 
   if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
-  if (algoDbQuery.isError || mainStatQuery.isError) return <p>err</p>;
+  if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />
+
   const { data: mainStat } = mainStatQuery;
   const { data: algoDb } = algoDbQuery;
 

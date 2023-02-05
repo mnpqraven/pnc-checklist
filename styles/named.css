@@ -226,16 +226,25 @@
   visibility: hidden;
 }
 
-.modal-overlay {
+.modal {
+  /* width: clamp(30%, 700px, 100%); */
   position: absolute;
-  /* NOTE: overkill */
+  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.75);
   z-index: 999;
-  width: 300px;
-  /* height: 200px; */
-  background-color: grey;
-  box-shadow: 0px 0px 18px 0px rgba(255, 255, 255, 0.75);
+
   border-radius: 10px;
 }
-.modal-overlay img {
-  margin: auto;
+
+.backdrop {
+  z-index: 998;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
