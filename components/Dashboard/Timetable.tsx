@@ -47,6 +47,7 @@ const DailyBonus = ({ day }: { day: ResourceByDay }) => {
             <Image
               src={`/class/${item.toString().toLowerCase()}.png`}
               alt={item.toString()}
+              className='aspect-square'
               width={24}
               height={24}
             />

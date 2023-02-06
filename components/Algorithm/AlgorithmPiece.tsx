@@ -131,10 +131,11 @@ const AlgorithmPiece = ({
           <Image
             src={algo_src(algorithm)}
             alt={"algo"}
-            className="max-h-16"
+            className="aspect-square max-h-16"
             width={64}
             height={64}
             onClick={() => setModal(!openModal)}
+            priority
           />
         </div>
         <div className="flex flex-col">
