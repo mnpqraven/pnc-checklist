@@ -4,7 +4,6 @@ import {
   DollContext,
 } from "@/interfaces/payloads";
 import { useCallback, useContext, useState } from "react";
-import Loading from "../Loading";
 import AlgorithmPiece from "./AlgorithmPiece";
 import {
   AlgoMainStat,
@@ -16,12 +15,12 @@ import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useAlgoMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
-import { AnimatePresence } from "framer-motion";
-import PieceModal from "./PieceModal";
+import { AnimatePresence, motion } from "framer-motion";
 import ErrorContainer from "../Error";
+import Skeleton from "react-loading-skeleton";
 
 type Props = {
-  algo: AlgoSet;
+  algo: AlgoSet | undefined;
   type: LoadoutType;
 };
 export type OptionPayload = {
@@ -30,6 +29,7 @@ export type OptionPayload = {
 };
 
 const AlgorithmSet = ({ algo, type }: Props) => {
+  const cats: AlgoCategory[] = ["Offense", "Stability", "Special"];
   const algoDbQuery = useAlgoDbQuery();
   const mainStatQuery = useAlgoMainStatQuery();
   const { setDollData } = useContext(DollContext);
@@ -74,58 +74,68 @@ const AlgorithmSet = ({ algo, type }: Props) => {
     [setDollData, type]
   );
 
-  if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
+  // if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
+  if (mainStatQuery.isLoading) return null;
   if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />;
 
   const { data: mainStat } = mainStatQuery;
-  const { data: algoDb } = algoDbQuery;
+  // const { data: algoDb } = algoDbQuery;
 
-  if (algoDb.length > 0)
-    return (
-      <>
-        <div className="setContainer">
-          {algoDb
-            .map((e) => e[0] as AlgoCategory)
-            .map((category, catindex) => (
-              <div
-                className="flex min-w-fit shrink-0 basis-1/3 flex-col"
-                key={catindex}
-              >
-                {algo[category.toLowerCase() as keyof AlgoSet].map(
-                  (piece, pieceind) => (
-                    <div key={pieceind} className="m-1">
-                      <AlgorithmPiece
-                        index={pieceind}
-                        options={{
-                          algoTypes: algoDb[catindex],
-                          mainStat: mainStat[catindex],
-                        }}
-                        category={category}
-                        pieceData={piece}
-                        valid={!errList(category).includes(pieceind)}
-                        onChange={handleUpdatePiece}
-                      />
-                    </div>
-                  )
-                )}
-              </div>
-            ))}
-        </div>
+  return (
+    <>
+      <div className="inline-flex w-full justify-between">
+        {
+          algoDbQuery.data &&
+            algo &&
+            algoDbQuery.data
+              .map((e) => e[0] as AlgoCategory)
+              .map((category, catindex) => (
+                <div
+                  className="my-2 flex min-w-fit shrink-0 basis-1/3 flex-col"
+                  key={catindex}
+                >
+                  <AnimatePresence mode="sync">
+                    {algo[category.toLowerCase() as keyof AlgoSet].map(
+                      (piece, pieceind) => (
+                        <motion.div
+                          key={pieceind}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          <AlgorithmPiece
+                            index={pieceind}
+                            options={{
+                              algoTypes: algoDbQuery.data[catindex],
+                              mainStat: mainStat[catindex],
+                            }}
+                            category={category}
+                            pieceData={piece}
+                            valid={!errList(category).includes(pieceind)}
+                            onChange={handleUpdatePiece}
+                          />
+                        </motion.div>
+                      )
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))
+          // : ( <LoadingAlgoSet />)
+        }
+      </div>
 
-        <div className="flex flex-row justify-around">
-          {[0, 1, 2].map((index) => (
-            <NewAlgoSet
-              key={index}
-              category={algoDb[index][0]}
-              loadout_type={type}
-              addHandler={handleAddPiece}
-            />
-          ))}
-        </div>
-      </>
-    );
-
-  return <Loading />;
+      <div className="flex flex-row justify-around">
+        {cats.map((cat, index) => (
+          <NewAlgoSet
+            key={index}
+            category={cat}
+            loadout_type={type}
+            addHandler={handleAddPiece}
+          />
+        ))}
+      </div>
+    </>
+  );
 };
 export default AlgorithmSet;
 
@@ -155,5 +165,21 @@ const NewAlgoSet = ({
     <button onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
       New {category} piece
     </button>
+  );
+};
+
+const LoadingAlgoSet = () => {
+  return (
+    <>
+      {[0, 1, 2].map((ind) => (
+        <div key={ind} className="m-2 flex h-[61px] flex-grow">
+          <Skeleton circle height={56} width={56} />
+          <div className="flex flex-grow flex-col">
+            <Skeleton containerClassName="flex-grow mx-4" height={22} />
+            <Skeleton containerClassName="flex-grow mx-4" height={22} />
+          </div>
+        </div>
+      ))}
+    </>
   );
 };

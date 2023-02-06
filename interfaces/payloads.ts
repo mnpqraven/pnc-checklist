@@ -6,10 +6,12 @@ import { Updater } from "use-immer";
 export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
+  storeLoading: boolean
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
+  storeLoading: true
 });
 
 export type AlgoError = [

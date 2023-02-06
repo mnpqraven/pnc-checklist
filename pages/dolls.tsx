@@ -7,19 +7,15 @@ import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
 import { DEFAULT_UNIT } from "@/utils/defaults";
-import ErrorContainer from "@/components/Error";
-// import { MOCK_CROQUE } from "@/jest.setup";
+import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 
 const Dolls = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-  const [dollData, setDollData] = useImmer<Unit>(
-    dirtyUnits[currentIndex] !== undefined
-      ? dirtyUnits[currentIndex]
-      : DEFAULT_UNIT
-  );
+  // back to undefined
+  const [dollData, setDollData] = useImmer<Unit>(dirtyUnits[currentIndex]);
   const storeUnitsQuery = useStoreUnitsQuery();
-
+  const { saveUnits } = useSaveUnitsMutation();
   // TODO: not used yet
   // const [errors, setErrors] = useState<UnitValidationError[]>([]);
   // const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
@@ -30,6 +26,8 @@ const Dolls = () => {
   const canSave = useMemo(() => {
     return JSON.stringify(dirtyUnits) != JSON.stringify(storeUnitsQuery.data);
   }, [dirtyUnits, storeUnitsQuery.data]);
+
+  const handleSave = () => saveUnits(dirtyUnits);
 
   useEffect(() => {
     console.warn("storeunitquery.data");
@@ -52,29 +50,33 @@ const Dolls = () => {
     setDollData(dirtyUnits[currentIndex]);
   }, [currentIndex]);
 
-  if (storeUnitsQuery.isLoading) return <Loading />;
-  if (storeUnitsQuery.isError) return <ErrorContainer />
+  // if (storeUnitsQuery.isLoading) return <Loading />;
+  // if (storeUnitsQuery.isError) return <ErrorContainer />
 
   return (
     <main>
       <div className="big_container">
-        <div className="panel_left component_space">
-          <DollList
-            store={dirtyUnits}
-            setStore={setDirtyUnits}
-            indexChange={setCurrentIndex}
-          />
-        </div>
-        <div className="flex flex-grow flex-col">
-          <DollContext.Provider value={{ dollData, setDollData }}>
-            <DollProfile />
-            {/* <AlgoErrorContext.Provider value={[]}> */}
-            {/* </AlgoErrorContext.Provider> */}
-          </DollContext.Provider>
-          <div className="card component_space">
-            <StatusBar isSaveVisible={canSave} dirtyUnits={dirtyUnits} />
+        <DollContext.Provider
+          value={{
+            dollData,
+            setDollData,
+            storeLoading: storeUnitsQuery.isLoading,
+          }}
+        >
+          <div className="panel_left component_space">
+            <DollList
+              store={dirtyUnits}
+              setStore={setDirtyUnits}
+              indexChange={setCurrentIndex}
+            />
           </div>
-        </div>
+          <div className="flex flex-grow flex-col">
+            <DollProfile handleSave={handleSave} canSave={canSave} />
+            {/* <div className="card component_space">
+              <StatusBar isSaveVisible={canSave} dirtyUnits={dirtyUnits} />
+            </div> */}
+          </div>
+        </DollContext.Provider>
       </div>
     </main>
   );

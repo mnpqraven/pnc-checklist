@@ -7,24 +7,16 @@ type Props = {
   isSaveVisible: boolean;
 };
 const StatusBar = ({ dirtyUnits, isSaveVisible }: Props) => {
-  // INFO: debug
-  async function view_store_units() {
-    let t = await invoke("view_store_units");
-    console.warn("view_store_units");
-    console.log(t);
-  }
-
   const { saveUnits } = useSaveUnitsMutation();
   return (
     <>
-      {isSaveVisible ? (
-        <button className="animate-pulse" onClick={() => saveUnits(dirtyUnits)}>
-          update changes
-        </button>
-      ) : (
-        <></>
-      )}
-      <button onClick={() => view_store_units()}>show_storage_units</button>
+      <button
+        disabled={!isSaveVisible}
+        className={isSaveVisible ? `animate-pulse` : `opacity-40`}
+        onClick={() => saveUnits(dirtyUnits)}
+      >
+        Save changes
+      </button>
     </>
   );
 };
