@@ -14,10 +14,10 @@ const navigationRoutes = [
 
 const Navbar = () => {
   return (
-    <nav className="fixed flex w-full items-center justify-center bg-gray-400">
+    <nav className="fixed left-1/2 flex -translate-x-1/2 items-center justify-center bg-gray-400">
       {navigationRoutes.map((route) => {
         return (
-          <Link href={route.route} key={route.route}>
+          <Link className="mx-4" href={route.route} key={route.route}>
             <span>{route.name}</span>
           </Link>
         );

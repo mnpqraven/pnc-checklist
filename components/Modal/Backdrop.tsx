@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { MouseEventHandler, ReactNode } from "react";
 
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   onClick: MouseEventHandler<HTMLDivElement>;
 };
 export const Backdrop = ({ children, onClick }: Props) => {

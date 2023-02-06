@@ -1,5 +1,6 @@
 import { NeuralExpansion } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 type Props = {
@@ -10,6 +11,7 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
   const [NEURALEXPANSION, setNEURALEXPANSION] = useState<string[]>([]);
   const [starClasses, setStarClasses] = useState<string[]>([]);
   const [starDirty, setStarDirty] = useState<string[]>([]);
+
   useEffect(() => {
     invoke<string[]>("enum_ls", { name: "NeuralExpansion" }).then(
       setNEURALEXPANSION
@@ -80,7 +82,11 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
 
   return (
     <>
-      <div id="stars">
+      <motion.div id="stars"
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      exit={{opacity: 0}}
+      >
         {starDirty.map((className, index) => (
           <div
             id={`star${index}`}
@@ -101,7 +107,7 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
             ))}
           </div>
         ))}
-      </div>
+      </motion.div>
     </>
   );
 };

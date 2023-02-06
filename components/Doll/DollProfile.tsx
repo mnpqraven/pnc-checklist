@@ -6,16 +6,24 @@ import { Class, LoadoutType } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Loadout } from "@/src-tauri/bindings/structs";
 import LoadoutConfig from "../Loadout/Config";
+import Skeleton from "react-loading-skeleton";
+import { motion } from "framer-motion";
+import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 
 type LoadoutParams = {
   data: Loadout;
   type: LoadoutType;
 };
 
-const DollProfile = () => {
+type Props = {
+  handleSave: () => void;
+  canSave: boolean;
+};
+const DollProfile = ({ handleSave, canSave }: Props) => {
   const { dollData, setDollData } = useContext(DollContext);
   const [options, setOptions] = useState<string[]>([]);
   const loadouts: LoadoutType[] = ["current", "goal"];
+  const { storeLoading } = useContext(DollContext);
 
   useEffect(() => {
     invoke<string[]>("enum_ls", { name: "Class" }).then(setOptions);
@@ -36,46 +44,63 @@ const DollProfile = () => {
     }
   }
 
-  if (dollData && setDollData) {
-    return (
-      <>
-        <div className="flex flex-row [&>div]:px-2">
-          <div>
+  return (
+    <>
+      <div className="flex flex-row [&>div]:px-2">
+        <div>
+          {dollData ? (
             <input
               type="text"
               id="name"
               value={dollData.name}
               onChange={handleNameChange}
             />
-          </div>
-          <div>
+          ) : (
+            <div className="w-52">
+              <Skeleton />
+            </div>
+          )}
+        </div>
+        <div>
+          {dollData ? (
             <Select
               options={options}
               value={dollData.class}
               onChangeHandler={handleClassChange}
             />
-          </div>
-        </div>
-        {/* NOTE: named css */}
-        {loadouts.map((type, index) => (
-          <div className="card component_space relative" key={index}>
-            <div className="absolute right-0 float-right flex flex-col">
-              <LoadoutConfig unitHandler={setDollData} type={type} />
+          ) : (
+            <div className="w-28">
+              <Skeleton />
             </div>
-            <LoadoutContainer
-              type={type as LoadoutType}
-              data={dollData[type]}
-            />
-          </div>
-        ))}
-      </>
-    );
-  } else return <Empty />;
+          )}
+        </div>
+        <button
+          disabled={!canSave}
+          className={canSave ? "animate-pulse" : "opacity-40"}
+          onClick={handleSave}
+        >
+          Save changes
+        </button>
+      </div>
+      {/* NOTE: named css */}
+      {loadouts.map((type, index) => (
+        <div className="card component_space relative" key={index}>
+          {!storeLoading && setDollData && (
+            <motion.div
+              className="absolute right-0 float-right flex flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <LoadoutConfig unitHandler={setDollData} type={type} />
+            </motion.div>
+          )}
+          <LoadoutContainer
+            type={type as LoadoutType}
+            data={dollData ? dollData[type] : undefined}
+          />
+        </div>
+      ))}
+    </>
+  );
 };
 export default DollProfile;
-
-const Empty = () => (
-  <>
-    <p>select a doll</p>
-  </>
-);

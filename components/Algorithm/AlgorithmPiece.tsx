@@ -38,6 +38,7 @@ const AlgorithmPiece = ({
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
   const [openModal, setModal] = useState(false);
+  const { storeLoading } = useContext(DollContext);
 
   // chaging unit
   useEffect(() => {
@@ -114,7 +115,7 @@ const AlgorithmPiece = ({
     <>
       <div
         id="algo-piece"
-        className={` flex items-center justify-center
+        className={`flex items-center justify-center
         ${valid === false ? `border border-red-500` : ``} `}
       >
         <AnimatePresence initial={false} mode="wait">
@@ -126,16 +127,18 @@ const AlgorithmPiece = ({
             />
           )}
         </AnimatePresence>
-        <div className="cursor-pointer self-center">
+        <div className="mx-2 cursor-pointer self-center">
           <Image
             src={algo_src(algorithm)}
             alt={"algo"}
+            className="aspect-square max-h-16"
             width={64}
             height={64}
             onClick={() => setModal(!openModal)}
+            priority
           />
         </div>
-        <div className="m-2 flex flex-col">
+        <div className="flex flex-col">
           <Select
             value={mainStat}
             labelPayload={{ method: "print_main_stat", payload: category }}

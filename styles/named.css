@@ -35,11 +35,6 @@
   transition: background 200ms, border 200ms;
 }
 
-.setContainer {
-  display: inline-flex;
-  width: 100%;
-}
-
 .algocategory {
   /* manage child*/
   display: flex;
@@ -248,4 +243,3 @@
   justify-content: center;
   border-radius: var(--border-radius);
 }
-
