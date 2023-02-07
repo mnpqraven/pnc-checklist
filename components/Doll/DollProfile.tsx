@@ -7,8 +7,6 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { Loadout } from "@/src-tauri/bindings/structs";
 import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
-import { motion } from "framer-motion";
-import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 
 type LoadoutParams = {
   data: Loadout;
@@ -45,7 +43,7 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
   }
 
   return (
-    <>
+    <div className="flex flex-grow flex-col" >
       <div className="flex flex-row [&>div]:px-2">
         <div>
           {dollData ? (
@@ -86,13 +84,13 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
       {loadouts.map((type, index) => (
         <div className="card component_space relative" key={index}>
           {!storeLoading && setDollData && (
-            <motion.div
+            <div
               className="absolute right-0 float-right flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              // initial={{ opacity: 0 }}
+              // animate={{ opacity: 1 }}
             >
               <LoadoutConfig unitHandler={setDollData} type={type} />
-            </motion.div>
+            </div>
           )}
           <LoadoutContainer
             type={type as LoadoutType}
@@ -100,7 +98,7 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
           />
         </div>
       ))}
-    </>
+    </div>
   );
 };
 export default DollProfile;
