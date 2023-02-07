@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-04
+updated: 2023-02-07
 version: 0.1.2
 @end
 
@@ -16,23 +16,23 @@ version: 0.1.2
     - (-) doll select layout improvement
     --- (x) add and delete on the same row, replace text with text above + icon
         below
-    --- ( ) delete button to the side of each doll entry
+    --- (x) delete button to the side of each doll entry
     --- ( ) option to filter class
-    - ( ) spacing on skill level sliders
+    - (x) spacing on skill level sliders
     - (-) refactor old `interfaces` types (errors and results)
     - (=) validation return on frontend home
-    - (-) implement React Query
-    --- (-) create custom hook
+    - (x) implement React Query
+    --- (x) create custom hook
     #bugs
     #UXUI
     - (-) Doll page:
-    --- (-) Loadout: wrench icon top right, slides out for more options: select
+    --- (+) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot
         to put loadout name (current/goal) on top
     --- (x) AlgoPiece: click on icon to open up image selection div, combobox
         is too tiring to read
     --- (-) probably the same with main stat
-    --- (-) select all button in loadout
+    --- (x) select all button in loadout
     --- (=) Wrap `<Loading />` inside `<Suspense>`
     - (=) layout when there's no algo piece is weird
     #refactors
@@ -44,9 +44,9 @@ version: 0.1.2
     --- (x) `Requirement`
     --- (x) `Summary`
     --- (-) `pages`
-    --- (-) `Doll` components (mutations)
+    --- (x) `Doll` components (mutations)
     ----- (x) migrate to using `useQuery` in main page `dolls.tsx` first
-    ----- (=) then drill to sub components
+    ----- (x) then drill to sub components
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)
 

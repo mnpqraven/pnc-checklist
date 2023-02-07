@@ -1,17 +1,12 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Select, LoadoutContainer } from "@/components/Common";
+import { ChangeEvent, useContext } from "react";
+import { LoadoutContainer } from "@/components/Common";
 import React from "react";
 import { DollContext } from "@/interfaces/payloads";
 import { Class, LoadoutType } from "@/src-tauri/bindings/enums";
-import { invoke } from "@tauri-apps/api/tauri";
-import { Loadout } from "@/src-tauri/bindings/structs";
 import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
-
-type LoadoutParams = {
-  data: Loadout;
-  type: LoadoutType;
-};
+import { ClassSelect } from "./Profile/ClassSelect";
+import { motion } from "framer-motion";
 
 type Props = {
   handleSave: () => void;
@@ -19,13 +14,8 @@ type Props = {
 };
 const DollProfile = ({ handleSave, canSave }: Props) => {
   const { dollData, setDollData } = useContext(DollContext);
-  const [options, setOptions] = useState<string[]>([]);
   const loadouts: LoadoutType[] = ["current", "goal"];
   const { storeLoading } = useContext(DollContext);
-
-  useEffect(() => {
-    invoke<string[]>("enum_ls", { name: "Class" }).then(setOptions);
-  }, []);
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (setDollData) {
@@ -34,52 +24,50 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
       });
     }
   }
-  function handleClassChange(e: ChangeEvent<HTMLSelectElement>) {
+
+  function handleClassChange(e: Class) {
     if (setDollData) {
       setDollData((draft) => {
-        if (draft) draft.class = e.target.value as Class;
+        if (draft) draft.class = e;
       });
     }
   }
 
   return (
-    <div className="flex flex-grow flex-col" >
-      <div className="flex flex-row [&>div]:px-2">
-        <div>
-          {dollData ? (
-            <input
-              type="text"
-              id="name"
-              value={dollData.name}
-              onChange={handleNameChange}
-            />
-          ) : (
-            <div className="w-52">
-              <Skeleton />
-            </div>
+    <div className="flex flex-grow flex-col">
+      {dollData ? (
+        <div className="flex [&>*]:mx-2">
+          <input
+            type="text"
+            id="name"
+            value={dollData.name}
+            onChange={handleNameChange}
+          />
+          <ClassSelect
+            value={dollData.class}
+            onChangeHandler={handleClassChange}
+          />
+          {canSave && (
+            <motion.button
+              className={` absolute left-1/2
+            ${canSave ? `animate-pulse` : `opacity-40`}`}
+              onClick={handleSave}
+              initial={{ opacity: 0 }}
+              animate={{
+                animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              }}
+              exit={{ opacity: 0 }}
+            >
+              Save changes
+            </motion.button>
           )}
         </div>
-        <div>
-          {dollData ? (
-            <Select
-              options={options}
-              value={dollData.class}
-              onChangeHandler={handleClassChange}
-            />
-          ) : (
-            <div className="w-28">
-              <Skeleton />
-            </div>
-          )}
+      ) : (
+        <div className="w-52">
+          <Skeleton />
         </div>
-        <button
-          disabled={!canSave}
-          className={canSave ? "animate-pulse" : "opacity-40"}
-          onClick={handleSave}
-        >
-          Save changes
-        </button>
-      </div>
+      )}
+
       {/* NOTE: named css */}
       {loadouts.map((type, index) => (
         <div className="card component_space relative" key={index}>
