@@ -1,21 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
-import { Loading, StatusBar } from "@/components/Common";
 import { DollContext } from "@/interfaces/payloads";
 import { useEffect, useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
-import { DEFAULT_UNIT } from "@/utils/defaults";
 import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 
 const Dolls = () => {
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
   // back to undefined
   const [dollData, setDollData] = useImmer<Unit>(dirtyUnits[currentIndex]);
   const storeUnitsQuery = useStoreUnitsQuery();
   const { saveUnits } = useSaveUnitsMutation();
+
   // TODO: not used yet
   // const [errors, setErrors] = useState<UnitValidationError[]>([]);
   // const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
@@ -72,9 +71,6 @@ const Dolls = () => {
           </div>
           <div className="flex flex-grow flex-col">
             <DollProfile handleSave={handleSave} canSave={canSave} />
-            {/* <div className="card component_space">
-              <StatusBar isSaveVisible={canSave} dirtyUnits={dirtyUnits} />
-            </div> */}
           </div>
         </DollContext.Provider>
       </div>

@@ -38,8 +38,6 @@ const AlgorithmPiece = ({
   const [slot, setSlot] = useState<boolean[]>([false, false, false]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
   const [openModal, setModal] = useState(false);
-  const { storeLoading } = useContext(DollContext);
-
   // chaging unit
   useEffect(() => {
     setAlgorithm(pieceData.name);
@@ -102,15 +100,6 @@ const AlgorithmPiece = ({
     setSlot(slot);
   }
 
-  function close() {
-    console.warn("modal closed");
-    setModal(false);
-  }
-  function open() {
-    console.warn("modal closed");
-    setModal(true);
-  }
-
   return (
     <>
       <div
@@ -121,19 +110,19 @@ const AlgorithmPiece = ({
         <AnimatePresence initial={false} mode="wait">
           {openModal && (
             <PieceModal
-              handleClose={close}
+              handleClose={() => setModal(false)}
               category={category}
               onSelect={pieceHandler}
             />
           )}
         </AnimatePresence>
-        <div className="mx-2 cursor-pointer self-center">
+        <div className="mx-2 cursor-pointer">
           <Image
             src={algo_src(algorithm)}
-            alt={"algo"}
-            className="aspect-square max-h-16"
-            width={64}
-            height={64}
+            alt={algo_src(algorithm)}
+            className="max-h-16 w-auto"
+            width={256}
+            height={256}
             onClick={() => setModal(!openModal)}
             priority
           />

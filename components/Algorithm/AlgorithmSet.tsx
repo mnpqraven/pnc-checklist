@@ -3,7 +3,7 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext } from "react";
 import AlgorithmPiece from "./AlgorithmPiece";
 import {
   AlgoMainStat,
@@ -84,44 +84,43 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   return (
     <>
       <div className="inline-flex w-full justify-between">
-        {
-          algoDbQuery.data &&
-            algo &&
-            algoDbQuery.data
-              .map((e) => e[0] as AlgoCategory)
-              .map((category, catindex) => (
-                <div
-                  className="my-2 flex min-w-fit shrink-0 basis-1/3 flex-col"
-                  key={catindex}
-                >
-                  <AnimatePresence mode="sync">
-                    {algo[category.toLowerCase() as keyof AlgoSet].map(
-                      (piece, pieceind) => (
-                        <motion.div
-                          key={pieceind}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          <AlgorithmPiece
-                            index={pieceind}
-                            options={{
-                              algoTypes: algoDbQuery.data[catindex],
-                              mainStat: mainStat[catindex],
-                            }}
-                            category={category}
-                            pieceData={piece}
-                            valid={!errList(category).includes(pieceind)}
-                            onChange={handleUpdatePiece}
-                          />
-                        </motion.div>
-                      )
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))
-          // : ( <LoadingAlgoSet />)
-        }
+        {algoDbQuery.data && algo ? (
+          algoDbQuery.data
+            .map((e) => e[0] as AlgoCategory)
+            .map((category, catindex) => (
+              <div
+                className="my-2 flex min-w-fit shrink-0 basis-1/3 flex-col"
+                key={catindex}
+              >
+                <AnimatePresence mode="sync">
+                  {algo[category.toLowerCase() as keyof AlgoSet].map(
+                    (piece, pieceind) => (
+                      <motion.div
+                        key={pieceind}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <AlgorithmPiece
+                          index={pieceind}
+                          options={{
+                            algoTypes: algoDbQuery.data[catindex],
+                            mainStat: mainStat[catindex],
+                          }}
+                          category={category}
+                          pieceData={piece}
+                          valid={!errList(category).includes(pieceind)}
+                          onChange={handleUpdatePiece}
+                        />
+                      </motion.div>
+                    )
+                  )}
+                </AnimatePresence>
+              </div>
+            ))
+        ) : (
+          <LoadingAlgoSet />
+        )}
       </div>
 
       <div className="flex flex-row justify-around">
@@ -170,16 +169,23 @@ const NewAlgoSet = ({
 
 const LoadingAlgoSet = () => {
   return (
-    <>
-      {[0, 1, 2].map((ind) => (
-        <div key={ind} className="m-2 flex h-[61px] flex-grow">
-          <Skeleton circle height={56} width={56} />
-          <div className="flex flex-grow flex-col">
-            <Skeleton containerClassName="flex-grow mx-4" height={22} />
-            <Skeleton containerClassName="flex-grow mx-4" height={22} />
+    <AnimatePresence initial={false} mode="popLayout">
+      <motion.div
+        className="inline-flex w-full"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {[0, 1, 2].map((ind) => (
+          <div key={ind} className="m-2 flex h-[61px] flex-grow">
+            <Skeleton circle height={56} width={56} />
+            <div className="flex flex-grow flex-col">
+              <Skeleton containerClassName="flex-grow mx-4" height={22} />
+              <Skeleton containerClassName="flex-grow mx-4" height={22} />
+            </div>
           </div>
-        </div>
-      ))}
-    </>
+        ))}
+      </motion.div>
+    </AnimatePresence>
   );
 };
