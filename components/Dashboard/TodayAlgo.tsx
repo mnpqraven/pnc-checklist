@@ -2,7 +2,7 @@ import Image from "next/image";
 import { algo_src } from "@/utils/helper";
 import Loading from "../Loading";
 import { DEFAULT_DAYS } from "@/utils/defaults";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
 import ErrorContainer from "../Error";
 
@@ -18,13 +18,17 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   const isGrowNeeded = algoByDay.map((tuple) => tuple[1].length == 0);
   const isWeekday = !isGrowNeeded.every((cat) => cat);
 
-  if (isLoading) return <Loading />;
-  if (isError) return <ErrorContainer />
-
   function mouseInteract(changes: number = -offset) {
     onMouseEnter(offset + changes);
     setOffset(offset + changes);
   }
+
+  useEffect(() => {
+      mouseInteract(undefined)
+  }, []);
+
+  if (isLoading) return <Loading />;
+  if (isError) return <ErrorContainer />
 
   return (
     <>
