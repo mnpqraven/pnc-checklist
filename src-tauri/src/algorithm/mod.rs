@@ -80,3 +80,9 @@ pub fn print_main_stat(payload: AlgoCategory) -> Vec<String> {
     let t = block.iter().map(|f| f.to_string()).collect::<Vec<String>>();
     t
 }
+
+#[tauri::command]
+/// only prints out a single mainstat
+pub fn dev_print_single_main(payload: AlgoMainStat) -> String {
+    payload.to_string()
+}

@@ -4,6 +4,7 @@ import {
   AlgoSlot,
 } from "@/src-tauri/bindings/structs";
 import { algo_src } from "@/utils/helper";
+import { useSingleMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 import Image from "next/image";
@@ -12,7 +13,8 @@ import Loading from "../Loading";
 
 const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
   const { pieces, from_unit } = data; // from_unit unused
-  const hasReq = (algo: AlgoPiece) => !algo.slot.every((e) => !e);
+  const labels = useSingleMainStatQuery(pieces);
+  const hasReq = (algo: AlgoPiece) => !algo.slot.every((e) => e == true);
 
   const {
     data: isFulfilled,
@@ -23,14 +25,21 @@ const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
     queryFn: () => invoke<boolean>("algo_req_fulfilled", { algoReq: data }),
   });
 
-  if (isLoading) return <Loading />;
-  if (isError) return <ErrorContainer />
+  if (isLoading || !labels.every((e) => e.isSuccess)) return <Loading />;
+  if (isError || !!labels.find((e) => e.isError)) return <ErrorContainer />;
+
+  const p = pieces.map((piece, index) => {
+    return {
+      algo: piece,
+      mainstat: labels[index].data,
+    };
+  });
 
   if (!isFulfilled)
     return (
       <div className="flex">
-        {pieces.map(
-          (algo, index) =>
+        {p.map(
+          ({ algo, mainstat }, index) =>
             hasReq(algo) && (
               <div key={index} className="flex">
                 <div className="h-auto w-auto">
@@ -44,7 +53,7 @@ const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
                 </div>
                 <div className="flex flex-col">
                   <fieldset>
-                    <legend>{algo.stat}</legend>
+                    <legend>{mainstat}</legend>
                     <DisplaySlot slots={algo.slot} />
                   </fieldset>
                 </div>

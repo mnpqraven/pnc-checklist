@@ -1,7 +1,8 @@
 use std::{
     fmt::{Debug, Display},
-    fs::File,
+    fs::{self, File},
     io::Write,
+    path::Path,
 };
 use strum::{Display, EnumIter, EnumString, IntoEnumIterator};
 
@@ -83,4 +84,88 @@ where
     let export_fmt = format!("export type {{ {payloads} }}");
     write!(buffer, "{}", export_fmt)?;
     Ok(())
+}
+
+enum Bracket {
+    Open(char),
+    Close(char),
+}
+
+impl Bracket {
+    pub fn from_char(c: char) -> Option<Bracket> {
+        match c {
+            '{' | '[' | '(' => Some(Bracket::Open(c)),
+            '}' => Some(Bracket::Close('{')),
+            ']' => Some(Bracket::Close('[')),
+            ')' => Some(Bracket::Close('(')),
+            _ => None,
+        }
+    }
+}
+pub fn brackets_are_balanced(string: &str) -> bool {
+    let mut brackets: Vec<char> = vec![];
+    for c in string.chars() {
+        match Bracket::from_char(c) {
+            Some(Bracket::Open(char_bracket)) => {
+                brackets.push(char_bracket);
+            }
+            Some(Bracket::Close(char_close_bracket)) => {
+                if brackets.pop() != Some(char_close_bracket) {
+                    return false;
+                }
+            }
+            _ => {}
+        }
+    }
+    brackets.is_empty()
+}
+
+#[allow(dead_code)]
+pub fn write_index_keys() {
+    let main_path: &Path = Path::new(&"src/main.rs");
+    let t = fs::read_to_string(main_path).expect("main.rs should be accessible");
+    // .invoke_handler to next closing square bracket
+    let mut res: Vec<String> = Vec::new();
+
+    let patternmatch = "tauri::generate_handler!";
+    // WARN: unwrapping
+    let left_ind = t
+        .find(patternmatch)
+        .expect("\"tauri::generate_handler!\" not found")
+        + patternmatch.len();
+    let block: String = t.chars().skip(left_ind).collect();
+    let right_ind = t
+        .chars()
+        .skip(left_ind)
+        .enumerate()
+        .find(|(index, ch)| *ch == ']' && brackets_are_balanced(&block[0..=*index]));
+    let b: String = block.chars().take(right_ind.unwrap().0).collect();
+
+    for line in b.lines() {
+        if line.trim().starts_with(|ch: char| ch.is_ascii_lowercase()) {
+            res.push(line.trim().trim_matches(',').to_string());
+        }
+    }
+    let fmt = |a: String| format!("{}: \"{}\",", a.to_uppercase(), a);
+    let mut export_payload: Vec<String> = Vec::new();
+    export_payload.push("export const INVOKE_KEYS = {".to_string());
+    for item in res {
+        export_payload.push(fmt(item));
+    }
+    export_payload.push("} as const".to_string());
+    let key = "InvokeKeys".to_string();
+    export_payload.push("export type InvokeKeys = keyof typeof INVOKE_KEYS".to_string());
+
+    let a = export_payload.join("\n");
+
+    dbg!(&a);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn mainindex() {
+        write_index_keys()
+    }
 }

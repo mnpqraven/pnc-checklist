@@ -27,8 +27,8 @@ const Inventory = () => {
 
   return (
     <main>
-      <>
-        <div className='card'>
+      <div className="flex flex-col">
+        <div className='card component_space flex flex-col items-start w-fit'>
           <div className="flex">
             <p>current algos</p>
             <button onClick={clear_ownerless}>clear unused algorithms</button>
@@ -42,11 +42,11 @@ const Inventory = () => {
             </div>
           ))}
         </div>
-        <div className='card'>
+        <div className='card component_space w-fit'>
           <p>required algos</p>
           <AlgoRequirementContainer />
         </div>
-      </>
+      </div>
     </main>
   );
 };

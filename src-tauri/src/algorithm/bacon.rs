@@ -1,4 +1,4 @@
-use super::types::{AlgoCategory, AlgoSet};
+use super::{types::{AlgoCategory, AlgoSet}, dev_print_single_main};
 use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
 
 #[test]
@@ -165,4 +165,11 @@ fn update_slots_pass_partial() {
     assert_eq!(set.offense, right.offense);
     assert_eq!(set.stability, right.stability);
     assert_eq!(set.special, right.special);
+}
+
+#[test]
+fn mainstat_display() {
+    let m = AlgoMainStat::OperandPenPercent;
+    assert_eq!(dev_print_single_main(m), "Operand Pen. %");
+    assert_eq!(dev_print_single_main(AlgoMainStat::Dodge), "Dodge");
 }

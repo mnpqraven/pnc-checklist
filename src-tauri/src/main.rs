@@ -27,7 +27,7 @@ use unit::types::Unit;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        main_stat_all, print_algo, print_main_stat,
+        main_stat_all, print_algo, print_main_stat, dev_print_single_main,
     },
     compute::{get_needed_rsc, update_chunk},
     model::enum_ls,
@@ -71,6 +71,7 @@ fn main() {
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
             // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
+            // test []
 
             // algorithm
             algorithm_all,
@@ -81,6 +82,7 @@ fn main() {
             main_stat_all,
             print_algo,
             print_main_stat,
+            dev_print_single_main,
             // compute
             get_needed_rsc,
             update_chunk,
@@ -107,7 +109,7 @@ fn main() {
             get_algo_db,
             get_bonuses,
             get_algo_by_days,
-            // unit
+            // unit []
             view_store_units,
             new_unit,
             delete_unit,
