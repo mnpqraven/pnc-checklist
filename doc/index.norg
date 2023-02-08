@@ -25,8 +25,11 @@ version: 0.1.2
     --- (x) create custom hook
     - (x) update const queryKeys
     #bugs
-    - (!) prefetching is happening before window is mounted in
+    - (_) prefetching is happening before window is mounted in
       `useAlgoByDaysQuery`
+    --- (_) both `Suspense` and `getInitialProps` are ran in SSR env for
+        Nextjs, before tauri IPC is intercepted, making them moot. Scrapped and
+        return to conditional rendering on client after query data is retrieved
     #UXUI
     - (-) Doll page:
     --- (+) Loadout: wrench icon top right, slides out for more options: select
@@ -36,8 +39,8 @@ version: 0.1.2
         is too tiring to read
     --- (-) probably the same with main stat
     --- (x) select all button in loadout
-    --- (=) Wrap `<Loading />` inside `<Suspense>`
-    - (=) layout when there's no algo piece is weird
+    --- (_) Wrap `<Loading />` inside `<Suspense>`
+    - (x) layout when there's no algo piece is weird
     #refactors
     - (-) replace existing `useEffect` calls only for fetching `invoke`
         data
