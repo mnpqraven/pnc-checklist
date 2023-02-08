@@ -4,14 +4,16 @@ import AlgoRequirementContainer from "@/components/Requirement/AlgorithmRequirem
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
+import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
 
 const Inventory = () => {
   const client = useQueryClient();
   const refetchLocker = () => client.refetchQueries({ queryKey: ["locker"] });
 
   const lockerDataQuery = useQuery({
-    queryKey: ["locker"],
-    queryFn: () => invoke<[AlgoPiece | null, Unit | null][]>("view_locker"),
+    queryKey: [INVOKE_KEYS.VIEW_LOCKER],
+    queryFn: () =>
+      invoke<[AlgoPiece | null, Unit | null][]>(INVOKE_KEYS.VIEW_LOCKER),
   });
 
   function deleteKeychain(index: number) {
@@ -23,12 +25,12 @@ const Inventory = () => {
   }
 
   if (lockerDataQuery.isLoading) return <Loading />;
-  if (lockerDataQuery.isError) return <ErrorContainer />
+  if (lockerDataQuery.isError) return <ErrorContainer />;
 
   return (
     <main>
       <div className="flex flex-col">
-        <div className='card component_space flex flex-col items-start w-fit'>
+        <div className="card component_space flex w-fit flex-col items-start">
           <div className="flex">
             <p>current algos</p>
             <button onClick={clear_ownerless}>clear unused algorithms</button>
@@ -42,7 +44,7 @@ const Inventory = () => {
             </div>
           ))}
         </div>
-        <div className='card component_space w-fit'>
+        <div className="card component_space w-fit">
           <p>required algos</p>
           <AlgoRequirementContainer />
         </div>

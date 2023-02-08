@@ -19,6 +19,7 @@ mod indexbindings {
     fn generate_index() {
         write_index_binding::<AllEnums>(Folder::Enums).unwrap();
         write_index_binding::<AllStructs>(Folder::Structs).unwrap();
+        write_index_keys("Invoke_Keys",  "bindings/invoke_keys.ts");
     }
 }
 

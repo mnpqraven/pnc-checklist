@@ -121,51 +121,56 @@ pub fn brackets_are_balanced(string: &str) -> bool {
 }
 
 #[allow(dead_code)]
-pub fn write_index_keys() {
-    let main_path: &Path = Path::new(&"src/main.rs");
-    let t = fs::read_to_string(main_path).expect("main.rs should be accessible");
-    // .invoke_handler to next closing square bracket
-    let mut res: Vec<String> = Vec::new();
+/// creates a binding file containing invoke keys to be used in the frontend
+/// invoke key should be written as Camel_Snake_Case
+pub fn write_index_keys(invoke_key: &str, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let mut buffer = File::create(path).unwrap();
+    let mut export_payload: Vec<String> = Vec::new();
 
+    let fmt_export_const = |a: &str| format!("export const {} = {{", a);
+    let fmt_args = |a: &str| format!("  {}: \"{}\",", a.to_uppercase(), a);
+    let fmt_export_type =
+        |a: &str, b: &str| format!("}} as const;\nexport type {} = keyof typeof {}", a, b);
+
+    let (key_type, key_enum) = (invoke_key.replace('_', ""), invoke_key.to_uppercase());
+
+    // occupy payload
+    export_payload.push(fmt_export_const(&key_enum));
+    get_invoke_fns()
+        .iter()
+        .for_each(|item| export_payload.push(fmt_args(item)));
+    export_payload.push(fmt_export_type(&key_type, &key_enum));
+
+    write!(buffer, "{}", export_payload.join("\n"))?;
+    Ok(())
+}
+
+/// get the tauri commands in `main.rs` as a vector
+fn get_invoke_fns() -> Vec<String> {
+    let main_path: &Path = Path::new(&"src/main.rs");
+    let main_payload = fs::read_to_string(main_path).expect("main.rs should be accessible");
+    let mut res: Vec<String> = Vec::new();
     let patternmatch = "tauri::generate_handler!";
-    // WARN: unwrapping
-    let left_ind = t
+
+    let left_ind = main_payload
         .find(patternmatch)
         .expect("\"tauri::generate_handler!\" not found")
         + patternmatch.len();
-    let block: String = t.chars().skip(left_ind).collect();
-    let right_ind = t
+
+    let block: String = main_payload.chars().skip(left_ind).collect();
+
+    let right_ind = main_payload
         .chars()
         .skip(left_ind)
         .enumerate()
-        .find(|(index, ch)| *ch == ']' && brackets_are_balanced(&block[0..=*index]));
-    let b: String = block.chars().take(right_ind.unwrap().0).collect();
+        .find(|(index, ch)| *ch == ']' && brackets_are_balanced(&block[0..=*index]))
+        .map(|(index, _)| index);
+    let b: String = block.chars().take(right_ind.unwrap()).collect();
 
     for line in b.lines() {
         if line.trim().starts_with(|ch: char| ch.is_ascii_lowercase()) {
             res.push(line.trim().trim_matches(',').to_string());
         }
     }
-    let fmt = |a: String| format!("{}: \"{}\",", a.to_uppercase(), a);
-    let mut export_payload: Vec<String> = Vec::new();
-    export_payload.push("export const INVOKE_KEYS = {".to_string());
-    for item in res {
-        export_payload.push(fmt(item));
-    }
-    export_payload.push("} as const".to_string());
-    let key = "InvokeKeys".to_string();
-    export_payload.push("export type InvokeKeys = keyof typeof INVOKE_KEYS".to_string());
-
-    let a = export_payload.join("\n");
-
-    dbg!(&a);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn mainindex() {
-        write_index_keys()
-    }
+    res
 }

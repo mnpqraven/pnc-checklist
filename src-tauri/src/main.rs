@@ -20,6 +20,7 @@ use std::sync::Mutex;
 
 use requirement::types::DatabaseRequirement;
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
+#[allow(unused_imports)]
 use tauri::Manager;
 use unit::types::Unit;
 
@@ -55,10 +56,10 @@ fn main() {
         units: Mutex::new(initial_am_units),
     };
     tauri::Builder::default()
-        .setup(|app| {
+        .setup(|_app| {
             #[cfg(debug_assertions)]
             {
-                let window = app.get_window("main").unwrap();
+                let window = Manager::get_window(_app, "main").unwrap();
                 window.open_devtools();
             }
             Ok(())
@@ -71,7 +72,6 @@ fn main() {
             // INFO:
             // ref http://wiki.42lab.cloud/w/%E9%A6%96%E9%A1%B5
             // assets for items http://wiki.42lab.cloud/w/%E9%81%93%E5%85%B7
-            // test []
 
             // algorithm
             algorithm_all,
@@ -109,7 +109,7 @@ fn main() {
             get_algo_db,
             get_bonuses,
             get_algo_by_days,
-            // unit []
+            // unit
             view_store_units,
             new_unit,
             delete_unit,
