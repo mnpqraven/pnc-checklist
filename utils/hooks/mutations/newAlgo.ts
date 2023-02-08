@@ -1,4 +1,5 @@
 import { AlgoCategory, LoadoutType } from "@/src-tauri/bindings/enums";
+import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
 import { AlgoPiece } from "@/src-tauri/bindings/structs";
 import { useMutation } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -18,8 +19,8 @@ export const useNewAlgoMutation = (
 ) => {
   const { mutate: newAlgorithmPiece, data: received } = useMutation({
     mutationFn: (payload: InvokeParam) =>
-      invoke<AlgoPiece>("algo_piece_new", payload),
-    onSuccess: (data) => onSuccessHandler(data, category, loadoud_type)
+      invoke<AlgoPiece>(INVOKE_KEYS.ALGO_PIECE_NEW, payload),
+    onSuccess: (data) => onSuccessHandler(data, category, loadoud_type),
   });
   return { newAlgorithmPiece, received };
 };

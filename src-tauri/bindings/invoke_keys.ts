@@ -35,4 +35,4 @@ export const INVOKE_KEYS = {
   VALIDATE_SLOTS: "validate_slots",
   VALIDATE: "validate",
 } as const;
-export type InvokeKeys = keyof typeof INVOKE_KEYS
+export type InvokeKeys = keyof typeof INVOKE_KEYS;

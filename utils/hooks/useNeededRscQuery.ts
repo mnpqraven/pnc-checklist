@@ -1,3 +1,4 @@
+import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
 import { GrandResource, WidgetResource } from "@/src-tauri/bindings/structs";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -5,8 +6,8 @@ import { DEFAULT_GRAND_RESOURCE } from "../defaults";
 
 export const useNeededRscQuery = () => {
   const neededRsc = useQuery({
-    queryKey: ["neededRsc"],
-    queryFn: () => invoke<GrandResource>("get_needed_rsc"),
+    queryKey: [INVOKE_KEYS.GET_NEEDED_RSC],
+    queryFn: () => invoke<GrandResource>(INVOKE_KEYS.GET_NEEDED_RSC),
     placeholderData: DEFAULT_GRAND_RESOURCE,
   });
 

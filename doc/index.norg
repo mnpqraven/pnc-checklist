@@ -23,8 +23,10 @@ version: 0.1.2
     - (=) validation return on frontend home
     - (x) implement React Query
     --- (x) create custom hook
-    - (+) update const queryKeys
+    - (x) update const queryKeys
     #bugs
+    - (!) prefetching is happening before window is mounted in
+      `useAlgoByDaysQuery`
     #UXUI
     - (-) Doll page:
     --- (+) Loadout: wrench icon top right, slides out for more options: select
@@ -61,6 +63,7 @@ version: 0.1.2
 *** Current
     #implementing
     - (?) Parse DB for needed algo pieces
+    - (-) inventory screen + backend logic for keychain manipulatio
 
     #general
     - ( ) error handle
@@ -95,7 +98,7 @@ version: 0.1.2
 
     - (-) documentation
     -- (-) functions
-    - (-) bindings for tauri cmd, read main.rs, process valid string,
+    - (x) bindings for tauri cmd, read main.rs, process valid string,
       optional `camelCase` conversion
 
 ****    ideas

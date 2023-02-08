@@ -130,7 +130,7 @@ pub fn write_index_keys(invoke_key: &str, path: &str) -> Result<(), Box<dyn std:
     let fmt_export_const = |a: &str| format!("export const {} = {{", a);
     let fmt_args = |a: &str| format!("  {}: \"{}\",", a.to_uppercase(), a);
     let fmt_export_type =
-        |a: &str, b: &str| format!("}} as const;\nexport type {} = keyof typeof {}", a, b);
+        |a: &str, b: &str| format!("}} as const;\nexport type {} = keyof typeof {};", a, b);
 
     let (key_type, key_enum) = (invoke_key.replace('_', ""), invoke_key.to_uppercase());
 

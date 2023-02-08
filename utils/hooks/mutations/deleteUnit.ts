@@ -22,7 +22,7 @@ export const useDeleteUnitMutation = (
   const client = useQueryClient();
   const { mutate: deleteUnit } = useMutation({
     mutationFn: (variables: { index: number }) =>
-      invoke<number>("delete_unit", variables),
+      invoke<number>(INVOKE_KEYS.DELETE_UNIT, variables),
     onSuccess: (data) =>
       client
         .refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_STORE_UNITS] })

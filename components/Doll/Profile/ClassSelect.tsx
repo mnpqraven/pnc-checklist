@@ -1,4 +1,5 @@
 import { Class } from "@/src-tauri/bindings/enums";
+import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
 import { class_src } from "@/utils/helper";
 import { useEnumLabel } from "@/utils/hooks/useEnumLabel";
 import { useQuery } from "@tanstack/react-query";
@@ -27,8 +28,8 @@ export const ClassSelect = ({
   onChangeHandler: handleClassChange,
 }: Props) => {
   const classesQuery = useQuery({
-    queryKey: ["enum_ls", "Class"],
-    queryFn: () => invoke<Class[]>("enum_ls", { name: "Class" }),
+    queryKey: [INVOKE_KEYS.ENUM_LS, "Class"],
+    queryFn: () => invoke<Class[]>(INVOKE_KEYS.ENUM_LS, { name: "Class" }),
   });
   const [hovered, setHovered] = useState(false);
 
@@ -58,9 +59,9 @@ export const ClassSelect = ({
           rest.map((unit_class, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0}}
-              animate={{ opacity: 1}}
-              exit={{ opacity: 0}}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
               <Image
                 src={class_src(unit_class)}
