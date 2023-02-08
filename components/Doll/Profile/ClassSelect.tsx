@@ -1,7 +1,6 @@
 import { Class } from "@/src-tauri/bindings/enums";
 import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
 import { class_src } from "@/utils/helper";
-import { useEnumLabel } from "@/utils/hooks/useEnumLabel";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 import { AnimatePresence, motion } from "framer-motion";
