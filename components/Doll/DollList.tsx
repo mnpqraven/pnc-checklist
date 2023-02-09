@@ -71,7 +71,7 @@ const DollList = ({ store: fullStore, setStore, indexChange }: Props) => {
               <DollListItem
                 unit={unit}
                 deleteMode={deleteMode}
-                deleteUnit={() => deleteUnit({ index: index })}
+                deleteUnit={() => deleteUnit({ index })}
               />
             </motion.li>
           ))}

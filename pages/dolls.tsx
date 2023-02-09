@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DollList, DollProfile } from "@/components/Doll";
-import { DollContext } from "@/interfaces/payloads";
-import { useEffect, useMemo, useState } from "react";
+import { DollContext, SaveContext } from "@/interfaces/payloads";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
@@ -10,16 +10,9 @@ import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 const Dolls = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-  // back to undefined
   const [dollData, setDollData] = useImmer<Unit>(dirtyUnits[currentIndex]);
   const storeUnitsQuery = useStoreUnitsQuery();
   const { saveUnits } = useSaveUnitsMutation();
-
-  // TODO: not used yet
-  // const [errors, setErrors] = useState<UnitValidationError[]>([]);
-  // const [algoValidation, setAlgoValidation] = useState<AlgoErrorContextPayload>(
-  //   []
-  // );
 
   // NOTE: HOOKS ---------------
   const canSave = useMemo(() => {
@@ -27,6 +20,11 @@ const Dolls = () => {
   }, [dirtyUnits, storeUnitsQuery.data]);
 
   const handleSave = () => saveUnits(dirtyUnits);
+
+  const { setUnsaved } = useContext(SaveContext);
+  useEffect(() => {
+    setUnsaved(canSave);
+  }, [canSave]);
 
   useEffect(() => {
     console.warn("storeunitquery.data");
@@ -49,11 +47,12 @@ const Dolls = () => {
     setDollData(dirtyUnits[currentIndex]);
   }, [currentIndex]);
 
-  // if (storeUnitsQuery.isLoading) return <Loading />;
-  // if (storeUnitsQuery.isError) return <ErrorContainer />
+  useEffect(() => {
+    if (storeUnitsQuery.data) setDollData(storeUnitsQuery.data[currentIndex]);
+  }, []);
 
   return (
-    <main>
+    <main className="dark-theme">
       <div className="big_container">
         <DollContext.Provider
           value={{

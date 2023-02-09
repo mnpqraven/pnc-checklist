@@ -14,6 +14,15 @@ export const DollContext = React.createContext<DollContextPayload>({
   storeLoading: true
 });
 
+export type SaveContextPayload = {
+  unsaved: boolean,
+  setUnsaved: (to: boolean) => void
+}
+export const SaveContext = React.createContext<SaveContextPayload>({
+  unsaved: false,
+  setUnsaved: () => {}
+})
+
 export type AlgoError = [
   // ???
   category: AlgoCategory,
