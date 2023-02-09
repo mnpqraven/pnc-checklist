@@ -31,6 +31,7 @@ version: 0.1.2
         Nextjs, before tauri IPC is intercepted, making them moot. Scrapped and
         return to conditional rendering on client after query data is retrieved
     #UXUI
+    - (?) `headlessUI` ?
     - (-) Doll page:
     --- (+) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot
@@ -67,11 +68,18 @@ version: 0.1.2
     #implementing
     - (?) Parse DB for needed algo pieces
     - (-) inventory screen + backend logic for keychain manipulatio
+    - (?) should we move CRUDs to rust backend ?
+    - (?) tokio ??
+    - (?) try `Suspense` with swr
 
     #general
     - ( ) error handle
     -- ( ) requirement
     -- ( ) compute
+    - (?) normal heavy `tauri::command` fns would block the UI whilst `async`
+      wouldn't, ask about tokio
+    - (?) async `tauri::command` needs a lifetime mark and `Result`, won't
+      block UI
 
     #refactor
     - (-) `computed`
