@@ -14,6 +14,8 @@ import {
 import { algo_src } from "@/utils/helper";
 import PieceModal from "./PieceModal";
 import { AnimatePresence } from "framer-motion";
+import MainStatSelect from "../RadixDropdown";
+import RadixSlot from "./RadixSlot";
 
 type Props = {
   index: number;
@@ -82,20 +84,28 @@ const AlgorithmPiece = ({
       });
   }
 
-  function mainStatHandler(event: ChangeEvent<HTMLSelectElement>) {
-    setPiece({ ...pieceData, stat: event.currentTarget.value as AlgoMainStat });
-    setMainStat(event.currentTarget.value as AlgoMainStat);
+  function mainStatHandler(event: ChangeEvent<HTMLSelectElement> | string) {
+    let stat: AlgoMainStat = "Atk";
+    if (typeof event === "string") stat = event as AlgoMainStat;
+    else stat = event.currentTarget.value as AlgoMainStat;
+
+    setPiece({ ...pieceData, stat });
+    setMainStat(stat);
   }
 
   function slotHandler(
-    e: ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement> | boolean | "indeterminate",
     checkboxIndex: number
   ) {
+    let val = true;
+    if (typeof e === "boolean") val = e;
+    else if (e === "indeterminate") val = false;
+
     let slot = pieceData.slot.map((item, index) => {
-      if (checkboxIndex == index) return e.target.checked;
+      if (checkboxIndex == index) return val;
       else return item;
     });
-    if (pieceData.slot.length <= checkboxIndex) slot.push(e.target.checked);
+    if (pieceData.slot.length <= checkboxIndex) slot.push(val);
     setPiece({ ...pieceData, slot });
     setSlot(slot);
   }
@@ -128,15 +138,31 @@ const AlgorithmPiece = ({
           />
         </div>
         <div className="flex flex-col">
+          <MainStatSelect
+            value={mainStat}
+            labelPayload={{ method: "print_main_stat", payload: category }}
+            options={options.mainStat}
+            onChangeHandler={mainStatHandler}
+            category={category}
+          />
+
+          {/*
           <Select
             value={mainStat}
             labelPayload={{ method: "print_main_stat", payload: category }}
             options={options.mainStat}
             onChangeHandler={mainStatHandler}
           />
+*/}
           <div className="flex flex-row items-center justify-between">
+            {/* <SlotCheckbox */}
+            {/*   value={slot} */}
+            {/*   unitClass={dollData.class} */}
+            {/*   category={category} */}
+            {/*   onChangeHandler={slotHandler} */}
+            {/* /> */}
             {dollData ? (
-              <SlotCheckbox
+              <RadixSlot
                 value={slot}
                 unitClass={dollData.class}
                 category={category}

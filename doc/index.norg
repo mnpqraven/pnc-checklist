@@ -31,7 +31,8 @@ version: 0.1.2
         Nextjs, before tauri IPC is intercepted, making them moot. Scrapped and
         return to conditional rendering on client after query data is retrieved
     #UXUI
-    - (?) `headlessUI` ?
+    - ( ) `radix UI`
+    --- ( ) `ClassFilter`
     - (-) Doll page:
     --- (+) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot

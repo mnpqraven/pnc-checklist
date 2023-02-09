@@ -54,20 +54,16 @@ const SlotCheckbox = ({
     <div className="flex">
       {value.map((item, index) => (
         <div key={index}>
-          <label>
-            <input
-              type="checkbox"
-              onChange={(e) => {
-                onChangeHandler(e, index);
-                updateVisible(e);
-              }}
-              checked={item}
-              disabled={item === false && clickable == 0}
-              className={
-                item === false && clickable == 0 ? `` : `cursor-pointer`
-              }
-            />
-          </label>
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              onChangeHandler(e, index);
+              updateVisible(e);
+            }}
+            checked={item}
+            disabled={item === false && clickable == 0}
+            className={item === false && clickable == 0 ? `` : `cursor-pointer`}
+          />
         </div>
       ))}
     </div>

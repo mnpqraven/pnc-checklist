@@ -7,6 +7,7 @@ import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
 import { ClassSelect } from "./Profile/ClassSelect";
 import { motion } from "framer-motion";
+import * as Label from "@radix-ui/react-label";
 
 type Props = {
   handleSave: () => void;
@@ -37,6 +38,9 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
     <div className="flex flex-grow flex-col">
       {dollData ? (
         <div className="flex [&>*]:mx-2">
+          <Label.Root className="LabelRoot" htmlFor="name">
+            Name
+          </Label.Root>
           <input
             type="text"
             id="name"

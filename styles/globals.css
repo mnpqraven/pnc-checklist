@@ -124,13 +124,13 @@ a {
   text-decoration: none;
 }
 
-input,
-select {
-  padding: 0px var(--border-radius);
-  border-radius: var(--border-radius);
-}
+/* input, */
+/* select { */
+/*   padding: 0px var(--border-radius); */
+/*   border-radius: var(--border-radius); */
+/* } */
 
-button {
+button .btn {
   --sand: rgb(200, 200, 200);
   border: 1px solid var(--sand);
   padding: 0 1rem;
