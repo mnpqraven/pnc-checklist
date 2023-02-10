@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
 import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
+import MainstatSelect from "@/components/RadixDropdown";
 
 const Inventory = () => {
   const client = useQueryClient();
@@ -48,6 +49,14 @@ const Inventory = () => {
           <p>required algos</p>
           <AlgoRequirementContainer />
         </div>
+
+          <MainstatSelect
+            value={'Cluster'}
+            labelPayload={{ method: "print_main_stat", payload: 'Special' }}
+            options={['Atk', 'AtkPercent']}
+            onChangeHandler={() => {}}
+            category={'Special'}
+          />
       </div>
     </main>
   );

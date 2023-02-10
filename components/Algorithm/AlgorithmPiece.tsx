@@ -16,6 +16,7 @@ import PieceModal from "./PieceModal";
 import { AnimatePresence } from "framer-motion";
 import MainStatSelect from "../RadixDropdown";
 import RadixSlot from "./RadixSlot";
+import { TrashIcon } from "@radix-ui/react-icons";
 
 type Props = {
   index: number;
@@ -145,22 +146,15 @@ const AlgorithmPiece = ({
             onChangeHandler={mainStatHandler}
             category={category}
           />
-
-          {/*
-          <Select
-            value={mainStat}
-            labelPayload={{ method: "print_main_stat", payload: category }}
-            options={options.mainStat}
-            onChangeHandler={mainStatHandler}
-          />
-*/}
           <div className="flex flex-row items-center justify-between">
-            {/* <SlotCheckbox */}
-            {/*   value={slot} */}
-            {/*   unitClass={dollData.class} */}
-            {/*   category={category} */}
-            {/*   onChangeHandler={slotHandler} */}
-            {/* /> */}
+            {/*
+            <SlotCheckbox
+              value={slot}
+              unitClass={dollData.class}
+              category={category}
+              onChangeHandler={slotHandler}
+            />
+            */}
             {dollData ? (
               <RadixSlot
                 value={slot}
@@ -171,8 +165,11 @@ const AlgorithmPiece = ({
             ) : (
               <Loading />
             )}
-            <button onClick={() => pieceUpdate(null, category, index)}>
-              Del
+            <button
+              className="Button small red"
+              onClick={() => pieceUpdate(null, category, index)}
+            >
+              <TrashIcon />
             </button>
           </div>
         </div>

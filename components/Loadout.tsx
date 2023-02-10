@@ -25,6 +25,7 @@ const LoadoutContainer = ({ type, data }: Props) => {
             handleSlvChange={control.slv}
           />
           <LevelBox
+            type={type}
             data={data}
             handleFragsChange={control.frags}
             handleLevelChange={control.level}

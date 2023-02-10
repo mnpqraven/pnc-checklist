@@ -1,4 +1,5 @@
 import { SaveContext } from "@/interfaces/payloads";
+import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import {
   ALERT_BUTTON_CANCEL,
   ALERT_BUTTON_CONTENT,
@@ -6,28 +7,32 @@ import {
   ALERT_BUTTON_OK,
 } from "@/utils/lang";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Alert from "./Alert";
 
-// const navigationRoutes = ['/', 'index_backup', 'about']
 const navigationRoutes = [
   { route: "/", name: "Home" },
   { route: "dolls", name: "Dolls" },
   { route: "inventory", name: "Inventory" },
   { route: "settings", name: "Settings" },
   // unimplemented
-  { route: "dev", name: "🍨🍨🍨" },
+  // { route: "dev", name: "🍨🍨🍨" },
   // { route: 'summary', name: "Summary" },
   // { route: 'about', name: "About" },
 ];
 
 const Navbar = () => {
-  // FIX: cause DollContext and dollData to turn undefined
   const { unsaved, setUnsaved } = useContext(SaveContext);
-
   const [openAlert, setOpenAlert] = useState(false);
   const router = useRouter();
   const [route, setRoute] = useState("");
+
+  const content = {
+    header: ALERT_BUTTON_HEADER,
+    content: ALERT_BUTTON_CONTENT,
+    cancel: ALERT_BUTTON_CANCEL,
+    ok: ALERT_BUTTON_OK,
+  };
 
   function handleClick(
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -51,30 +56,47 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed left-1/2 flex -translate-x-1/2 items-center justify-center bg-gray-400">
-        {navigationRoutes.map((route) => (
-          <a
-            className="mx-4"
-            href={route.route}
-            key={route.route}
-            onClick={(e) => handleClick(e, route.route)}
-          >
-            <span>{route.name}</span>
-          </a>
-        ))}
-      </nav>
+      <RouteMenu routes={navigationRoutes} handleClick={handleClick} />
       <Alert
         open={openAlert}
         onCancel={onCancel}
         onAction={onAction}
-        content={{
-          header: ALERT_BUTTON_HEADER,
-          content: ALERT_BUTTON_CONTENT,
-          cancel: ALERT_BUTTON_CANCEL,
-          ok: ALERT_BUTTON_OK,
-        }}
+        content={content}
       />
     </>
   );
 };
+
+type Props = {
+  routes: { route: string; name: string }[];
+  handleClick: (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    route: string
+  ) => void;
+};
+const RouteMenu = ({ routes, handleClick }: Props) => {
+  return (
+    <NavigationMenu.Root className="NavigationMenuRoot">
+      <NavigationMenu.List className="NavigationMenuList">
+        {routes.map(({ route, name }) => (
+          <NavigationMenu.Item key={route}>
+            <NavigationMenu.Link
+              className="NavigationMenuLink"
+              onClick={(e) => handleClick(e, route)}
+            >
+              {name}
+            </NavigationMenu.Link>
+          </NavigationMenu.Item>
+        ))}
+
+        <NavigationMenu.Indicator className="NavigationMenuIndicator">
+          <div className="Arrow" />
+        </NavigationMenu.Indicator>
+      </NavigationMenu.List>
+
+      <NavigationMenu.Viewport className="ViewportPosition" />
+    </NavigationMenu.Root>
+  );
+};
+
 export default Navbar;

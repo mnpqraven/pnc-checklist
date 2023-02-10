@@ -1,4 +1,4 @@
-import { AlgoCategory } from "@/src-tauri/bindings/enums";
+import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
 import { useEnumLabel } from "@/utils/hooks/useEnumLabel";
 import {
   CheckIcon,
@@ -14,6 +14,7 @@ type Props = {
   onChangeHandler: (value: string) => void;
   category: AlgoCategory;
 };
+
 const MainstatSelect = ({
   value,
   labelPayload,

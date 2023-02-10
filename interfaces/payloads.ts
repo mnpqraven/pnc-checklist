@@ -23,6 +23,23 @@ export const SaveContext = React.createContext<SaveContextPayload>({
   setUnsaved: () => {}
 })
 
+export type ToastContextPayload = {
+  open: boolean;
+  setOpen: (e: boolean) => void
+  header: string
+  content: string
+  setHeaderContent: (header?: string, content?: string) => void
+  fireToast: () => void
+}
+export const ToastContext = React.createContext<ToastContextPayload>({
+  open: false,
+  setOpen: () => {},
+  header: "Default Header",
+  content: "Default Content",
+  setHeaderContent: () => {},
+  fireToast: () => {}
+})
+
 export type AlgoError = [
   // ???
   category: AlgoCategory,

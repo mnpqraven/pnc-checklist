@@ -1,5 +1,6 @@
 import { Unit } from "@/src-tauri/bindings/structs";
 import { class_src } from "@/utils/helper";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 
@@ -28,8 +29,9 @@ const DollListItem = ({ unit, deleteMode, deleteUnit }: Props) => {
       <div className="grow" />
       <AnimatePresence>
         {deleteMode && (
-          <motion.div
-            className="ml-4 mr-2 text-right text-3xl text-red-400"
+          <motion.button
+            // className="ml-4 mr-2 text-right text-3xl text-red-400"
+            className="Button small red"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -38,8 +40,8 @@ const DollListItem = ({ unit, deleteMode, deleteUnit }: Props) => {
               if (deleteMode) deleteUnit();
             }}
           >
-            
-          </motion.div>
+            <TrashIcon />
+          </motion.button>
         )}
       </AnimatePresence>
     </div>

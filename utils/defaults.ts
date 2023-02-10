@@ -68,3 +68,9 @@ export const DEFAULT_UNIT: Unit = {
     },
   },
 };
+
+export const THEME_CLASSES = {
+  light: "light-theme",
+  dark: "dark-theme",
+  entropic: "entropic-theme",
+} as const

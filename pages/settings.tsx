@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
+import { THEME_CLASSES } from "@/utils/defaults";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -9,7 +10,7 @@ export default function Settings() {
   // TODO: move log to context for overall logging
   const [log, setLog] = useState("awaiting import");
 
-  const themeList = ["light", "dark", "red", "system"];
+  const themeList = [ ... Object.keys(THEME_CLASSES), 'system'];
 
   async function openImportDialog() {
     await open().then((e) => {
