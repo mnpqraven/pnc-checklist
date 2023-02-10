@@ -1,3 +1,4 @@
+import Slider from "@/components/Form/Slider";
 import { UnitSkill } from "@/src-tauri/bindings/structs";
 import { ChangeEvent } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -11,56 +12,36 @@ const SkillBox = ({
 }: {
   skill_level: UnitSkill | undefined;
   handleSlvChange: (
-    e: ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement> | number,
     skill_type: SkillType
   ) => void;
 }) => {
+  const skill: { type: SkillType; label: string }[] = [
+    {
+      type: "passive",
+      label: "Passive Skill",
+    },
+    {
+      type: "auto",
+      label: "Auto Skill",
+    },
+  ];
   return (
     <div className="mx-4 flex flex-col">
       <div className="flex flex-col ">
-        <div className="flex justify-between">
-          <p>Passive Skill: </p>
-          {skill_level ? (
-            <p>{skill_level.passive}</p>
-          ) : (
-            <Skeleton count={1} containerClassName="flex-grow w-12" />
-          )}
-        </div>
+        <div className="flex justify-between"></div>
         {skill_level ? (
-          <span>
-            <input
-              className="p-0"
-              type="range"
+          skill.map(({ type, label }) => (
+            <Slider
+              key={type}
+              type={type}
               min={1}
               max={10}
-              value={skill_level.passive}
-              onChange={(e) =>
-                handleSlvChange(e, SKILL_TYPE.passive as SkillType)
-              }
+              label={label}
+              value={skill_level[type]}
+              onChange={(e) => handleSlvChange(e[0], type)}
             />
-          </span>
-        ) : (
-          <div className="w-24">
-            <Skeleton />
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col">
-        <div className="flex justify-between">
-          <p>Auto Skill: </p>
-          <p>{skill_level ? skill_level.auto : <Skeleton />}</p>
-        </div>
-        {skill_level ? (
-          <span>
-            <input
-              className="p-0"
-              type="range"
-              min={1}
-              max={10}
-              value={skill_level.auto}
-              onChange={(e) => handleSlvChange(e, SKILL_TYPE.auto as SkillType)}
-            />
-          </span>
+          ))
         ) : (
           <div className="w-24">
             <Skeleton />

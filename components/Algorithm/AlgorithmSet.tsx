@@ -161,7 +161,9 @@ const NewAlgoSet = ({
   const checkedSlots = loadout_type === "goal";
 
   return (
-    <button onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
+    <button
+    className="btn"
+    onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
       New {category} piece
     </button>
   );

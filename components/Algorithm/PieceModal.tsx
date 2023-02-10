@@ -25,7 +25,7 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
   return (
     <>
       <motion.div
-        className="modal grid grid-cols-4 place-items-center bg-gray-600"
+        className="modal grid grid-cols-4 place-items-center"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

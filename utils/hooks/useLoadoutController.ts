@@ -6,12 +6,23 @@ import { Updater } from "use-immer";
 const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
-const useLoadoutController = (setUnit: Updater<Unit> | undefined, type: LoadoutType) => {
-  function slv(e: ChangeEvent<HTMLInputElement>, skill_type: SkillType) {
-    if (setUnit)
+const useLoadoutController = (
+  setUnit: Updater<Unit> | undefined,
+  type: LoadoutType
+) => {
+  function slv(
+    e: ChangeEvent<HTMLInputElement> | number,
+    skill_type: SkillType
+  ) {
+    if (setUnit) {
+      let val = 0;
+      if (typeof e === "number") {
+        val = e;
+      } else val = +e.target.value;
       setUnit((draft) => {
-        if (draft) draft[type].skill_level[skill_type] = +e.target.value;
+        if (draft) draft[type].skill_level[skill_type] = val;
       });
+    }
   }
 
   function level(e: ChangeEvent<HTMLInputElement>) {

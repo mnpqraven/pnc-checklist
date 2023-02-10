@@ -7,7 +7,7 @@ import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
 import { ClassSelect } from "./Profile/ClassSelect";
 import { motion } from "framer-motion";
-import * as Label from "@radix-ui/react-label";
+import Label from "../Form/Label";
 
 type Props = {
   handleSave: () => void;
@@ -37,23 +37,21 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
   return (
     <div className="flex flex-grow flex-col">
       {dollData ? (
-        <div className="flex [&>*]:mx-2">
-          <Label.Root className="LabelRoot" htmlFor="name">
-            Name
-          </Label.Root>
-          <input
-            type="text"
-            id="name"
+        <div className="flex">
+          <Label
+            id="unitName"
             value={dollData.name}
+            label="Name"
             onChange={handleNameChange}
           />
+
           <ClassSelect
             value={dollData.class}
             onChangeHandler={handleClassChange}
           />
           {canSave && (
             <motion.button
-              className={` absolute left-1/2
+              className={`absolute left-1/2
             ${canSave ? `animate-pulse` : `opacity-40`}`}
               onClick={handleSave}
               initial={{ opacity: 0 }}
@@ -76,11 +74,7 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
       {loadouts.map((type, index) => (
         <div className="card component_space relative" key={index}>
           {!storeLoading && setDollData && (
-            <div
-              className="absolute right-0 float-right flex flex-col"
-              // initial={{ opacity: 0 }}
-              // animate={{ opacity: 1 }}
-            >
+            <div className="absolute right-0 float-right flex flex-col">
               <LoadoutConfig unitHandler={setDollData} type={type} />
             </div>
           )}
