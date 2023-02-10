@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useEffect } from "react";
 import { LoadoutContainer } from "@/components/Common";
 import React from "react";
 import { DollContext, ToastContext } from "@/interfaces/payloads";
@@ -21,7 +21,10 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
   const loadouts: LoadoutType[] = ["current", "goal"];
   const { storeLoading } = useContext(DollContext);
   const { fireToast, setHeaderContent } = useContext(ToastContext);
-  setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
+
+  useEffect(() => {
+    setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
+  }, [setHeaderContent]);
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (setDollData) {

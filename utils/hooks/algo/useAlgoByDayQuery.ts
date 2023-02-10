@@ -29,8 +29,9 @@ export const useAlgoByDayQuery = (dayIndex: number) => {
   }
 
   // INFO: prefetches tmr and ytd
-  client.prefetchQuery(prefetchOpt(DEFAULT_DAYS[(dayIndex + 1) % 7]));
-  client.prefetchQuery(prefetchOpt(DEFAULT_DAYS[(dayIndex + 6) % 7]));
+  // BUG: this runs before invoke is injected
+  // client.prefetchQuery(prefetchOpt(DEFAULT_DAYS[(dayIndex + 1) % 7]));
+  // client.prefetchQuery(prefetchOpt(DEFAULT_DAYS[(dayIndex + 6) % 7]));
 
   return {
     isLoading: algoDb.isLoading || algoByDays.isLoading,
