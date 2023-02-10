@@ -24,13 +24,13 @@ body {
 }
 
 body {
-  color: rbg(--foreground-rgb);
+  color: var(--main-text-highcon);
   background: linear-gradient(
       to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
+      var(--main-bg1)
     )
-    rgb(var(--background-start-rgb));
+    var(--main-bg2);
 }
 
 td {
@@ -43,20 +43,40 @@ a {
   text-decoration: none;
 }
 
-/* input, */
-/* select { */
-/*   padding: 0px var(--border-radius); */
-/*   border-radius: var(--border-radius); */
-/* } */
+li {
+  transition: background 500ms, border 500ms;
+}
 
-button .btn {
+input,
+select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 0 10px;
+  height: 35px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--main-text-highcon);
+  background-color: var(--main-bg1);
+  box-shadow: 0 0 0 1px var(--main-component-bg);
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* name to avoid button reset by radix */
+.btn {
   --sand: rgb(200, 200, 200);
-  border: 1px solid var(--sand);
+  border: 1px solid var(--main-border-static);
   padding: 0 1rem;
   border-radius: var(--border-radius);
+  cursor: pointer;
 }
 button:hover {
-  border-color: white;
+  border-color: var(--main-border-hover);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,9 +1,12 @@
 @import "@radix-ui/colors/blackA.css";
 @import "@radix-ui/colors/mauve.css";
 @import "@radix-ui/colors/violet.css";
+@import "@radix-ui/colors/violetDark.css";
 @import "@radix-ui/colors/gray.css";
-@import "@radix-ui/colors/skyDark.css";
-@import "@radix-ui/colors/sky.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/green.css";
+@import "@radix-ui/colors/plum.css";
+@import "@radix-ui/colors/plumDark.css";
 
 :root {
   --max-width: 1100px;
@@ -45,46 +48,57 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+
+  /* Color Palette */
+  /* Main palette is the defined theme + accent */
+  --main-bg1: var(--violet1);
+  --main-bg2: var(--violet2);
+
+  --main-component-bg: var(--violet3);
+  --main-component-hover: var(--violet4);
+  --main-component-press1: var(--violet5);
+  --main-component-press2: var(--violet6);
+
+  --main-border-static: var(--violet6);
+  --main-border-normal: var(--violet7);
+  --main-border-hover: var(--violet8);
+
+  --main-bg-solid1: var(--violet9);
+  --main-bg-solid2: var(--violet10);
+
+  --main-text-lowcon: var(--violet11);
+  --main-text-highcon: var(--violet12);
+
 }
 
-[data-theme="dark"] {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
-
-  --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
-  --secondary-glow: linear-gradient(
-    to bottom right,
-    rgba(1, 65, 255, 0),
-    rgba(1, 65, 255, 0),
-    rgba(1, 65, 255, 0.3)
-  );
-
-  --tile-start-rgb: 2, 13, 46;
-  --tile-end-rgb: 2, 5, 19;
-  --tile-border: conic-gradient(
-    #ffffff80,
-    #ffffff40,
-    #ffffff30,
-    #ffffff20,
-    #ffffff10,
-    #ffffff10,
-    #ffffff80
-  );
-
-  --callout-rgb: 20, 20, 20;
-  --callout-border-rgb: 108, 108, 108;
-  --card-rgb: 100, 100, 100;
-  --card-border-rgb: 200, 200, 200;
-
-
-  --pal-dark: var(--mauve12);
-  --pal-light: var(--gray8);
-
-  --pal-selected: var(--sky11);
-
-  --pal-gray1: var(--mauve8);
-  --pal-gray2: var(--mauve9);
-  --pal-gray3: var(--mauve10);
-  --pal-gray4: var(--mauve11);
-}
+/* [data-theme="dark"] { */
+/*   --foreground-rgb: 255, 255, 255; */
+/*   --background-start-rgb: 0, 0, 0; */
+/*   --background-end-rgb: 0, 0, 0; */
+/**/
+/*   --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0)); */
+/*   --secondary-glow: linear-gradient( */
+/*     to bottom right, */
+/*     rgba(1, 65, 255, 0), */
+/*     rgba(1, 65, 255, 0), */
+/*     rgba(1, 65, 255, 0.3) */
+/*   ); */
+/**/
+/*   --tile-start-rgb: 2, 13, 46; */
+/*   --tile-end-rgb: 2, 5, 19; */
+/*   --tile-border: conic-gradient( */
+/*     #ffffff80, */
+/*     #ffffff40, */
+/*     #ffffff30, */
+/*     #ffffff20, */
+/*     #ffffff10, */
+/*     #ffffff10, */
+/*     #ffffff80 */
+/*   ); */
+/**/
+/*   --callout-rgb: 20, 20, 20; */
+/*   --callout-border-rgb: 108, 108, 108; */
+/*   --card-rgb: 100, 100, 100; */
+/*   --card-border-rgb: 200, 200, 200; */
+/**/
+/* } */

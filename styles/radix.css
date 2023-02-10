@@ -40,12 +40,12 @@ button {
   justify-content: center;
   border-radius: 4px;
   padding: 0 15px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
   height: 35px;
   gap: 5px;
   background-color: white;
-  color: var(--violet11);
+  color: var(--main-text-lowcon);
   box-shadow: 0 2px 10px var(--blackA7);
 }
 .SelectTrigger:hover {
@@ -54,17 +54,14 @@ button {
 .SelectTrigger:focus {
   box-shadow: 0 0 0 2px black;
 }
-.SelectTrigger[data-placeholder] {
-  color: var(--violet9);
-}
 
 .SelectIcon {
-  color: Var(--violet11);
+  color: var(--main-text-lowcon);
 }
 
 .SelectContent {
   overflow: hidden;
-  background-color: white;
+  background-color: var(--main-text-highcon);
   border-radius: 6px;
   box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
     0px 10px 20px -15px rgba(22, 23, 24, 0.2);
@@ -75,9 +72,9 @@ button {
 }
 
 .SelectItem {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1;
-  color: var(--violet11);
+  color: var(--main-text-lowcon);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -92,13 +89,13 @@ button {
 }
 .SelectItem[data-highlighted] {
   outline: none;
-  background-color: var(--violet9);
-  color: var(--violet1);
+  background-color: var(--main-text-lowcon);
+  color: var(--main-text-highcon);
 }
 
 .SelectLabel {
   padding: 0 25px;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 25px;
   color: var(--mauve11);
 }
@@ -128,7 +125,7 @@ button {
   cursor: default;
 }
 .Toggle {
-  background-color: white;
+  background-color: back;
   color: var(--mauve11);
   height: 35px;
   width: 35px;
@@ -152,25 +149,25 @@ button {
 }
 
 .CheckboxRoot {
-  background-color: white;
+  background-color: var(--main-component-bg);
   width: 25px;
   height: 25px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px var(--blackA7);
+  box-shadow: 0 2px 10px var(--main-bg-solid1);
 }
 .CheckboxRoot:hover {
-  background-color: var(--violet3);
+  background-color: var(--main-component-hover);
 }
 .CheckboxRoot:focus {
   box-shadow: 0 0 0 2px black;
 }
 
 .CheckboxIndicator {
-  color: var(--violet11);
+  color: var(--main-text-highcon);
 }
 .CheckboxRoot[data-state="checked"] {
-  background-color: var(--pal-selected);
+  background-color: var(--main-bg-solid1);
 }
