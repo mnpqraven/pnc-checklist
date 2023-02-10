@@ -1,9 +1,12 @@
 import "@/styles/colors.css";
 import "@/styles/globals.css";
+
 import "@/styles/named.css";
+
 import "@/styles/radix.css";
 import "@/styles/alert.css";
 import "@/styles/togglegroup.css";
+import "@/styles/slider.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
@@ -28,7 +31,11 @@ export default function App({ Component, pageProps }: AppProps) {
   };
   return (
     <SkeletonTheme baseColor="#202020" highlightColor="#444">
-      <ThemeProvider>
+      <ThemeProvider themes={['light', 'dark', 'red']}
+      value={{ light: 'light-theme', dark: 'dark-theme', red: 'red-theme'}}
+      attribute="class"
+      enableColorScheme={false}
+      >
         <QueryClientProvider client={queryClient}>
           <SaveContext.Provider value={{ unsaved, setUnsaved: updateUnsaved }}>
             <Navbar />

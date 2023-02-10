@@ -9,6 +9,8 @@ export default function Settings() {
   // TODO: move log to context for overall logging
   const [log, setLog] = useState("awaiting import");
 
+  const themeList = ["light", "dark", "red", "system"];
+
   async function openImportDialog() {
     await open().then((e) => {
       if (typeof e == "string") {
@@ -61,30 +63,17 @@ export default function Settings() {
           <button onClick={openImportDialog}>Import database</button>
           <button onClick={openExportDialog}>Export database</button>
         </div>
-        <label>
-          <input
-            type="radio"
-            checked={theme === "dark"}
-            onChange={() => setTheme("dark")}
-          />
-          Dark mode
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={theme === "light"}
-            onChange={() => setTheme("light")}
-          />
-          Light mode
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={theme === "system"}
-            onChange={() => setTheme("system")}
-          />
-          System color
-        </label>
+        {themeList.map((th, index) => (
+          <label key={index}>
+            <input
+              key={index}
+              type="radio"
+              checked={theme === th}
+              onChange={() => setTheme(th)}
+            />
+            {th}
+          </label>
+        ))}
         <div>
           <p>assets from 42Lab wiki under CC BY-NC-SA</p>
           <p>made with NextJS and Tauri</p>

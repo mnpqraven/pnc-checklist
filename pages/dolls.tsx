@@ -52,7 +52,7 @@ const Dolls = () => {
   }, []);
 
   return (
-    <main className="dark-theme">
+    <main>
       <div className="big_container">
         <DollContext.Provider
           value={{
