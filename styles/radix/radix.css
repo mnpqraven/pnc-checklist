@@ -1,0 +1,90 @@
+/* reset */
+button {
+  all: unset;
+}
+
+.SwitchRoot {
+  width: 42px;
+  height: 25px;
+  background-color: var(--blackA9);
+  border-radius: 9999px;
+  position: relative;
+  box-shadow: 0 2px 10px var(--blackA7);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.SwitchRoot:focus {
+  box-shadow: 0 0 0 2px black;
+}
+.SwitchRoot[data-state="checked"] {
+  background-color: pink;
+}
+
+.SwitchThumb {
+  display: block;
+  width: 21px;
+  height: 21px;
+  background-color: white;
+  border-radius: 9999px;
+  box-shadow: 0 2px 2px var(--blackA7);
+  transition: transform 500ms;
+  transform: translateX(2px);
+  will-change: transform;
+}
+.SwitchThumb[data-state="checked"] {
+  transform: translateX(19px);
+}
+
+.Toggle {
+  background-color: back;
+  color: var(--mauve11);
+  height: 35px;
+  width: 35px;
+  border-radius: 4px;
+  display: flex;
+  font-size: 15px;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px var(--blackA7);
+}
+.Toggle:hover {
+  background-color: var(--violet3);
+}
+.Toggle[data-state="on"] {
+  background-color: var(--violet6);
+  color: var(--violet12);
+}
+.Toggle:focus {
+  box-shadow: 0 0 0 2px black;
+}
+
+.CheckboxRoot {
+  background-color: var(--main-component-bg);
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px var(--main-bg-solid1);
+}
+.CheckboxRoot:hover {
+  background-color: var(--main-component-hover);
+}
+.CheckboxRoot:focus {
+  box-shadow: 0 0 0 2px black;
+}
+
+.CheckboxIndicator {
+  color: var(--main-text-highcon);
+}
+.CheckboxRoot[data-state="checked"] {
+  background-color: var(--main-bg-solid1);
+}
+
+.LabelRoot {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 35px;
+  color: var(--main-text-highcon);
+}
