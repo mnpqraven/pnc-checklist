@@ -11,7 +11,7 @@ const useSaveUnitsMutation = () => {
       invoke<[Unit, number][]>(INVOKE_KEYS.SAVE_UNITS, {
         units: dirtyUnits.map((e, index) => [e, index]),
       }),
-    onSettled: () => client.refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_STORE_UNITS] }),
+    onSettled: () => client.refetchQueries({ queryKey: [INVOKE_KEYS.GET_UNITS] }),
   });
   return { saveUnits };
 };

@@ -14,7 +14,7 @@ mod impls;
 pub mod types;
 
 #[tauri::command]
-pub fn view_store_units(computed: State<Computed>) -> Result<Vec<Unit>, TauriError> {
+pub async fn get_units(computed: State<'_, Computed>) -> Result<Vec<Unit>, TauriError> {
     println!("[invoke] view_store_units");
     match computed.units.lock() {
         Ok(units) => Ok(units.iter().map(|c| c.lock().unwrap().clone()).collect()),

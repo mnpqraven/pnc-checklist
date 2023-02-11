@@ -5,8 +5,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 
 export const useStoreUnitsQuery = () => {
   const storeUnitsQuery = useQuery({
-    queryKey: [INVOKE_KEYS.VIEW_STORE_UNITS],
-    queryFn: () => invoke<Unit[]>(INVOKE_KEYS.VIEW_STORE_UNITS),
+    queryKey: [INVOKE_KEYS.GET_UNITS],
+    queryFn: () => invoke<Unit[]>(INVOKE_KEYS.GET_UNITS),
   });
   return storeUnitsQuery;
 };

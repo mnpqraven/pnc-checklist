@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-09
+updated: 2023-02-11
 version: 0.1.2
 @end
 
@@ -13,11 +13,11 @@ version: 0.1.2
 *** Features
 *** Current
     - (x) use backend's `Display` for algo selection options
-    - (-) doll select layout improvement
+    - (x) doll select layout improvement
     --- (x) add and delete on the same row, replace text with text above + icon
         below
     --- (x) delete button to the side of each doll entry
-    --- ( ) option to filter class
+    --- (x) option to filter class
     - (x) spacing on skill level sliders
     - (-) refactor old `interfaces` types (errors and results)
     - (=) validation return on frontend home
@@ -31,15 +31,17 @@ version: 0.1.2
         Nextjs, before tauri IPC is intercepted, making them moot. Scrapped and
         return to conditional rendering on client after query data is retrieved
     #UXUI
-    - ( ) `radix UI`
-    --- ( ) `ClassFilter`
+    - (x) `radix UI`
+    --- (x) `ClassFilter`
     - (-) Doll page:
-    --- (+) Loadout: wrench icon top right, slides out for more options: select
+    --- (x) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot
         to put loadout name (current/goal) on top
-    --- (x) AlgoPiece: click on icon to open up image selection div, combobox
+    --- (!) functionalities + refactor `LoadoutConfig` dropdown
+
+    - (x) AlgoPiece: click on icon to open up image selection div, combobox
         is too tiring to read
-    --- (-) probably the same with main stat
+    --- (?) probably the same with main stat
     --- (x) select all button in loadout
     --- (_) Wrap `<Loading />` inside `<Suspense>`
     - (x) layout when there's no algo piece is weird
@@ -71,12 +73,16 @@ version: 0.1.2
     - (-) inventory screen + backend logic for keychain manipulatio
     - (?) should we move CRUDs to rust backend ?
     - (?) tokio ??
-    - (?) try `Suspense` with swr
+    - (_) try `Suspense` with swr
+    ---- Didn't work, `Suspense` triggers data fetching before `invoke` IPC
+         is injected
 
     #general
     - ( ) error handle
     -- ( ) requirement
     -- ( ) compute
+    -- (!) Frontend can save a low-leveled current and a high-level goal
+       `Loadout`, causing `FromTo` panic.
     - (?) normal heavy `tauri::command` fns would block the UI whilst `async`
       wouldn't, ask about tokio
     - (?) async `tauri::command` needs a lifetime mark and `Result`, won't

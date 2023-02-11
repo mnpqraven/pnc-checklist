@@ -177,8 +177,8 @@ const ConfigDev = () => {
                 sideOffset={2}
                 alignOffset={-5}
               >
-                {["This section", "Unit"].map((loadout) => (
-                  <DropdownMenu.Item className="DropdownMenuItem">
+                {["This section", "Unit"].map((loadout, index) => (
+                  <DropdownMenu.Item className="DropdownMenuItem" key={index}>
                     {loadout} <div className="RightSlot" />
                   </DropdownMenu.Item>
                 ))}

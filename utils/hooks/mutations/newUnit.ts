@@ -40,7 +40,7 @@ const useNewUnitMutation = (
       ),
     onSuccess: (data) =>
       client
-        .refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_STORE_UNITS] })
+        .refetchQueries({ queryKey: [INVOKE_KEYS.GET_UNITS] })
         .then(() => newUnitPostProcess(data, setStore, setIndex)),
   });
 

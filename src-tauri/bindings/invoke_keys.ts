@@ -27,7 +27,7 @@ export const INVOKE_KEYS = {
   GET_ALGO_DB: "get_algo_db",
   GET_BONUSES: "get_bonuses",
   GET_ALGO_BY_DAYS: "get_algo_by_days",
-  VIEW_STORE_UNITS: "view_store_units",
+  GET_UNITS: "get_units",
   NEW_UNIT: "new_unit",
   DELETE_UNIT: "delete_unit",
   SAVE_UNITS: "save_units",

@@ -25,7 +25,7 @@ export const useDeleteUnitMutation = (
       invoke<number>(INVOKE_KEYS.DELETE_UNIT, variables),
     onSuccess: (data) =>
       client
-        .refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_STORE_UNITS] })
+        .refetchQueries({ queryKey: [INVOKE_KEYS.GET_UNITS] })
         .then(() => deleteUnitPostProcess(setStore, setIndex, data)),
   });
 
