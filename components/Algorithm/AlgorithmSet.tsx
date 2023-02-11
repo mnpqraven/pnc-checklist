@@ -3,7 +3,7 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useRef } from "react";
 import AlgorithmPiece from "./AlgorithmPiece";
 import {
   AlgoMainStat,
@@ -82,37 +82,31 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   // const { data: algoDb } = algoDbQuery;
 
   return (
-    <>
-      <div className="inline-flex w-full justify-between">
+    <div className="flex flex-none flex-col">
+      <div className="flex">
         {algoDbQuery.data && algo ? (
           algoDbQuery.data
             .map((e) => e[0] as AlgoCategory)
             .map((category, catindex) => (
               <div
-                className="my-2 flex min-w-fit shrink-0 basis-1/3 flex-col"
+                className="my-2 flex shrink-0 basis-1/3 flex-col"
                 key={catindex}
               >
-                <AnimatePresence mode="sync">
+                <AnimatePresence initial={false} mode="popLayout">
                   {algo[category.toLowerCase() as keyof AlgoSet].map(
                     (piece, pieceind) => (
-                      <motion.div
+                      <AlgorithmPiece
                         key={pieceind}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <AlgorithmPiece
-                          index={pieceind}
-                          options={{
-                            algoTypes: algoDbQuery.data[catindex],
-                            mainStat: mainStat[catindex],
-                          }}
-                          category={category}
-                          pieceData={piece}
-                          valid={!errList(category).includes(pieceind)}
-                          onChange={handleUpdatePiece}
-                        />
-                      </motion.div>
+                        index={pieceind}
+                        options={{
+                          algoTypes: algoDbQuery.data[catindex],
+                          mainStat: mainStat[catindex],
+                        }}
+                        category={category}
+                        pieceData={piece}
+                        valid={!errList(category).includes(pieceind)}
+                        onChange={handleUpdatePiece}
+                      />
                     )
                   )}
                 </AnimatePresence>
@@ -133,7 +127,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 export default AlgorithmSet;
@@ -162,8 +156,9 @@ const NewAlgoSet = ({
 
   return (
     <button
-    className="btn"
-    onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
+      className="btn"
+      onClick={() => newAlgorithmPiece({ category, checkedSlots })}
+    >
       New {category} piece
     </button>
   );

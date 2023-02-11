@@ -1,5 +1,6 @@
-import { AlgoCategory } from "@/src-tauri/bindings/enums";
-import { Class } from "@/src-tauri/bindings/enums/Class";
+import { AlgoCategory, Class } from "@/src-tauri/bindings/enums";
+import * as Checkbox from "@radix-ui/react-checkbox";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { invoke } from "@tauri-apps/api/tauri";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -7,18 +8,14 @@ type Props = {
   unitClass: Class;
   value: boolean[];
   category: AlgoCategory;
-  onChangeHandler: (
-    value: ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => void;
+  onChangeHandler: (value: boolean | "indeterminate", index: number) => void;
 };
 const SlotCheckbox = ({
   unitClass,
-  category,
   value,
+  category,
   onChangeHandler,
 }: Props) => {
-  // gonna always 2 due to rendering at the same time as AlgorithmPiece
   const [clickable, setClickable] = useState(2); // default case for 2 falses
   const [size, setSize] = useState(2);
 
@@ -40,31 +37,30 @@ const SlotCheckbox = ({
     );
   }, [category, unitClass, value]);
 
-  function updateVisible(e: ChangeEvent<HTMLInputElement>) {
-    if (e.currentTarget.checked === true) {
-      if (size == 2) {
-        setClickable(clickable - 1);
-      }
-    } else {
-      setClickable(clickable + 1);
-    }
+  function updateVisible(e: boolean | "indeterminate") {
+    let val = typeof e === "boolean" ? e : false;
+
+    if (val && size == 2) setClickable(clickable - 1);
+    else setClickable(clickable + 1);
   }
 
   return (
-    <div className="flex">
-      {value.map((item, index) => (
-        <div key={index}>
-          <input
-            type="checkbox"
-            onChange={(e) => {
-              onChangeHandler(e, index);
-              updateVisible(e);
-            }}
-            checked={item}
-            disabled={item === false && clickable == 0}
-            className={item === false && clickable == 0 ? `` : `cursor-pointer`}
-          />
-        </div>
+    <div className="flex gap-2">
+      {value.map((checked, index) => (
+        <Checkbox.Root
+          className="CheckboxRoot"
+          key={index}
+          checked={checked}
+          onCheckedChange={(e) => {
+            onChangeHandler(e, index);
+            updateVisible(e);
+          }}
+          disabled={!checked && clickable === 0}
+        >
+          <Checkbox.Indicator className="CheckboxIndicator">
+            <CheckIcon />
+          </Checkbox.Indicator>
+        </Checkbox.Root>
       ))}
     </div>
   );

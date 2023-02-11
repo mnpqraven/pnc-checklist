@@ -18,22 +18,18 @@ const LoadoutContainer = ({ type, data }: Props) => {
 
   return (
     <>
-      <div className="flex flex-row">
-        <div className="flex items-center">
-          <SkillBox
-            skill_level={data?.skill_level}
-            handleSlvChange={control.slv}
-          />
-          <LevelBox
-            type={type}
-            data={data}
-            handleFragsChange={control.frags}
-            handleLevelChange={control.level}
-          />
-          {data && (
-            <RaritySelect value={data.neural} onChange={control.rarity} />
-          )}
-        </div>
+      <div className="flex items-center">
+        <SkillBox
+          skill_level={data?.skill_level}
+          handleSlvChange={control.slv}
+        />
+        <LevelBox
+          type={type}
+          data={data}
+          handleFragsChange={control.frags}
+          handleLevelChange={control.level}
+        />
+        {data && <RaritySelect value={data.neural} onChange={control.rarity} />}
       </div>
       <AlgorithmSet algo={data?.algo} type={type} />
     </>

@@ -3,11 +3,10 @@ import {
   AlgorithmRequirement,
   AlgoSlot,
 } from "@/src-tauri/bindings/structs";
-import { algo_src } from "@/utils/helper";
 import { useSingleMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
-import Image from "next/image";
+import AlgoImage from "../Algorithm/AlgoImage";
 import ErrorContainer from "../Error";
 import Loading from "../Loading";
 
@@ -43,13 +42,7 @@ const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
             hasReq(algo) && (
               <div key={index} className="flex">
                 <div className="h-auto w-auto">
-                  <Image
-                    src={algo_src(algo.name)}
-                    alt={algo.name}
-                    width={60}
-                    height={60}
-                    priority
-                  />
+                  <AlgoImage algo={algo.name} />
                 </div>
                 <div className="flex flex-col">
                   <fieldset>

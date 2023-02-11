@@ -26,57 +26,53 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   }, []);
 
   return (
-    <>
-      <div>
-        <div className="grid w-60 grid-cols-3 px-2">
-          {["Prev", undefined, "Next"].map((item, index) =>
-            item ? (
-              <button
-                key={index}
-                className="Button small violet"
-                onMouseEnter={() => mouseInteract(index - 1)}
-                onClick={() => mouseInteract(index - 1)}
-                onMouseLeave={() => mouseInteract(undefined)}
-              >
-                {item}
-              </button>
-            ) : (
-              <p key={index} className="text-center">
-                {DEFAULT_DAYS[dayIndex]}
-              </p>
-            )
-          )}
+    <div className="grid w-60 grid-cols-3 px-2">
+      {["Prev", undefined, "Next"].map((item, index) =>
+        item ? (
+          <button
+            key={index}
+            className="Button small violet"
+            onMouseEnter={() => mouseInteract(index - 1)}
+            onClick={() => mouseInteract(index - 1)}
+            onMouseLeave={() => mouseInteract(undefined)}
+          >
+            {item}
+          </button>
+        ) : (
+          <p key={index} className="text-center">
+            {DEFAULT_DAYS[dayIndex]}
+          </p>
+        )
+      )}
 
-          {isWeekday ? (
-            algoByDay.map(([category, algos], index_cat) => (
-              <div key={index_cat} className="flex flex-col px-2 text-center">
-                <p>{category}</p>
-                {algos.map((algo, index_alg) => (
-                  <div
-                    key={index_alg}
-                    className="flex h-[64px] w-[64px] items-center"
-                  >
-                    <Image
-                      priority
-                      src={algo_src(algo)}
-                      alt={algo}
-                      height={128}
-                      width={128}
-                    />
-                  </div>
-                ))}
+      {isWeekday ? (
+        algoByDay.map(([category, algos], index_cat) => (
+          <div key={index_cat} className="flex flex-col px-2 text-center">
+            <p>{category}</p>
+            {algos.map((algo, index_alg) => (
+              <div
+                key={index_alg}
+                className="flex h-[64px] w-[64px] items-center"
+              >
+                <Image
+                  priority
+                  src={algo_src(algo)}
+                  alt={algo}
+                  height={128}
+                  width={128}
+                />
               </div>
-            ))
-          ) : (
-            <>
-              <div />
-              <p className="text-center">Weekend</p>
-              <div />
-            </>
-          )}
-        </div>
-      </div>
-    </>
+            ))}
+          </div>
+        ))
+      ) : (
+        <>
+          <div />
+          <p className="text-center">Weekend</p>
+          <div />
+        </>
+      )}
+    </div>
   );
 };
 export default TodayAlgo;

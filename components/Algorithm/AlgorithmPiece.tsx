@@ -1,9 +1,8 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Loading, Select } from "@/components/Common";
+import { Loading } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
 import SlotCheckbox from "./SlotCheckbox";
 import { DollContext } from "@/interfaces/payloads";
-import Image from "next/image";
 import { invoke } from "@tauri-apps/api/tauri";
 import { AlgoPiece, AlgoSlot } from "@/src-tauri/bindings/structs";
 import {
@@ -11,12 +10,11 @@ import {
   AlgoMainStat,
   Algorithm,
 } from "@/src-tauri/bindings/enums";
-import { algo_src } from "@/utils/helper";
 import PieceModal from "./PieceModal";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import MainStatSelect from "../RadixDropdown";
-import RadixSlot from "./RadixSlot";
 import { TrashIcon } from "@radix-ui/react-icons";
+import AlgoImage from "./AlgoImage";
 
 type Props = {
   index: number;
@@ -94,10 +92,7 @@ const AlgorithmPiece = ({
     setMainStat(stat);
   }
 
-  function slotHandler(
-    e: ChangeEvent<HTMLInputElement> | boolean | "indeterminate",
-    checkboxIndex: number
-  ) {
+  function slotHandler(e: boolean | "indeterminate", checkboxIndex: number) {
     let val = true;
     if (typeof e === "boolean") val = e;
     else if (e === "indeterminate") val = false;
@@ -112,70 +107,54 @@ const AlgorithmPiece = ({
   }
 
   return (
-    <>
-      <div
-        id="algo-piece"
-        className={`flex items-center justify-center
+    <motion.div
+      id="algo-piece"
+      className={`m-1 flex items-center justify-center
         ${valid === false ? `border border-red-500` : ``} `}
-      >
-        <AnimatePresence initial={false} mode="wait">
-          {openModal && (
-            <PieceModal
-              handleClose={() => setModal(false)}
-              category={category}
-              onSelect={pieceHandler}
-            />
-          )}
-        </AnimatePresence>
-        <div className="mx-2 cursor-pointer">
-          <Image
-            src={algo_src(algorithm)}
-            alt={algo_src(algorithm)}
-            className="max-h-16 w-auto"
-            width={256}
-            height={256}
-            onClick={() => setModal(!openModal)}
-            priority
-          />
-        </div>
-        <div className="flex flex-col">
-          <MainStatSelect
-            value={mainStat}
-            labelPayload={{ method: "print_main_stat", payload: category }}
-            options={options.mainStat}
-            onChangeHandler={mainStatHandler}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <AnimatePresence initial={false} mode="wait">
+        {openModal && (
+          <PieceModal
+            handleClose={() => setModal(false)}
             category={category}
+            onSelect={pieceHandler}
           />
-          <div className="flex flex-row items-center justify-between">
-            {/*
+        )}
+      </AnimatePresence>
+      <div className="mx-2 cursor-pointer">
+        <AlgoImage algo={algorithm} onClick={() => setModal(!openModal)} />
+      </div>
+      <div className="flex max-w-[10rem] grow flex-col gap-2">
+        <MainStatSelect
+          value={mainStat}
+          labelPayload={{ method: "print_main_stat", payload: category }}
+          options={options.mainStat}
+          onChangeHandler={mainStatHandler}
+          category={category}
+        />
+        <div className="flex flex-row items-center justify-between">
+          {dollData ? (
             <SlotCheckbox
               value={slot}
               unitClass={dollData.class}
               category={category}
               onChangeHandler={slotHandler}
             />
-            */}
-            {dollData ? (
-              <RadixSlot
-                value={slot}
-                unitClass={dollData.class}
-                category={category}
-                onChangeHandler={slotHandler}
-              />
-            ) : (
-              <Loading />
-            )}
-            <button
-              className="Button small red"
-              onClick={() => pieceUpdate(null, category, index)}
-            >
-              <TrashIcon />
-            </button>
-          </div>
+          ) : (
+            <Loading />
+          )}
+          <button
+            className="Button small red"
+            onClick={() => pieceUpdate(null, category, index)}
+          >
+            <TrashIcon />
+          </button>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 };
-
 export default AlgorithmPiece;
