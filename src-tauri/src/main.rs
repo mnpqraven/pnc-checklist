@@ -16,6 +16,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
+mod worker;
 use std::sync::Mutex;
 
 use requirement::types::DatabaseRequirement;

@@ -20,6 +20,8 @@ tauri = { version = "1.2", features = ["api-all", "updater"] }
 ts-rs = "6.2.1"
 strum = { version = "0.24.1", features = ["derive"] }
 strum_macros = "0.24.3"
+semver = { version = "1.0.16", features = ["serde"] }
+chrono = { version = "0.4.23", features = ["serde"] }
 
 [features]
 # by default Tauri runs in production mode
