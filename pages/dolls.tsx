@@ -6,7 +6,6 @@ import { useImmer } from "use-immer";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
 import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
-import MainstatSelect from "@/components/RadixDropdown";
 
 const Dolls = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

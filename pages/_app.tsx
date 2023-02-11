@@ -6,6 +6,7 @@ import "@/styles/named.css";
 import "@/styles/radix/alert.css";
 import "@/styles/radix/button.css";
 import "@/styles/radix/checkbox.css";
+import "@/styles/radix/dropdownmenu.css";
 import "@/styles/radix/label.css";
 import "@/styles/radix/navigationmenu.css";
 import "@/styles/radix/select.css";

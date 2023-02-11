@@ -5,11 +5,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
 import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
-import MainstatSelect from "@/components/RadixDropdown";
 
 const Inventory = () => {
   const client = useQueryClient();
-  const refetchLocker = () => client.refetchQueries({ queryKey: ["locker"] });
+  const refetchLocker = () =>
+    client.refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_LOCKER] });
 
   const lockerDataQuery = useQuery({
     queryKey: [INVOKE_KEYS.VIEW_LOCKER],
@@ -21,8 +21,8 @@ const Inventory = () => {
     invoke("remove_kc", { index }).then(refetchLocker);
   }
 
-  async function clear_ownerless() {
-    await invoke("clear_ownerless").then(refetchLocker);
+  function clear_ownerless() {
+    invoke("clear_ownerless").then(refetchLocker);
   }
 
   if (lockerDataQuery.isLoading) return <Loading />;
@@ -36,6 +36,7 @@ const Inventory = () => {
             <p>current algos</p>
             <button onClick={clear_ownerless}>clear unused algorithms</button>
           </div>
+
           {lockerDataQuery.data.map((e, index) => (
             <div key={index} className="flex flex-row">
               <button onClick={() => deleteKeychain(index)}>delete</button>
@@ -45,18 +46,11 @@ const Inventory = () => {
             </div>
           ))}
         </div>
+
         <div className="card component_space w-fit">
           <p>required algos</p>
           <AlgoRequirementContainer />
         </div>
-
-          <MainstatSelect
-            value={'Cluster'}
-            labelPayload={{ method: "print_main_stat", payload: 'Special' }}
-            options={['Atk', 'AtkPercent']}
-            onChangeHandler={() => {}}
-            category={'Special'}
-          />
       </div>
     </main>
   );
