@@ -13,10 +13,10 @@ type Props = {
 
 const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   const [offset, setOffset] = useState(0);
-  const { isLoading, isError, data: algoByDay } = useAlgoByDayQuery(dayIndex);
+  const { data: algoByDay } = useAlgoByDayQuery(dayIndex);
 
-  const isGrowNeeded = algoByDay.map((tuple) => tuple[1].length == 0);
-  const isWeekday = !isGrowNeeded.every((cat) => cat);
+  const isEmpty = algoByDay.map((tuple) => tuple[1].length == 0);
+  const isWeekday = !isEmpty.every((cat) => cat);
 
   function mouseInteract(changes: number = -offset) {
     onMouseEnter(offset + changes);
@@ -24,42 +24,34 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   }
 
   useEffect(() => {
-      mouseInteract(undefined)
+    mouseInteract(undefined);
   }, []);
-
-  if (isLoading) return <Loading />;
-  if (isError) return <ErrorContainer />
 
   return (
     <>
       <div>
-        <div className="flex w-60 justify-between px-2">
-          <button
-            onMouseEnter={() => mouseInteract(-1)}
-            onClick={() => mouseInteract(-1)}
-            onMouseLeave={() => mouseInteract(undefined)}
-          >
-            Prev
-          </button>
-          <div>{DEFAULT_DAYS[dayIndex]}</div>
-          <button
-            onMouseEnter={() => mouseInteract(1)}
-            onClick={() => mouseInteract(1)}
-            onMouseLeave={() => mouseInteract(undefined)}
-          >
-            Next
-          </button>
-        </div>
+        <div className="grid w-60 grid-cols-3 px-2">
+          {["Prev", undefined, "Next"].map((item, index) =>
+            item ? (
+              <button
+                key={index}
+                className="Button small violet"
+                onMouseEnter={() => mouseInteract(index - 1)}
+                onClick={() => mouseInteract(index - 1)}
+                onMouseLeave={() => mouseInteract(undefined)}
+              >
+                {item}
+              </button>
+            ) : (
+              <p key={index} className="text-center">
+                {DEFAULT_DAYS[dayIndex]}
+              </p>
+            )
+          )}
 
-        <div className="flex justify-center">
           {isWeekday ? (
             algoByDay.map(([category, algos], index_cat) => (
-              <div
-                key={index_cat}
-                className={`flex flex-col px-2 text-center ${
-                  isGrowNeeded[index_cat] ? `grow` : ""
-                }`}
-              >
+              <div key={index_cat} className="flex flex-col px-2 text-center">
                 <p>{category}</p>
                 {algos.map((algo, index_alg) => (
                   <div
@@ -78,7 +70,11 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
               </div>
             ))
           ) : (
-            <p>Weekend</p>
+            <>
+              <div />
+              <p className="text-center">Weekend</p>
+              <div />
+            </>
           )}
         </div>
       </div>
