@@ -1,10 +1,8 @@
 import Image from "next/image";
 import { algo_src } from "@/utils/helper";
-import Loading from "../Loading";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useEffect, useState } from "react";
 import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
-import ErrorContainer from "../Error";
 
 type Props = {
   onMouseEnter: (offset: number) => void;

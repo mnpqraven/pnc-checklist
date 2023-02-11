@@ -8,9 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import { ClassSelect } from "./Profile/ClassSelect";
 import { AnimatePresence, motion } from "framer-motion";
 import Label from "../Form/Label";
-import Toast from "../Toast";
 import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
-import MainstatSelect from "../RadixDropdown";
 
 type Props = {
   handleSave: () => void;
