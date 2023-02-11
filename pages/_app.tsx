@@ -9,6 +9,7 @@ import "@/styles/radix/checkbox.css";
 import "@/styles/radix/dropdownmenu.css";
 import "@/styles/radix/label.css";
 import "@/styles/radix/navigationmenu.css";
+import "@/styles/radix/radiogroup.css";
 import "@/styles/radix/select.css";
 import "@/styles/radix/slider.css";
 import "@/styles/radix/switch.css";

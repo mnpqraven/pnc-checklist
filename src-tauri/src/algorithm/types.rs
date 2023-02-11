@@ -83,7 +83,7 @@ pub enum AlgoMainStat {
     PhysPen,
     #[strum(serialize = "Physical Pen. %")]
     PhysPenPercent,
-    #[strum(serialize = "Operand Pen. %")]
+    #[strum(serialize = "Operand Pen.")]
     OperandPen,
     #[strum(serialize = "Operand Pen. %")]
     OperandPenPercent,

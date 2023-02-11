@@ -53,14 +53,14 @@ const Dolls = () => {
 
   return (
     <main>
-      <div className="big_container">
-        <DollContext.Provider
-          value={{
-            dollData,
-            setDollData,
-            storeLoading: storeUnitsQuery.isLoading,
-          }}
-        >
+      <DollContext.Provider
+        value={{
+          dollData,
+          setDollData,
+          storeLoading: storeUnitsQuery.isLoading,
+        }}
+      >
+        <div className="big_container">
           <div className="panel_left component_space">
             <DollList
               store={dirtyUnits}
@@ -68,11 +68,9 @@ const Dolls = () => {
               indexChange={setCurrentIndex}
             />
           </div>
-          <div className="flex flex-grow flex-col">
-            <DollProfile handleSave={handleSave} canSave={canSave} />
-          </div>
-        </DollContext.Provider>
-      </div>
+          <DollProfile handleSave={handleSave} canSave={canSave} />
+        </div>
+      </DollContext.Provider>
     </main>
   );
 };

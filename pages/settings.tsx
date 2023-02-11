@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import { THEME_CLASSES } from "@/utils/defaults";
+import RadioGroup from "@/components/Form/RadioGroup";
 
 export default function Settings() {
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+
   const [filePath, setFilePath] = useState("");
   // TODO: move log to context for overall logging
   const [log, setLog] = useState("awaiting import");
+  const themeList = [...Object.keys(THEME_CLASSES), "system"];
 
-  const themeList = [ ... Object.keys(THEME_CLASSES), 'system'];
+  useEffect(() => setMounted(true), []);
 
   async function openImportDialog() {
     await open().then((e) => {
@@ -50,6 +54,7 @@ export default function Settings() {
     });
   }
 
+  if (!mounted) return null;
   return (
     <main>
       <div className="component_space flex flex-col">
@@ -64,20 +69,10 @@ export default function Settings() {
           <button onClick={openImportDialog}>Import database</button>
           <button onClick={openExportDialog}>Export database</button>
         </div>
-        {themeList.map((th, index) => (
-          <label key={index}>
-            <input
-              key={index}
-              type="radio"
-              checked={theme === th}
-              onChange={() => setTheme(th)}
-            />
-            {th}
-          </label>
-        ))}
+        <RadioGroup value={theme} options={themeList} onChange={setTheme} />
         <div>
-          <p>assets from 42Lab wiki under CC BY-NC-SA</p>
-          <p>made with NextJS and Tauri</p>
+          <p>Assets from 42Lab wiki under CC BY-NC-SA</p>
+          <p>Made with NextJS and Tauri</p>
         </div>
       </div>
     </main>
