@@ -9,40 +9,40 @@ fn validalgo() {
         offense: vec![AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![true, true, true]),
+            slot: AlgoSlot::new_default(true),
         }],
         stability: vec![
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, false, false]),
+                slot: AlgoSlot::new_three(true, false, false),
             },
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, false, true]),
+                slot: AlgoSlot::new_three(true, false, true),
             },
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, true, true]), // mark
+                slot: AlgoSlot::new_default(true), // mark
             },
         ],
         special: vec![
             AlgoPiece {
                 name: Algorithm::DeltaV,
                 stat: AlgoMainStat::Haste,
-                slot: AlgoSlot(vec![true, true, true]), // mark
+                slot: AlgoSlot::new_default(true), // mark
             },
             AlgoPiece {
                 name: Algorithm::Paradigm,
                 stat: AlgoMainStat::Haste,
-                slot: AlgoSlot(vec![true, false, true]),
+                slot: AlgoSlot::new_three(true, false, true),
             },
             AlgoPiece {
                 name: Algorithm::SVM,
                 stat: AlgoMainStat::Haste,
-                slot: AlgoSlot(vec![true, true, true]), // mark
+                slot: AlgoSlot::new_default(true), // mark
             },
         ],
     };
@@ -69,17 +69,17 @@ fn validalgo() {
                 offense: vec![AlgoPiece {
                     name: Algorithm::Feedforward,
                     stat: AlgoMainStat::AtkPercent,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
                 stability: vec![AlgoPiece {
                     name: Algorithm::Encapsulate,
                     stat: AlgoMainStat::Health,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
                 special: vec![AlgoPiece {
                     name: Algorithm::DeltaV,
                     stat: AlgoMainStat::Haste,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
             },
             level: Level(1),
@@ -96,9 +96,9 @@ fn validalgo() {
     );
 
     let mut scnd_set = algo_set;
-    scnd_set.stability[2].slot.0 = vec![false, false, false];
-    scnd_set.special[0].slot.0 = vec![false, false, false];
-    scnd_set.special[2].slot.0 = vec![false, false, false];
+    scnd_set.stability[2].slot.0 = vec![Slot::One(false), Slot::Two(false), Slot::Three(false)];
+    scnd_set.special[0].slot.0 = vec![Slot::One(false), Slot::Two(false), Slot::Three(false)];
+    scnd_set.special[2].slot.0 = vec![Slot::One(false), Slot::Two(false), Slot::Three(false)];
     let scnd_unit = Unit {
         name: "hubble".to_string(),
         class: Class::Sniper,
@@ -122,17 +122,17 @@ fn validalgo() {
                 offense: vec![AlgoPiece {
                     name: Algorithm::Feedforward,
                     stat: AlgoMainStat::AtkPercent,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
                 stability: vec![AlgoPiece {
                     name: Algorithm::Encapsulate,
                     stat: AlgoMainStat::Health,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
                 special: vec![AlgoPiece {
                     name: Algorithm::DeltaV,
                     stat: AlgoMainStat::Haste,
-                    slot: AlgoSlot(vec![true, true, true]),
+                    slot: AlgoSlot::new_default(true),
                 }],
             },
             level: Level(1),
@@ -148,35 +148,35 @@ fn trait_algoset() {
         offense: vec![AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![true, true, true]),
+            slot: AlgoSlot::new_default(true),
         }],
         stability: vec![
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, false, false]),
+                slot: AlgoSlot::new_default(true),
             },
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, false, true]),
+                slot: AlgoSlot::new_default(true),
             },
             AlgoPiece {
                 name: Algorithm::Overflow,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![true, true, true]), // mark
+                slot: AlgoSlot::new_default(true),
             },
         ],
         special: vec![
             AlgoPiece {
                 name: Algorithm::DeltaV,
                 stat: AlgoMainStat::Haste,
-                slot: AlgoSlot(vec![true, true, true]), // mark
+                slot: AlgoSlot::new_default(true),
             },
             AlgoPiece {
                 name: Algorithm::Paradigm,
                 stat: AlgoMainStat::PostBattleRegen,
-                slot: AlgoSlot(vec![true, false, true]),
+                slot: AlgoSlot::new_three(true, false, true),
             },
         ],
     };

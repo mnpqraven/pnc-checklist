@@ -75,7 +75,7 @@ impl AlgorithmRequirement {
             .iter()
             .map(|piece| piece.slot.0.clone())
             .flatten()
-            .all(|value| value)
+            .all(|slot| slot.value)
     }
 }
 

@@ -17,6 +17,7 @@ pub enum AllEnums {
     AlgoCategory,
     NeuralExpansion,
     LoadoutType,
+    SlotPlacement
 }
 #[derive(Debug, EnumIter, EnumString, Display)]
 pub enum AllStructs {
@@ -44,6 +45,7 @@ pub enum AllStructs {
     Keychain,
     KeychainTable,
     Locker,
+    Slot
 }
 
 /// Generate a string array containing field names in a rust enum

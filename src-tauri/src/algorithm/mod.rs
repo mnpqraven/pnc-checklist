@@ -32,6 +32,8 @@ pub fn algo_piece_new(category: AlgoCategory, checked_slots: bool) -> AlgoPiece 
 }
 #[tauri::command]
 pub fn algo_slots_compute(name: Algorithm, current_slots: AlgoSlot) -> AlgoSlot {
+    println!("[invoke] algo_slots_compute");
+    println!("{:?} {:?}", name, current_slots.0);
     AlgoPiece::compute_slots(&name, &current_slots)
 }
 

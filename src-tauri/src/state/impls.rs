@@ -29,6 +29,34 @@ impl Default for UserJSON {
         .unwrap()
     }
 }
+#[cfg(test)]
+mod tests {
+    use crate::{unit::types::{Loadout, Unit}, stats::types::{UnitSkill, NeuralFragment}, algorithm::types::AlgoSet};
+
+    #[test]
+    fn serde() {
+        let lo: Loadout = Loadout {
+            skill_level: UnitSkill::max(),
+            level: crate::stats::types::Level(30),
+            algo: AlgoSet::new(true),
+            neural: crate::unit::types::NeuralExpansion::OneHalf,
+            frags: NeuralFragment(Some(9)),
+        };
+        let mut lo_goal = lo.clone();
+        lo_goal.frags = NeuralFragment(None);
+
+        let u: Unit = Unit {
+            name: "Croque".to_string(),
+            class: crate::unit::types::Class::Guard,
+            current: lo,
+            goal: lo_goal,
+        };
+        let t = serde_json::to_string_pretty::<Unit>(&u).unwrap();
+        for line in t.split("\n").into_iter() {
+            println!("{}", line);
+        }
+    }
+}
 
 impl Default for JSONStorage {
     /// NOTE: will be called during tauri's `manage` at startup

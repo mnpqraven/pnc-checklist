@@ -1,4 +1,5 @@
 import { AlgoCategory, Class } from "@/src-tauri/bindings/enums";
+import { Slot } from "@/src-tauri/bindings/structs/Slot";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -6,7 +7,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
   unitClass: Class;
-  value: boolean[];
+  value: Slot[];
   category: AlgoCategory;
   onChangeHandler: (value: boolean | "indeterminate", index: number) => void;
 };
@@ -33,7 +34,7 @@ const SlotCheckbox = ({
 
   useEffect(() => {
     setVisible(unitClass, category).then((size) =>
-      setClickable(size - value.filter(Boolean).length)
+      setClickable(size - value.filter(slot => Object.values(slot)).length)
     );
   }, [category, unitClass, value]);
 
@@ -46,16 +47,16 @@ const SlotCheckbox = ({
 
   return (
     <div className="flex gap-2">
-      {value.map((checked, index) => (
+      {value.map((slot, index) => (
         <Checkbox.Root
           className="CheckboxRoot"
           key={index}
-          checked={checked}
+          checked={Object.values(slot)[0]}
           onCheckedChange={(e) => {
             onChangeHandler(e, index);
             updateVisible(e);
           }}
-          disabled={!checked && clickable === 0}
+          disabled={!Object.values(slot)[0] && clickable === 0}
         >
           <Checkbox.Indicator className="CheckboxIndicator">
             <CheckIcon />

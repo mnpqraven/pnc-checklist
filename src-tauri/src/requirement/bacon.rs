@@ -222,17 +222,17 @@ fn missing_display() {
         AlgoPiece {
             name: Algorithm::Feedforward,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![false, false, true]),
+            slot: AlgoSlot::new_three(false, false, true),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, true]),
+            slot: AlgoSlot::new_three(false, true, true),
         },
         AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![true, false, false]),
+            slot: AlgoSlot::new_three(true, false, false),
         },
     ];
     let from_unit = Unit::default();
@@ -248,7 +248,7 @@ fn fulfilled() {
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, false]),
+            slot: AlgoSlot::new_three(false, true, false),
         }],
         special: vec![],
     };
@@ -257,12 +257,12 @@ fn fulfilled() {
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, false, false]),
+            slot: AlgoSlot::new_default(false),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, false]),
+            slot: AlgoSlot::new_three(false, true, false),
         },
     ];
     set.apply_checkbox(with_goal);
@@ -274,12 +274,12 @@ fn fulfilled() {
             AlgoPiece {
                 name: Algorithm::Encapsulate,
                 stat: AlgoMainStat::Health,
-                slot: AlgoSlot(vec![true, true, true]),
+                slot: AlgoSlot::new_default(true),
             },
             AlgoPiece {
                 name: Algorithm::Encapsulate,
                 stat: AlgoMainStat::Health,
-                slot: AlgoSlot(vec![true, true, true]),
+                slot: AlgoSlot::new_default(true),
             },
         ],
         special: vec![],
