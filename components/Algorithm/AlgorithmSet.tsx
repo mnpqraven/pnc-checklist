@@ -75,11 +75,11 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   );
 
   // if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
-  if (mainStatQuery.isLoading) return null;
+  if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
   if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />;
 
+  const { data: algoDb } = algoDbQuery;
   const { data: mainStat } = mainStatQuery;
-  // const { data: algoDb } = algoDbQuery;
 
   return (
     <div className="flex flex-none flex-col">
@@ -99,7 +99,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                         key={pieceind}
                         index={pieceind}
                         options={{
-                          algoTypes: algoDbQuery.data[catindex],
+                          algoTypes: algoDb[catindex],
                           mainStat: mainStat[catindex],
                         }}
                         category={category}
