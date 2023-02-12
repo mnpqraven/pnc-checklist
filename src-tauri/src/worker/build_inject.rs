@@ -1,3 +1,5 @@
+use crate::model::error::TauriError;
+
 use super::{PUB_SIGNATURE, TAURI_CONF};
 use chrono::{DateTime, Utc};
 use regex::Regex;
@@ -59,12 +61,14 @@ pub(super) fn get_payload(path: String) -> Result<EndPointPayload, serde_json::E
     serde_json::from_str::<EndPointPayload>(&buffer)
 }
 
-fn get_tauri_version() -> Result<Version, Box<dyn Error>> {
-    let buffer = fs::read_to_string(Path::new(&TAURI_CONF)).unwrap();
-    let val: Value = serde_json::from_str(&buffer)?;
-    let version = val["package"]["version"].to_string();
+#[tauri::command]
+pub fn get_tauri_version() -> Result<Version, TauriError> {
+    let ver = env!("CARGO_PKG_VERSION");
 
-    Ok(Version::parse(version.trim_matches('\"'))?)
+    match Version::parse(ver.trim_matches('\"')) {
+        Ok(version) => Ok(version),
+        Err(_) => Err(TauriError::ResourceRequestFailed("version".to_string()))
+    }
 }
 
 pub(super) fn build_payload(
@@ -139,5 +143,11 @@ mod tests {
         let next = build_payload(t).unwrap();
         assert_eq!(next.version.to_string(), "0.1.5");
         assert_eq!(next.platforms.windows.url.0, "https://github.com/mnpqraven/pnc-checklist/releases/download/0.1.5/pnc-checklist_0.1.5_x64_en-US.msi.zip");
+    }
+
+    #[test]
+    fn cargo_ver() {
+        let ver =  env!("CARGO_PKG_VERSION");
+        println!("{}", ver);
     }
 }
