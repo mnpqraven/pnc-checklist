@@ -26,7 +26,7 @@ mod runnables {
     // TODO: test, what about signatures
     /// update steps:
     /// update version in `Cargo.toml`
-    /// run this runnable > build > (built sig ??) > commit + push
+    /// run this runnable > build > update built sig to ENV > build again ?? > commit + push
     fn update_endpoint_json() -> Result<(), &'static str> {
         let built = build_payload(get_payload(ENDPOINT.to_string()).unwrap()).unwrap();
         write_endpoint(ENDPOINT.to_string(), &built).unwrap();
