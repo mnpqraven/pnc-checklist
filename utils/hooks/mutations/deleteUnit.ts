@@ -1,4 +1,4 @@
-import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -22,10 +22,10 @@ export const useDeleteUnitMutation = (
   const client = useQueryClient();
   const { mutate: deleteUnit } = useMutation({
     mutationFn: (variables: { index: number }) =>
-      invoke<number>(INVOKE_KEYS.DELETE_UNIT, variables),
+      invoke<number>(IVK.DELETE_UNIT, variables),
     onSuccess: (data) =>
       client
-        .refetchQueries({ queryKey: [INVOKE_KEYS.GET_UNITS] })
+        .refetchQueries({ queryKey: [IVK.GET_UNITS] })
         .then(() => deleteUnitPostProcess(setStore, setIndex, data)),
   });
 

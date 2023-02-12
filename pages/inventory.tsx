@@ -4,17 +4,16 @@ import AlgoRequirementContainer from "@/components/Requirement/AlgorithmRequirem
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
-import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 
 const Inventory = () => {
   const client = useQueryClient();
   const refetchLocker = () =>
-    client.refetchQueries({ queryKey: [INVOKE_KEYS.VIEW_LOCKER] });
+    client.refetchQueries({ queryKey: [IVK.VIEW_LOCKER] });
 
   const lockerDataQuery = useQuery({
-    queryKey: [INVOKE_KEYS.VIEW_LOCKER],
-    queryFn: () =>
-      invoke<[AlgoPiece | null, Unit | null][]>(INVOKE_KEYS.VIEW_LOCKER),
+    queryKey: [IVK.VIEW_LOCKER],
+    queryFn: () => invoke<[AlgoPiece | null, Unit | null][]>(IVK.VIEW_LOCKER),
   });
 
   function deleteKeychain(index: number) {

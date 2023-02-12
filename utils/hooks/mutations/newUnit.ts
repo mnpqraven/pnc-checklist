@@ -1,4 +1,4 @@
-import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -33,14 +33,14 @@ const useNewUnitMutation = (
   const { mutate: newUnit } = useMutation({
     mutationFn: (variables: { length: number; unitMetadata?: InvokeParams }) =>
       invoke<[Unit, number]>(
-        INVOKE_KEYS.NEW_UNIT,
+        IVK.NEW_UNIT,
         variables.unitMetadata
           ? variables.unitMetadata
           : DEFAULT_INVOKE_PARAMS(variables.length)
       ),
     onSuccess: (data) =>
       client
-        .refetchQueries({ queryKey: [INVOKE_KEYS.GET_UNITS] })
+        .refetchQueries({ queryKey: [IVK.GET_UNITS] })
         .then(() => newUnitPostProcess(data, setStore, setIndex)),
   });
 

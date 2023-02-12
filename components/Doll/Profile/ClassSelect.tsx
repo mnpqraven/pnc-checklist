@@ -1,5 +1,5 @@
 import { Class } from "@/src-tauri/bindings/enums";
-import { INVOKE_KEYS } from "@/src-tauri/bindings/invoke_keys";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { class_src } from "@/utils/helper";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -27,8 +27,8 @@ export const ClassSelect = ({
   onChangeHandler: handleClassChange,
 }: Props) => {
   const classesQuery = useQuery({
-    queryKey: [INVOKE_KEYS.ENUM_LS, "Class"],
-    queryFn: () => invoke<Class[]>(INVOKE_KEYS.ENUM_LS, { name: "Class" }),
+    queryKey: [IVK.ENUM_LS, "Class"],
+    queryFn: () => invoke<Class[]>(IVK.ENUM_LS, { name: "Class" }),
   });
   const [hovered, setHovered] = useState(false);
 
