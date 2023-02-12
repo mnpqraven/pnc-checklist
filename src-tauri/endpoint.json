@@ -1,11 +1,11 @@
 {
   "version": "0.1.31",
   "notes": "Version bump",
-  "pub_date": "2023-02-12T08:10:09.472557700Z",
+  "pub_date": "2023-02-12T08:42:46.195257500Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcFpkOUVxRTVxQklWb1NiMTNvcG9NVU9nVnhHajA0STl4UW1Oekp1cGkyWnJlejMyMTh0Vk42Skc3YzB1UVZjcHJrbUhSMzhNZWhZZjZ5YXBZN0pQNmlvSkUwdm1UY2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNjcyNjQ5OTE4CWZpbGU6cG5jLWNoZWNrbGlzdF8wLjEuMV94NjRfZW4tVVMubXNpLnppcApjMUoyUDZzVlpUZ29iNmxBUGF2MVZjNENjQksxTkFvTlBBYWJLOWxMcWlLUUdGNXYxcXlPellJTU83K0Y3Uytwak1HMThQRVQrUjZ1cWd5M3ZpNWJBZz09Cg==",
-      "url": "https://github.com/mnpqraven/pnc-checklist/releases/download/0.1.31/pnc-checklist_0.1.31_x64_en-US.msi.zip"
+      "url": "https://github.com/mnpqraven/pnc-checklist/releases/download/0.1.311/pnc-checklist_0.1.311_x64_en-US.msi.zip"
     }
   }
 }

@@ -14,7 +14,7 @@ rust-version = "1.57"
 tauri-build = { version = "1.2", features = [] }
 
 [dependencies]
-serde_json = {version = "1.0", features = ["std"]}
+serde_json = {version = "1.0", features = ["std"] }
 serde = { version = "1.0", features = ["derive", "rc"] }
 tauri = { version = "1.2", features = ["api-all", "updater"] }
 ts-rs = "6.2.1"
