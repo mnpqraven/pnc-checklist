@@ -58,6 +58,7 @@ const Dolls = () => {
           dollData,
           setDollData,
           storeLoading: storeUnitsQuery.isLoading,
+          index: currentIndex
         }}
       >
         <div className="big_container">

@@ -7,11 +7,13 @@ export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
   storeLoading: boolean
+  index: number
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
-  storeLoading: true
+  storeLoading: true,
+  index: 0
 });
 
 export type SaveContextPayload = {
@@ -20,7 +22,7 @@ export type SaveContextPayload = {
 }
 export const SaveContext = React.createContext<SaveContextPayload>({
   unsaved: false,
-  setUnsaved: () => {}
+  setUnsaved: () => { }
 })
 
 export type ToastContextPayload = {
@@ -33,11 +35,11 @@ export type ToastContextPayload = {
 }
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,
-  setOpen: () => {},
+  setOpen: () => { },
   header: "Default Header",
   content: "Default Content",
-  setHeaderContent: () => {},
-  fireToast: () => {}
+  setHeaderContent: () => { },
+  fireToast: () => { }
 })
 
 export type AlgoError = [
