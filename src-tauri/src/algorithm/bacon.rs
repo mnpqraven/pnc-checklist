@@ -1,4 +1,7 @@
-use super::{types::{AlgoCategory, AlgoSet}, dev_print_single_main};
+use super::{
+    dev_print_single_main,
+    types::{AlgoCategory, AlgoSet},
+};
 use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
 
 #[test]
@@ -172,4 +175,38 @@ fn mainstat_display() {
     let m = AlgoMainStat::OperandPenPercent;
     assert_eq!(dev_print_single_main(m), "Operand Pen. %");
     assert_eq!(dev_print_single_main(AlgoMainStat::Dodge), "Dodge");
+}
+
+#[test]
+fn set_filling() {
+    let mut left: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: [AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot([false, true, false].to_vec()),
+        }; 1]
+            .to_vec(),
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![false, false, true]),
+        }],
+    };
+    let right: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: [AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot([true, true, true].to_vec()),
+        }; 1]
+            .to_vec(),
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot(vec![true, true, true]),
+        }],
+    };
+    assert_eq!(left.fill_set(true), right);
+    assert_eq!(left, right);
 }

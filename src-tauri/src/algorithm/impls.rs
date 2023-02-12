@@ -118,7 +118,7 @@ impl AlgoSet {
         }
     }
 
-    /// returns all AlgoPieces from the set as a vector
+    /// returns all (cloned) AlgoPieces from the set as a vector
     /// can be used for later searches and filters
     pub fn get_bucket(&self) -> Vec<AlgoPiece> {
         let mut v: Vec<AlgoPiece> = Vec::new();
@@ -199,6 +199,23 @@ impl AlgoSet {
             }
         }
         *self = Self::get_set(&with_goal);
+    }
+
+    fn get_piece_ref(&self) -> [&Vec<AlgoPiece>; 3] {
+        let t = [&self.offense, &self.stability, &self.special];
+        t
+    }
+    fn get_piece_ref_mut(&mut self) -> [&mut Vec<AlgoPiece>; 3] {
+        let t = [&mut self.offense, &mut self.stability, &mut self.special];
+        t
+    }
+
+    pub fn fill_set(&mut self, all_or_none: bool) -> AlgoSet {
+        self.get_piece_ref_mut().into_iter().for_each(|cat| {
+            cat.iter_mut()
+                .for_each(|piece| piece.slot.0.iter_mut().for_each(|slot| *slot = all_or_none))
+        });
+        self.clone()
     }
 }
 

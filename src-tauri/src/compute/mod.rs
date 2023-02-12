@@ -5,7 +5,7 @@ use crate::requirement::types::UnitRequirement;
 use crate::state::types::{Computed, GrandResource, JSONStorage};
 use crate::{
     requirement::{
-        requirement_algo, requirement_level, requirement_neural, requirement_slv,
+        requirement_algo_unit, requirement_level, requirement_neural, requirement_slv,
         requirement_widget,
     },
     state::types::UserJSON,
@@ -29,7 +29,7 @@ pub fn update_reqs(computed: State<Computed>) -> Result<(), TauriError> {
             level: requirement_level(unit.current.level.0, unit.goal.level.0).unwrap(),
             breakthrough: requirement_widget(unit.class, unit.current.level.0, unit.goal.level.0)
                 .unwrap(),
-            algo: requirement_algo(&Arc::new(unit)).unwrap(),
+            algo: requirement_algo_unit(&Arc::new(unit)).unwrap(),
         })
     }
     req_guard.unit_req = reqs;

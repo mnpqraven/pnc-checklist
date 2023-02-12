@@ -28,13 +28,13 @@ use unit::types::Unit;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        main_stat_all, print_algo, print_main_stat, dev_print_single_main,
+        main_stat_all, print_algo, print_main_stat, dev_print_single_main, algo_set_fill,
     },
     compute::{get_needed_rsc, update_chunk},
     model::enum_ls,
     requirement::{
         requirement_level, requirement_neural, requirement_slv, requirement_widget,
-        requirment_neural_kits, dev_algo, algo_req_fulfilled,
+        requirment_neural_kits, requirement_algo_store, algo_req_fulfilled,
     },
     service::file::{export, import, set_default_file},
     state::{view_locker, remove_kc, clear_ownerless},
@@ -76,6 +76,7 @@ fn main() {
             // algorithm
             algorithm_all,
             algo_set_new,
+            algo_set_fill,
             algo_piece_new,
             algo_slots_compute,
             default_slot_size,
@@ -95,7 +96,7 @@ fn main() {
             requirment_neural_kits,
             requirement_widget,
             // requirement_algo, // TODO: conflict with Dese
-            dev_algo,
+            requirement_algo_store,
             algo_req_fulfilled,
             // state
             view_locker,
