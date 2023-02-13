@@ -1,13 +1,14 @@
 import { AlgoCategory, Class } from "@/src-tauri/bindings/enums";
-import { Slot } from "@/src-tauri/bindings/structs/Slot";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { AlgoSlot } from "@/src-tauri/bindings/structs";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { invoke } from "@tauri-apps/api/tauri";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   unitClass: Class;
-  value: Slot[];
+  value: AlgoSlot;
   category: AlgoCategory;
   onChangeHandler: (value: boolean | "indeterminate", index: number) => void;
 };
@@ -24,7 +25,7 @@ const SlotCheckbox = ({
     unitClass: Class,
     category: AlgoCategory
   ): Promise<number> {
-    let s = await invoke<number>("default_slot_size", {
+    let s = await invoke<number>(IVK.DEFAULT_SLOT_SIZE, {
       class: unitClass,
       category,
     });
@@ -34,7 +35,7 @@ const SlotCheckbox = ({
 
   useEffect(() => {
     setVisible(unitClass, category).then((size) =>
-      setClickable(size - value.filter(slot => Object.values(slot)).length)
+      setClickable(size - value.filter((slot) => slot.value).length)
     );
   }, [category, unitClass, value]);
 
@@ -50,13 +51,13 @@ const SlotCheckbox = ({
       {value.map((slot, index) => (
         <Checkbox.Root
           className="CheckboxRoot"
-          key={index}
-          checked={Object.values(slot)[0]}
+          key={slot.placement}
+          checked={slot.value}
           onCheckedChange={(e) => {
             onChangeHandler(e, index);
             updateVisible(e);
           }}
-          disabled={!Object.values(slot)[0] && clickable === 0}
+          disabled={!slot.value && clickable === 0}
         >
           <Checkbox.Indicator className="CheckboxIndicator">
             <CheckIcon />

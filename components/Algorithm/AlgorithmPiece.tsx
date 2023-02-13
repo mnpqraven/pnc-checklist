@@ -9,6 +9,7 @@ import {
   AlgoCategory,
   AlgoMainStat,
   Algorithm,
+  SlotPlacement,
 } from "@/src-tauri/bindings/enums";
 import PieceModal from "./PieceModal";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,10 +17,10 @@ import MainStatSelect from "../RadixDropdown";
 import { TrashIcon } from "@radix-ui/react-icons";
 import AlgoImage from "./AlgoImage";
 import { useComputeSlotsMutation } from "@/utils/hooks/mutations/computeSlots";
-import { useQuery } from "@tanstack/react-query";
-import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { useImmer } from "use-immer";
 import { Slot } from "@/src-tauri/bindings/structs/Slot";
+import { useEnumTable } from "@/utils/hooks/useEnumTable";
+import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 
 type Props = {
   index: number;
@@ -47,10 +48,9 @@ const AlgorithmPiece = ({
 
   const { mutate: updateSlots } = useComputeSlotsMutation();
 
-  const { data: slotIter } = useQuery({
-    queryKey: [IVK.ENUM_LS, "SlotPlacement"],
-    queryFn: () => invoke<Slot[]>(IVK.ENUM_LS, { name: "SlotPlacement" }),
-  });
+  const { data: slotPlacementIter } = useEnumTable<SlotPlacement>(
+    ENUM_TABLE.SlotPlacement
+  );
 
   // chaging unit
   useEffect(() => {
@@ -67,7 +67,7 @@ const AlgorithmPiece = ({
     pieceUpdate(piece, category, index);
     // NOTE: do NOT put pieceUpdate in the depency Array
     // TODO: test
-  }, [category, index, piece, pieceUpdate]);
+  }, [category, index, piece]);
 
   function pieceHandler(name: Algorithm) {
     invoke<AlgoSlot | null>("validate_slots", { piece: pieceData })
@@ -99,15 +99,11 @@ const AlgorithmPiece = ({
    */
   function slotHandler(e: boolean | "indeterminate", checkboxIndex: number) {
     if (e === "indeterminate") return;
-    if (slotIter) {
+    if (slotPlacementIter) {
       let next_slot: Slot[] = slot.map((item, index) => {
         if (index === checkboxIndex) {
-          let key = slotIter[index];
-          let t: Slot = {placement: "Two", value: e}
-          console.warn(t)
-          return t
-        }
-        return item;
+          return { placement: slotPlacementIter[index], value: e };
+        } else return item;
       });
       setPiece({ ...pieceData, slot: next_slot });
       setSlot(next_slot);

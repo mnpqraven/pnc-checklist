@@ -1,8 +1,7 @@
 import { Class } from "@/src-tauri/bindings/enums";
-import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { class_src } from "@/utils/helper";
-import { useQuery } from "@tanstack/react-query";
-import { invoke } from "@tauri-apps/api/tauri";
+import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -26,15 +25,11 @@ export const ClassSelect = ({
   value,
   onChangeHandler: handleClassChange,
 }: Props) => {
-  const classesQuery = useQuery({
-    queryKey: [IVK.ENUM_LS, "Class"],
-    queryFn: () => invoke<Class[]>(IVK.ENUM_LS, { name: "Class" }),
-  });
+  const { data } = useEnumTable<Class>(ENUM_TABLE.Class);
   const [hovered, setHovered] = useState(false);
 
-  if (!classesQuery.isSuccess) return null;
-  // const { data: classes } = classesQuery;
-  const { current, rest } = split_class(value, classesQuery.data);
+  if (!data) return null;
+  const { current, rest } = split_class(value, data);
 
   return (
     <motion.div
