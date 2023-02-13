@@ -20,6 +20,7 @@ mod indexbindings {
         write_index_binding::<AllEnums>(Folder::Enums).unwrap();
         write_index_binding::<AllStructs>(Folder::Structs).unwrap();
         write_index_keys("Ivk", "bindings/invoke_keys.ts").unwrap();
+        write_enum_table::<AllEnums>("Enum_Table").unwrap();
     }
 }
 
