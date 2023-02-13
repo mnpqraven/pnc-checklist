@@ -1,18 +1,17 @@
 import { AlgoCategory, Algorithm, Day } from "@/src-tauri/bindings/enums";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { DEFAULT_DAYS } from "@/utils/defaults";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useAlgoDbQuery } from "./useAlgoDbQuery";
 
 type AlgoTuple = [AlgoCategory, Algorithm[]];
 export const useAlgoByDayQuery = (dayIndex: number) => {
-  const client = useQueryClient();
   const day = DEFAULT_DAYS[dayIndex];
   const algoDb = useAlgoDbQuery();
 
   const prefetchOpt = (day: Day) => ({
-    queryKey: [IVK.GET_ALGO_BY_DAYS, algoDb, day],
+    queryKey: [IVK.GET_ALGO_BY_DAYS, algoDb.data, day],
     queryFn: () => invoke<Algorithm[]>(IVK.GET_ALGO_BY_DAYS, { day }),
   });
 

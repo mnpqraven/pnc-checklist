@@ -3,7 +3,7 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { useCallback, useContext, useRef } from "react";
+import { useCallback, useContext } from "react";
 import AlgorithmPiece from "./AlgorithmPiece";
 import {
   AlgoMainStat,

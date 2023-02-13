@@ -73,8 +73,7 @@ impl AlgorithmRequirement {
     pub(super) fn is_fulfilled(&self) -> bool {
         self.pieces
             .iter()
-            .map(|piece| piece.slot.0.clone())
-            .flatten()
+            .flat_map(|piece| piece.slot.0.clone())
             .all(|slot| slot.value)
     }
 }

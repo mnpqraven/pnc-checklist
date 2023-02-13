@@ -52,7 +52,7 @@ mod tests {
             goal: lo_goal,
         };
         let t = serde_json::to_string_pretty::<Unit>(&u).unwrap();
-        for line in t.split("\n").into_iter() {
+        for line in t.split('\n') {
             println!("{}", line);
         }
     }

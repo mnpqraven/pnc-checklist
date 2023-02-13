@@ -219,13 +219,11 @@ impl AlgoSet {
     }
 
     fn get_piece_ref(&self) -> [&Vec<AlgoPiece>; 3] {
-        let t = [&self.offense, &self.stability, &self.special];
-        t
+        [&self.offense, &self.stability, &self.special]
     }
 
     fn get_piece_ref_mut(&mut self) -> [&mut Vec<AlgoPiece>; 3] {
-        let t = [&mut self.offense, &mut self.stability, &mut self.special];
-        t
+        [&mut self.offense, &mut self.stability, &mut self.special]
     }
 
     pub fn fill_set(&mut self, all_or_none: bool) -> AlgoSet {
