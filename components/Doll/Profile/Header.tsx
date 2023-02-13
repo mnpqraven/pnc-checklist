@@ -3,6 +3,7 @@ import Label from "../../Form/Label";
 import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { ClassSelect } from "./ClassSelect";
+import Button from "@/components/Button";
 
 type Props = {
   handleSave: () => void;
@@ -39,18 +40,13 @@ const DollHeader = ({ handleSave, canSave }: Props) => {
 
       <AnimatePresence>
         {canSave && (
-          <motion.button
-            className="Button big violet"
+          <Button
+            label="Save changes"
             onClick={() => {
               handleSave();
               fireToast();
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            Save changes
-          </motion.button>
+          />
         )}
       </AnimatePresence>
     </div>

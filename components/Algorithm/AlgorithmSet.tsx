@@ -18,6 +18,7 @@ import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 import { AnimatePresence, motion } from "framer-motion";
 import ErrorContainer from "../Error";
 import Skeleton from "react-loading-skeleton";
+import Button from "../Button";
 
 type Props = {
   algo: AlgoSet | undefined;
@@ -155,12 +156,9 @@ const NewAlgoSet = ({
   const checkedSlots = loadout_type === "goal";
 
   return (
-    <button
-      className="btn"
-      onClick={() => newAlgorithmPiece({ category, checkedSlots })}
-    >
+    <Button onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
       New {category} piece
-    </button>
+    </Button>
   );
 };
 

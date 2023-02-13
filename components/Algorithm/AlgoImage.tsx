@@ -9,7 +9,6 @@ type Props = {
 };
 
 const AlgoImage = ({ algo, width = 64, onClick }: Props) => {
-  console.warn(width)
   return (
     <div className={`w-[${width}px]`}>
       <Image

@@ -21,6 +21,7 @@ import { useImmer } from "use-immer";
 import { Slot } from "@/src-tauri/bindings/structs/Slot";
 import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
+import Button from "../Button";
 
 type Props = {
   index: number;
@@ -150,12 +151,12 @@ const AlgorithmPiece = ({
           ) : (
             <Loading />
           )}
-          <button
-            className="Button small red"
+          <Button
+            className="small red"
             onClick={() => pieceUpdate(null, category, index)}
           >
             <TrashIcon />
-          </button>
+          </Button>
         </div>
       </div>
     </motion.div>

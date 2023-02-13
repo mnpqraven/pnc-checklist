@@ -3,6 +3,7 @@ import { algo_src } from "@/utils/helper";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useEffect, useState } from "react";
 import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
+import Button from "../Button";
 
 type Props = {
   onMouseEnter: (offset: number) => void;
@@ -29,15 +30,14 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
     <div className="grid w-60 grid-cols-3 px-2">
       {["Prev", undefined, "Next"].map((item, index) =>
         item ? (
-          <button
+          <Button
             key={index}
-            className="Button small violet"
+            className={"small violet"}
             onMouseEnter={() => mouseInteract(index - 1)}
             onClick={() => mouseInteract(index - 1)}
             onMouseLeave={() => mouseInteract(undefined)}
-          >
-            {item}
-          </button>
+            label={item}
+          />
         ) : (
           <p key={index} className="text-center">
             {DEFAULT_DAYS[dayIndex]}

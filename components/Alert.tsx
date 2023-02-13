@@ -1,11 +1,6 @@
 import React from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import {
-  ALERT_BUTTON_CANCEL,
-  ALERT_BUTTON_CONTENT,
-  ALERT_BUTTON_HEADER,
-  ALERT_BUTTON_OK,
-} from "@/utils/lang";
+import Button from "./Button";
 
 type Props = {
   open: boolean;
@@ -27,7 +22,9 @@ const Alert = ({ open, onCancel, onAction, content }: Props) => {
           <AlertDialog.Title className="AlertDialogTitle">
             {content.header}
           </AlertDialog.Title>
-          <AlertDialog.Description className="AlertDialogDescription">{content.content}</AlertDialog.Description>
+          <AlertDialog.Description className="AlertDialogDescription">
+            {content.content}
+          </AlertDialog.Description>
           <div
             style={{
               display: "flex",
@@ -36,10 +33,10 @@ const Alert = ({ open, onCancel, onAction, content }: Props) => {
             }}
           >
             <AlertDialog.Cancel asChild onClick={onCancel}>
-              <button className="Button mauve">{content.cancel}</button>
+              <Button className="mauve" label={content.cancel} />
             </AlertDialog.Cancel>
             <AlertDialog.Action asChild onClick={onAction}>
-              <button className="Button red">{content.ok}</button>
+              <Button className="red" label={content.ok} />
             </AlertDialog.Action>
           </div>
         </AlertDialog.Content>

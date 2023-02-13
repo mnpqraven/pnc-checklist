@@ -4,6 +4,7 @@ import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import { THEME_CLASSES } from "@/utils/defaults";
 import RadioGroup from "@/components/Form/RadioGroup";
+import Button from "@/components/Button";
 
 export default function Settings() {
   const [mounted, setMounted] = useState(false);
@@ -65,9 +66,9 @@ export default function Settings() {
           <input type="text" disabled defaultValue={filePath} />
         </label>
         <div className="flex">
-          <button onClick={openDefaultDialog}>Choose default file</button>
-          <button onClick={openImportDialog}>Import database</button>
-          <button onClick={openExportDialog}>Export database</button>
+          <Button onClick={openDefaultDialog} label={"Choose default file"} />
+          <Button onClick={openImportDialog} label={"Import database"} />
+          <Button onClick={openExportDialog} label={"Export database"} />
         </div>
         <RadioGroup value={theme} options={themeList} onChange={setTheme} />
         <div>
