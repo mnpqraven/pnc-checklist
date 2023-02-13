@@ -16,6 +16,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
+mod worker;
 use std::sync::Mutex;
 
 use requirement::types::DatabaseRequirement;
@@ -28,7 +29,7 @@ use unit::types::Unit;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        main_stat_all, print_algo, print_main_stat, dev_print_single_main, algo_set_fill,
+        dev_print_single_main, main_stat_all, print_algo, print_main_stat, algo_set_fill,
     },
     compute::{get_needed_rsc, update_chunk},
     model::enum_ls,
@@ -37,10 +38,11 @@ use crate::{
         requirment_neural_kits, requirement_algo_store, algo_req_fulfilled,
     },
     service::file::{export, import, set_default_file},
-    state::{view_locker, remove_kc, clear_ownerless},
-    table::{get_algo_db, get_algo_by_days, get_bonuses},
-    unit::{delete_unit, new_unit, save_units, get_units, get_unit},
+    state::{clear_ownerless, remove_kc, view_locker},
+    table::{get_algo_by_days, get_algo_db, get_bonuses},
+    unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},
+    worker::build_inject::get_tauri_version,
 };
 
 fn main() {
@@ -118,7 +120,9 @@ fn main() {
             get_unit,
             // validator
             validate_slots,
-            validate
+            validate,
+            // worker
+            get_tauri_version
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

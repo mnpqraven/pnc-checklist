@@ -35,5 +35,6 @@ export const IVK = {
   GET_UNIT: "get_unit",
   VALIDATE_SLOTS: "validate_slots",
   VALIDATE: "validate",
+  GET_TAURI_VERSION: "get_tauri_version",
 } as const;
 export type Ivk = keyof typeof IVK;
