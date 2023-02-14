@@ -17,6 +17,7 @@ impl Algorithm {
             AlgoCategory::Special => Algorithm::DeltaV,
         }
     }
+
     pub fn all_gen1() -> Vec<Algorithm> {
         vec![
             Algorithm::LowerLimit,
@@ -107,6 +108,22 @@ impl Algorithm {
             Day::Sun => Vec::new(),
         }
     }
+
+    fn get_slot_size(&self) -> usize {
+        match self {
+            Algorithm::Perception
+            | Algorithm::Deduction
+            | Algorithm::Connection
+            | Algorithm::Cluster
+            | Algorithm::Convolution
+            | Algorithm::Feedforward
+            | Algorithm::Inspiration
+            | Algorithm::Progression
+            | Algorithm::Rationality
+            | Algorithm::Stratagem => 2,
+            _ => 3,
+        }
+    }
 }
 
 impl AlgoSet {
@@ -118,7 +135,7 @@ impl AlgoSet {
         }
     }
 
-    /// returns all AlgoPieces from the set as a vector
+    /// returns all (cloned) AlgoPieces from the set as a vector
     /// can be used for later searches and filters
     pub fn get_bucket(&self) -> Vec<AlgoPiece> {
         let mut v: Vec<AlgoPiece> = Vec::new();
@@ -200,6 +217,27 @@ impl AlgoSet {
         }
         *self = Self::get_set(&with_goal);
     }
+
+    fn get_piece_ref(&self) -> [&Vec<AlgoPiece>; 3] {
+        [&self.offense, &self.stability, &self.special]
+    }
+
+    fn get_piece_ref_mut(&mut self) -> [&mut Vec<AlgoPiece>; 3] {
+        [&mut self.offense, &mut self.stability, &mut self.special]
+    }
+
+    pub fn fill_set(&mut self, all_or_none: bool) -> AlgoSet {
+        self.get_piece_ref_mut().into_iter().for_each(|cat| {
+            cat.iter_mut().for_each(|piece| {
+                piece
+                    .slot
+                    .0
+                    .iter_mut()
+                    .for_each(|slot| slot.set(all_or_none))
+            })
+        });
+        self.clone()
+    }
 }
 
 impl AlgoPiece {
@@ -208,7 +246,7 @@ impl AlgoPiece {
         Self {
             name: Algorithm::default(&category),
             stat: AlgoMainStat::default(&category),
-            slot: AlgoSlot::new(checked_slots),
+            slot: AlgoSlot::new_default(checked_slots),
         }
     }
 
@@ -218,24 +256,20 @@ impl AlgoPiece {
     /// * `name`: New `Algorithm` that the `AlgoPiece` is being changed to
     /// * `current_slots`:
     pub fn compute_slots(name: &Algorithm, current_slots: &AlgoSlot) -> AlgoSlot {
-        let size: usize = match name {
-            Algorithm::Perception
-            | Algorithm::Deduction
-            | Algorithm::Connection
-            | Algorithm::Cluster
-            | Algorithm::Convolution
-            | Algorithm::Feedforward
-            | Algorithm::Inspiration
-            | Algorithm::Progression
-            | Algorithm::Rationality
-            | Algorithm::Stratagem => 2,
-            _ => 3,
-        };
-        let mut res: Vec<bool> = Vec::new();
-        for i in 0..size {
-            res.push(*current_slots.0.get(i).unwrap_or(&false));
+        let mut slots: Vec<Slot> = Vec::new();
+
+        for n in 0..name.get_slot_size() {
+            let current_slot_nth = current_slots.0.get(n);
+
+            match current_slot_nth {
+                Some(slot) => slots.push(slot.clone()),
+                None => slots.push(Slot {
+                    placement: SlotPlacement::Three,
+                    value: false,
+                }),
+            }
         }
-        AlgoSlot(res)
+        AlgoSlot(slots)
     }
 
     pub fn get_category(&self) -> AlgoCategory {
@@ -284,8 +318,51 @@ impl AlgoMainStat {
 }
 
 impl AlgoSlot {
-    pub fn new(value: bool) -> Self {
-        Self(vec![value; 3])
+    pub fn new_default(value: bool) -> Self {
+        Self(vec![
+            Slot {
+                placement: SlotPlacement::One,
+                value,
+            },
+            Slot {
+                placement: SlotPlacement::Two,
+                value,
+            },
+            Slot {
+                placement: SlotPlacement::Three,
+                value,
+            },
+        ])
+    }
+
+    pub fn new_two(one: bool, two: bool) -> Self {
+        Self(vec![
+            Slot {
+                placement: SlotPlacement::One,
+                value: one,
+            },
+            Slot {
+                placement: SlotPlacement::Two,
+                value: two,
+            },
+        ])
+    }
+
+    pub fn new_three(one: bool, two: bool, three: bool) -> Self {
+        Self(vec![
+            Slot {
+                placement: SlotPlacement::One,
+                value: one,
+            },
+            Slot {
+                placement: SlotPlacement::Two,
+                value: two,
+            },
+            Slot {
+                placement: SlotPlacement::Three,
+                value: three,
+            },
+        ])
     }
 
     /// updates the (goal) AlgoSlot with the given (current) slot
@@ -299,18 +376,35 @@ impl AlgoSlot {
     /// false .. false  -> true
     pub fn check_off_current(&mut self, current_slot: &AlgoSlot) {
         for (i, goal_slot) in self.0.iter_mut().enumerate() {
-            *goal_slot = match (current_slot.0.get(i), *goal_slot) {
-                (None, true) => false,
-                (Some(true), true) => true,
-                (Some(false), true) => false,
-                (_, false) => true,
+            *goal_slot = match (current_slot.0.get(i), goal_slot.value) {
+                (None, true) => Slot {
+                    placement: goal_slot.placement.clone(),
+                    value: false,
+                },
+                (Some(s), true) if s.value => Slot {
+                    placement: goal_slot.placement.clone(),
+                    value: true,
+                },
+                (Some(s), true) if !s.value => Slot {
+                    placement: goal_slot.placement.clone(),
+                    value: false,
+                },
+                (_, false) => Slot {
+                    placement: goal_slot.placement.clone(),
+                    value: true,
+                },
+                // TODO: test
+                _ => Slot {
+                    placement: SlotPlacement::Three,
+                    value: false,
+                },
             };
         }
     }
 
     pub fn flip_values(&mut self) {
-        for val in self.0.iter_mut() {
-            *val = !*val;
+        for slot in self.0.iter_mut() {
+            slot.set(!slot.value)
         }
     }
 }

@@ -1,7 +1,7 @@
 use crate::algorithm::types::AlgoSet;
 use crate::stats::types::*;
 use serde::{Deserialize, Serialize};
-use strum::EnumIter;
+use strum::{EnumIter, Display};
 use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, Default, Debug, Clone, TS)]
@@ -28,7 +28,7 @@ pub struct Loadout {
     pub frags: NeuralFragment,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum Class {
     #[default]
@@ -39,7 +39,7 @@ pub enum Class {
     Warrior,
 }
 
-#[derive(Debug, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
+#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum NeuralExpansion {
     One,

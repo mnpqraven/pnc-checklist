@@ -1,4 +1,4 @@
-import MainstatSelect from "@/components/RadixDropdown";
+import MainstatSelect from "@/components/MainstatSelect";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
 
 const Dev = () => {

@@ -33,12 +33,13 @@ pub enum TauriError {
     Export,
     UnitModification,
     RequestLockFailed,
-    UnitNotFound
+    UnitNotFound,
+    ResourceRequestFailed(String),
 }
 impl Display for TauriError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let err = match self {
-            TauriError::ImportPath(str) => format!("{str} is not a valid file"),
+            TauriError::ImportPath(str) => format!("{{ {str} }} is not a valid file"),
             TauriError::ImportStruct(_) => "Invalid data in import file".to_string(),
             TauriError::Export => {
                 "Cannot export to selected location, check read/write permission".to_string()
@@ -46,6 +47,9 @@ impl Display for TauriError {
             TauriError::UnitModification => "Couldn't modify unit".to_string(),
             TauriError::RequestLockFailed => "Requesting lock failed".to_string(),
             TauriError::UnitNotFound => "No unit found".to_string(),
+            TauriError::ResourceRequestFailed(str) => {
+                format!("Requesting resource {{ {str} }} failed ")
+            }
         };
         write!(f, "{}", err)
     }

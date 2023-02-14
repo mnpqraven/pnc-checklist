@@ -53,13 +53,13 @@ pub fn requirement_widget(
 }
 
 #[tauri::command]
-pub fn requirement_algo(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<AlgoPiece>> {
+pub fn requirement_algo_unit(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<AlgoPiece>> {
     println!("[invoke] requirement_algo");
     AlgorithmRequirement::calculate(from)
 }
 
 #[tauri::command]
-pub fn dev_algo(
+pub fn requirement_algo_store(
     computed: State<Computed>,
 ) -> Result<Vec<AlgorithmRequirement>, RequirementError<AlgoPiece>> {
     println!("[invoke] requirement_algo");

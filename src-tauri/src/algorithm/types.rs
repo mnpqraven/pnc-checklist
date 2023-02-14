@@ -1,3 +1,5 @@
+use std::ops::Not;
+
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
 use ts_rs::TS;
@@ -53,9 +55,42 @@ pub struct AlgoPiece {
     pub slot: AlgoSlot,
 }
 
+#[derive(Serialize, Deserialize, TS, Clone, Debug, PartialEq, Eq)]
+#[ts(export, export_to = "bindings/structs/")]
+pub struct Slot {
+    pub placement: SlotPlacement,
+    pub value: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
+#[ts(export, export_to = "bindings/enums/")]
+pub enum SlotPlacement {
+    One,
+    Two,
+    Three,
+}
+
+impl Not for Slot {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        Self {
+            placement: self.placement,
+            value: !self.value,
+        }
+    }
+}
+
+impl Slot {
+    pub fn set(&mut self, to: bool) {
+        self.value = to
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
 #[ts(export, export_to = "bindings/structs/")]
-pub struct AlgoSlot(pub Vec<bool>);
+pub struct AlgoSlot(pub Vec<Slot>);
+// pub struct AlgoSlot(pub Vec<bool>);
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq)]
 #[ts(export, export_to = "bindings/structs/")]
@@ -104,10 +139,10 @@ pub enum AlgoMainStat {
     #[strum(serialize = "Operand Def %")]
     OperandDefPercent,
     #[strum(serialize = "Post Battle Regen")]
-    PostBattleRegen
+    PostBattleRegen,
 }
 
-#[derive(Debug, Serialize, Deserialize, TS, EnumIter)]
+#[derive(Debug, Display, Serialize, Deserialize, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoSubStat {
     CritRate,
@@ -116,7 +151,7 @@ pub enum AlgoSubStat {
     HashratePercent,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Copy, TS, EnumIter)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Display, Clone, Copy, TS, EnumIter)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoCategory {
     Offense,

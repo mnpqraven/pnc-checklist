@@ -1,60 +1,49 @@
-import { DollContext, ToastContext } from "@/interfaces/payloads";
+import { DollContext, SaveContext, ToastContext } from "@/interfaces/payloads";
 import Label from "../../Form/Label";
-import { AnimatePresence, motion } from "framer-motion";
-import { ChangeEvent, useContext } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useContext } from "react";
 import { ClassSelect } from "./ClassSelect";
-import { Class } from "@/src-tauri/bindings/enums";
+import Button from "@/components/Button";
 
-type Props = {
-  handleSave: () => void
-  canSave: boolean;
-}
-const DollHeader = ({handleSave, canSave} : Props) => {
+const DollHeader = ({ handleSave }: { handleSave: () => void }) => {
   const { dollData, setDollData } = useContext(DollContext);
   const { fireToast } = useContext(ToastContext);
-  if (!dollData) return null;
+  const { isUnsaved } = useContext(SaveContext);
 
-  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
-    if (setDollData) {
-      setDollData((draft) => {
-        if (draft) draft.name = e.target.value;
-      });
-    }
-  }
-
-  function handleClassChange(e: Class) {
-    if (setDollData) {
-      setDollData((draft) => {
-        if (draft) draft.class = e;
-      });
-    }
-  }
+  if (!dollData || !setDollData) return null;
 
   return (
-    <div className="flex card component_space">
+    <div className="card component_space flex items-center">
       <Label
         id="unitName"
         value={dollData.name}
         label="Name"
-        onChange={handleNameChange}
+        onChange={(e) =>
+          setDollData((draft) => {
+            draft.name = e.target.value;
+          })
+        }
       />
 
-      <ClassSelect value={dollData.class} onChangeHandler={handleClassChange} />
+      <ClassSelect
+        value={dollData.class}
+        onChangeHandler={(e) =>
+          setDollData((draft) => {
+            draft.class = e;
+          })
+        }
+      />
       <div className="grow" />
+
       <AnimatePresence>
-        {canSave && (
-          <motion.button
-            className="Button small violet"
+        {isUnsaved && (
+          <Button
+            label="Save changes"
             onClick={() => {
               handleSave();
               fireToast();
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            Save changes
-          </motion.button>
+          />
         )}
       </AnimatePresence>
     </div>

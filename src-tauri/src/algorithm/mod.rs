@@ -21,11 +21,19 @@ pub fn algo_set_new(checked_slots: bool) -> AlgoSet {
 }
 
 #[tauri::command]
+// EVAL: see if we want to use frontend-given data or backend-given store data
+pub fn algo_set_fill(all_or_none: bool, mut input: AlgoSet) -> AlgoSet {
+    input.fill_set(all_or_none)
+}
+
+#[tauri::command]
 pub fn algo_piece_new(category: AlgoCategory, checked_slots: bool) -> AlgoPiece {
     AlgoPiece::new(category, checked_slots)
 }
 #[tauri::command]
 pub fn algo_slots_compute(name: Algorithm, current_slots: AlgoSlot) -> AlgoSlot {
+    println!("[invoke] algo_slots_compute");
+    println!("{:?} {:?}", name, current_slots.0);
     AlgoPiece::compute_slots(&name, &current_slots)
 }
 

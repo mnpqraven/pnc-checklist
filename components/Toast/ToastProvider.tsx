@@ -6,7 +6,7 @@ import Toast from "./Toast";
 type Props = { children: ReactNode };
 
 const ToastProvider = ({ children }: Props) => {
-  const [unsaved, setUnsaved] = useState(false);
+  const [isUnsaved, setUnsaved] = useState(false);
   const updateUnsaved = (to: boolean) => {
     setUnsaved(to);
   };
@@ -30,11 +30,12 @@ const ToastProvider = ({ children }: Props) => {
       setOpen(true);
     }, 100);
   }
+
   return (
     <ToastContext.Provider
       value={{ open, setOpen, header, content, setHeaderContent, fireToast }}
     >
-      <SaveContext.Provider value={{ unsaved, setUnsaved: updateUnsaved }}>
+      <SaveContext.Provider value={{ isUnsaved, setUnsaved: updateUnsaved }}>
         {children}
 
         <Toast

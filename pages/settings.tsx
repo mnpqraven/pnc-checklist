@@ -4,6 +4,9 @@ import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import { THEME_CLASSES } from "@/utils/defaults";
 import RadioGroup from "@/components/Form/RadioGroup";
+import Button from "@/components/Button";
+import { useQuery } from "@tanstack/react-query";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 
 export default function Settings() {
   const [mounted, setMounted] = useState(false);
@@ -15,6 +18,11 @@ export default function Settings() {
   const themeList = [...Object.keys(THEME_CLASSES), "system"];
 
   useEffect(() => setMounted(true), []);
+
+  const {data: version} = useQuery({
+    queryKey: [IVK.GET_TAURI_VERSION],
+    queryFn: () => invoke<string>(IVK.GET_TAURI_VERSION)
+  })
 
   async function openImportDialog() {
     await open().then((e) => {
@@ -65,12 +73,13 @@ export default function Settings() {
           <input type="text" disabled defaultValue={filePath} />
         </label>
         <div className="flex">
-          <button onClick={openDefaultDialog}>Choose default file</button>
-          <button onClick={openImportDialog}>Import database</button>
-          <button onClick={openExportDialog}>Export database</button>
+          <Button onClick={openDefaultDialog} label={"Choose default file"} />
+          <Button onClick={openImportDialog} label={"Import database"} />
+          <Button onClick={openExportDialog} label={"Export database"} />
         </div>
         <RadioGroup value={theme} options={themeList} onChange={setTheme} />
         <div>
+          <p>Version: {version}</p>
           <p>Assets from 42Lab wiki under CC BY-NC-SA</p>
           <p>Made with NextJS and Tauri</p>
         </div>

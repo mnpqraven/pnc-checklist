@@ -26,21 +26,21 @@ impl UserJSON {
                                 AlgoPiece {
                                     name: Algorithm::Deduction,
                                     stat: AlgoMainStat::HashratePercent,
-                                    slot: AlgoSlot(vec![true, true])
+                                    slot: AlgoSlot::new_two(true, true)
                                 }
                             ],
                             stability: vec![
                                 AlgoPiece {
                                     name: Algorithm::Overflow,
                                     stat: AlgoMainStat::DefPercent,
-                                    slot: AlgoSlot(vec![true, true, true])
+                                    slot: AlgoSlot::new_default(true)
                                 }
                             ],
                             special: vec![
                                 AlgoPiece {
                                     name: Algorithm::Stratagem,
                                     stat: AlgoMainStat::DefPercent,
-                                    slot: AlgoSlot(vec![true, true])
+                                    slot: AlgoSlot::new_two(true, true)
                                 }
                             ]
                         },

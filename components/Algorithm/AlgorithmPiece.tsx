@@ -9,12 +9,19 @@ import {
   AlgoCategory,
   AlgoMainStat,
   Algorithm,
+  SlotPlacement,
 } from "@/src-tauri/bindings/enums";
 import PieceModal from "./PieceModal";
 import { AnimatePresence, motion } from "framer-motion";
-import MainStatSelect from "../RadixDropdown";
+import MainStatSelect from "../MainstatSelect";
 import { TrashIcon } from "@radix-ui/react-icons";
 import AlgoImage from "./AlgoImage";
+import { useComputeSlotsMutation } from "@/utils/hooks/mutations/computeSlots";
+import { useImmer } from "use-immer";
+import { Slot } from "@/src-tauri/bindings/structs/Slot";
+import { useEnumTable } from "@/utils/hooks/useEnumTable";
+import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
+import Button from "../Button";
 
 type Props = {
   index: number;
@@ -36,19 +43,24 @@ const AlgorithmPiece = ({
   const { dollData } = useContext(DollContext);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
-  const [slot, setSlot] = useState<boolean[]>([false, false, false]);
+  const [slot, setSlot] = useImmer<AlgoSlot>([]);
   const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
   const [openModal, setModal] = useState(false);
+
+  const { mutate: updateSlots } = useComputeSlotsMutation();
+
+  const { data: slotPlacementIter } = useEnumTable<SlotPlacement>(
+    ENUM_TABLE.SlotPlacement
+  );
+
   // chaging unit
   useEffect(() => {
     setAlgorithm(pieceData.name);
     setMainStat(pieceData.stat);
-
-    // update slot info
-    // setSlot(pieceData.slot);
-    updateSlots(pieceData.name, pieceData.slot).then((e) => {
-      setSlot(e);
-    });
+    updateSlots(
+      { name: pieceData.name, currentSlots: pieceData.slot },
+      { onSuccess: (data) => setSlot(data) }
+    );
   }, [pieceData]);
 
   // changing details, passed to parent's setDollData
@@ -56,18 +68,7 @@ const AlgorithmPiece = ({
     pieceUpdate(piece, category, index);
     // NOTE: do NOT put pieceUpdate in the depency Array
     // TODO: test
-  }, [category, index, piece, pieceUpdate]);
-
-  async function updateSlots(
-    name: Algorithm,
-    currentSlots: boolean[]
-  ): Promise<boolean[]> {
-    let invoked_slots = invoke<boolean[]>("algo_slots_compute", {
-      name,
-      currentSlots,
-    });
-    return invoked_slots;
-  }
+  }, [category, index, piece]);
 
   function pieceHandler(name: Algorithm) {
     invoke<AlgoSlot | null>("validate_slots", { piece: pieceData })
@@ -92,18 +93,22 @@ const AlgorithmPiece = ({
     setMainStat(stat);
   }
 
+  /**
+   * Updates the slots in an `AlgoPiece`
+   * @param e new value of the slot managed by thecheckbox
+   * @param checkboxIndex the index of the slot in the `AlgoPiece`
+   */
   function slotHandler(e: boolean | "indeterminate", checkboxIndex: number) {
-    let val = true;
-    if (typeof e === "boolean") val = e;
-    else if (e === "indeterminate") val = false;
-
-    let slot = pieceData.slot.map((item, index) => {
-      if (checkboxIndex == index) return val;
-      else return item;
-    });
-    if (pieceData.slot.length <= checkboxIndex) slot.push(val);
-    setPiece({ ...pieceData, slot });
-    setSlot(slot);
+    if (e === "indeterminate") return;
+    if (slotPlacementIter) {
+      let next_slot: Slot[] = slot.map((item, index) => {
+        if (index === checkboxIndex) {
+          return { placement: slotPlacementIter[index], value: e };
+        } else return item;
+      });
+      setPiece({ ...pieceData, slot: next_slot });
+      setSlot(next_slot);
+    }
   }
 
   return (
@@ -146,12 +151,12 @@ const AlgorithmPiece = ({
           ) : (
             <Loading />
           )}
-          <button
-            className="Button small red"
+          <Button
+            className="small red"
             onClick={() => pieceUpdate(null, category, index)}
           >
             <TrashIcon />
-          </button>
+          </Button>
         </div>
       </div>
     </motion.div>

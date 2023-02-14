@@ -1,26 +1,29 @@
-use super::{types::{AlgoCategory, AlgoSet}, dev_print_single_main};
+use super::{
+    dev_print_single_main,
+    types::{AlgoCategory, AlgoSet},
+};
 use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
 
 #[test]
 fn slots_small_to_big() {
-    let right = AlgoPiece::compute_slots(&Algorithm::DeltaV, &AlgoSlot(vec![true, true]));
-    assert_eq!(AlgoSlot(vec![true, true, false]), right);
+    let right = AlgoPiece::compute_slots(&Algorithm::DeltaV, &AlgoSlot::new_two(true, true));
+    assert_eq!(AlgoSlot::new_three(true, true, false), right);
 
-    let right = AlgoPiece::compute_slots(&Algorithm::MLRMatrix, &AlgoSlot(vec![false, true]));
-    assert_eq!(AlgoSlot(vec![false, true, false]), right);
+    let right = AlgoPiece::compute_slots(&Algorithm::MLRMatrix, &AlgoSlot::new_two(false, true));
+    assert_eq!(AlgoSlot::new_three(false, true, false), right);
 }
 #[test]
 fn slots_big_to_small() {
-    let right = AlgoPiece::compute_slots(&Algorithm::Connection, &AlgoSlot(vec![true, true, true]));
-    assert_eq!(AlgoSlot(vec![true, true]), right);
+    let right = AlgoPiece::compute_slots(&Algorithm::Connection, &AlgoSlot::new_three(true, true, true));
+    assert_eq!(AlgoSlot::new_two(true, true), right);
 
     let right =
-        AlgoPiece::compute_slots(&Algorithm::Inspiration, &AlgoSlot(vec![true, false, true]));
-    assert_eq!(AlgoSlot(vec![true, false]), right);
+        AlgoPiece::compute_slots(&Algorithm::Inspiration, &AlgoSlot::new_three(true, false, true));
+    assert_eq!(AlgoSlot::new_two(true, false), right);
 
     let right =
-        AlgoPiece::compute_slots(&Algorithm::Feedforward, &AlgoSlot(vec![false, true, false]));
-    assert_eq!(AlgoSlot(vec![false, true]), right);
+        AlgoPiece::compute_slots(&Algorithm::Feedforward, &AlgoSlot::new_three(false, true, false));
+    assert_eq!(AlgoSlot::new_two(false, true), right);
 }
 #[test]
 fn algodb_refactor() {
@@ -49,23 +52,23 @@ fn update_slots_pass() {
             AlgoPiece {
                 name: Algorithm::Feedforward,
                 stat: AlgoMainStat::AtkPercent,
-                slot: AlgoSlot(vec![false, true]),
+                slot: AlgoSlot::new_two(false, true),
             },
             AlgoPiece {
                 name: Algorithm::MLRMatrix,
                 stat: AlgoMainStat::HashratePercent,
-                slot: AlgoSlot(vec![false, false, true]),
+                slot: AlgoSlot::new_three(false, false, true),
             },
         ],
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, false]),
+            slot: AlgoSlot::new_three(false, true, false),
         }],
         special: vec![AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![false, false, true]),
+            slot: AlgoSlot::new_three(false, false, true),
         }],
     };
 
@@ -73,17 +76,17 @@ fn update_slots_pass() {
         AlgoPiece {
             name: Algorithm::MLRMatrix,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![true, true, true]),
+            slot: AlgoSlot::new_default(true),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![true, true, false]),
+            slot: AlgoSlot::new_three(true, true, false),
         },
         AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![true, true, false]),
+            slot: AlgoSlot::new_three(true, true, false),
         },
     ];
     current_set.apply_checkbox(with_goal);
@@ -92,17 +95,17 @@ fn update_slots_pass() {
         offense: vec![AlgoPiece {
             name: Algorithm::MLRMatrix,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![false, false, false]),
+            slot: AlgoSlot::new_default(false),
         }],
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, true]),
+            slot: AlgoSlot::new_three(false, true, true),
         }],
         special: vec![AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![false, false, true]),
+            slot: AlgoSlot::new_three(false, false, true),
         }],
     };
     assert_eq!(current_set.offense, right.offense);
@@ -117,12 +120,12 @@ fn update_slots_pass_partial() {
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, false]),
+            slot: AlgoSlot::new_three(false, true, false),
         }],
         special: vec![AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![false, false, true]),
+            slot: AlgoSlot::new_three(false, false, true),
         }],
     };
 
@@ -130,17 +133,17 @@ fn update_slots_pass_partial() {
         AlgoPiece {
             name: Algorithm::MLRMatrix,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![true, true, true]),
+            slot: AlgoSlot::new_three(true, true, true),
         },
         AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![true, true, false]),
+            slot: AlgoSlot::new_three(true, true, false),
         },
         AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![true, true, false]),
+            slot: AlgoSlot::new_three(true, true, false),
         },
     ];
     set.apply_checkbox(with_goal);
@@ -149,17 +152,17 @@ fn update_slots_pass_partial() {
         offense: vec![AlgoPiece {
             name: Algorithm::MLRMatrix,
             stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot(vec![false, false, false]),
+            slot: AlgoSlot::new_three(false, false, false),
         }],
         stability: vec![AlgoPiece {
             name: Algorithm::Encapsulate,
             stat: AlgoMainStat::Health,
-            slot: AlgoSlot(vec![false, true, true]),
+            slot: AlgoSlot::new_three(false, true, true),
         }],
         special: vec![AlgoPiece {
             name: Algorithm::DeltaV,
             stat: AlgoMainStat::Haste,
-            slot: AlgoSlot(vec![false, false, true]),
+            slot: AlgoSlot::new_three(false, false, true),
         }],
     };
     assert_eq!(set.offense, right.offense);
@@ -172,4 +175,38 @@ fn mainstat_display() {
     let m = AlgoMainStat::OperandPenPercent;
     assert_eq!(dev_print_single_main(m), "Operand Pen. %");
     assert_eq!(dev_print_single_main(AlgoMainStat::Dodge), "Dodge");
+}
+
+#[test]
+fn set_filling() {
+    let mut left: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: [AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot::new_three(false, true, false),
+        }; 1]
+            .to_vec(),
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot::new_three(false, false, true),
+        }],
+    };
+    let right: AlgoSet = AlgoSet {
+        offense: vec![],
+        stability: [AlgoPiece {
+            name: Algorithm::Encapsulate,
+            stat: AlgoMainStat::Health,
+            slot: AlgoSlot::new_default(true),
+        }; 1]
+            .to_vec(),
+        special: vec![AlgoPiece {
+            name: Algorithm::DeltaV,
+            stat: AlgoMainStat::Haste,
+            slot: AlgoSlot::new_default(true),
+        }],
+    };
+    assert_eq!(left.fill_set(true), right);
+    assert_eq!(left, right);
 }

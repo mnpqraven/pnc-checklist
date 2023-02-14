@@ -1,13 +1,13 @@
 import { AlgoMainStat } from "@/src-tauri/bindings/enums";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { AlgoPiece } from "@/src-tauri/bindings/structs";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 
 export const useAlgoMainStatQuery = () => {
   const mainStat = useQuery({
-    queryKey: ["main_stat", "all"],
-    queryFn: () => invoke<AlgoMainStat[][]>("main_stat_all"),
-    placeholderData: [],
+    queryKey: [IVK.MAIN_STAT_ALL],
+    queryFn: () => invoke<AlgoMainStat[][]>(IVK.MAIN_STAT_ALL),
   });
 
   return mainStat;

@@ -2,55 +2,57 @@ import DollListItem from "./DollListItem";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useContext, useState } from "react";
 import useNewUnitMutation from "@/utils/hooks/mutations/newUnit";
-import { Updater, useImmer } from "use-immer";
 import { useDeleteUnitMutation } from "@/utils/hooks/mutations/deleteUnit";
 import Skeleton from "react-loading-skeleton";
 import { DollContext } from "@/interfaces/payloads";
 import { AnimatePresence, motion } from "framer-motion";
-import ClassFilter from "../RadixSelect";
+import Button from "../Button";
 import { Class } from "@/src-tauri/bindings/enums";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
-  store: Unit[];
-  setStore: Updater<Unit[]>;
-  indexChange: (value: number) => void;
+  filter: Class[];
+  isVisible: (obj: Unit, pat: Class[]) => boolean;
 };
-const DEFAULT_CLASSES: Class[] = [
-  "Guard",
-  "Medic",
-  "Warrior",
-  "Specialist",
-  "Sniper",
-];
-const DollList = ({ store: fullStore, setStore, indexChange }: Props) => {
+const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const newUnit = useNewUnitMutation(setStore, indexChange);
-  const { storeLoading } = useContext(DollContext);
-  const deleteUnit = useDeleteUnitMutation(setStore, indexChange);
+  const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
+    useContext(DollContext);
 
-  const [filterList, setFilterList] = useImmer(DEFAULT_CLASSES);
+  const client = useQueryClient();
+  const newUnit = useNewUnitMutation();
+  const deleteUnit = useDeleteUnitMutation();
 
-  function filterStore(to: Class) {
-    if (filterList.includes(to))
-      setFilterList((draft) => {
-        draft.splice(draft.indexOf(to), 1);
+  const afterNew = ([returned_unit, returned_ind]: [Unit, number]) => {
+    client.refetchQueries({ queryKey: [IVK.GET_UNITS] }).then(() => {
+      updateDirtyStore((draft) => {
+        draft.push(returned_unit);
         return draft;
       });
-    else
-      setFilterList((draft) => {
-        draft.push(to);
-        return draft;
-      });
-  }
+      updateIndex(returned_ind);
+    });
+  };
 
-  const store = fullStore.filter((unit) => filterList.includes(unit.class));
+  const afterDelete = (returned: number) => {
+    client
+      .refetchQueries({ queryKey: [IVK.GET_UNITS] })
+      .then(() => updateIndex(returned));
+  };
 
   return (
     <ul id="dolllist" className="w-60">
-      <ClassFilter onFilter={filterStore} />
-      <div className="flex text-center [&>li]:grow">
-        <li onClick={() => newUnit({ length: store.length })}>New</li>
-        <li onClick={() => setDeleteMode(!deleteMode)}>Delete</li>
+      <div className="mt-3 flex gap-2 [&>*]:grow">
+        <Button
+          onClick={() =>
+            newUnit.mutate(
+              { length: dirtyStore.length },
+              { onSuccess: afterNew }
+            )
+          }
+          label={"New"}
+        />
+        <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
       </div>
       {storeLoading ? (
         [1, 2, 3].map((ind) => (
@@ -59,22 +61,27 @@ const DollList = ({ store: fullStore, setStore, indexChange }: Props) => {
           </li>
         ))
       ) : (
-        <AnimatePresence mode="popLayout">
-          {store.map((unit, index) => (
-            <motion.li
-              key={index}
-              onClick={() => indexChange(index)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <DollListItem
-                unit={unit}
-                deleteMode={deleteMode}
-                deleteUnit={() => deleteUnit({ index })}
-              />
-            </motion.li>
-          ))}
+        <AnimatePresence mode="sync">
+          {dirtyStore.map(
+            (unit, index) =>
+              isVisible(unit, filter) && (
+                <motion.li
+                  key={index}
+                  onClick={() => updateIndex(index)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <DollListItem
+                    unit={unit}
+                    deleteMode={deleteMode}
+                    deleteUnit={() =>
+                      deleteUnit.mutate({ index }, { onSuccess: afterDelete })
+                    }
+                  />
+                </motion.li>
+              )
+          )}
         </AnimatePresence>
       )}
     </ul>

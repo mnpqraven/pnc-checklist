@@ -9,11 +9,10 @@ type Props = {
 
 const AlgoImage = ({ algo, onClick }: Props) => {
   return (
-    <div className="w-16">
+    <div className="flex h-[4rem] w-[4rem] items-center justify-center">
       <Image
         src={algo_src(algo)}
         alt={algo_src(algo)}
-        className="max-h-16 w-auto"
         width={256}
         height={256}
         onClick={onClick}

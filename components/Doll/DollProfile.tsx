@@ -7,17 +7,15 @@ import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
 import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
 import DollHeader from "./Profile/Header";
+import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
 
-type Props = {
-  handleSave: () => void;
-  canSave: boolean;
-};
-const DollProfile = ({ handleSave, canSave }: Props) => {
+const DollProfile = () => {
   const { dollData, setDollData } = useContext(DollContext);
   const loadouts: LoadoutType[] = ["current", "goal"];
-  const { storeLoading } = useContext(DollContext);
+  const { storeLoading, dirtyStore } = useContext(DollContext);
   const { setHeaderContent } = useContext(ToastContext);
 
+  const { saveUnits } = useSaveUnitsMutation();
   const isLoading = !dollData || !setDollData || storeLoading;
 
   useEffect(() => {
@@ -28,8 +26,7 @@ const DollProfile = ({ handleSave, canSave }: Props) => {
 
   return (
     <div className="flex w-[54rem] flex-col">
-      <DollHeader handleSave={handleSave} canSave={canSave} />
-
+      <DollHeader handleSave={() => saveUnits(dirtyStore)} />
       {/* NOTE: named css */}
       {loadouts.map((type, index) => (
         <div className="card component_space" key={index}>

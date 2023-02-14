@@ -36,3 +36,7 @@ export function algo_src(item: Algorithm): string {
 export function class_src(item: Class): string {
   return `/class/${item.toLowerCase()}.png`;
 }
+
+export function deep_eq(a: any, b: any): boolean {
+  return JSON.stringify(a) == JSON.stringify(b)
+}

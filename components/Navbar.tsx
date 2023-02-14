@@ -22,7 +22,7 @@ const navigationRoutes = [
 ];
 
 const Navbar = () => {
-  const { unsaved, setUnsaved } = useContext(SaveContext);
+  const { isUnsaved: unsaved, setUnsaved } = useContext(SaveContext);
   const [openAlert, setOpenAlert] = useState(false);
   const router = useRouter();
   const [route, setRoute] = useState("");

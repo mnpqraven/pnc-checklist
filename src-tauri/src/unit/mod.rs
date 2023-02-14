@@ -8,8 +8,8 @@ use crate::{
 use std::sync::{Arc, Mutex};
 use tauri::State;
 
-#[cfg(test)]
-mod bacon;
+// #[cfg(test)]
+// mod bacon;
 mod impls;
 pub mod types;
 

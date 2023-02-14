@@ -1,5 +1,5 @@
 import { LoadoutType } from "@/src-tauri/bindings/enums";
-import { AlgoSet, Unit } from "@/src-tauri/bindings/structs";
+import { Unit } from "@/src-tauri/bindings/structs";
 import { DEFAULT_LEVEL } from "@/utils/defaults";
 import { useContext, useState } from "react";
 import { Updater } from "use-immer";
@@ -23,20 +23,33 @@ import {
   ChevronRightIcon,
 } from "@radix-ui/react-icons";
 import { DollContext } from "@/interfaces/payloads";
+import { useUnitQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
+import { useMutateAlgoFillSlot } from "@/utils/hooks/algo/mutateAlgo";
 
 type Props = {
   unitHandler: Updater<Unit>;
   type: LoadoutType;
 };
+const UNDO_TYPES = {
+  LOADOUT: "This section",
+  UNIT: "Unit",
+} as const;
+type UndoTypes = keyof typeof UNDO_TYPES;
 
 const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
-  const { dollData } = useContext(DollContext);
+  const undoTypes: UndoTypes[] = ["LOADOUT", "UNIT"];
 
+  const { dollData, index } = useContext(DollContext);
+  const { data: unit } = useUnitQuery(index);
   const [keepOpen, setKeepOpen] = useState(false);
+  const algoFillSlot = useMutateAlgoFillSlot({ setDollData, loadoutType });
 
-  function fillAlgo(all: boolean, e: Event) {
+  function fillAlgo(allOrNone: boolean, e: Event) {
     if (keepOpen) e.preventDefault();
+    if (dollData)
+      algoFillSlot.mutate({ allOrNone, input: dollData[loadoutType].algo });
   }
+
   function updateLevel(to: number, e: Event) {
     if (keepOpen) e.preventDefault();
     setDollData((draft) => {
@@ -44,12 +57,29 @@ const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
       return draft;
     });
   }
+
   function clearNeural(e: Event) {
-    if (keepOpen) e.preventDefault()
+    if (keepOpen) e.preventDefault();
     setDollData((draft) => {
       draft[loadoutType].frags = 0;
       return draft;
     });
+  }
+
+  function undoChange(type: UndoTypes, e: Event) {
+    if (keepOpen) e.preventDefault();
+    if (unit)
+      switch (type) {
+        case "LOADOUT":
+          setDollData((draft) => {
+            draft[loadoutType] = unit[loadoutType];
+            return draft;
+          });
+          break;
+        case "UNIT":
+          setDollData(unit);
+          break;
+      }
   }
 
   if (!dollData) return null;
@@ -130,9 +160,13 @@ const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
                 sideOffset={2}
                 alignOffset={-5}
               >
-                {["This section", "Unit"].map((loadout, index) => (
-                  <Item className="DropdownMenuItem" key={index}>
-                    {loadout} <div className="RightSlot" />
+                {undoTypes.map((loadout, index) => (
+                  <Item
+                    className="DropdownMenuItem"
+                    key={index}
+                    onSelect={(e) => undoChange(loadout, e)}
+                  >
+                    {UNDO_TYPES[loadout]} <div className="RightSlot" />
                   </Item>
                 ))}
               </SubContent>

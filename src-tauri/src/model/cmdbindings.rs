@@ -5,8 +5,10 @@ use std::{
     path::Path,
 };
 use strum::{Display, EnumIter, EnumString, IntoEnumIterator};
+use ts_rs::TS;
 
-#[derive(Debug, EnumIter, EnumString, Display)]
+#[derive(Debug, EnumIter, EnumString, Display, TS)]
+#[ts(export, export_to = "bindings/enums/")]
 pub enum AllEnums {
     Class,
     Algorithm,
@@ -17,7 +19,9 @@ pub enum AllEnums {
     AlgoCategory,
     NeuralExpansion,
     LoadoutType,
+    SlotPlacement,
 }
+
 #[derive(Debug, EnumIter, EnumString, Display)]
 pub enum AllStructs {
     AlgoPiece,
@@ -44,6 +48,7 @@ pub enum AllStructs {
     Keychain,
     KeychainTable,
     Locker,
+    Slot,
 }
 
 /// Generate a string array containing field names in a rust enum
@@ -142,6 +147,31 @@ pub fn write_index_keys(invoke_key: &str, path: &str) -> Result<(), Box<dyn std:
     export_payload.push(fmt_export_type(&key_type, &key_enum));
 
     write!(buffer, "{}", export_payload.join("\n"))?;
+    Ok(())
+}
+
+#[allow(dead_code)]
+/// write a ts binding of an enum table with the following format;
+/// ```typescript
+/// export const ENUM_NAME = {
+/// Key: "Key"
+/// } as const;
+/// export type EnumName = keyof typeof ENUM_NAME;
+/// ```
+///
+/// * `enum_name`: name of the enum in Camel_Snake case
+pub fn write_enum_table<T>(enum_name: &str)  -> Result<(), &'static str> where T: IntoEnumIterator + Display{
+        let mut buffer = String::new();
+        let path = format!("bindings/{}.ts", enum_name.to_uppercase());
+        let fmt_first = format!("export const {} = {{\n", enum_name.to_uppercase());
+        let fmt_last = format!("}} as const;\n export type {} = keyof typeof {};", enum_name.replace('_',""), enum_name.to_uppercase());
+
+        buffer.push_str(&fmt_first);
+        for name in T::iter() {
+            buffer.push_str(&format!("  {}: \"{}\",\n", name, name))
+        }
+        buffer.push_str(&fmt_last);
+        fs::write(path, buffer).unwrap();
     Ok(())
 }
 

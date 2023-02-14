@@ -71,12 +71,10 @@ impl AlgorithmRequirement {
     }
 
     pub(super) fn is_fulfilled(&self) -> bool {
-        for piece in self.pieces.iter() {
-            if piece.slot.0.iter().all(|slot| *slot) {
-                return true;
-            }
-        }
-        false
+        self.pieces
+            .iter()
+            .flat_map(|piece| piece.slot.0.clone())
+            .all(|slot| slot.value)
     }
 }
 

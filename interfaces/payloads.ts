@@ -1,26 +1,34 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
 import { Unit } from "@/src-tauri/bindings/structs/Unit";
 import React from "react";
-import { Updater } from "use-immer";
+import { DraftFunction, Updater } from "use-immer";
 
 export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
   storeLoading: boolean
+  index: number,
+  updateIndex: (to: number) => void,
+  dirtyStore: Unit[],
+  updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
-  storeLoading: true
+  storeLoading: true,
+  index: 0,
+  updateIndex: () => { },
+  dirtyStore: [],
+  updateDirtyStore: () => { }
 });
 
 export type SaveContextPayload = {
-  unsaved: boolean,
+  isUnsaved: boolean,
   setUnsaved: (to: boolean) => void
 }
 export const SaveContext = React.createContext<SaveContextPayload>({
-  unsaved: false,
-  setUnsaved: () => {}
+  isUnsaved: false,
+  setUnsaved: () => { }
 })
 
 export type ToastContextPayload = {
@@ -33,11 +41,11 @@ export type ToastContextPayload = {
 }
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,
-  setOpen: () => {},
+  setOpen: () => { },
   header: "Default Header",
   content: "Default Content",
-  setHeaderContent: () => {},
-  fireToast: () => {}
+  setHeaderContent: () => { },
+  fireToast: () => { }
 })
 
 export type AlgoError = [

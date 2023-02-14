@@ -1,11 +1,10 @@
 import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
 import Loading from "../Loading";
-import Image from "next/image";
-import { algo_src } from "@/utils/helper";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { motion } from "framer-motion";
 import { Backdrop } from "../Modal/Backdrop";
 import ErrorContainer from "../Error";
+import AlgoImage from "./AlgoImage";
 
 type Props = {
   handleClose: () => void;
@@ -40,7 +39,7 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
             whileHover={{ scale: 1.0 }}
             whileTap={{ scale: 0.8 }}
           >
-            <Image src={algo_src(algo)} alt={algo} width={72} height={72} />
+            <AlgoImage algo={algo} />
           </motion.div>
         ))}
       </motion.div>

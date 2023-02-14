@@ -1,6 +1,7 @@
-export const INVOKE_KEYS = {
+export const IVK = {
   ALGORITHM_ALL: "algorithm_all",
   ALGO_SET_NEW: "algo_set_new",
+  ALGO_SET_FILL: "algo_set_fill",
   ALGO_PIECE_NEW: "algo_piece_new",
   ALGO_SLOTS_COMPUTE: "algo_slots_compute",
   DEFAULT_SLOT_SIZE: "default_slot_size",
@@ -16,7 +17,7 @@ export const INVOKE_KEYS = {
   REQUIREMENT_NEURAL: "requirement_neural",
   REQUIRMENT_NEURAL_KITS: "requirment_neural_kits",
   REQUIREMENT_WIDGET: "requirement_widget",
-  DEV_ALGO: "dev_algo",
+  REQUIREMENT_ALGO_STORE: "requirement_algo_store",
   ALGO_REQ_FULFILLED: "algo_req_fulfilled",
   VIEW_LOCKER: "view_locker",
   REMOVE_KC: "remove_kc",
@@ -34,5 +35,6 @@ export const INVOKE_KEYS = {
   GET_UNIT: "get_unit",
   VALIDATE_SLOTS: "validate_slots",
   VALIDATE: "validate",
+  GET_TAURI_VERSION: "get_tauri_version",
 } as const;
-export type InvokeKeys = keyof typeof INVOKE_KEYS;
+export type Ivk = keyof typeof IVK;

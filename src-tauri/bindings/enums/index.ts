@@ -7,4 +7,5 @@ import { AlgoSubStat } from "./AlgoSubStat"
 import { AlgoCategory } from "./AlgoCategory"
 import { NeuralExpansion } from "./NeuralExpansion"
 import { LoadoutType } from "./LoadoutType"
-export type { Class, Algorithm, Day, Bonus, AlgoMainStat, AlgoSubStat, AlgoCategory, NeuralExpansion, LoadoutType }
+import { SlotPlacement } from "./SlotPlacement"
+export type { Class, Algorithm, Day, Bonus, AlgoMainStat, AlgoSubStat, AlgoCategory, NeuralExpansion, LoadoutType, SlotPlacement }

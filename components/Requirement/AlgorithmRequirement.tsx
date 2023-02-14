@@ -13,7 +13,7 @@ import Loading from "../Loading";
 const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
   const { pieces, from_unit } = data; // from_unit unused
   const labels = useSingleMainStatQuery(pieces);
-  const hasReq = (algo: AlgoPiece) => !algo.slot.every((e) => e == true);
+  const hasReq = (algo: AlgoPiece) => !algo.slot.every((e) => e.value);
 
   const {
     data: isFulfilled,
@@ -64,7 +64,7 @@ const DisplaySlot = ({ slots }: { slots: AlgoSlot }) => {
     <div id="DisplaySlot" className="flex">
       {slots.map((slot, index) => (
         <div key={index}>
-          <input type="checkbox" checked={slot} readOnly />
+          <input type="checkbox" checked={slot.value} readOnly />
         </div>
       ))}
     </div>

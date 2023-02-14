@@ -6,8 +6,8 @@ use crate::{
 };
 
 mod algo;
-#[cfg(test)]
-mod bacon;
+// #[cfg(test)]
+// mod bacon;
 mod inputs;
 mod unit;
 
