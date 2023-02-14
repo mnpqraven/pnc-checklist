@@ -8,7 +8,6 @@ const Dolls = () => (
     <DollProvider>
       <div className="big_container">
         <DollPanelContainer />
-        {/** TODO: */}
         <DollProfile />
       </div>
     </DollProvider>

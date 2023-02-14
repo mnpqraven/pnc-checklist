@@ -1,20 +1,16 @@
 import {
   DollContext,
-  DollContextPayload,
   SaveContext,
 } from "@/interfaces/payloads";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { deep_eq } from "@/utils/helper";
 import { useStoreUnitsQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
 import React, {
-  Provider,
-  ProviderProps,
   ReactNode,
   useContext,
   useEffect,
-  useState,
 } from "react";
-import { useImmer } from "use-immer";
+import { DraftFunction, useImmer } from "use-immer";
 
 interface Props {
   children: ReactNode;
@@ -27,12 +23,8 @@ const DollProvider = ({ children }: Props) => {
   const [index, setCurrentIndex] = useImmer(0);
   const [dollData, setDollData] = useImmer<Unit>(dirtyStore[index]);
 
-  const updateIndex = (to: number) => {
+  const updateIndex = (to: number | DraftFunction<number>) => {
     setCurrentIndex(to);
-  };
-
-  const updateDirtyStore = (to: Unit[]) => {
-    setDirtyUnits(to);
   };
 
   useEffect(() => {
@@ -72,7 +64,7 @@ const DollProvider = ({ children }: Props) => {
         index,
         updateIndex,
         dirtyStore,
-        updateDirtyStore,
+        updateDirtyStore: setDirtyUnits,
       }}
     >
       {children}

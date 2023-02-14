@@ -1,7 +1,7 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
 import { Unit } from "@/src-tauri/bindings/structs/Unit";
 import React from "react";
-import { Updater } from "use-immer";
+import { DraftFunction, Updater } from "use-immer";
 
 export type DollContextPayload = {
   dollData: Unit | undefined;
@@ -10,7 +10,7 @@ export type DollContextPayload = {
   index: number,
   updateIndex: (to: number) => void,
   dirtyStore: Unit[],
-  updateDirtyStore: (to: Unit[]) => void
+  updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,

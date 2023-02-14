@@ -8,6 +8,8 @@ import { DollContext } from "@/interfaces/payloads";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../Button";
 import { Class } from "@/src-tauri/bindings/enums";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   filter: Class[];
@@ -15,17 +17,39 @@ type Props = {
 };
 const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const { storeLoading, updateIndex, dirtyStore } = useContext(DollContext);
+  const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
+    useContext(DollContext);
 
-  // TODO: get rid of update index updater too
-  const newUnit = useNewUnitMutation(updateIndex);
-  const deleteUnit = useDeleteUnitMutation(updateIndex);
+  const client = useQueryClient();
+  const newUnit = useNewUnitMutation();
+  const deleteUnit = useDeleteUnitMutation();
+
+  const afterNew = ([returned_unit, returned_ind]: [Unit, number]) => {
+    client.refetchQueries({ queryKey: [IVK.GET_UNITS] }).then(() => {
+      updateDirtyStore((draft) => {
+        draft.push(returned_unit);
+        return draft;
+      });
+      updateIndex(returned_ind);
+    });
+  };
+
+  const afterDelete = (returned: number) => {
+    client
+      .refetchQueries({ queryKey: [IVK.GET_UNITS] })
+      .then(() => updateIndex(returned));
+  };
 
   return (
     <ul id="dolllist" className="w-60">
       <div className="mt-3 flex gap-2 [&>*]:grow">
         <Button
-          onClick={() => newUnit({ length: dirtyStore.length })}
+          onClick={() =>
+            newUnit.mutate(
+              { length: dirtyStore.length },
+              { onSuccess: afterNew }
+            )
+          }
           label={"New"}
         />
         <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
@@ -51,7 +75,9 @@ const DollList = ({ filter, isVisible }: Props) => {
                   <DollListItem
                     unit={unit}
                     deleteMode={deleteMode}
-                    deleteUnit={() => deleteUnit({ index })}
+                    deleteUnit={() =>
+                      deleteUnit.mutate({ index }, { onSuccess: afterDelete })
+                    }
                   />
                 </motion.li>
               )
