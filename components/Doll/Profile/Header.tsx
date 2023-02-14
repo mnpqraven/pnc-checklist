@@ -1,17 +1,14 @@
-import { DollContext, ToastContext } from "@/interfaces/payloads";
+import { DollContext, SaveContext, ToastContext } from "@/interfaces/payloads";
 import Label from "../../Form/Label";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useContext } from "react";
 import { ClassSelect } from "./ClassSelect";
 import Button from "@/components/Button";
 
-type Props = {
-  handleSave: () => void;
-  canSave: boolean;
-};
-const DollHeader = ({ handleSave, canSave }: Props) => {
+const DollHeader = ({ handleSave }: { handleSave: () => void }) => {
   const { dollData, setDollData } = useContext(DollContext);
   const { fireToast } = useContext(ToastContext);
+  const { isUnsaved } = useContext(SaveContext);
 
   if (!dollData || !setDollData) return null;
 
@@ -39,7 +36,7 @@ const DollHeader = ({ handleSave, canSave }: Props) => {
       <div className="grow" />
 
       <AnimatePresence>
-        {canSave && (
+        {isUnsaved && (
           <Button
             label="Save changes"
             onClick={() => {

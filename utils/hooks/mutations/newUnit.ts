@@ -14,20 +14,15 @@ const DEFAULT_INVOKE_PARAMS = (length: number): InvokeParams => ({
 });
 const newUnitPostProcess = (
   invoke_res: [Unit, number],
-  setStore: Updater<Unit[]>,
   setIndex: Updater<number> | ((value: number) => void)
 ) => {
   let [unit, index] = invoke_res;
   console.log(`New Unit: ${unit.name} created at index ${index}`);
-  setStore((draft) => {
-    draft.push(unit);
-  });
   setIndex(index);
 };
 
 const useNewUnitMutation = (
-  setStore: Updater<Unit[]>,
-  setIndex: Updater<number> | ((value: number) => void)
+  setIndex: Updater<number> | ((value: number) => void) // better than Updater<>
 ) => {
   const client = useQueryClient();
   const { mutate: newUnit } = useMutation({
@@ -41,7 +36,7 @@ const useNewUnitMutation = (
     onSuccess: (data) =>
       client
         .refetchQueries({ queryKey: [IVK.GET_UNITS] })
-        .then(() => newUnitPostProcess(data, setStore, setIndex)),
+        .then(() => newUnitPostProcess(data, setIndex)),
   });
 
   return newUnit;

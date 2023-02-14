@@ -5,12 +5,12 @@ import Image from "next/image";
 type Props = {
   algo: Algorithm;
   onClick?: () => void;
-  width?: number;
 };
 
-const AlgoImage = ({ algo, width = 64, onClick }: Props) => {
+const AlgoImage = ({ algo, onClick }: Props) => {
+  // TODO: need max-h configured
   return (
-    <div className={`w-[${width}px]`}>
+    <div className="w-16">
       <Image
         src={algo_src(algo)}
         alt={algo_src(algo)}

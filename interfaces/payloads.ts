@@ -7,21 +7,27 @@ export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
   storeLoading: boolean
-  index: number
+  index: number,
+  updateIndex: (to: number) => void,
+  dirtyStore: Unit[],
+  updateDirtyStore: (to: Unit[]) => void
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
   storeLoading: true,
-  index: 0
+  index: 0,
+  updateIndex: () => { },
+  dirtyStore: [],
+  updateDirtyStore: () => { }
 });
 
 export type SaveContextPayload = {
-  unsaved: boolean,
+  isUnsaved: boolean,
   setUnsaved: (to: boolean) => void
 }
 export const SaveContext = React.createContext<SaveContextPayload>({
-  unsaved: false,
+  isUnsaved: false,
   setUnsaved: () => { }
 })
 
