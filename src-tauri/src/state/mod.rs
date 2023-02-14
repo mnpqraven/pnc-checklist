@@ -1,14 +1,32 @@
-use crate::{
-    algorithm::types::AlgoPiece, model::error::TauriError, state::types::KeychainTable,
-    unit::types::Unit,
-};
+use self::types::{Keychain, KeychainTable};
+use crate::{algorithm::types::AlgoPiece, service::errors::TauriError, unit::types::Unit};
+use semver::Version;
 use std::sync::Weak;
 use tauri::State;
 
-use self::types::Keychain;
-
+pub mod build_inject;
 mod impls;
+mod runnables;
 pub mod types;
+
+#[allow(dead_code)]
+const TAURI_CONF_PATH: &str = "tauri.conf.json";
+#[allow(dead_code)]
+const ENDPOINT_PATH: &str = "endpoint.json";
+#[allow(dead_code)]
+const INVOKE_KEY_PATH: &str = "bindings/invoke_keys.ts";
+#[allow(dead_code)]
+const PUB_SIGNATURE: &str = "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcFpkOUVxRTVxQklWb1NiMTNvcG9NVU9nVnhHajA0STl4UW1Oekp1cGkyWnJlejMyMTh0Vk42Skc3YzB1UVZjcHJrbUhSMzhNZWhZZjZ5YXBZN0pQNmlvSkUwdm1UY2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNjcyNjQ5OTE4CWZpbGU6cG5jLWNoZWNrbGlzdF8wLjEuMV94NjRfZW4tVVMubXNpLnppcApjMUoyUDZzVlpUZ29iNmxBUGF2MVZjNENjQksxTkFvTlBBYWJLOWxMcWlLUUdGNXYxcXlPellJTU83K0Y3Uytwak1HMThQRVQrUjZ1cWd5M3ZpNWJBZz09Cg==";
+
+#[tauri::command]
+pub fn get_tauri_version() -> Result<Version, TauriError> {
+    let ver = env!("CARGO_PKG_VERSION");
+
+    match Version::parse(ver.trim_matches('\"')) {
+        Ok(version) => Ok(version),
+        Err(_) => Err(TauriError::ResourceRequestFailed("version".to_string())),
+    }
+}
 
 #[tauri::command]
 /// dev: traverse locker tree and return content with respective owner
@@ -55,4 +73,10 @@ pub fn clear_ownerless(keychain: State<KeychainTable>) -> Result<(), TauriError>
         }
         _ => Err(TauriError::RequestLockFailed),
     }
+}
+
+#[tauri::command]
+pub fn dev(keychain: State<KeychainTable>) -> Result<(), TauriError> {
+    // let g_kcs = keychain.keychains_group_piece();
+    Ok(())
 }

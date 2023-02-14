@@ -1,12 +1,9 @@
-use crate::state::TauriError;
+use super::{get_tauri_version, ENDPOINT_PATH, PUB_SIGNATURE, TAURI_CONF_PATH};
 use chrono::{DateTime, Utc};
 use regex::Regex;
 use semver::Version;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 use std::{error::Error, fs};
-
-use super::{TAURI_CONF, PUB_SIGNATURE};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EndPointPayload {
@@ -45,28 +42,21 @@ impl EndPointPayload {
     }
 
     fn _update_url(&mut self, to_version: &Version) {
-        let re_url = Regex::new(r"\d.\d.\d").unwrap();
-        let replaced = re_url.replace_all(&self._get_url().0, to_version.to_string());
+        let replaced = _semver_regex().replace_all(&self._get_url().0, to_version.to_string());
         *self._get_url_mut() = Url(replaced.to_string());
     }
 }
 
-pub(super) fn _get_payload(path: String) -> Result<EndPointPayload, serde_json::Error> {
-    let buffer = fs::read_to_string(Path::new(&path)).unwrap();
+fn _semver_regex() -> Regex {
+    Regex::new(r"\d+\.\d+\.\d+").unwrap()
+}
+
+pub(super) fn _get_payload() -> Result<EndPointPayload, serde_json::Error> {
+    let buffer = fs::read_to_string(ENDPOINT_PATH).unwrap();
     serde_json::from_str::<EndPointPayload>(&buffer)
 }
 
-#[tauri::command]
-pub fn get_tauri_version() -> Result<Version, TauriError> {
-    let ver = env!("CARGO_PKG_VERSION");
-
-    match Version::parse(ver.trim_matches('\"')) {
-        Ok(version) => Ok(version),
-        Err(_) => Err(TauriError::ResourceRequestFailed("version".to_string())),
-    }
-}
-
-pub fn _build_payload(
+pub(super) fn _build_payload(
     mut current: EndPointPayload,
 ) -> Result<EndPointPayload, serde_json::Error> {
     let pub_date: DateTime<Utc> = Utc::now();
@@ -90,23 +80,25 @@ pub fn _build_payload(
     Ok(out_payload)
 }
 
-pub fn write_endpoint(path: String, payload: &EndPointPayload) -> Result<(), Box<dyn Error>> {
+pub(super) fn _write_endpoint(
+    path: &str,
+    payload: &EndPointPayload,
+) -> Result<(), Box<dyn Error>> {
     let pretty_json = serde_json::to_string_pretty::<EndPointPayload>(payload).unwrap();
-    fs::write(path, pretty_json).unwrap();
+    fs::write(path, pretty_json)?;
     Ok(())
 }
+
 pub(super) fn _update_tauri_conf() -> Result<(), Box<dyn Error>> {
-    let conf = fs::read_to_string(TAURI_CONF).unwrap();
-    // let ind = conf.find("version").unwrap() + "version".to_string().len() + 1;
     let mut buffer = String::new();
-    let re_url = Regex::new(r"\d.\d.\d").unwrap();
     let to_version = get_tauri_version().unwrap().to_string();
     let mut replaced = false;
 
-    for line in conf.lines() {
+    for line in fs::read_to_string(TAURI_CONF_PATH)?.lines() {
+        // first line containing 'version'
         if line.contains("version") && !replaced {
             // to replacement
-            let modified = re_url.replace_all(line, to_version.clone());
+            let modified = _semver_regex().replace_all(line, to_version.clone());
             buffer.push_str(&modified);
             replaced = true;
         } else {
@@ -114,7 +106,7 @@ pub(super) fn _update_tauri_conf() -> Result<(), Box<dyn Error>> {
         }
         buffer.push('\n');
     }
-    fs::write(TAURI_CONF, buffer).unwrap();
+    fs::write(TAURI_CONF_PATH, buffer)?;
 
     Ok(())
 }

@@ -17,7 +17,6 @@ mod table;
 mod unit;
 mod validator;
 
-use crate::state::build_inject::get_tauri_version;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute, algorithm_all,
@@ -32,7 +31,7 @@ use crate::{
         enum_ls,
         file::{export, import, set_default_file},
     },
-    state::{clear_ownerless, remove_kc, view_locker},
+    state::{clear_ownerless, get_tauri_version, remove_kc, view_locker},
     table::{get_algo_by_days, get_algo_db, get_bonuses},
     unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},

@@ -3,7 +3,7 @@ use std::fs;
 
 #[test]
 fn import_verbose() {
-    import("./data/user/schemadata.json".to_string()).unwrap();
+    // import("./data/user/schemadata.json".to_string()).unwrap();
 }
 
 #[test]

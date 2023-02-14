@@ -58,13 +58,33 @@ export const DEFAULT_UNIT: Unit = {
         {
           name: "Deduction",
           stat: "HashratePercent",
-          slot: [true, true],
+          slot: [
+            { placement: "One", value: true },
+            { placement: "Two", value: true },
+          ],
         },
       ],
       stability: [
-        { name: "Overflow", stat: "DefPercent", slot: [true, true, true] },
+        {
+          name: "Overflow",
+          stat: "DefPercent",
+          slot: [
+            { placement: "One", value: true },
+            { placement: "Two", value: true },
+            { placement: "Three", value: true },
+          ],
+        },
       ],
-      special: [{ name: "Stratagem", stat: "DefPercent", slot: [true, true] }],
+      special: [
+        {
+          name: "Stratagem",
+          stat: "DefPercent",
+          slot: [
+            { placement: "One", value: true },
+            { placement: "Two", value: true },
+          ],
+        },
+      ],
     },
   },
 };
@@ -73,4 +93,4 @@ export const THEME_CLASSES = {
   light: "light-theme",
   dark: "dark-theme",
   entropic: "entropic-theme",
-} as const
+} as const;

@@ -21,6 +21,12 @@ const Inventory = () => {
     invoke("remove_kc", { index }).then(refetchLocker);
   }
 
+  function dev() {
+    invoke("requirement_algo_store").then((data) => {
+      invoke("algo_req_group_piece", { reqs: data }).then(console.warn);
+    });
+  }
+
   function clear_ownerless() {
     invoke("clear_ownerless").then(refetchLocker);
   }
@@ -32,6 +38,7 @@ const Inventory = () => {
     <main>
       <div className="flex flex-col">
         <div className="card component_space flex w-fit flex-col items-start">
+          <Button onClick={dev} label="Dev" />
           <div className="flex">
             <p>current algos</p>
             <Button
@@ -52,7 +59,11 @@ const Inventory = () => {
           ))}
         </div>
 
-        <div className="card component_space w-fit">
+        <div className="card component_space">
+          <p>required algos</p>
+          <AlgoRequirementContainer />
+        </div>
+        <div className="card component_space">
           <p>required algos</p>
           <AlgoRequirementContainer />
         </div>
