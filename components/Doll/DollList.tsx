@@ -10,25 +10,23 @@ import Button from "../Button";
 import { Class } from "@/src-tauri/bindings/enums";
 
 type Props = {
-  filtered: Unit[]
-}
-const DollList = ({filtered: storeAfterFilter} : Props) => {
+  filter: Class[];
+};
+const DollList = ({ filter }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
-    useContext(DollContext);
+  const { storeLoading, updateIndex, dirtyStore } = useContext(DollContext);
 
   // TODO: get rid of update index updater too
   const newUnit = useNewUnitMutation(updateIndex);
   const deleteUnit = useDeleteUnitMutation(updateIndex);
 
-  const filterMethod = (units: Unit[], pat: Class[]) => {
-    return units.filter((unit) => pat.includes(unit.class));
-  };
+  const isVisible = (obj: Unit, pat: Class[]) => pat.includes(obj.class);
+
   return (
     <ul id="dolllist" className="w-60">
       <div className="mt-3 flex gap-2 [&>*]:grow">
         <Button
-          onClick={() => newUnit({ length: storeAfterFilter.length })}
+          onClick={() => newUnit({ length: dirtyStore.length })}
           label={"New"}
         />
         <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
@@ -40,22 +38,25 @@ const DollList = ({filtered: storeAfterFilter} : Props) => {
           </li>
         ))
       ) : (
-        <AnimatePresence mode="popLayout">
-          {storeAfterFilter.map((unit, index) => (
-            <motion.li
-              key={index}
-              onClick={() => updateIndex(index)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <DollListItem
-                unit={unit}
-                deleteMode={deleteMode}
-                deleteUnit={() => deleteUnit({ index })}
-              />
-            </motion.li>
-          ))}
+        <AnimatePresence mode="sync">
+          {dirtyStore.map(
+            (unit, index) =>
+              isVisible(unit, filter) && (
+                <motion.li
+                  key={index}
+                  onClick={() => updateIndex(index)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <DollListItem
+                    unit={unit}
+                    deleteMode={deleteMode}
+                    deleteUnit={() => deleteUnit({ index })}
+                  />
+                </motion.li>
+              )
+          )}
         </AnimatePresence>
       )}
     </ul>
