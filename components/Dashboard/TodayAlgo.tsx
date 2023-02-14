@@ -1,9 +1,8 @@
-import Image from "next/image";
-import { algo_src } from "@/utils/helper";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useEffect, useState } from "react";
 import { useAlgoByDayQuery } from "@/utils/hooks/algo/useAlgoByDayQuery";
 import Button from "../Button";
+import AlgoImage from "../Algorithm/AlgoImage";
 
 type Props = {
   onMouseEnter: (offset: number) => void;
@@ -23,7 +22,8 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
   }
 
   useEffect(() => {
-    mouseInteract(undefined);
+    onMouseEnter(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -47,21 +47,10 @@ const TodayAlgo = ({ onMouseEnter, dayIndex }: Props) => {
 
       {isWeekday ? (
         algoByDay.map(([category, algos], index_cat) => (
-          <div key={index_cat} className="flex flex-col px-2 text-center">
+          <div key={index_cat} className="flex flex-col items-center">
             <p>{category}</p>
             {algos.map((algo, index_alg) => (
-              <div
-                key={index_alg}
-                className="flex h-[64px] w-[64px] items-center"
-              >
-                <Image
-                  priority
-                  src={algo_src(algo)}
-                  alt={algo}
-                  height={128}
-                  width={128}
-                />
-              </div>
+              <AlgoImage key={index_alg} algo={algo} />
             ))}
           </div>
         ))
