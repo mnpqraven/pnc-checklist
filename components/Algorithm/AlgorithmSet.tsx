@@ -3,22 +3,22 @@ import {
   AlgoErrorContext,
   DollContext,
 } from "@/interfaces/payloads";
-import { useCallback, useContext } from "react";
-import AlgorithmPiece from "./AlgorithmPiece";
 import {
-  AlgoMainStat,
   AlgoCategory,
-  LoadoutType,
+  AlgoMainStat,
   Algorithm,
+  LoadoutType,
 } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useAlgoMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 import { AnimatePresence, motion } from "framer-motion";
-import ErrorContainer from "../Error";
+import { useCallback, useContext } from "react";
 import Skeleton from "react-loading-skeleton";
 import Button from "../Button";
+import ErrorContainer from "../Error";
+import AlgorithmPiece from "./AlgorithmPiece";
 
 type Props = {
   algo: AlgoSet | undefined;
@@ -93,24 +93,22 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                 className="my-2 flex shrink-0 basis-1/3 flex-col"
                 key={catindex}
               >
-                <AnimatePresence initial={false} mode="popLayout">
-                  {algo[category.toLowerCase() as keyof AlgoSet].map(
-                    (piece, pieceind) => (
-                      <AlgorithmPiece
-                        key={pieceind}
-                        index={pieceind}
-                        options={{
-                          algoTypes: algoDb[catindex],
-                          mainStat: mainStat[catindex],
-                        }}
-                        category={category}
-                        pieceData={piece}
-                        valid={!errList(category).includes(pieceind)}
-                        onChange={handleUpdatePiece}
-                      />
-                    )
-                  )}
-                </AnimatePresence>
+                {algo[category.toLowerCase() as keyof AlgoSet].map(
+                  (piece, pieceind) => (
+                    <AlgorithmPiece
+                      key={pieceind}
+                      index={pieceind}
+                      options={{
+                        algoTypes: algoDb[catindex],
+                        mainStat: mainStat[catindex],
+                      }}
+                      category={category}
+                      pieceData={piece}
+                      valid={!errList(category).includes(pieceind)}
+                      onChange={handleUpdatePiece}
+                    />
+                  )
+                )}
               </div>
             ))
         ) : (

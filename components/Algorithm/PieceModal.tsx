@@ -39,7 +39,7 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
             whileHover={{ scale: 1.0 }}
             whileTap={{ scale: 0.8 }}
           >
-            <AlgoImage algo={algo} width={96} />
+            <AlgoImage algo={algo} />
           </motion.div>
         ))}
       </motion.div>

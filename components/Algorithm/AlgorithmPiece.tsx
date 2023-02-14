@@ -13,7 +13,7 @@ import {
 } from "@/src-tauri/bindings/enums";
 import PieceModal from "./PieceModal";
 import { AnimatePresence, motion } from "framer-motion";
-import MainStatSelect from "../RadixDropdown";
+import MainStatSelect from "../MainstatSelect";
 import { TrashIcon } from "@radix-ui/react-icons";
 import AlgoImage from "./AlgoImage";
 import { useComputeSlotsMutation } from "@/utils/hooks/mutations/computeSlots";

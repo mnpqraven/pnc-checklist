@@ -14,10 +14,10 @@ const RadioGroup = ({ value, options, onChange }: Props) => {
     >
       {options.map((item, index) => (
         <div style={{ display: "flex", alignItems: "center" }} key={index}>
-          <Item className="RadioGroupItem" value={item} id="r1">
+          <Item className="RadioGroupItem" value={item} id={`radio-${index}`}>
             <Indicator className="RadioGroupIndicator" />
           </Item>
-          <label className="Label" htmlFor="r1">
+          <label className="Label" htmlFor={`radio-${index}`}>
             {item}
           </label>
         </div>

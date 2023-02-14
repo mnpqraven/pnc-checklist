@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import Button from "@/components/Button";
 
 const Inventory = () => {
   const client = useQueryClient();
@@ -33,15 +34,20 @@ const Inventory = () => {
         <div className="card component_space flex w-fit flex-col items-start">
           <div className="flex">
             <p>current algos</p>
-            <button onClick={clear_ownerless}>clear unused algorithms</button>
+            <Button
+              onClick={clear_ownerless}
+              label={"clear unused algorithms"}
+            />
           </div>
 
           {lockerDataQuery.data.map((e, index) => (
             <div key={index} className="flex flex-row">
-              <button onClick={() => deleteKeychain(index)}>delete</button>
-              <p>
-                {e[0] ? e[0].name : "NULL"} - [{e[1] ? e[1].name : "NULL"}]
-              </p>
+              <Button
+                onClick={() => deleteKeychain(index)}
+                className="small red"
+                label="Delete"
+              />
+              {e[0] ? e[0].name : "NULL"} - [{e[1] ? e[1].name : "NULL"}]
             </div>
           ))}
         </div>

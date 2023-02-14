@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 
 export const useEnumTable = <T>(table: EnumTable) => {
-  const { data, isLoading, isError, isSuccess } = useQuery({
+  const enumIter = useQuery({
     queryKey: [IVK.ENUM_LS, table],
     queryFn: () => invoke<T[]>(IVK.ENUM_LS, { name: table }),
   });
-  return { data, isLoading, isError, isSuccess };
+  return enumIter;
 };
