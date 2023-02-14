@@ -2,55 +2,36 @@ import DollListItem from "./DollListItem";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useContext, useState } from "react";
 import useNewUnitMutation from "@/utils/hooks/mutations/newUnit";
-import { Updater, useImmer } from "use-immer";
 import { useDeleteUnitMutation } from "@/utils/hooks/mutations/deleteUnit";
 import Skeleton from "react-loading-skeleton";
 import { DollContext } from "@/interfaces/payloads";
 import { AnimatePresence, motion } from "framer-motion";
-import ClassFilter from "../RadixSelect";
+import Button from "../Button";
 import { Class } from "@/src-tauri/bindings/enums";
 
 type Props = {
-  store: Unit[];
-  setStore: Updater<Unit[]>;
-  indexChange: (value: number) => void;
-};
-const DEFAULT_CLASSES: Class[] = [
-  "Guard",
-  "Medic",
-  "Warrior",
-  "Specialist",
-  "Sniper",
-];
-const DollList = ({ store: fullStore, setStore, indexChange }: Props) => {
+  filtered: Unit[]
+}
+const DollList = ({filtered: storeAfterFilter} : Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const newUnit = useNewUnitMutation(setStore, indexChange);
-  const { storeLoading } = useContext(DollContext);
-  const deleteUnit = useDeleteUnitMutation(setStore, indexChange);
+  const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
+    useContext(DollContext);
 
-  const [filterList, setFilterList] = useImmer(DEFAULT_CLASSES);
+  // TODO: get rid of update index updater too
+  const newUnit = useNewUnitMutation(updateIndex);
+  const deleteUnit = useDeleteUnitMutation(updateIndex);
 
-  function filterStore(to: Class) {
-    if (filterList.includes(to))
-      setFilterList((draft) => {
-        draft.splice(draft.indexOf(to), 1);
-        return draft;
-      });
-    else
-      setFilterList((draft) => {
-        draft.push(to);
-        return draft;
-      });
-  }
-
-  const store = fullStore.filter((unit) => filterList.includes(unit.class));
-
+  const filterMethod = (units: Unit[], pat: Class[]) => {
+    return units.filter((unit) => pat.includes(unit.class));
+  };
   return (
     <ul id="dolllist" className="w-60">
-      <ClassFilter onFilter={filterStore} />
-      <div className="flex text-center [&>li]:grow">
-        <li onClick={() => newUnit({ length: store.length })}>New</li>
-        <li onClick={() => setDeleteMode(!deleteMode)}>Delete</li>
+      <div className="mt-3 flex gap-2 [&>*]:grow">
+        <Button
+          onClick={() => newUnit({ length: storeAfterFilter.length })}
+          label={"New"}
+        />
+        <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
       </div>
       {storeLoading ? (
         [1, 2, 3].map((ind) => (
@@ -60,10 +41,10 @@ const DollList = ({ store: fullStore, setStore, indexChange }: Props) => {
         ))
       ) : (
         <AnimatePresence mode="popLayout">
-          {store.map((unit, index) => (
+          {storeAfterFilter.map((unit, index) => (
             <motion.li
               key={index}
-              onClick={() => indexChange(index)}
+              onClick={() => updateIndex(index)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
