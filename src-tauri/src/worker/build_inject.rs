@@ -8,27 +8,27 @@ use std::path::Path;
 use std::{error::Error, fs};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub(super) struct EndPointPayload {
-    version: Version,
-    notes: String,
-    pub_date: DateTime<Utc>,
-    platforms: Platforms,
+pub struct EndPointPayload {
+    pub version: Version,
+    pub notes: String,
+    pub pub_date: DateTime<Utc>,
+    pub platforms: Platforms,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct Platforms {
+pub struct Platforms {
     #[serde(rename = "windows-x86_64")]
-    windows: Endpoint,
+    pub windows: Endpoint,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct Endpoint {
-    signature: String,
-    url: Url,
+pub struct Endpoint {
+    pub signature: String,
+    pub url: Url,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct Url(String);
+pub struct Url(pub String);
 
 impl EndPointPayload {
     fn _get_ver(&self) -> Version {
@@ -89,7 +89,7 @@ pub(super) fn _build_payload(
     Ok(out_payload)
 }
 
-pub(super) fn _write_endpoint(
+pub fn write_endpoint(
     path: String,
     payload: &EndPointPayload,
 ) -> Result<(), Box<dyn Error>> {
