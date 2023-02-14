@@ -17,11 +17,10 @@ fn generate_type_indexes() -> Result<(), Box<dyn Error>> {
 }
 
 /// Update steps:
-/// update version in `Cargo.toml`
-/// run this runnable > build (update version number in app)
-/// update built sig to ENV
-/// build again (update sig in endpoint)
-/// commit + push
+/// - Update version in `Cargo.toml`
+/// - Run this runnable > build, this will automatically update 
+/// the version number in other places across the app
+/// - Commit + push
 #[test]
 fn update_version() -> Result<(), Box<dyn Error>> {
     _update_tauri_conf()?;
