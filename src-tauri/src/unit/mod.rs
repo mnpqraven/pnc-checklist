@@ -1,8 +1,7 @@
 use self::types::{Class, Unit};
 use crate::{
     compute::update_reqs,
-    model::error::TauriError,
-    service::file::localsave,
+    service::{file::localsave, errors::TauriError},
     state::types::{Computed, JSONStorage, KeychainTable},
 };
 use std::sync::{Arc, Mutex};

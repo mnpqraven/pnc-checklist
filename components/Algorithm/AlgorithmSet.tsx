@@ -11,7 +11,7 @@ import {
 } from "@/src-tauri/bindings/enums";
 import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
-import { useAlgoMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
+import { useMainStatsQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useContext } from "react";
@@ -32,7 +32,7 @@ export type OptionPayload = {
 const AlgorithmSet = ({ algo, type }: Props) => {
   const cats: AlgoCategory[] = ["Offense", "Stability", "Special"];
   const algoDbQuery = useAlgoDbQuery();
-  const mainStatQuery = useAlgoMainStatQuery();
+  const mainStatQuery = useMainStatsQuery();
   const { setDollData } = useContext(DollContext);
 
   const algoError: AlgoError[] = useContext(AlgoErrorContext);

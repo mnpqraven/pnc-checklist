@@ -1,5 +1,7 @@
 use super::types::*;
-use crate::{algorithm::types::AlgoPiece, model::error::TauriError, stats::types::*};
+use crate::algorithm::types::AlgoPiece;
+use crate::stats::types::{Level, NeuralFragment, UnitSkill};
+use crate::unit::TauriError;
 use std::sync::{Arc, Mutex};
 
 // UNIT

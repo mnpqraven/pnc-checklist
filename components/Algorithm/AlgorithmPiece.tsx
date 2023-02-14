@@ -22,6 +22,7 @@ import { Slot } from "@/src-tauri/bindings/structs/Slot";
 import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import Button from "../Button";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 
 type Props = {
   index: number;
@@ -71,7 +72,7 @@ const AlgorithmPiece = ({
   }, [category, index, piece]);
 
   function pieceHandler(name: Algorithm) {
-    invoke<AlgoSlot | null>("validate_slots", { piece: pieceData })
+    invoke<AlgoSlot | null>(IVK.VALIDATE_SLOTS, { piece: pieceData })
       .then((slot) => {
         if (slot) {
           setSlot(slot);
@@ -135,7 +136,7 @@ const AlgorithmPiece = ({
       <div className="flex max-w-[10rem] grow flex-col gap-2">
         <MainStatSelect
           value={mainStat}
-          labelPayload={{ method: "print_main_stat", payload: category }}
+          labelPayload={{ method: IVK.PRINT_MAIN_STATS, payload: category }}
           options={options.mainStat}
           onChangeHandler={mainStatHandler}
           category={category}

@@ -1,7 +1,7 @@
 use self::{algo::validate_algo, unit::validate_unit_name};
 use crate::{
     algorithm::types::{AlgoPiece, AlgoSlot},
-    model::error::ValidationError,
+    service::errors::ValidationError,
     unit::types::Unit,
 };
 

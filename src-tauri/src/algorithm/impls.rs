@@ -407,4 +407,9 @@ impl AlgoSlot {
             slot.set(!slot.value)
         }
     }
+
+    pub fn merge(&mut self, mut with: Self) {
+        // self: Vec({value, placement})
+        self.0.append(&mut with.0);
+    }
 }

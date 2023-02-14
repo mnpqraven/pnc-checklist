@@ -4,7 +4,7 @@ import { AlgoPiece } from "@/src-tauri/bindings/structs";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 
-export const useAlgoMainStatQuery = () => {
+export const useMainStatsQuery = () => {
   const mainStat = useQuery({
     queryKey: [IVK.MAIN_STAT_ALL],
     queryFn: () => invoke<AlgoMainStat[][]>(IVK.MAIN_STAT_ALL),
@@ -14,15 +14,15 @@ export const useAlgoMainStatQuery = () => {
 };
 
 // TODO: naming schemes
-export const useSingleMainStatQuery = (pieces: AlgoPiece[]) => {
+export const useMainStatQuery = (pieces: AlgoPiece[]) => {
   const mainStat = useQueries({
     queries: pieces.map((piece) => {
       return {
-        queryKey: ["print_main_stat", piece.slot],
+        queryKey: [IVK.PRINT_MAIN_STAT, piece],
         queryFn: () =>
-          invoke<string>("dev_print_single_main", { payload: piece.stat }),
+          invoke<string>(IVK.PRINT_MAIN_STAT, { payload: piece.stat }),
       };
     }),
   });
-  return mainStat
+  return mainStat;
 };

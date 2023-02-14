@@ -7,8 +7,8 @@ export const IVK = {
   DEFAULT_SLOT_SIZE: "default_slot_size",
   MAIN_STAT_ALL: "main_stat_all",
   PRINT_ALGO: "print_algo",
+  PRINT_MAIN_STATS: "print_main_stats",
   PRINT_MAIN_STAT: "print_main_stat",
-  DEV_PRINT_SINGLE_MAIN: "dev_print_single_main",
   GET_NEEDED_RSC: "get_needed_rsc",
   UPDATE_CHUNK: "update_chunk",
   ENUM_LS: "enum_ls",
@@ -36,5 +36,6 @@ export const IVK = {
   VALIDATE_SLOTS: "validate_slots",
   VALIDATE: "validate",
   GET_TAURI_VERSION: "get_tauri_version",
+  ALGO_REQ_GROUP_PIECE: "algo_req_group_piece",
 } as const;
 export type Ivk = keyof typeof IVK;

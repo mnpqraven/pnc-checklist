@@ -3,12 +3,12 @@
     windows_subsystem = "windows"
 )]
 #![feature(arc_unwrap_or_clone)]
+#![feature(slice_partition_dedup)]
 
 mod algorithm;
 mod compute;
 mod loadout;
 mod macros;
-mod model;
 mod requirement;
 mod service;
 mod state;
@@ -16,34 +16,33 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-pub mod worker;
-use std::sync::Mutex;
 
-use requirement::types::DatabaseRequirement;
-use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
-#[allow(unused_imports)]
-use tauri::Manager;
-use unit::types::Unit;
-
-// will be invoked during startup
+use crate::state::build_inject::get_tauri_version;
 use crate::{
     algorithm::{
-        algo_piece_new, algo_set_new, algo_slots_compute, algorithm_all, default_slot_size,
-        dev_print_single_main, main_stat_all, print_algo, print_main_stat, algo_set_fill,
+        algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute, algorithm_all,
+        default_slot_size, main_stat_all, print_algo, print_main_stat, print_main_stats,
     },
     compute::{get_needed_rsc, update_chunk},
-    model::enum_ls,
     requirement::{
-        requirement_level, requirement_neural, requirement_slv, requirement_widget,
-        requirment_neural_kits, requirement_algo_store, algo_req_fulfilled,
+        algo_req_fulfilled, algo_req_group_piece, requirement_algo_store, requirement_level,
+        requirement_neural, requirement_slv, requirement_widget, requirment_neural_kits,
     },
-    service::file::{export, import, set_default_file},
+    service::{
+        enum_ls,
+        file::{export, import, set_default_file},
+    },
     state::{clear_ownerless, remove_kc, view_locker},
     table::{get_algo_by_days, get_algo_db, get_bonuses},
     unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},
-    worker::build_inject::get_tauri_version,
 };
+use requirement::types::DatabaseRequirement;
+use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
+use std::sync::Mutex;
+#[allow(unused_imports)]
+use tauri::Manager;
+use unit::types::Unit;
 
 fn main() {
     // INFO: initial values
@@ -84,8 +83,8 @@ fn main() {
             default_slot_size,
             main_stat_all,
             print_algo,
+            print_main_stats,
             print_main_stat,
-            dev_print_single_main,
             // compute
             get_needed_rsc,
             update_chunk,
@@ -122,7 +121,8 @@ fn main() {
             validate_slots,
             validate,
             // worker
-            get_tauri_version
+            get_tauri_version,
+            algo_req_group_piece
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

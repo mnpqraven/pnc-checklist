@@ -3,7 +3,7 @@ import {
   AlgorithmRequirement,
   AlgoSlot,
 } from "@/src-tauri/bindings/structs";
-import { useSingleMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
+import { useMainStatQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 import AlgoImage from "../Algorithm/AlgoImage";
@@ -12,7 +12,7 @@ import Loading from "../Loading";
 
 const AlgoRequirement = ({ data }: { data: AlgorithmRequirement }) => {
   const { pieces, from_unit } = data; // from_unit unused
-  const labels = useSingleMainStatQuery(pieces);
+  const labels = useMainStatQuery(pieces);
   const hasReq = (algo: AlgoPiece) => !algo.slot.every((e) => e.value);
 
   const {

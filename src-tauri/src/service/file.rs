@@ -1,5 +1,5 @@
-use crate::JSONStorage;
-use crate::{model::error::TauriError, state::types::UserJSON};
+use super::errors::TauriError;
+use crate::{state::types::UserJSON, JSONStorage};
 use std::{fs, path::Path};
 use tauri::{api::path::data_dir, State};
 

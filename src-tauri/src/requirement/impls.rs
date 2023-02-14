@@ -1,9 +1,9 @@
 use super::types::*;
 use crate::algorithm::types::AlgoPiece;
-use crate::model::error::TauriError;
+use crate::service::errors::{RequirementError, TauriError};
 use crate::state::types::GrandResource;
 use crate::unit::types::{Class, NeuralExpansion};
-use crate::{model::error::RequirementError, stats::types::*, table::consts::*, unit::types::Unit};
+use crate::{stats::types::*, table::consts::*, unit::types::Unit};
 use std::sync::{Arc, Mutex};
 
 impl DatabaseRequirement {

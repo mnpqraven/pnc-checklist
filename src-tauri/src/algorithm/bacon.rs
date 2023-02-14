@@ -1,5 +1,5 @@
 use super::{
-    dev_print_single_main,
+    print_main_stat,
     types::{AlgoCategory, AlgoSet},
 };
 use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
@@ -173,8 +173,8 @@ fn update_slots_pass_partial() {
 #[test]
 fn mainstat_display() {
     let m = AlgoMainStat::OperandPenPercent;
-    assert_eq!(dev_print_single_main(m), "Operand Pen. %");
-    assert_eq!(dev_print_single_main(AlgoMainStat::Dodge), "Dodge");
+    assert_eq!(print_main_stat(m), "Operand Pen. %");
+    assert_eq!(print_main_stat(AlgoMainStat::Dodge), "Dodge");
 }
 
 #[test]

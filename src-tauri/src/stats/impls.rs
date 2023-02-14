@@ -1,4 +1,4 @@
-use crate::model::error::ValidationError;
+use crate::service::errors::ValidationError;
 use crate::validator::*;
 use crate::{
     stats::types::*,

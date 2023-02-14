@@ -1,7 +1,6 @@
-mod algo;
 mod impls;
-use crate::model::error::TauriError;
 use crate::requirement::types::UnitRequirement;
+use crate::service::errors::TauriError;
 use crate::state::types::{Computed, GrandResource, JSONStorage};
 use crate::{
     requirement::{

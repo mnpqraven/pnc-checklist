@@ -79,7 +79,7 @@ pub fn print_algo(payload: AlgoCategory) -> Vec<String> {
 #[tauri::command]
 /// args has to be set as `payload` for less confusion about naming schemes
 /// across print methods
-pub fn print_main_stat(payload: AlgoCategory) -> Vec<String> {
+pub fn print_main_stats(payload: AlgoCategory) -> Vec<String> {
     let block: Vec<AlgoMainStat> = match payload {
         AlgoCategory::Offense => ALGO_MAINSTAT_OFFENSE.to_vec(),
         AlgoCategory::Stability => ALGO_MAINSTAT_STABILITY.to_vec(),
@@ -91,6 +91,6 @@ pub fn print_main_stat(payload: AlgoCategory) -> Vec<String> {
 
 #[tauri::command]
 /// only prints out a single mainstat
-pub fn dev_print_single_main(payload: AlgoMainStat) -> String {
+pub fn print_main_stat(payload: AlgoMainStat) -> String {
     payload.to_string()
 }

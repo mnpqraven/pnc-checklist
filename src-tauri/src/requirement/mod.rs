@@ -1,11 +1,10 @@
-use tauri::State;
-
 use self::types::*;
 use crate::algorithm::types::AlgoPiece;
-use crate::model::error::RequirementError;
+use crate::service::errors::RequirementError;
 use crate::state::types::Computed;
 use crate::stats::types::{NeuralFragment, UnitSkill};
 use crate::unit::types::{Class, NeuralExpansion, Unit};
+use tauri::State;
 
 #[cfg(test)]
 mod bacon;
@@ -53,7 +52,9 @@ pub fn requirement_widget(
 }
 
 #[tauri::command]
-pub fn requirement_algo_unit(from: &Unit) -> Result<AlgorithmRequirement, RequirementError<AlgoPiece>> {
+pub fn requirement_algo_unit(
+    from: &Unit,
+) -> Result<AlgorithmRequirement, RequirementError<AlgoPiece>> {
     println!("[invoke] requirement_algo");
     AlgorithmRequirement::calculate(from)
 }
@@ -77,4 +78,23 @@ pub fn requirement_algo_store(
 #[tauri::command]
 pub fn algo_req_fulfilled(algo_req: AlgorithmRequirement) -> bool {
     algo_req.is_fulfilled()
+}
+
+#[tauri::command]
+pub fn algo_req_group_piece(reqs: Vec<AlgorithmRequirement>) -> Vec<AlgoPiece> {
+    let mut pieces: Vec<AlgoPiece> = reqs.iter().flat_map(|e| e.pieces.clone()).collect();
+    let mut slate: Vec<AlgoPiece> = Vec::new();
+    for piece in pieces.iter_mut() {
+        println!("{} with stat {}", piece.name, piece.stat);
+        match slate
+            .iter_mut()
+            .find(|e| e.name == piece.name && e.stat == piece.stat)
+        {
+            // contains, slot increment
+            Some(found_contain) => found_contain.slot.merge(piece.slot.clone()),
+            // doesn't contain, push to blank slate
+            _ => slate.push(piece.clone()),
+        }
+    }
+    slate
 }

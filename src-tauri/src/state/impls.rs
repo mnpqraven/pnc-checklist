@@ -1,6 +1,6 @@
 use super::types::{Computed, GrandResource, JSONStorage, Keychain, KeychainTable, UserJSON};
 use crate::algorithm::types::AlgoPiece;
-use crate::model::error::TauriError;
+use crate::service::errors::TauriError;
 use crate::stats::types::*;
 use crate::unit::types::{Class, Unit};
 use crate::{
@@ -31,7 +31,11 @@ impl Default for UserJSON {
 }
 #[cfg(test)]
 mod tests {
-    use crate::{unit::types::{Loadout, Unit}, stats::types::{UnitSkill, NeuralFragment}, algorithm::types::AlgoSet};
+    use crate::{
+        algorithm::types::AlgoSet,
+        stats::types::{NeuralFragment, UnitSkill},
+        unit::types::{Loadout, Unit},
+    };
 
     #[test]
     fn serde() {
@@ -207,5 +211,12 @@ impl Keychain {
             unit: Arc::downgrade(am_unit),
             locker: Arc::clone(am_piece),
         }
+    }
+
+    pub fn eq_locker_piece(&self, with: &Self) -> bool {
+        let left = &self.locker.lock().unwrap().name;
+        let right = &with.locker.lock().unwrap().name;
+        dbg!(&left, &right, left.eq(right));
+        left.eq(right)
     }
 }

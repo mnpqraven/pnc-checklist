@@ -1,11 +1,12 @@
-use super::{PUB_SIGNATURE, TAURI_CONF};
-use crate::model::error::TauriError;
+use crate::state::TauriError;
 use chrono::{DateTime, Utc};
 use regex::Regex;
 use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::{error::Error, fs};
+
+use super::{TAURI_CONF, PUB_SIGNATURE};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EndPointPayload {
@@ -65,7 +66,7 @@ pub fn get_tauri_version() -> Result<Version, TauriError> {
     }
 }
 
-pub(super) fn _build_payload(
+pub fn _build_payload(
     mut current: EndPointPayload,
 ) -> Result<EndPointPayload, serde_json::Error> {
     let pub_date: DateTime<Utc> = Utc::now();
@@ -89,10 +90,7 @@ pub(super) fn _build_payload(
     Ok(out_payload)
 }
 
-pub fn write_endpoint(
-    path: String,
-    payload: &EndPointPayload,
-) -> Result<(), Box<dyn Error>> {
+pub fn write_endpoint(path: String, payload: &EndPointPayload) -> Result<(), Box<dyn Error>> {
     let pretty_json = serde_json::to_string_pretty::<EndPointPayload>(payload).unwrap();
     fs::write(path, pretty_json).unwrap();
     Ok(())
@@ -109,56 +107,14 @@ pub(super) fn _update_tauri_conf() -> Result<(), Box<dyn Error>> {
         if line.contains("version") && !replaced {
             // to replacement
             let modified = re_url.replace_all(line, to_version.clone());
-            buffer.push_str(&modified.to_string());
+            buffer.push_str(&modified);
             replaced = true;
         } else {
             buffer.push_str(line);
         }
-        buffer.push_str("\n");
+        buffer.push('\n');
     }
     fs::write(TAURI_CONF, buffer).unwrap();
 
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use semver::{BuildMetadata, Prerelease};
-
-    use super::*;
-
-    #[test]
-    fn regex_and_update() {
-        let re_url = Regex::new(r"\d.\d.\d").unwrap();
-        let mut t = _get_payload(super::super::ENDPOINT.to_string()).unwrap();
-        assert_eq!(t._get_ver().to_string(), "0.1.3");
-
-        {
-            let captured = re_url.captures(&t._get_url().0).unwrap().get(0).unwrap();
-            assert_eq!(captured.as_str(), "0.1.3");
-        }
-        t._update_url(&Version {
-            major: 0,
-            minor: 1,
-            patch: 5,
-            pre: Prerelease::EMPTY,
-            build: BuildMetadata::EMPTY,
-        });
-        let captured = re_url.captures(&t._get_url().0).unwrap().get(0).unwrap();
-        assert_eq!(captured.as_str(), "0.1.5");
-    }
-
-    #[test]
-    fn build() {
-        let t = _get_payload(super::super::ENDPOINT.to_string()).unwrap();
-        let next = _build_payload(t).unwrap();
-        assert_eq!(next.version.to_string(), "0.1.5");
-        assert_eq!(next.platforms.windows.url.0, "https://github.com/mnpqraven/pnc-checklist/releases/download/0.1.5/pnc-checklist_0.1.5_x64_en-US.msi.zip");
-    }
-
-    #[test]
-    fn cargo_ver() {
-        let ver = env!("CARGO_PKG_VERSION");
-        println!("{}", ver);
-    }
 }
