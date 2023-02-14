@@ -11,16 +11,15 @@ import { Class } from "@/src-tauri/bindings/enums";
 
 type Props = {
   filter: Class[];
+  isVisible: (obj: Unit, pat: Class[]) => boolean;
 };
-const DollList = ({ filter }: Props) => {
+const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { storeLoading, updateIndex, dirtyStore } = useContext(DollContext);
 
   // TODO: get rid of update index updater too
   const newUnit = useNewUnitMutation(updateIndex);
   const deleteUnit = useDeleteUnitMutation(updateIndex);
-
-  const isVisible = (obj: Unit, pat: Class[]) => pat.includes(obj.class);
 
   return (
     <ul id="dolllist" className="w-60">

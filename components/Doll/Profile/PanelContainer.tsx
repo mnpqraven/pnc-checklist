@@ -1,14 +1,25 @@
 import ClassFilter from "@/components/ClassFilter";
-import { DollContext } from "@/interfaces/payloads";
 import { Class } from "@/src-tauri/bindings/enums";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { useEnumTable } from "@/utils/hooks/useEnumTable";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import DollList from "../DollList";
 
 const DollPanelContainer = () => {
+  const { filter, updateFilter, isVisible } = useFilter();
+
+  return (
+    <div className="panel_left component_space flex flex-col items-center">
+      <ClassFilter onChange={updateFilter} />
+      <DollList filter={filter} isVisible={isVisible} />
+    </div>
+  );
+};
+export default DollPanelContainer;
+
+const useFilter = () => {
   const { data: classIter } = useEnumTable<Class>(ENUM_TABLE.Class);
 
   const [filter, setFilter] = useImmer<Class[]>([]);
@@ -24,11 +35,6 @@ const DollPanelContainer = () => {
     });
   };
 
-  return (
-    <div className="panel_left component_space flex flex-col items-center">
-      <ClassFilter onChange={updateFilter} />
-      <DollList filter={filter} />
-    </div>
-  );
+  const isVisible = (obj: Unit, pat: Class[]) => pat.includes(obj.class);
+  return { filter, updateFilter, isVisible };
 };
-export default DollPanelContainer;
