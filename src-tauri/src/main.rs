@@ -16,6 +16,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
+pub mod consts;
 
 use crate::{
     algorithm::{
@@ -44,7 +45,6 @@ use tauri::Manager;
 use unit::types::Unit;
 
 fn main() {
-    // INFO: initial values
     // NOTE: we should handle importing in a separate fn, before default()
     let initial_units: Vec<Unit> = UserJSON::default().units;
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);

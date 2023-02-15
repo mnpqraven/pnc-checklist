@@ -2,17 +2,19 @@ use crate::{
     algorithm::types::AlgoPiece, requirement::types::DatabaseRequirement, stats::types::*,
     unit::types::*,
 };
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex, Weak};
 use ts_rs::TS;
 
 /// Main storage, state managed by tauri
+#[derive(JsonSchema)]
 pub struct JSONStorage {
     pub store: Mutex<UserJSON>,   // User's JSON
     pub db: Mutex<GrandResource>, // generated struct
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct UserJSON {
     #[serde(rename = "$schema")]
@@ -21,14 +23,14 @@ pub struct UserJSON {
     pub units: Vec<Unit>,
 }
 
-#[derive(Serialize, Deserialize, Debug, TS, Clone)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Database {
     pub skill: SkillCurrency,
     pub coin: Coin,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default, TS)]
+#[derive(Debug, Serialize, Deserialize, Default, TS, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct GrandResource {
     pub skill: SkillCurrency,

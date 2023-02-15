@@ -1,4 +1,5 @@
-use super::{get_tauri_version, ENDPOINT_PATH, PUB_SIGNATURE, TAURI_CONF_PATH};
+use super::get_tauri_version;
+use crate::consts::{ENDPOINT_PATH, PUB_SIGNATURE, TAURI_CONF_PATH};
 use chrono::{DateTime, Utc};
 use regex::Regex;
 use semver::Version;
@@ -80,10 +81,7 @@ pub(super) fn _build_payload(
     Ok(out_payload)
 }
 
-pub(super) fn _write_endpoint(
-    path: &str,
-    payload: &EndPointPayload,
-) -> Result<(), Box<dyn Error>> {
+pub(super) fn _write_endpoint(path: &str, payload: &EndPointPayload) -> Result<(), Box<dyn Error>> {
     let pretty_json = serde_json::to_string_pretty::<EndPointPayload>(payload).unwrap();
     fs::write(path, pretty_json)?;
     Ok(())

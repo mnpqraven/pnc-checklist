@@ -1,11 +1,14 @@
 use std::ops::Not;
 
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
 use ts_rs::TS;
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
+#[derive(
+    Serialize, Deserialize, TS, JsonSchema, Debug, Clone, EnumIter, Display, PartialEq, Eq,
+)]
 #[ts(export, export_to = "bindings/enums/")]
 /// List of algorithms
 pub enum Algorithm {
@@ -46,7 +49,7 @@ pub enum Algorithm {
     Exploit,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct AlgoPiece {
     pub name: Algorithm,
@@ -55,14 +58,16 @@ pub struct AlgoPiece {
     pub slot: AlgoSlot,
 }
 
-#[derive(Serialize, Deserialize, TS, Clone, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, TS, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct Slot {
     pub placement: SlotPlacement,
     pub value: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
+#[derive(
+    Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq, JsonSchema,
+)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum SlotPlacement {
     One,
@@ -87,12 +92,12 @@ impl Slot {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct AlgoSlot(pub Vec<Slot>);
 // pub struct AlgoSlot(pub Vec<bool>);
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq, JsonSchema)]
 #[ts(export, export_to = "bindings/structs/")]
 pub struct AlgoSet {
     pub offense: Vec<AlgoPiece>,
@@ -101,7 +106,9 @@ pub struct AlgoSet {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq)]
+#[derive(
+    Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq, JsonSchema,
+)]
 #[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoMainStat {
     Hashrate,

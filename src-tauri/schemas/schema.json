@@ -1,0 +1,329 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserJSON",
+  "type": "object",
+  "required": [
+    "$schema",
+    "database",
+    "units"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "database": {
+      "$ref": "#/definitions/Database"
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Unit"
+      }
+    }
+  },
+  "definitions": {
+    "Database": {
+      "type": "object",
+      "required": [
+        "coin",
+        "skill"
+      ],
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/SkillCurrency"
+        },
+        "coin": {
+          "$ref": "#/definitions/Coin"
+        }
+      }
+    },
+    "SkillCurrency": {
+      "type": "object",
+      "required": [
+        "pivot",
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "pivot": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Coin": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "Unit": {
+      "type": "object",
+      "required": [
+        "class",
+        "current",
+        "goal",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "class": {
+          "$ref": "#/definitions/Class"
+        },
+        "current": {
+          "$ref": "#/definitions/Loadout"
+        },
+        "goal": {
+          "$ref": "#/definitions/Loadout"
+        }
+      }
+    },
+    "Class": {
+      "type": "string",
+      "enum": [
+        "Guard",
+        "Medic",
+        "Sniper",
+        "Specialist",
+        "Warrior"
+      ]
+    },
+    "Loadout": {
+      "type": "object",
+      "properties": {
+        "skill_level": {
+          "default": {
+            "auto": 1,
+            "passive": 1
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/UnitSkill"
+            }
+          ]
+        },
+        "level": {
+          "default": 1,
+          "allOf": [
+            {
+              "$ref": "#/definitions/Level"
+            }
+          ]
+        },
+        "algo": {
+          "default": {
+            "offense": [],
+            "special": [],
+            "stability": []
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/AlgoSet"
+            }
+          ]
+        },
+        "neural": {
+          "default": "Three",
+          "allOf": [
+            {
+              "$ref": "#/definitions/NeuralExpansion"
+            }
+          ]
+        },
+        "frags": {
+          "default": 0,
+          "allOf": [
+            {
+              "$ref": "#/definitions/NeuralFragment"
+            }
+          ]
+        }
+      }
+    },
+    "UnitSkill": {
+      "type": "object",
+      "required": [
+        "auto",
+        "passive"
+      ],
+      "properties": {
+        "passive": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "auto": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Level": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "AlgoSet": {
+      "type": "object",
+      "required": [
+        "offense",
+        "special",
+        "stability"
+      ],
+      "properties": {
+        "offense": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlgoPiece"
+          }
+        },
+        "stability": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlgoPiece"
+          }
+        },
+        "special": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlgoPiece"
+          }
+        }
+      }
+    },
+    "AlgoPiece": {
+      "type": "object",
+      "required": [
+        "name",
+        "slot",
+        "stat"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/Algorithm"
+        },
+        "stat": {
+          "$ref": "#/definitions/AlgoMainStat"
+        },
+        "slot": {
+          "$ref": "#/definitions/AlgoSlot"
+        }
+      }
+    },
+    "Algorithm": {
+      "description": "List of algorithms",
+      "type": "string",
+      "enum": [
+        "LowerLimit",
+        "Feedforward",
+        "Deduction",
+        "Progression",
+        "DataRepair",
+        "MLRMatrix",
+        "Stack",
+        "LimitValue",
+        "Encapsulate",
+        "Iteration",
+        "Perception",
+        "Overflow",
+        "Rationality",
+        "Connection",
+        "Convolution",
+        "Reflection",
+        "Resolve",
+        "Inspiration",
+        "LoopGain",
+        "SVM",
+        "Paradigm",
+        "DeltaV",
+        "Cluster",
+        "Stratagem",
+        "Exploit"
+      ]
+    },
+    "AlgoMainStat": {
+      "type": "string",
+      "enum": [
+        "Hashrate",
+        "HashratePercent",
+        "Atk",
+        "AtkPercent",
+        "Health",
+        "HealthPercent",
+        "Haste",
+        "PhysPen",
+        "PhysPenPercent",
+        "OperandPen",
+        "OperandPenPercent",
+        "CritRate",
+        "CritDmg",
+        "DamageInc",
+        "Dodge",
+        "HealInc",
+        "Def",
+        "DefPercent",
+        "OperandDef",
+        "OperandDefPercent",
+        "PostBattleRegen"
+      ]
+    },
+    "AlgoSlot": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Slot"
+      }
+    },
+    "Slot": {
+      "type": "object",
+      "required": [
+        "placement",
+        "value"
+      ],
+      "properties": {
+        "placement": {
+          "$ref": "#/definitions/SlotPlacement"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SlotPlacement": {
+      "type": "string",
+      "enum": [
+        "One",
+        "Two",
+        "Three"
+      ]
+    },
+    "NeuralExpansion": {
+      "type": "string",
+      "enum": [
+        "One",
+        "OneHalf",
+        "Two",
+        "TwoHalf",
+        "Three",
+        "ThreeHalf",
+        "Four",
+        "FourHalf",
+        "Five"
+      ]
+    },
+    "NeuralFragment": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint32",
+      "minimum": 0.0
+    }
+  }
+}
