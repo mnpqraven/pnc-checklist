@@ -6,6 +6,7 @@ import Loading from "@/components/Loading";
 import ErrorContainer from "@/components/Error";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import Button from "@/components/Button";
+import AlgoRequirementGroup from "@/components/Requirement/AlgorithmRequirementGroup";
 
 const Inventory = () => {
   const client = useQueryClient();
@@ -21,12 +22,6 @@ const Inventory = () => {
     invoke("remove_kc", { index }).then(refetchLocker);
   }
 
-  function dev() {
-    invoke("requirement_algo_store").then((data) => {
-      invoke("algo_req_group_piece", { reqs: data }).then(console.warn);
-    });
-  }
-
   function clear_ownerless() {
     invoke("clear_ownerless").then(refetchLocker);
   }
@@ -38,7 +33,6 @@ const Inventory = () => {
     <main>
       <div className="flex flex-col">
         <div className="card component_space flex w-fit flex-col items-start">
-          <Button onClick={dev} label="Dev" />
           <div className="flex">
             <p>current algos</p>
             <Button
@@ -65,7 +59,7 @@ const Inventory = () => {
         </div>
         <div className="card component_space">
           <p>required algos</p>
-          <AlgoRequirementContainer />
+          <AlgoRequirementGroup />
         </div>
       </div>
     </main>

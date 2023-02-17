@@ -4,6 +4,7 @@
 )]
 #![feature(arc_unwrap_or_clone)]
 #![feature(slice_partition_dedup)]
+#![feature(slice_group_by)]
 
 mod algorithm;
 mod compute;
@@ -26,7 +27,7 @@ use crate::{
     compute::{get_needed_rsc, update_chunk},
     requirement::{
         algo_req_fulfilled, algo_req_group_piece, requirement_algo_store, requirement_level,
-        requirement_neural, requirement_slv, requirement_widget, requirment_neural_kits,
+        requirement_neural, requirement_slv, requirement_widget, requirment_neural_kits, algo_req_table_piece,
     },
     service::{
         enum_ls,
@@ -98,6 +99,7 @@ fn main() {
             // requirement_algo, // TODO: conflict with Dese
             requirement_algo_store,
             algo_req_fulfilled,
+            algo_req_table_piece, // NOTE: in development
             // state
             view_locker,
             remove_kc,

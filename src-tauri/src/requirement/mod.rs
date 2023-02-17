@@ -1,5 +1,5 @@
 use self::types::*;
-use crate::algorithm::types::AlgoPiece;
+use crate::algorithm::types::{AlgoMainStat, AlgoPiece, Algorithm, Slot, SlotPlacement};
 use crate::service::errors::RequirementError;
 use crate::state::types::Computed;
 use crate::stats::types::{NeuralFragment, UnitSkill};
@@ -97,4 +97,27 @@ pub fn algo_req_group_piece(reqs: Vec<AlgorithmRequirement>) -> Vec<AlgoPiece> {
         }
     }
     slate
+}
+
+#[tauri::command]
+/// x axis mainStat
+/// y axis algorithm
+pub fn algo_req_table_piece(computed: State<'_, Computed>) -> Vec<Vec<(AlgoPiece, Unit)>> {
+    let req_store = requirement_algo_store(computed).unwrap();
+    // req {algoPiece[], Unit}[]
+    let mut v: Vec<(AlgoPiece, Unit)> = Vec::new();
+    for req in req_store.iter() {
+        for piece in req.pieces.iter() {
+            v.push((piece.clone(), req.from_unit.clone()));
+        }
+    }
+    v.sort_by(|(stat1, _), (stat2, _)| {
+        (stat1.name.clone() as usize).cmp(&(stat2.name.clone() as usize))
+    });
+    // v: (algoPiece, Unit)[]
+    let t: Vec<Vec<(AlgoPiece, Unit)>> = v
+        .group_by(|(stat1, _), (stat2, _)| stat1.name == stat2.name)
+        .map(|e| e.to_owned())
+        .collect();
+    t
 }
