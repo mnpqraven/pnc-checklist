@@ -67,8 +67,3 @@ pub fn clear_ownerless(keychain: State<KeychainTable>) -> Result<(), TauriError>
     }
 }
 
-#[tauri::command]
-pub fn dev(keychain: State<KeychainTable>) -> Result<(), TauriError> {
-    // let g_kcs = keychain.keychains_group_piece();
-    Ok(())
-}

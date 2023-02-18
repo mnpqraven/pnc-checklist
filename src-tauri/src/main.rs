@@ -22,7 +22,7 @@ pub mod consts;
 use crate::{
     algorithm::{
         algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute, algorithm_all,
-        default_slot_size, main_stat_all, print_algo, print_main_stat, print_main_stats,
+        default_slot_size, main_stat_all, print_algo, print_main_stat, print_main_stats, algo_get_slot_size,
     },
     compute::{get_needed_rsc, update_chunk},
     requirement::{
@@ -78,6 +78,7 @@ fn main() {
             algorithm_all,
             algo_set_new,
             algo_set_fill,
+            algo_get_slot_size,
             algo_piece_new,
             algo_slots_compute,
             default_slot_size,
@@ -99,7 +100,7 @@ fn main() {
             // requirement_algo, // TODO: conflict with Dese
             requirement_algo_store,
             algo_req_fulfilled,
-            algo_req_table_piece, // NOTE: in development
+            algo_req_table_piece,
             // state
             view_locker,
             remove_kc,

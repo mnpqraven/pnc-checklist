@@ -1,4 +1,3 @@
-use super::file::import;
 use std::fs;
 
 #[test]

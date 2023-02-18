@@ -48,6 +48,11 @@ pub fn default_slot_size(class: Class, category: AlgoCategory) -> usize {
 }
 
 #[tauri::command]
+pub fn algo_get_slot_size(algo: Algorithm) -> usize {
+    algo.get_slot_size()
+}
+
+#[tauri::command]
 pub fn main_stat_all() -> Vec<Vec<AlgoMainStat>> {
     vec![
         ALGO_MAINSTAT_OFFENSE.to_vec(),

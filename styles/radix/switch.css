@@ -1,17 +1,17 @@
 .SwitchRoot {
   width: 42px;
   height: 25px;
-  background-color: var(--blackA9);
+  background-color: var(--main-bg2);
   border-radius: 9999px;
   position: relative;
-  box-shadow: 0 2px 10px var(--blackA7);
+  box-shadow: 0 2px 10px var(--main-component-bg);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 .SwitchRoot:focus {
   box-shadow: 0 0 0 2px black;
 }
 .SwitchRoot[data-state="checked"] {
-  background-color: pink;
+  background-color: var(--main-bg-solid1);
 }
 
 .SwitchThumb {

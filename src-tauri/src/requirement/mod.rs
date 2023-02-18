@@ -1,5 +1,5 @@
 use self::types::*;
-use crate::algorithm::types::{AlgoMainStat, AlgoPiece, Algorithm, Slot, SlotPlacement};
+use crate::algorithm::types::AlgoPiece;
 use crate::service::errors::RequirementError;
 use crate::state::types::Computed;
 use crate::stats::types::{NeuralFragment, UnitSkill};

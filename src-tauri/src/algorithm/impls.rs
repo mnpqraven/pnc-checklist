@@ -109,7 +109,7 @@ impl Algorithm {
         }
     }
 
-    fn get_slot_size(&self) -> usize {
+    pub fn get_slot_size(&self) -> usize {
         match self {
             Algorithm::Perception
             | Algorithm::Deduction

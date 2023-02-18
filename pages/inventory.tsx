@@ -7,9 +7,14 @@ import ErrorContainer from "@/components/Error";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import Button from "@/components/Button";
 import AlgoRequirementGroup from "@/components/Requirement/AlgorithmRequirementGroup";
+import { useState } from "react";
+import Switch from "@/components/Switch";
 
 const Inventory = () => {
   const client = useQueryClient();
+  const [displayMode, setDisplayMode] = useState(false);
+  const [detailMode, setDetailMode] = useState(false);
+
   const refetchLocker = () =>
     client.refetchQueries({ queryKey: [IVK.VIEW_LOCKER] });
 
@@ -54,12 +59,33 @@ const Inventory = () => {
         </div>
 
         <div className="card component_space">
-          <p>required algos</p>
-          <AlgoRequirementContainer />
-        </div>
-        <div className="card component_space">
-          <p>required algos</p>
-          <AlgoRequirementGroup />
+          <p>Required algos</p>
+          <div className="flex">
+            <p>Group by:</p>
+            <span>Doll</span>
+            <Switch
+              id="mode-switch"
+              checked={displayMode}
+              onCheckedChange={() => setDisplayMode(!displayMode)}
+            />
+            <span>Algo</span>
+            {!displayMode ? (
+              <>
+                <span>Detail Mode:</span>
+                <Switch
+                  id="detail-switch"
+                  checked={detailMode}
+                  onCheckedChange={() => setDetailMode(!detailMode)}
+                />
+              </>
+            ) : null}
+          </div>
+
+          {displayMode ? (
+            <AlgoRequirementContainer />
+          ) : (
+            <AlgoRequirementGroup detailMode={detailMode} />
+          )}
         </div>
       </div>
     </main>
