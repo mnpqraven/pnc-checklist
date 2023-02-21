@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-15
+updated: 2023-02-21
 version: 0.1.2
 @end
 
@@ -24,6 +24,8 @@ version: 0.1.2
     - (x) implement React Query
     --- (x) create custom hook
     - (x) update const queryKeys
+    - (!) clean up styling and views, prepare for stable before moving to
+      backend's prisma(?) development
     #bugs
     - (_) prefetching is happening before window is mounted in
       `useAlgoByDaysQuery`
@@ -69,10 +71,23 @@ version: 0.1.2
 *** Features
 *** Current
     #implementing
-    - (?) Parse DB for needed algo pieces
-    - (-) inventory screen + backend logic for keychain manipulatio
-    - (?) should we move CRUDs to rust backend ?
-    - (?) tokio ??
+    - (x) Parse DB for needed algo pieces
+    - (-) inventory screen + backend logic for keychain manipulation
+    - (?) rspc ?
+    --- creates e2e typesafe between backend and frontend when using invoke,
+        should probably implement for easier time using `invoke`
+    - (?) should we move CRUDs to rust backend ? / prisma ??
+    --- The why:
+    --- lookup operations for some items (unit, algo) is easy enough, but if
+        there's specific constrains and groupings the further it is into the
+        data structure (`AlgoSlot` of each `Unit`) it becomes a mild irritation
+        to query data in the backend and a real pain to display and iterate
+        over data to the front-end (see `AlgoReqGroup` component in `Inventory`
+        page)
+    --- We need a way to (probably not as much for look-ups but) group/sort
+        data more efficiently than custom queries and/or `invoke` functions
+        from the backend if the data structure is only going to get deeper.
+    - (=) tokio ??
     - (_) try `Suspense` with swr
     ---- Didn't work, `Suspense` triggers data fetching before `invoke` IPC
          is injected
