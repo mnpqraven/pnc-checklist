@@ -8,6 +8,7 @@
 
 mod algorithm;
 mod compute;
+pub mod consts;
 mod loadout;
 mod macros;
 mod requirement;
@@ -17,17 +18,18 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
-pub mod consts;
 
 use crate::{
     algorithm::{
-        algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute, algorithm_all,
-        default_slot_size, main_stat_all, print_algo, print_main_stat, print_main_stats, algo_get_slot_size,
+        algo_get_slot_size, algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute,
+        algorithm_all, default_slot_size, main_stat_all, print_algo, print_main_stat,
+        print_main_stats,
     },
     compute::{get_needed_rsc, update_chunk},
     requirement::{
-        algo_req_fulfilled, algo_req_group_piece, requirement_algo_store, requirement_level,
-        requirement_neural, requirement_slv, requirement_widget, requirment_neural_kits, algo_req_table_piece,
+        algo_req_fulfilled, algo_req_group_piece, algo_req_table_piece, requirement_algo_store,
+        requirement_level, requirement_neural, requirement_slv, requirement_widget,
+        requirment_neural_kits,
     },
     service::{
         enum_ls,
@@ -40,13 +42,31 @@ use crate::{
 };
 use requirement::types::DatabaseRequirement;
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
-use std::sync::Mutex;
+use std::{error::Error, sync::Mutex};
+use surrealdb::{Datastore, Session};
+use tauri::api::path::data_dir;
 #[allow(unused_imports)]
 use tauri::Manager;
 use unit::types::Unit;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     // NOTE: we should handle importing in a separate fn, before default()
+
+    // INFO: init surrealdb store
+    let binding = data_dir().unwrap().join("PNCChecklist").join("temp.db");
+    let db_path = binding.to_str().unwrap();
+    let db_url = format!("file://{db_path}");
+    let ds = Datastore::new(&db_url).await?;
+
+    let ses = Session::for_kv().with_ns("test").with_db("test");
+    let ast = r#"CREATE person SET name = "Bthi";"#;
+    // let res = ds.execute(ast, &ses, None, false).await?;
+    // println!("{:?}", res);
+
+    let select_res = ds.execute("SELECT * FROM person;", &ses, None, false).await?;
+    println!("{:?}", select_res);
+
     let initial_units: Vec<Unit> = UserJSON::default().units;
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);
     let state_computed = Computed {
@@ -128,4 +148,5 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+    Ok(())
 }
