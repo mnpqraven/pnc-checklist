@@ -13,6 +13,7 @@ mod bacon;
 pub mod databinding;
 pub mod errors;
 pub mod file;
+pub mod db;
 
 #[tauri::command]
 /// produces enum as an array

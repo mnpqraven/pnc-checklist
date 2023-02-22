@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import MainstatSelect from "@/components/MainstatSelect";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useState } from "react";
 
 const Dev = () => {
   const payload: AlgoCategory = "Stability";
@@ -14,13 +15,17 @@ const Dev = () => {
     "OperandDef",
     "OperandDefPercent",
   ];
+  type Ret = {
+    id: string;
+    displayName: string;
+  };
+  const [results, setResult] = useState<Ret[]>([]);
 
   async function newUser() {
     await invoke("new_user");
   }
   async function getUser() {
-    let call = await invoke("get_user");
-    console.warn(call);
+    invoke<Ret[]>("get_user").then(setResult);
   }
 
   return (
@@ -39,6 +44,12 @@ const Dev = () => {
       </div>
       <Button onClick={newUser}>new</Button>
       <Button onClick={getUser}>get</Button>
+      <ul>
+
+      {results.map(({id, displayName}) => (
+        <li key={id}>{displayName}</li>
+      ))}
+      </ul>
     </main>
   );
 };

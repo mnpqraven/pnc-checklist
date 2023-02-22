@@ -1,9 +1,6 @@
-use prisma_client_rust::NewClientError;
-
 use self::types::*;
-use crate::prisma;
 use crate::prisma::user::Data;
-use crate::service::errors::TauriError;
+use crate::service::db::get_db;
 use crate::table::consts::{
     ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
     ALGO_SPECIAL, ALGO_STABILITY,
@@ -106,14 +103,22 @@ pub fn print_main_stat(payload: AlgoMainStat) -> String {
 }
 
 #[tauri::command]
-pub async fn new_user()  {
-    let new_instance = prisma::new_client().await.unwrap();
-    let t = new_instance.user().create("othi".to_string(), vec![]);
+pub async fn new_user() {
+    println!("[invoke] new_user");
+    let client = get_db().await;
+    let t = client
+        .user()
+        .create("othi".to_string(), vec![])
+        .exec()
+        .await;
+    dbg!(&t);
 }
 
 #[tauri::command]
-pub async fn get_user() {
-    let new_instance = prisma::new_client().await.unwrap();
-    let t = new_instance.user().find_many(vec![]).exec().await;
+pub async fn get_user() -> Vec<Data> {
+    println!("[invoke] get_user");
+    let client = get_db().await;
+    let t = client.user().find_many(vec![]).exec().await;
     dbg!(&t);
+    t.unwrap()
 }
