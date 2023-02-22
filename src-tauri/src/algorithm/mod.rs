@@ -1,4 +1,9 @@
+use prisma_client_rust::NewClientError;
+
 use self::types::*;
+use crate::prisma;
+use crate::prisma::user::Data;
+use crate::service::errors::TauriError;
 use crate::table::consts::{
     ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
     ALGO_SPECIAL, ALGO_STABILITY,
@@ -98,4 +103,17 @@ pub fn print_main_stats(payload: AlgoCategory) -> Vec<String> {
 /// only prints out a single mainstat
 pub fn print_main_stat(payload: AlgoMainStat) -> String {
     payload.to_string()
+}
+
+#[tauri::command]
+pub async fn new_user()  {
+    let new_instance = prisma::new_client().await.unwrap();
+    let t = new_instance.user().create("othi".to_string(), vec![]);
+}
+
+#[tauri::command]
+pub async fn get_user() {
+    let new_instance = prisma::new_client().await.unwrap();
+    let t = new_instance.user().find_many(vec![]).exec().await;
+    dbg!(&t);
 }

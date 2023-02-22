@@ -1,5 +1,7 @@
+import Button from "@/components/Button";
 import MainstatSelect from "@/components/MainstatSelect";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
+import { invoke } from "@tauri-apps/api/tauri";
 
 const Dev = () => {
   const payload: AlgoCategory = "Stability";
@@ -12,6 +14,15 @@ const Dev = () => {
     "OperandDef",
     "OperandDefPercent",
   ];
+
+  async function newUser() {
+    await invoke("new_user");
+  }
+  async function getUser() {
+    let call = await invoke("get_user");
+    console.warn(call);
+  }
+
   return (
     <main>
       <div className="flex">
@@ -26,6 +37,8 @@ const Dev = () => {
           />
         </div>
       </div>
+      <Button onClick={newUser}>new</Button>
+      <Button onClick={getUser}>get</Button>
     </main>
   );
 };

@@ -11,6 +11,7 @@ mod compute;
 pub mod consts;
 mod loadout;
 mod macros;
+mod prisma;
 mod requirement;
 mod service;
 mod state;
@@ -23,7 +24,7 @@ use crate::{
     algorithm::{
         algo_get_slot_size, algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute,
         algorithm_all, default_slot_size, main_stat_all, print_algo, print_main_stat,
-        print_main_stats,
+        print_main_stats, new_user, get_user,
     },
     compute::{get_needed_rsc, update_chunk},
     requirement::{
@@ -40,10 +41,12 @@ use crate::{
     unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},
 };
+use prisma::PrismaClient;
+use prisma_client_rust::NewClientError;
 use requirement::types::DatabaseRequirement;
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
 use std::{error::Error, sync::Mutex};
-use surrealdb::{Datastore, Session};
+// use surrealdb::{Datastore, Session};
 use tauri::api::path::data_dir;
 #[allow(unused_imports)]
 use tauri::Manager;
@@ -53,19 +56,25 @@ use unit::types::Unit;
 async fn main() -> Result<(), Box<dyn Error>> {
     // NOTE: we should handle importing in a separate fn, before default()
 
-    // INFO: init surrealdb store
+    // {
+    // // INFO: init surrealdb store
     let binding = data_dir().unwrap().join("PNCChecklist").join("temp.db");
     let db_path = binding.to_str().unwrap();
     let db_url = format!("file://{db_path}");
-    let ds = Datastore::new(&db_url).await?;
+    // let ds = Datastore::new(&db_url).await?;
+    //
+    // let ses = Session::for_kv().with_ns("test").with_db("test");
+    // let ast = r#"CREATE person SET name = "Bthi";"#;
+    // // let res = ds.execute(ast, &ses, None, false).await?;
+    // // println!("{:?}", res);
+    //
+    // let select_res = ds.execute("SELECT * FROM person;", &ses, None, false).await?;
+    // println!("{:?}", select_res);
+    // }
 
-    let ses = Session::for_kv().with_ns("test").with_db("test");
-    let ast = r#"CREATE person SET name = "Bthi";"#;
-    // let res = ds.execute(ast, &ses, None, false).await?;
-    // println!("{:?}", res);
-
-    let select_res = ds.execute("SELECT * FROM person;", &ses, None, false).await?;
-    println!("{:?}", select_res);
+    // INFO: PRISMA
+    let client: Result<PrismaClient, NewClientError> =
+        PrismaClient::_builder().build().await;
 
     let initial_units: Vec<Unit> = UserJSON::default().units;
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);
@@ -144,7 +153,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             validate,
             // worker
             get_tauri_version,
-            algo_req_group_piece
+            algo_req_group_piece,
+            // DEV
+            new_user,
+            get_user
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
