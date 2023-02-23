@@ -7,6 +7,8 @@
 #![feature(slice_group_by)]
 
 mod algorithm;
+mod api;
+mod database;
 mod compute;
 pub mod consts;
 mod loadout;
@@ -23,7 +25,7 @@ mod validator;
 use crate::{
     algorithm::{
         algo_get_slot_size, algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute,
-        algorithm_all, default_slot_size, get_user, main_stat_all, new_user, print_algo,
+        algorithm_all, default_slot_size, main_stat_all, print_algo,
         print_main_stat, print_main_stats,
     },
     compute::{get_needed_rsc, update_chunk},
@@ -41,18 +43,27 @@ use crate::{
     unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},
 };
+use database::db_preload_enums;
 use requirement::types::DatabaseRequirement;
-use service::db::setup_prisma;
+use service::db::{db_path_url, load_and_migrate };
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
-use std::{error::Error, sync::Mutex};
+use std::{
+    error::Error,
+    sync::{Arc, Mutex},
+};
 #[allow(unused_imports)]
 use tauri::Manager;
 use unit::types::Unit;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    // INFO: PRISMA
-    setup_prisma().await?;
+    // INFO: PRISMA + RSPC
+    let router = api::new().build().arced();
+    let (db_path, db_url) = db_path_url();
+    let client = load_and_migrate(&db_path, &db_url).await;
+    // preload enum data onto the database
+    db_preload_enums().await?;
+
     let initial_units: Vec<Unit> = UserJSON::default().units;
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);
     let state_computed = Computed {
@@ -63,6 +74,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         units: Mutex::new(initial_am_units),
     };
     tauri::Builder::default()
+        .plugin(rspc::integrations::tauri::plugin(router, move || {
+            api::Ctx {
+                client: Arc::clone(&client),
+            }
+        }))
         .setup(|_app| {
             #[cfg(debug_assertions)]
             {
@@ -132,8 +148,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             get_tauri_version,
             algo_req_group_piece,
             // DEV
-            new_user,
-            get_user
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

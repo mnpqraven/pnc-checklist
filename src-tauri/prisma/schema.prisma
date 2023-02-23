@@ -1,14 +1,104 @@
-datasource db {
-    provider = "sqlite"
-    url      = "file:database.db"
-}
-
 generator client {
-    provider = "cargo prisma"
-    output   = "../src/prisma.rs"
+  provider = "cargo prisma"
+  output   = "../src/prisma.rs"
 }
 
-model User {
-    id          String @id @default(cuid())
-    displayName String
+datasource db {
+  provider = "sqlite"
+  url      = "file:database.db"
+}
+
+model Unit {
+  id        String  @id @default(cuid())
+  name      String  @unique
+  class     EnClass @relation(fields: [className], references: [name])
+  current   Loadout @relation("current", fields: [currentLoadoutId], references: [id])
+  goal      Loadout @relation("goal", fields: [goalLoadoutId], references: [id])
+  className String
+
+  currentLoadoutId String
+  goalLoadoutId    String
+}
+
+// NOTE: see if we want to flatten the tree or keep it as is
+model Loadout {
+  id         String            @id @default(cuid())
+  skillLevel UnitSkill         @relation(fields: [unitSkillId], references: [id])
+  level      Int
+  algos      AlgoPiece[]
+  neural     EnNeuralExpansion @relation(fields: [neuralExpansionName], references: [name])
+  frags      Int?
+
+  unitSkillId         String
+  neuralExpansionName String
+  UnitCurrent         Unit[] @relation("current")
+  UnitGoal            Unit[] @relation("goal")
+}
+
+model UnitSkill {
+  id      String @id @default(cuid())
+  auto    Int
+  passive Int
+
+  Loadout Loadout[]
+}
+
+model AlgoPiece {
+  id       String         @unique @default(cuid())
+  name     EnAlgorithm    @relation(fields: [enAlgorithmName], references: [name])
+  category EnAlgoCategory @relation(fields: [enAlgoCategoryName], references: [name])
+  stat     EnAlgoMainStat @relation(fields: [enAlgoMainStatName], references: [name])
+  slot     Slot[]
+
+  enAlgorithmName    String   @unique
+  enAlgoMainStatName String   @unique
+  Loadout            Loadout? @relation(fields: [loadoutId], references: [id])
+  loadoutId          String?
+  enAlgoCategoryName String
+
+  @@id([id])
+}
+
+model Slot {
+  id        String          @id @default(cuid())
+  placement EnSlotPlacement @relation(fields: [enSlotPlacementName], references: [name])
+  value     Boolean
+  AlgoPiece AlgoPiece       @relation(fields: [algoPieceId], references: [id])
+
+  algoPieceId         String
+  enSlotPlacementName String
+}
+
+// INFO: ENUMS
+
+model EnClass {
+  name String @unique
+  Unit Unit[]
+}
+
+model EnNeuralExpansion {
+  name    String    @unique
+  Loadout Loadout[]
+}
+
+model EnAlgorithm {
+  name        String     @unique
+  displayName String
+  AlgoPiece   AlgoPiece?
+}
+
+model EnAlgoMainStat {
+  name        String      @unique
+  displayName String
+  AlgoPiece   AlgoPiece[]
+}
+
+model EnSlotPlacement {
+  name String @unique
+  Slot Slot[]
+}
+
+model EnAlgoCategory {
+  name      String      @unique
+  AlgoPiece AlgoPiece[]
 }
