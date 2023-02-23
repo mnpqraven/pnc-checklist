@@ -28,13 +28,13 @@ chrono = { version = "0.4.23", features = ["serde"] }
 regex = "1.7.1"
 schemars = { version = "0.8.11", features = ["preserve_order"] }
 tokio = { version = "1.25.0", features = ["full"] }
-# surrealdb = "1.0.0-beta.8"
 prisma-client-rust = { git = "https://github.com/Brendonovich/prisma-client-rust", tag = "0.6.4", default-features = false, features = [
     "sqlite",
     "rspc",
     "migrations",
 ] }
 async-stream = "=0.3.3"
+rspc = { version = "0.1.2", features = ["tauri"] }
 
 [features]
 # by default Tauri runs in production mode
