@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-21
+updated: 2023-02-23
 version: 0.1.2
 @end
 
@@ -24,7 +24,7 @@ version: 0.1.2
     - (x) implement React Query
     --- (x) create custom hook
     - (x) update const queryKeys
-    - (!) clean up styling and views, prepare for stable before moving to
+    - (x) clean up styling and views, prepare for stable before moving to
       backend's prisma(?) development
     #bugs
     - (_) prefetching is happening before window is mounted in
@@ -76,7 +76,7 @@ version: 0.1.2
     - (?) rspc ?
     --- creates e2e typesafe between backend and frontend when using invoke,
         should probably implement for easier time using `invoke`
-    - (?) should we move CRUDs to rust backend ? / prisma ??
+    - (-) should we move CRUDs to rust backend ? / prisma ??
     --- The why:
     --- lookup operations for some items (unit, algo) is easy enough, but if
         there's specific constrains and groupings the further it is into the
@@ -87,10 +87,25 @@ version: 0.1.2
     --- We need a way to (probably not as much for look-ups but) group/sort
         data more efficiently than custom queries and/or `invoke` functions
         from the backend if the data structure is only going to get deeper.
-    - (=) tokio ??
+    --- (-) prisma + rspc implementation
+    ----- (-) prisma setup
+    ------ (x) startup client initialization
+    ------ (x) correct url mapping
+    ------ (-) test with production env (new install, 0 db file)
+    ------ (-) test with migration during dev (incremental updates)
+    ------ (=) test with migration update on production (migration file ??)
+    ------ (x) db getter
+    ------ (+) prepare for schema update + data migration
+    ------ (!) prisma schema + data structs in rust will be 2 sources of
+           truths, need to sync between 2 sources
+    ----- (-) rspc setup
+    ------ (-) clean up binding mapping
+    ------ (-) refactor to module
+    - (x) tokio
     - (_) try `Suspense` with swr
     ---- Didn't work, `Suspense` triggers data fetching before `invoke` IPC
          is injected
+    ---- Scrapped, using React Query with RSPC instead
 
     #general
     - ( ) error handle

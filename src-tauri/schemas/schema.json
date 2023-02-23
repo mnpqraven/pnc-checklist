@@ -99,8 +99,8 @@
       "properties": {
         "skill_level": {
           "default": {
-            "auto": 1,
-            "passive": 1
+            "passive": 1,
+            "auto": 1
           },
           "allOf": [
             {
@@ -119,8 +119,8 @@
         "algo": {
           "default": {
             "offense": [],
-            "special": [],
-            "stability": []
+            "stability": [],
+            "special": []
           },
           "allOf": [
             {

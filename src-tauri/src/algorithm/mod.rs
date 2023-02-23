@@ -1,6 +1,4 @@
 use self::types::*;
-use crate::prisma::user::Data;
-use crate::service::db::get_db;
 use crate::table::consts::{
     ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
     ALGO_SPECIAL, ALGO_STABILITY,
@@ -100,25 +98,4 @@ pub fn print_main_stats(payload: AlgoCategory) -> Vec<String> {
 /// only prints out a single mainstat
 pub fn print_main_stat(payload: AlgoMainStat) -> String {
     payload.to_string()
-}
-
-#[tauri::command]
-pub async fn new_user() {
-    println!("[invoke] new_user");
-    let client = get_db().await;
-    let t = client
-        .user()
-        .create("othi".to_string(), vec![])
-        .exec()
-        .await;
-    dbg!(&t);
-}
-
-#[tauri::command]
-pub async fn get_user() -> Vec<Data> {
-    println!("[invoke] get_user");
-    let client = get_db().await;
-    let t = client.user().find_many(vec![]).exec().await;
-    dbg!(&t);
-    t.unwrap()
 }
