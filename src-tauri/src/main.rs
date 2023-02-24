@@ -8,7 +8,6 @@
 
 mod algorithm;
 mod api;
-mod database;
 mod compute;
 pub mod consts;
 mod loadout;
@@ -43,7 +42,6 @@ use crate::{
     unit::{delete_unit, get_unit, get_units, new_unit, save_units},
     validator::{validate, validate_slots},
 };
-use database::db_preload_enums;
 use requirement::types::DatabaseRequirement;
 use service::db::{db_path_url, load_and_migrate };
 use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
@@ -62,7 +60,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let (db_path, db_url) = db_path_url();
     let client = load_and_migrate(&db_path, &db_url).await;
     // preload enum data onto the database
-    db_preload_enums().await?;
 
     let initial_units: Vec<Unit> = UserJSON::default().units;
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);

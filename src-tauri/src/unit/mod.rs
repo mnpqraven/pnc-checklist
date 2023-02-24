@@ -1,7 +1,7 @@
 use self::types::{Class, Unit};
 use crate::{
     compute::update_reqs,
-    service::{file::localsave, errors::TauriError},
+    service::{file::localsave, errors::TauriError, db::get_db},
     state::types::{Computed, JSONStorage, KeychainTable},
 };
 use std::sync::{Arc, Mutex};
@@ -25,14 +25,16 @@ pub async fn get_units(computed: State<'_, Computed>) -> Result<Vec<Unit>, Tauri
 /// Adds a new `Unit` into the database
 /// NOTE: origin data needs an `Arc::new()` &&
 /// `KeychainTable` + `Computed` needs to point to the same `Unit`
-pub fn new_unit(
+pub async fn new_unit(
     name: String,
     class: Class,
-    computed: State<Computed>,
-    keyc: State<KeychainTable>,
+    computed: State<'_, Computed>,
+    keyc: State<'_, KeychainTable>,
 ) -> Result<(Unit, usize), TauriError> {
     println!("[invoke] new_unit");
     let n_unit = Unit::new(name, class);
+    let client = get_db().await;
+    crate::api::crud::unit::new_unit(&client, n_unit.clone()).await.unwrap();
     let res = if let Ok(mut g_computed) = computed.units.lock() {
         let ind = g_computed.len();
         let am_unit = Arc::new(Mutex::new(n_unit.clone()));

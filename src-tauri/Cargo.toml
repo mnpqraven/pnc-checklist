@@ -36,6 +36,7 @@ prisma-client-rust = { git = "https://github.com/Brendonovich/prisma-client-rust
 ] }
 async-stream = "=0.3.3"
 rspc = { version = "0.1.2", features = ["tauri"] }
+futures = "0.3.26"
 
 [features]
 # by default Tauri runs in production mode

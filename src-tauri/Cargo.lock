@@ -3138,6 +3138,7 @@ version = "0.1.32"
 dependencies = [
  "async-stream",
  "chrono",
+ "futures",
  "prisma-client-rust",
  "regex",
  "rspc",
