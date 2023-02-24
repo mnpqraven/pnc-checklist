@@ -1,12 +1,11 @@
-use crate::algorithm::types::AlgoSet;
+use crate::{algorithm::types::AlgoSet, loadout::types::LoadoutType};
 use crate::stats::types::*;
+use rspc::Type;
 use serde::{Deserialize, Serialize};
 use strum::{EnumIter, Display};
 use schemars::JsonSchema;
-use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Default, Debug, Clone, TS, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Deserialize, Default, Debug, Clone, Type, JsonSchema)]
 pub struct Unit {
     pub name: String,
     pub class: Class,
@@ -14,8 +13,7 @@ pub struct Unit {
     pub goal: Loadout,
 }
 
-#[derive(Serialize, Deserialize, Default, Debug, Clone, TS, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Deserialize, Default, Debug, Clone, Type, JsonSchema)]
 pub struct Loadout {
     #[serde(default)]
     pub skill_level: UnitSkill,
@@ -27,10 +25,10 @@ pub struct Loadout {
     pub neural: NeuralExpansion,
     #[serde(default)]
     pub frags: NeuralFragment,
+    pub loadout_type: LoadoutType
 }
 
-#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, PartialEq, Eq, Default, TS, EnumIter, JsonSchema)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, PartialEq, Eq, Default, Type, EnumIter, JsonSchema)]
 pub enum Class {
     #[default]
     Guard,
@@ -40,8 +38,7 @@ pub enum Class {
     Warrior,
 }
 
-#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, TS, EnumIter, JsonSchema)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, Type, EnumIter, JsonSchema)]
 pub enum NeuralExpansion {
     One,
     OneHalf,

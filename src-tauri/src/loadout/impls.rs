@@ -1,3 +1,4 @@
+use super::types::LoadoutType;
 use crate::{algorithm::types::*, stats::types::*, unit::types::*};
 
 impl Loadout {
@@ -12,6 +13,7 @@ impl Loadout {
             level: Level(1),
             neural: NeuralExpansion::Three,
             frags: NeuralFragment::default(),
+            loadout_type: LoadoutType::Current,
         }
     }
 
@@ -22,6 +24,7 @@ impl Loadout {
             algo: AlgoSet::new(true),
             neural: NeuralExpansion::Five,
             frags: NeuralFragment(None),
+            loadout_type: LoadoutType::Goal,
         }
     }
 

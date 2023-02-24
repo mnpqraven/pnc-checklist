@@ -33,26 +33,29 @@ impl Default for UserJSON {
 mod tests {
     use crate::{
         algorithm::types::AlgoSet,
+        loadout::types::LoadoutType,
         stats::types::{NeuralFragment, UnitSkill},
         unit::types::{Loadout, Unit},
     };
 
     #[test]
     fn serde() {
-        let lo: Loadout = Loadout {
+        let lo_current: Loadout = Loadout {
+            loadout_type: LoadoutType::Current,
             skill_level: UnitSkill::max(),
             level: crate::stats::types::Level(30),
             algo: AlgoSet::new(true),
             neural: crate::unit::types::NeuralExpansion::OneHalf,
             frags: NeuralFragment(Some(9)),
         };
-        let mut lo_goal = lo.clone();
+        let mut lo_goal = lo_current.clone();
+        lo_goal.loadout_type = LoadoutType::Goal;
         lo_goal.frags = NeuralFragment(None);
 
         let u: Unit = Unit {
             name: "Croque".to_string(),
             class: crate::unit::types::Class::Guard,
-            current: lo,
+            current: lo_current,
             goal: lo_goal,
         };
         let t = serde_json::to_string_pretty::<Unit>(&u).unwrap();

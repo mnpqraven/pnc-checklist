@@ -1,11 +1,16 @@
+use rspc::Type;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, Display};
-use ts_rs::TS;
+use strum::{Display, EnumIter};
 
-#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
-#[ts(rename_all = "lowercase")]
+#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, Type, EnumIter, JsonSchema)]
 pub enum LoadoutType {
     Current,
     Goal,
+}
+
+impl Default for LoadoutType {
+    fn default() -> Self {
+        Self::Current
+    }
 }

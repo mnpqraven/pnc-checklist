@@ -1,10 +1,9 @@
 use crate::{algorithm::types::Algorithm, unit::types::Class};
+use rspc::Type;
 use serde::{Deserialize, Serialize};
 use strum::{EnumIter, Display};
-use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter)]
 pub enum Day {
     Mon,
     Tue,
@@ -15,8 +14,7 @@ pub enum Day {
     Sun,
 }
 
-#[derive(Serialize, ts_rs::TS)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Type)]
 pub struct ResourceByDay {
     pub day: Day,
     pub coin: Option<Bonus>,
@@ -26,8 +24,7 @@ pub struct ResourceByDay {
     pub algos: Vec<Algorithm>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter)]
 pub enum Bonus {
     Coin,
     Exp,

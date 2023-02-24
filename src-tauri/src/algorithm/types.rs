@@ -1,15 +1,15 @@
 use std::ops::Not;
 
+use rspc::Type;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
-use ts_rs::TS;
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(
-    Serialize, Deserialize, TS, JsonSchema, Debug, Clone, EnumIter, Display, PartialEq, Eq,
+    Serialize, Deserialize, JsonSchema, Debug, Clone, EnumIter, Display, PartialEq, Eq,
+    Type
 )]
-#[ts(export, export_to = "bindings/enums/")]
 /// List of algorithms
 pub enum Algorithm {
     //offense
@@ -49,26 +49,26 @@ pub enum Algorithm {
     Exploit,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Deserialize, Debug, Clone, Type, PartialEq, Eq, JsonSchema)]
 pub struct AlgoPiece {
     pub name: Algorithm,
     pub stat: AlgoMainStat,
-    // sub_stat: Option<Vec<AlgoSubStat>>,
-    pub slot: AlgoSlot,
+    pub category: AlgoCategory,
+    pub slot: AlgoSlot
 }
 
-#[derive(Serialize, Deserialize, TS, Clone, Debug, PartialEq, Eq, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Deserialize, Type, Clone, Debug, PartialEq, Eq, JsonSchema)]
 pub struct Slot {
     pub placement: SlotPlacement,
     pub value: bool,
 }
 
+#[derive(Serialize, Deserialize, Type, Clone, Debug, PartialEq, Eq, JsonSchema)]
+pub struct AlgoSlot(pub Vec<Slot>);
+
 #[derive(
-    Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq, JsonSchema,
+    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema,
 )]
-#[ts(export, export_to = "bindings/enums/")]
 pub enum SlotPlacement {
     One,
     Two,
@@ -92,13 +92,7 @@ impl Slot {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, TS, PartialEq, Eq, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
-pub struct AlgoSlot(pub Vec<Slot>);
-// pub struct AlgoSlot(pub Vec<bool>);
-
-#[derive(Serialize, Deserialize, Debug, Clone, Default, TS, PartialEq, JsonSchema)]
-#[ts(export, export_to = "bindings/structs/")]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, Type, PartialEq, JsonSchema)]
 pub struct AlgoSet {
     pub offense: Vec<AlgoPiece>,
     pub stability: Vec<AlgoPiece>,
@@ -107,9 +101,8 @@ pub struct AlgoSet {
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(
-    Serialize, Deserialize, Debug, Clone, TS, EnumIter, Display, PartialEq, Eq, JsonSchema,
+    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema,
 )]
-#[ts(export, export_to = "bindings/enums/")]
 pub enum AlgoMainStat {
     Hashrate,
     #[strum(serialize = "Hashrate %")]
@@ -149,8 +142,7 @@ pub enum AlgoMainStat {
     PostBattleRegen,
 }
 
-#[derive(Debug, Display, Serialize, Deserialize, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Debug, Display, Serialize, Deserialize, Type, EnumIter)]
 pub enum AlgoSubStat {
     CritRate,
     CritDmg,
@@ -158,8 +150,7 @@ pub enum AlgoSubStat {
     HashratePercent,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Display, Clone, Copy, TS, EnumIter)]
-#[ts(export, export_to = "bindings/enums/")]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Display, Clone, Copy, Type, EnumIter, JsonSchema)]
 pub enum AlgoCategory {
     Offense,
     Stability,

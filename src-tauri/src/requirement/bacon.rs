@@ -219,21 +219,21 @@ fn kits_2() {
 #[test]
 fn missing_display() {
     let pieces: Vec<AlgoPiece> = vec![
-        AlgoPiece {
-            name: Algorithm::Feedforward,
-            stat: AlgoMainStat::AtkPercent,
-            slot: AlgoSlot::new_three(false, false, true),
-        },
-        AlgoPiece {
-            name: Algorithm::Encapsulate,
-            stat: AlgoMainStat::Health,
-            slot: AlgoSlot::new_three(false, true, true),
-        },
-        AlgoPiece {
-            name: Algorithm::DeltaV,
-            stat: AlgoMainStat::Haste,
-            slot: AlgoSlot::new_three(true, false, false),
-        },
+        AlgoPiece::new_detailed(
+            Algorithm::Feedforward,
+            AlgoMainStat::AtkPercent,
+            false,
+            false,
+            true,
+        ),
+        AlgoPiece::new_detailed(
+            Algorithm::Encapsulate,
+            AlgoMainStat::Health,
+            false,
+            true,
+            true,
+        ),
+        AlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, false, false),
     ];
     let from_unit = Unit::default();
     let algo_req = AlgorithmRequirement { pieces, from_unit };
@@ -245,25 +245,31 @@ fn missing_display() {
 fn fulfilled() {
     let mut set: AlgoSet = AlgoSet {
         offense: vec![],
-        stability: vec![AlgoPiece {
-            name: Algorithm::Encapsulate,
-            stat: AlgoMainStat::Health,
-            slot: AlgoSlot::new_three(false, true, false),
-        }],
+        stability: vec![AlgoPiece::new_detailed(
+            Algorithm::Encapsulate,
+            AlgoMainStat::Health,
+            false,
+            true,
+            false,
+        )],
         special: vec![],
     };
 
     let with_goal: Vec<AlgoPiece> = vec![
-        AlgoPiece {
-            name: Algorithm::Encapsulate,
-            stat: AlgoMainStat::Health,
-            slot: AlgoSlot::new_default(false),
-        },
-        AlgoPiece {
-            name: Algorithm::Encapsulate,
-            stat: AlgoMainStat::Health,
-            slot: AlgoSlot::new_three(false, true, false),
-        },
+        AlgoPiece::new_detailed(
+            Algorithm::Encapsulate,
+            AlgoMainStat::Health,
+            false,
+            false,
+            false,
+        ),
+        AlgoPiece::new_detailed(
+            Algorithm::Encapsulate,
+            AlgoMainStat::Health,
+            false,
+            true,
+            false,
+        ),
     ];
     set.apply_checkbox(with_goal);
 
@@ -271,16 +277,20 @@ fn fulfilled() {
     let right: AlgoSet = AlgoSet {
         offense: vec![],
         stability: vec![
-            AlgoPiece {
-                name: Algorithm::Encapsulate,
-                stat: AlgoMainStat::Health,
-                slot: AlgoSlot::new_default(true),
-            },
-            AlgoPiece {
-                name: Algorithm::Encapsulate,
-                stat: AlgoMainStat::Health,
-                slot: AlgoSlot::new_default(true),
-            },
+            AlgoPiece::new_detailed(
+                Algorithm::Encapsulate,
+                AlgoMainStat::Health,
+                true,
+                true,
+                true,
+            ),
+            AlgoPiece::new_detailed(
+                Algorithm::Encapsulate,
+                AlgoMainStat::Health,
+                true,
+                true,
+                true,
+            ),
         ],
         special: vec![],
     };

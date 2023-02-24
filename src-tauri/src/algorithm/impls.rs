@@ -247,6 +247,23 @@ impl AlgoPiece {
             name: Algorithm::default(&category),
             stat: AlgoMainStat::default(&category),
             slot: AlgoSlot::new_default(checked_slots),
+            category,
+        }
+    }
+
+    pub fn new_detailed(
+        name: Algorithm,
+        stat: AlgoMainStat,
+        slot1: bool,
+        slot2: bool,
+        slot3: bool,
+    ) -> Self {
+        let category = name.get_category();
+        Self {
+            name,
+            stat,
+            category,
+            slot: AlgoSlot::new_three(slot1, slot2, slot3),
         }
     }
 
