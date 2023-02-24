@@ -9,7 +9,8 @@ datasource db {
 }
 
 model Unit {
-    id        String  @id @default(cuid())
+    id String @id @default(cuid())
+
     name      String  @unique
     class     String
     current   Loadout @relation("current", fields: [currentLoadoutId], references: [id])
@@ -60,8 +61,8 @@ model AlgoPiece {
 model Slot {
     id String @id @default(cuid())
 
-    placement   String
-    value       Boolean
+    placement String
+    value     Boolean
 
     AlgoPiece   AlgoPiece @relation(fields: [algoPieceId], references: [id])
     algoPieceId String

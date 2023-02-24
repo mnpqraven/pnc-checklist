@@ -1,11 +1,8 @@
 import Button from "@/components/Button";
 import MainstatSelect from "@/components/MainstatSelect";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
-import { invoke } from "@tauri-apps/api/tauri";
-import { useState } from "react";
-import { createClient } from "@rspc/client";
-import { TauriTransport } from "@rspc/tauri";
-import { Procedures, User } from "@/src-tauri/bindings/rspc";
+import { rspcClient } from "@/utils/rspc";
+import { useQuery } from "@tanstack/react-query";
 
 const Dev = () => {
   const payload: AlgoCategory = "Stability";
@@ -19,12 +16,12 @@ const Dev = () => {
     "OperandDefPercent",
   ];
 
-  // client.query(['users']).then((data) =>console.warn(data))
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["units"],
+    queryFn: () => rspcClient.query(["units"]),
+  });
 
-  async function newUser() {
-  }
-  async function getUser() {
-  }
+  if (isLoading || isError) return null;
 
   return (
     <main>
@@ -40,9 +37,11 @@ const Dev = () => {
           />
         </div>
       </div>
-      <Button onClick={newUser}>new</Button>
-      <Button onClick={getUser}>get</Button>
+      <p>unit list</p>
       <ul>
+        {data.map((item, index) => (
+          <li key={index}> {item.name}</li>
+        ))}
       </ul>
     </main>
   );

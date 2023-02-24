@@ -13,10 +13,15 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
         ))
         .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
-    // .query("new_algo_piece", |t| {
-    //     t(|ctx, data: AlgoPiece| async move {
-    //         let created = new_algo_piece(&ctx.client, data).await?;
-    //         Ok(created)
-    //     })
-    // })
+        .query("units", |t| {
+            t(|ctx, _: ()| async move {
+                Ok(ctx
+                    .client
+                    .unit()
+                    .find_many(vec![])
+                    .include(prisma::unit::include!({current goal}))
+                    .exec()
+                    .await?)
+            })
+        })
 }

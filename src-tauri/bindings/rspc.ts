@@ -2,7 +2,10 @@
 
 export type Procedures = {
     queries: 
+        { key: "units", input: never, result: Array<{ id: string, name: string, class: string, className: string, currentLoadoutId: string, goalLoadoutId: string, current: Loadout, goal: Loadout }> } | 
         { key: "version", input: never, result: string },
     mutations: never,
     subscriptions: never
 };
+
+export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitSkillId: string }
