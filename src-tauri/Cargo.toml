@@ -30,6 +30,7 @@ schemars = { version = "0.8.11", features = ["preserve_order"] }
 tokio = { version = "1.25.0", features = ["full"] }
 prisma-client-rust = { git = "https://github.com/Brendonovich/prisma-client-rust", tag = "0.6.4", default-features = false, features = [
     "sqlite",
+    "sqlite-create-many",
     "rspc",
     "migrations",
 ] }
