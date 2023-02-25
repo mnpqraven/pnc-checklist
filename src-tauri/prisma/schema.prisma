@@ -11,30 +11,23 @@ datasource db {
 model Unit {
     id String @id @default(cuid())
 
-    name      String  @unique
+    name      String    @unique
     class     String
-    current   Loadout @relation("current", fields: [currentLoadoutId], references: [id])
-    goal      Loadout @relation("goal", fields: [goalLoadoutId], references: [id])
-    className String
-
-    currentLoadoutId String
-    goalLoadoutId    String
+    loadouts  Loadout[]
 }
 
-// NOTE: see if we want to flatten the tree or keep it as is
 model Loadout {
     id String @id @default(cuid())
 
-    skillLevel  UnitSkill   @relation(fields: [unitSkillId], references: [id])
+    skillLevel  UnitSkill?
     level       Int
     algo        AlgoPiece[]
     neural      String
     frags       Int?
     loadoutType String
 
-    unitSkillId String
-    UnitCurrent Unit[] @relation("current")
-    UnitGoal    Unit[] @relation("goal")
+    unit   Unit   @relation(fields: [unitId], references: [id])
+    unitId String
 }
 
 model UnitSkill {
@@ -43,7 +36,8 @@ model UnitSkill {
     auto    Int
     passive Int
 
-    Loadout Loadout[]
+    loadout   Loadout @relation(fields: [loadoutId], references: [id])
+    loadoutId String  @unique
 }
 
 model AlgoPiece {
