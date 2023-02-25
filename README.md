@@ -1,20 +1,7 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tauri + Solid + Typescript
 
-## Installation
+This template should help get you started developing with Tauri, Solid and Typescript in Vite.
 
-Head over to the [Release](https://github.com/mnpqraven/pnc-checklist/releases)
-page and download the `.exe` file with the latest version
+## Recommended IDE Setup
 
-## Compile yourself
-
-Make sure you have rust, cargo and Node installed beforehand
-
-Clone the repo and install dependencies
-
-```bash
-git clone https://github.com/mnpqraven/pnc-checklist.git
-cd pnc-checklist
-npm install
-```
-
-Run the development server, you should see the app open up with a WebView Console for debugging frontend
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)

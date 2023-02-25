@@ -2,10 +2,18 @@
 
 export type Procedures = {
     queries: 
-        { key: "units", input: never, result: Array<{ id: string, name: string, class: string, className: string, currentLoadoutId: string, goalLoadoutId: string, current: Loadout, goal: Loadout }> } | 
+        { key: "getSkillLevel", input: [string, LoadoutType], result: UnitSkill } | 
+        { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
+        { key: "units", input: never, result: Array<Unit> } | 
         { key: "version", input: never, result: string },
     mutations: never,
     subscriptions: never
 };
 
-export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitSkillId: string }
+export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitId: string }
+
+export type LoadoutType = "Current" | "Goal"
+
+export interface Unit { id: string, name: string, class: string }
+
+export interface UnitSkill { id: string, auto: number, passive: number, loadoutId: string }
