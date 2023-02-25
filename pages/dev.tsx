@@ -1,11 +1,16 @@
+'use client';
 import Button from "@/components/Button";
 import MainstatSelect from "@/components/MainstatSelect";
 import { AlgoCategory } from "@/src-tauri/bindings/enums";
 import { invoke } from "@tauri-apps/api/tauri";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createClient } from "@rspc/client";
 import { TauriTransport } from "@rspc/tauri";
-import { Procedures, User } from "@/src-tauri/bindings/rspc";
+import { Procedures } from "@/src-tauri/bindings/rspc";
+import { rspc, rspcClient } from "@/components/Toast/Providers";
+import dynamic from "next/dynamic";
+import { useQueryClient } from "@tanstack/react-query";
+import { createReactQueryHooks } from "@rspc/react";
 
 const Dev = () => {
   const payload: AlgoCategory = "Stability";
@@ -19,12 +24,10 @@ const Dev = () => {
     "OperandDefPercent",
   ];
 
-  // client.query(['users']).then((data) =>console.warn(data))
+  rspc.useQuery(['version'])
 
-  async function newUser() {
-  }
-  async function getUser() {
-  }
+  async function newUser() {}
+  async function getUser() {}
 
   return (
     <main>
@@ -42,8 +45,7 @@ const Dev = () => {
       </div>
       <Button onClick={newUser}>new</Button>
       <Button onClick={getUser}>get</Button>
-      <ul>
-      </ul>
+      <ul></ul>
     </main>
   );
 };
