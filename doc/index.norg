@@ -64,6 +64,12 @@ version: 0.1.2
     --- ( ) then we can pass children ids (loadouts then algo pieces) to
         children components,
     --- ( )  alleviate top heavy data, especially in `<Dolls />`
+    --- ( ) refactor DollList component tree
+    --- ( ) dollContext controller needs rewriting
+    --- updateIndex -> updateCurrentUnit (unit_id)
+    --- updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
+        updateUnitSkill, updateAlgoPiece, updateSlot)
+    --- or use caches from react query
 
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)

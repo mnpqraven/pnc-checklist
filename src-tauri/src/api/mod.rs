@@ -3,10 +3,13 @@ use crate::{
     algorithm::types::AlgoPiece,
     loadout::types::LoadoutType,
     prisma::{self, PrismaClient},
+    unit::types::{Unit, Class},
 };
 use prisma_client_rust::QueryError;
 use rspc::{Config, Router, RouterBuilder};
 use std::{path::PathBuf, sync::Arc};
+
+use self::crud::unit::{get_unit_from_id, get_units, new_unit};
 
 pub struct Ctx {
     pub client: Arc<prisma::PrismaClient>,
@@ -18,18 +21,19 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
         ))
         .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
-        .query("units", |t| {
-            t(|ctx, _: ()| async move {
-                let units = ctx
-                    .client
-                    .unit()
-                    .find_many(vec![])
-                    // .include(prisma::unit::include!({current goal}))
-                    .exec()
-                    .await?;
-                Ok(units)
-            })
+        // INFO: UNIT
+        .mutation("newUnit", |t| {
+            t(|ctx, (name, class): (String, Class)| async move {
+                let unit = Unit::new(name, class);
+                Ok(new_unit(&ctx.client, unit).await?)})
         })
+        .query("getUnits", |t| {
+            t(|ctx, _: ()| async move { Ok(get_units(&ctx.client).await?) })
+        })
+        .query("getUnitFromId", |t| {
+            t(|ctx, unit_id: String| async move { Ok(get_unit_from_id(&ctx.client, unit_id).await?) })
+        })
+        // INFO: LOADOUT
         .query("loadoutByUnitId", |t| {
             t(|ctx, unit_id: String| async move {
                 let loadouts = ctx

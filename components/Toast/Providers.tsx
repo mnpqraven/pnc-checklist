@@ -15,6 +15,12 @@ import { useState } from "react";
 import Toast from "./Toast";
 
 type Props = { children: ReactNode };
+type rspcClientType = {
+  createClient: <TProcedures extends ProceduresLike>(
+    args: ClientArgs
+  ) => Client<inferProcedures<TProcedures>>;
+};
+
 let queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -23,13 +29,7 @@ let queryClient = new QueryClient({
   },
 });
 export const rspc = createReactQueryHooks<Procedures>();
-export let rspcClient: Client<Procedures>;
-
-type rspcClientType = {
-  createClient: <TProcedures extends ProceduresLike>(
-    args: ClientArgs
-  ) => Client<inferProcedures<TProcedures>>;
-};
+let rspcClient: Client<Procedures>;
 if (typeof window !== "undefined") {
   const { createClient }: rspcClientType = require("@rspc/client");
   const { TauriTransport } = require("@rspc/tauri");

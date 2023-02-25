@@ -1,23 +1,15 @@
 use crate::{
     api::crud::algo::new_algo_piece,
-    prisma::{self, loadout, unit_skill, PrismaClient},
+    prisma::{self, loadout, unit, unit_skill, PrismaClient},
     stats::types::UnitSkill,
     unit::types::{Loadout, Unit},
 };
 use prisma_client_rust::QueryError;
 
-pub async fn new_unit(client: &PrismaClient, data: Unit) -> Result<prisma::unit::Data, QueryError> {
+pub async fn new_unit(client: &PrismaClient, data: Unit) -> Result<unit::Data, QueryError> {
     let created = client
         .unit()
         .create(data.name, data.class.to_string(), vec![])
-        // .create(
-        //     data.name,
-        //     data.class.to_string(),
-        //     loadout::id::equals(current_lo_id),
-        //     loadout::id::equals(goal_lo_id),
-        //     data.class.to_string(),
-        //     vec![],
-        // )
         .exec()
         .await?;
     new_loadout(client, data.current, created.id.clone()).await?;
@@ -25,7 +17,19 @@ pub async fn new_unit(client: &PrismaClient, data: Unit) -> Result<prisma::unit:
     Ok(created)
 }
 
-pub async fn new_loadout(
+pub async fn get_units(client: &PrismaClient) -> Result<Vec<unit::Data>, QueryError> {
+    Ok(client.unit().find_many(vec![]).exec().await?)
+}
+
+pub async fn get_unit_from_id(client: &PrismaClient, unit_id: String) -> Result<unit::Data, QueryError> {
+    Ok(client
+        .unit()
+        .find_unique(unit::id::equals(unit_id))
+        .exec()
+        .await?.unwrap())
+}
+
+async fn new_loadout(
     client: &PrismaClient,
     data: Loadout,
     unit_id: String,
@@ -55,7 +59,7 @@ pub async fn new_loadout(
     Ok(created)
 }
 
-pub async fn new_unit_skill(
+async fn new_unit_skill(
     client: &PrismaClient,
     data: UnitSkill,
     loadout_id: String,
