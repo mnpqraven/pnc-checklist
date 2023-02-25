@@ -1,5 +1,5 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
-import { Unit } from "@/src-tauri/bindings/structs/Unit";
+import { Unit } from "@/src-tauri/bindings/rspc";
 import React from "react";
 import { DraftFunction, Updater } from "use-immer";
 
