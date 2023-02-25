@@ -4,6 +4,7 @@ export type Procedures = {
     queries: 
         { key: "getSkillLevel", input: [string, LoadoutType], result: UnitSkill } | 
         { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
+        { key: "new_unit", input: Unit, result: Unit } | 
         { key: "units", input: never, result: Array<Unit> } | 
         { key: "version", input: never, result: string },
     mutations: never,

@@ -2,7 +2,7 @@ pub mod crud;
 use crate::{
     algorithm::types::AlgoPiece,
     loadout::types::LoadoutType,
-    prisma::{self, PrismaClient},
+    prisma::{self, PrismaClient}, unit::types::Unit,
 };
 use prisma_client_rust::QueryError;
 use rspc::{Config, Router, RouterBuilder};
@@ -28,6 +28,11 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .exec()
                     .await?;
                 Ok(units)
+            })
+        })
+        .query("new_unit", |t| {
+            t(|ctx, data: Unit| async move {
+                Ok(crud::unit::new_unit(&ctx.client, data).await?)
             })
         })
         .query("loadoutByUnitId", |t| {

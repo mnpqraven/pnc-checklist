@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  /* overflow-x: hidden; */
+  width: 100vw;
+  height: 100vh;
+  color: var(--main-text-highcon);
+  background: linear-gradient(to bottom, transparent, var(--main-bg1))
+    var(--main-bg2);
+}
+
+td {
+  padding: 0px var(--border-radius);
+  vertical-align: top;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+li {
+  transition: background 500ms, border 500ms;
+}
+
+input,
+select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 0 10px;
+  height: 35px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--main-text-highcon);
+  background-color: var(--main-bg1);
+  box-shadow: 0 0 0 1px var(--main-component-bg);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0.25rem;
+}

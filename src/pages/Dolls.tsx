@@ -1,14 +1,16 @@
-import rspc from "../rspc";
+import DollHeader from "../components/Dolls/Header";
+import DollLoadoutContainer from "../components/Dolls/Loadout";
+import DollPanel from "../components/Dolls/Panel";
 
-function Dolls() {
-  const test = rspc.createQuery(() => ["units"]);
-
+const Dolls = () => {
   return (
-    <ul>
-      {test.data?.map((item) => (
-        <li>{item.name}</li>
-      ))}
-    </ul>
+    <div class="flex flex-row">
+      <DollPanel />
+      <div class="flex flex-col">
+        <DollHeader />
+        <DollLoadoutContainer />
+      </div>
+    </div>
   );
-}
+};
 export default Dolls;

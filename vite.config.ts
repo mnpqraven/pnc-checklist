@@ -1,8 +1,9 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [solidPlugin()],
+  plugins: [solidPlugin(), tsconfigPaths()],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // prevent vite from obscuring rust errors

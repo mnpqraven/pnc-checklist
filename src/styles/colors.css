@@ -1,0 +1,113 @@
+@import "@radix-ui/colors/blackA.css";
+@import "@radix-ui/colors/mauve.css";
+@import "@radix-ui/colors/violet.css";
+@import "@radix-ui/colors/violetDark.css";
+@import "@radix-ui/colors/gray.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/green.css";
+@import "@radix-ui/colors/plum.css";
+@import "@radix-ui/colors/plumDark.css";
+@import "@radix-ui/colors/plumA.css";
+
+
+/*  */
+@import '@radix-ui/colors/indigo.css';
+@import '@radix-ui/colors/purple.css';
+
+
+:root {
+  --max-width: 1100px;
+  --border-radius: 12px;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    #16abff33 0deg,
+    #0885ff33 55deg,
+    #54d6ff33 120deg,
+    #0071ff33 160deg,
+    transparent 360deg
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+
+  --tile-start-rgb: 239, 245, 249;
+  --tile-end-rgb: 228, 232, 233;
+  --tile-border: conic-gradient(
+    #00000080,
+    #00000040,
+    #00000030,
+    #00000020,
+    #00000010,
+    #00000010,
+    #00000080
+  );
+
+  --callout-rgb: 238, 240, 241;
+  --callout-border-rgb: 172, 175, 176;
+  --card-rgb: 180, 185, 188;
+  --card-border-rgb: 131, 134, 135;
+
+  /* Color Palette */
+  /* Main palette is the defined theme + accent */
+  --main-bg1: var(--violet1);
+  --main-bg2: var(--violet2);
+
+  --main-component-bg: var(--violet3);
+  --main-component-hover: var(--violet4);
+  --main-component-press1: var(--violet5);
+  --main-component-press2: var(--violet6);
+
+  --main-border-static: var(--violet6);
+  --main-border-normal: var(--violet7);
+  --main-border-hover: var(--violet8);
+
+  --main-bg-solid1: var(--violet9);
+  --main-bg-solid2: var(--violet10);
+
+  --main-text-lowcon: var(--violet11);
+  --main-text-highcon: var(--violet12);
+
+}
+
+/* has to go to radix color source code and grab colos and use data-theme */
+.entropic-theme {
+  --violet1: hsl(250, 20.0%, 10.2%);
+  --violet2: hsl(255, 30.3%, 12.9%);
+  --violet3: hsl(253, 37.0%, 18.4%);
+  --violet4: hsl(252, 40.1%, 22.5%);
+  --violet5: hsl(252, 42.2%, 26.2%);
+  --violet6: hsl(251, 44.3%, 31.1%);
+  --violet7: hsl(250, 46.8%, 38.9%);
+  --violet8: hsl(250, 51.8%, 51.2%);
+  --violet9: hsl(252, 56.0%, 57.5%);
+  --violet10: hsl(251, 63.2%, 63.2%);
+  --violet11: hsl(250, 95.0%, 76.8%);
+  --violet12: hsl(252, 87.0%, 96.4%);
+
+  --main-bg1: var(--violet1);
+  --main-bg2: var(--violet2);
+
+  --main-component-bg: var(--violet3);
+  --main-component-hover: var(--violet4);
+  --main-component-press1: var(--violet5);
+  --main-component-press2: var(--violet6);
+
+  --main-border-static: var(--violet6);
+  --main-border-normal: var(--violet7);
+  --main-border-hover: var(--violet8);
+
+  --main-bg-solid1: var(--violet9);
+  --main-bg-solid2: var(--violet10);
+
+  --main-text-lowcon: var(--violet11);
+  --main-text-highcon: var(--violet12);
+}

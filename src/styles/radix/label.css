@@ -1,0 +1,18 @@
+/* reset */
+button {
+  all: unset;
+}
+
+.LabelRoot {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 35px;
+  color: var(--main-text-highcon);
+}
+
+.Label {
+  color: white;
+  font-size: 15px;
+  line-height: 1;
+  padding-left: 15px;
+}
