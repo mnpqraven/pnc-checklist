@@ -6,11 +6,11 @@ import { DraftFunction, Updater } from "use-immer";
 export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
-  storeLoading: boolean
-  currentUnitId: number,
-  updateCurrentUnitId: (to: number) => void,
-  dirtyStore: Unit[],
-  updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void
+  storeLoading: boolean;
+  currentUnitId: number;
+  updateCurrentUnitId: (to: number) => void;
+  dirtyStore: Unit[];
+  updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void;
 };
 export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
@@ -19,34 +19,34 @@ export const DollContext = React.createContext<DollContextPayload>({
   currentUnitId: 0,
   updateCurrentUnitId: () => { },
   dirtyStore: [],
-  updateDirtyStore: () => { }
+  updateDirtyStore: () => { },
 });
 
 export type SaveContextPayload = {
-  isUnsaved: boolean,
-  setUnsaved: (to: boolean) => void
-}
+  isUnsaved: boolean;
+  setUnsaved: (to: boolean) => void;
+};
 export const SaveContext = React.createContext<SaveContextPayload>({
   isUnsaved: false,
-  setUnsaved: () => { }
-})
+  setUnsaved: () => { },
+});
 
 export type ToastContextPayload = {
   open: boolean;
-  setOpen: (e: boolean) => void
-  header: string
-  content: string
-  setHeaderContent: (header?: string, content?: string) => void
-  fireToast: () => void
-}
+  setOpen: (e: boolean) => void;
+  header: string;
+  content: string;
+  setHeaderContent: (header?: string, content?: string) => void;
+  fireToast: () => void;
+};
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,
   setOpen: () => { },
   header: "Default Header",
   content: "Default Content",
   setHeaderContent: () => { },
-  fireToast: () => { }
-})
+  fireToast: () => { },
+});
 
 export type AlgoError = [
   // ???
