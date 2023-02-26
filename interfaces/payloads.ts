@@ -7,8 +7,8 @@ export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
   storeLoading: boolean
-  index: number,
-  updateIndex: (to: number) => void,
+  currentUnitId: number,
+  updateCurrentUnitId: (to: number) => void,
   dirtyStore: Unit[],
   updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void
 };
@@ -16,8 +16,8 @@ export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
   storeLoading: true,
-  index: 0,
-  updateIndex: () => { },
+  currentUnitId: 0,
+  updateCurrentUnitId: () => { },
   dirtyStore: [],
   updateDirtyStore: () => { }
 });

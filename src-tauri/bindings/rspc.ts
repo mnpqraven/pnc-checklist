@@ -2,6 +2,7 @@
 
 export type Procedures = {
     queries: 
+        { key: "err", input: never, result: string } | 
         { key: "getUnitFromId", input: string, result: Unit } | 
         { key: "getUnits", input: never, result: Array<Unit> } | 
         { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 

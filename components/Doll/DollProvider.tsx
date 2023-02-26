@@ -61,8 +61,8 @@ const DollProvider = ({ children }: Props) => {
         dollData,
         setDollData,
         storeLoading: storeData.isLoading,
-        index,
-        updateIndex,
+        currentUnitId: index,
+        updateCurrentUnitId: updateIndex,
         dirtyStore,
         updateDirtyStore: setDirtyUnits,
       }}

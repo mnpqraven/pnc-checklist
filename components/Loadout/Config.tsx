@@ -39,7 +39,7 @@ type UndoTypes = keyof typeof UNDO_TYPES;
 const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
   const undoTypes: UndoTypes[] = ["LOADOUT", "UNIT"];
 
-  const { dollData, index } = useContext(DollContext);
+  const { dollData, currentUnitId: index } = useContext(DollContext);
   const { data: unit } = useUnitQuery(index);
   const [keepOpen, setKeepOpen] = useState(false);
   const algoFillSlot = useMutateAlgoFillSlot({ setDollData, loadoutType });

@@ -1,16 +1,12 @@
 import DollListItem from "./DollListItem";
 import { useContext, useState } from "react";
-import useNewUnitMutation from "@/utils/hooks/mutations/newUnit";
-import { useDeleteUnitMutation } from "@/utils/hooks/mutations/deleteUnit";
 import Skeleton from "react-loading-skeleton";
-import { DollContext } from "@/interfaces/payloads";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../Button";
-import { IVK } from "@/src-tauri/bindings/invoke_keys";
-import { useQueryClient } from "@tanstack/react-query";
-import { rspc, rspcClient } from "../Toast/Providers";
+import { rspc } from "../Toast/Providers";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
+import { DollContext } from "@/interfaces/payloads";
 
 type Props = {
   filter: Class[];
@@ -18,40 +14,30 @@ type Props = {
 };
 const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  // const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
-  //   useContext(DollContext);
+  const { updateCurrentUnitId } = useContext(DollContext);
 
   const {
     data: dirtyStore,
     isLoading,
     isError,
-    refetch,
+    refetch: refetchUnits,
   } = rspc.useQuery(["getUnits"]);
 
-  // const newUnit = useNewUnitMutation();
-  // const deleteUnit = useDeleteUnitMutation();
-  const newUnit = rspc.useMutation(["newUnit"]);
-  const deleteUnit = rspc.useMutation(['deleteUnit']);
+  const newUnitMutation = rspc.useMutation(["newUnit"]);
+  const deleteUnitMutation = rspc.useMutation(["deleteUnit"]);
 
-  const afterNew = (returned: any) => {
-    console.warn(Date.now())
-    // client.refetchQueries({ queryKey: [IVK.GET_UNITS] }).then(() => {
-    //   updateDirtyStore((draft) => {
-    //     draft.push(returned_unit);
-    //     return draft;
-    //   });
-    //   updateIndex(returned_ind);
-    // });
-  };
+  function addUnit() {
+    newUnitMutation.mutate([nextUnitName, "Guard"], {
+      onSuccess: () => refetchUnits(),
+    });
+  }
 
-  const afterDelete = (returned: any) => {
-    console.warn('deleted', returned)
-    // client
-    //   .refetchQueries({ queryKey: [IVK.GET_UNITS] })
-    //   .then(() => updateIndex(returned));
-  };
+  function deleteUnit(unitId: string) {
+    deleteUnitMutation.mutate(unitId, {
+      onSuccess: () => refetchUnits(),
+    });
+  }
 
-  rspc.useMutation(['newUnit'], {})
   if (isLoading) return <Loading />;
   if (isError) throw new Error("error in dev page");
 
@@ -61,14 +47,7 @@ const DollList = ({ filter, isVisible }: Props) => {
   return (
     <ul id="dolllist" className="w-60">
       <div className="mt-3 flex gap-2 [&>*]:grow">
-        <Button
-          label={"New"}
-          onClick={() => {
-            newUnit.mutate([nextUnitName, "Guard"], {onSuccess: afterNew});
-            // won't get the desired new results due to backend using async
-            refetch({throwOnError: true});
-          }}
-        />
+        <Button label={"New"} onClick={addUnit} />
         <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
       </div>
       {isLoading ? (
@@ -84,7 +63,7 @@ const DollList = ({ filter, isVisible }: Props) => {
               isVisible(unit, filter) && (
                 <motion.li
                   key={index}
-                  onClick={() => updateIndex(index)}
+                  onClick={() => updateCurrentUnitId(unit.id)}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -92,12 +71,7 @@ const DollList = ({ filter, isVisible }: Props) => {
                   <DollListItem
                     unit={unit}
                     deleteMode={deleteMode}
-                    deleteUnit={() =>
-                    {
-                      console.warn(unit.id)
-                    deleteUnit.mutate(unit.id, { onSuccess: afterDelete })
-                    }
-                    }
+                    deleteUnit={() => deleteUnit(unit.id)}
                   />
                 </motion.li>
               )
