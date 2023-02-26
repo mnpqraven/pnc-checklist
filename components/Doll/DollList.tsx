@@ -3,10 +3,11 @@ import { useContext, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../Button";
-import { rspc } from "../Toast/Providers";
+import { rspc } from "../Providers/ClientProviders";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
-import { DollContext } from "@/interfaces/payloads";
+import { DbDollContext, DollContext } from "@/interfaces/payloads";
+import { useStoreConfigs } from "../Providers/TableConfigs/Units";
 
 type Props = {
   filter: Class[];
@@ -14,15 +15,15 @@ type Props = {
 };
 const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const { updateCurrentUnitId } = useContext(DollContext);
+  const { updateCurrentUnitId } = useContext(DbDollContext);
 
   const {
-    data: dirtyStore,
     isLoading,
     isError,
     refetch: refetchUnits,
   } = rspc.useQuery(["getUnits"]);
 
+  const { units: dirtyStore } = useContext(DbDollContext);
   const newUnitMutation = rspc.useMutation(["newUnit"]);
   const deleteUnitMutation = rspc.useMutation(["deleteUnit"]);
 
@@ -41,7 +42,6 @@ const DollList = ({ filter, isVisible }: Props) => {
   if (isLoading) return <Loading />;
   if (isError) throw new Error("error in dev page");
 
-  console.warn(dirtyStore);
   const nextUnitName = `Doll #${dirtyStore.length + 1}`;
 
   return (

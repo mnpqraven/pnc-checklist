@@ -1,28 +1,29 @@
 import Label from "@/components/Form/Label";
-import { LoadoutType } from "@/src-tauri/bindings/enums";
-import { Loadout } from "@/src-tauri/bindings/structs";
+import { LoadoutType } from "@/src-tauri/bindings/rspc";
 import { ChangeEvent } from "react";
 import Skeleton from "react-loading-skeleton";
 
 type Props = {
   type: LoadoutType;
-  data: Loadout | undefined;
+  frags: number | null;
+  level: number;
   handleLevelChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFragsChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 const LevelBox = ({
   type,
-  data,
+  frags,
+  level,
   handleLevelChange,
   handleFragsChange,
 }: Props) => {
   return (
     <div className="flex flex-grow-0 flex-col">
-      {data ? (
+      {level ? (
         <>
           <Label
             label="Level"
-            value={data.level}
+            value={level}
             id={`unitLevel${type}`}
             onChange={handleLevelChange}
             type="number"
@@ -30,11 +31,11 @@ const LevelBox = ({
             max={70}
             flex="col"
           />
-          {data.frags !== null && (
+          {frags !== null && (
             <Label
               label="Neural Frags"
               type="number"
-              value={data.frags}
+              value={frags}
               id={`unitFrags${type}`}
               onChange={handleFragsChange}
               min={0}

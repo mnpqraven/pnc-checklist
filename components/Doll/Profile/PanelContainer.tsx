@@ -1,7 +1,6 @@
 import ClassFilter from "@/components/ClassFilter";
-import { Class } from "@/src-tauri/bindings/enums";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
-import { Unit } from "@/src-tauri/bindings/structs";
+import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
@@ -35,6 +34,6 @@ const useFilter = () => {
     });
   };
 
-  const isVisible = (obj: Unit, pat: Class[]) => pat.includes(obj.class);
+  const isVisible = (obj: Unit, pat: Class[]) => pat.includes(obj.class as Class);
   return { filter, updateFilter, isVisible };
 };

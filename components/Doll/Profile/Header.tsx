@@ -1,36 +1,33 @@
-import { DollContext, SaveContext, ToastContext } from "@/interfaces/payloads";
+import { DbDollContext, DollContext, SaveContext, ToastContext } from "@/interfaces/payloads";
 import Label from "../../Form/Label";
 import { AnimatePresence } from "framer-motion";
 import { useContext } from "react";
 import { ClassSelect } from "./ClassSelect";
 import Button from "@/components/Button";
+import { Class } from "@/src-tauri/bindings/rspc";
 
 const DollHeader = ({ handleSave }: { handleSave: () => void }) => {
-  const { dollData, setDollData } = useContext(DollContext);
+  const { currentUnit, updateCurrentUnit } = useContext(DbDollContext);
   const { fireToast } = useContext(ToastContext);
   const { isUnsaved } = useContext(SaveContext);
 
-  if (!dollData || !setDollData) return null;
+  if (!currentUnit || !updateCurrentUnit) return null;
 
   return (
     <div className="card component_space flex items-center">
       <Label
         id="unitName"
-        value={dollData.name}
+        value={currentUnit.name}
         label="Name"
         onChange={(e) =>
-          setDollData((draft) => {
-            draft.name = e.target.value;
-          })
+          updateCurrentUnit({...currentUnit, name: e.target.value})
         }
       />
 
       <ClassSelect
-        value={dollData.class}
+        value={currentUnit.class as Class}
         onChangeHandler={(e) =>
-          setDollData((draft) => {
-            draft.class = e;
-          })
+          updateCurrentUnit({...currentUnit, class: e})
         }
       />
       <div className="grow" />

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import ErrorContainer from "../Error";
 import Loading from "../Loading";
-import { rspc } from "../Toast/Providers";
+import { rspc } from "../Providers/ClientProviders";
 
 type Props = {
   unit: Unit;
