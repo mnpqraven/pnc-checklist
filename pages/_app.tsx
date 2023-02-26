@@ -24,13 +24,15 @@ import { ThemeProvider } from "next-themes";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Navbar from "@/components/Navbar";
 import { THEME_CLASSES } from "@/utils/defaults";
+
 // NOTE: needs to dynamically import provider component to force no SSR
 // import Providers from "@/components/Toast/Providers";
 import dynamic from "next/dynamic";
+import DbDollProvider from "@/components/Providers/DbDollProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const NoSSRProviders = dynamic(
-    () => import("../components/Toast/Providers"),
+    () => import("../components/Providers/ClientProviders"),
     { ssr: false }
   );
   return (
@@ -41,8 +43,10 @@ export default function App({ Component, pageProps }: AppProps) {
         attribute="class"
       >
         <NoSSRProviders>
+      <DbDollProvider>
           <Navbar />
           <Component {...pageProps} />
+      </DbDollProvider>
         </NoSSRProviders>
       </ThemeProvider>
     </SkeletonTheme>

@@ -8,11 +8,10 @@ import {
   ProceduresLike,
 } from "@rspc/client";
 import { createReactQueryHooks } from "@rspc/react";
-import { TauriTransport } from "@rspc/tauri";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import { useState } from "react";
-import Toast from "./Toast";
+import Toast from "../Toast/Toast";
 
 type Props = { children: ReactNode };
 type rspcClientType = {

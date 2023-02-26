@@ -1,5 +1,5 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
-import { Unit } from "@/src-tauri/bindings/rspc";
+import { Loadout, LoadoutType, Unit } from "@/src-tauri/bindings/rspc";
 import React from "react";
 import { DraftFunction, Updater } from "use-immer";
 
@@ -7,8 +7,8 @@ export type DollContextPayload = {
   dollData: Unit | undefined;
   setDollData: Updater<Unit> | undefined;
   storeLoading: boolean;
-  currentUnitId: number;
-  updateCurrentUnitId: (to: number) => void;
+  currentUnitId: string;
+  updateCurrentUnitId: (to: string) => void;
   dirtyStore: Unit[];
   updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void;
 };
@@ -16,10 +16,10 @@ export const DollContext = React.createContext<DollContextPayload>({
   dollData: undefined,
   setDollData: undefined,
   storeLoading: true,
-  currentUnitId: 0,
-  updateCurrentUnitId: () => { },
+  currentUnitId: "",
+  updateCurrentUnitId: () => {},
   dirtyStore: [],
-  updateDirtyStore: () => { },
+  updateDirtyStore: () => {},
 });
 
 export type SaveContextPayload = {
@@ -28,7 +28,7 @@ export type SaveContextPayload = {
 };
 export const SaveContext = React.createContext<SaveContextPayload>({
   isUnsaved: false,
-  setUnsaved: () => { },
+  setUnsaved: () => {},
 });
 
 export type ToastContextPayload = {
@@ -41,11 +41,11 @@ export type ToastContextPayload = {
 };
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,
-  setOpen: () => { },
+  setOpen: () => {},
   header: "Default Header",
   content: "Default Content",
-  setHeaderContent: () => { },
-  fireToast: () => { },
+  setHeaderContent: () => {},
+  fireToast: () => {},
 });
 
 export type AlgoError = [
@@ -57,3 +57,26 @@ export type AlgoErrorContextPayload = AlgoError[];
 export const AlgoErrorContext = React.createContext<AlgoErrorContextPayload>(
   []
 );
+
+export type DbDollContextPayload = {
+  currentUnit: Unit | undefined;
+  updateCurrentUnit: (to: Unit) => void;
+  currentUnitId: string;
+  updateCurrentUnitId: (to: string) => void;
+  units: Unit[];
+
+  currentLoadout: Loadout | undefined;
+  goalLoadout: Loadout | undefined;
+  updateLoadout: (to: Loadout, type: LoadoutType) => void;
+};
+export const DbDollContext = React.createContext<DbDollContextPayload>({
+  units: [],
+  currentUnit: undefined,
+  updateCurrentUnit: () => {},
+  currentUnitId: "",
+  updateCurrentUnitId: () => {},
+
+  currentLoadout: undefined,
+  goalLoadout: undefined,
+  updateLoadout: () => {}
+});

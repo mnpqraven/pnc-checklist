@@ -38,7 +38,7 @@ export function class_src(item: Class): string {
 }
 
 export function deep_eq(a: any, b: any): boolean {
-  return JSON.stringify(a) == JSON.stringify(b)
+  return JSON.stringify(a) === JSON.stringify(b)
 }
 
 export function deduplicate<T>(input: Iterable<T>): T[] {

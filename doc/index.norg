@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-26
+updated: 2023-02-27
 version: 0.1.2
 @end
 
@@ -59,8 +59,13 @@ version: 0.1.2
     --- (x) `Doll` components (mutations)
     ----- (x) migrate to using `useQuery` in main page `dolls.tsx` first
     ----- (x) then drill to sub components
-    - ( ) migrate info fetching from managed tauri state to database queries
-    --- ( ) dolls: params (name, class) + loadout and unit ids
+    - (-) migrate info fetching from managed tauri state to database queries
+    --- (-) dolls: params (name, class) + loadout and unit ids
+    ---- (x) dolllist
+    ---- (-) header -> `handleSave()`
+    ---- (-) loadout
+    ---- (x) changing unitId doesn't cache the data
+    ---- (x) adding doesn't reflect refetched items
     --- ( ) then we can pass children ids (loadouts then algo pieces) to
         children components,
     --- ( )  alleviate top heavy data, especially in `<Dolls />`
