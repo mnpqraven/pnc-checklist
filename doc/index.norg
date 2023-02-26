@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-24
+updated: 2023-02-26
 version: 0.1.2
 @end
 
@@ -129,9 +129,9 @@ version: 0.1.2
        needs to make an escape hatch (e.g rename current file then create a new
        from example, or make a edit script)
        `Loadout`, causing `FromTo` panic.
-    - (?) normal heavy `tauri::command` fns would block the UI whilst `async`
+    - (x) normal heavy `tauri::command` fns would block the UI whilst `async`
       wouldn't, ask about tokio
-    - (?) async `tauri::command` needs a lifetime mark and `Result`, won't
+    - (x) async `tauri::command` needs a lifetime mark and `Result`, won't
       block UI
 
     #refactor

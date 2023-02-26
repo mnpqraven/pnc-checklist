@@ -3,13 +3,14 @@ use crate::{
     algorithm::types::AlgoPiece,
     loadout::types::LoadoutType,
     prisma::{self, PrismaClient},
-    unit::types::{Unit, Class},
+    unit::types::{Class, Unit},
 };
+use futures::TryFutureExt;
 use prisma_client_rust::QueryError;
 use rspc::{Config, Router, RouterBuilder};
-use std::{path::PathBuf, sync::Arc};
+use std::{path::PathBuf, sync::Arc, time::{SystemTime, UNIX_EPOCH}};
 
-use self::crud::unit::{get_unit_from_id, get_units, new_unit};
+use self::crud::unit::{delete_unit, get_unit_from_id, get_units, new_unit};
 
 pub struct Ctx {
     pub client: Arc<prisma::PrismaClient>,
@@ -24,9 +25,17 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
         // INFO: UNIT
         .mutation("newUnit", |t| {
             t(|ctx, (name, class): (String, Class)| async move {
+            println!("{:?}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap());
                 let unit = Unit::new(name, class);
-                Ok(new_unit(&ctx.client, unit).await?)})
+                new_unit(&ctx.client, unit).map_err(|err| { rspc::Error::with_cause(rspc::ErrorCode::InternalServerError, err.to_string(), err)}).await
+            })
         })
+    .mutation("deleteUnit", |t| {
+        t(|ctx, unit_id: String| async move {
+            println!("{:?}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap());
+            delete_unit(&ctx.client, unit_id).await.map_err(|err| { rspc::Error::with_cause(rspc::ErrorCode::InternalServerError, err.to_string(), err)})
+        })
+    })
         .query("getUnits", |t| {
             t(|ctx, _: ()| async move { Ok(get_units(&ctx.client).await?) })
         })
@@ -45,7 +54,7 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                 Ok(loadouts)
             })
         })
-        .query("getSkillLevel", |t| {
+        .query("skillLevelByUnitId", |t| {
             t(
                 |ctx, (unit_id, loadout_type): (String, LoadoutType)| async move {
                     let skill = get_skill_level(&ctx.client, unit_id, loadout_type).await?;

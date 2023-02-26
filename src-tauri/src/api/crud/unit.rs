@@ -1,6 +1,6 @@
 use crate::{
     api::crud::algo::new_algo_piece,
-    prisma::{self, loadout, unit, unit_skill, PrismaClient},
+    prisma::{self, unit, PrismaClient},
     stats::types::UnitSkill,
     unit::types::{Loadout, Unit},
 };
@@ -18,15 +18,23 @@ pub async fn new_unit(client: &PrismaClient, data: Unit) -> Result<unit::Data, Q
 }
 
 pub async fn get_units(client: &PrismaClient) -> Result<Vec<unit::Data>, QueryError> {
-    Ok(client.unit().find_many(vec![]).exec().await?)
+    client.unit().find_many(vec![]).exec().await
 }
 
-pub async fn get_unit_from_id(client: &PrismaClient, unit_id: String) -> Result<unit::Data, QueryError> {
+pub async fn delete_unit(client: &PrismaClient, unit_id: String) -> Result<unit::Data, QueryError> {
+    client.unit().delete(unit::id::equals(unit_id)).exec().await
+}
+
+pub async fn get_unit_from_id(
+    client: &PrismaClient,
+    unit_id: String,
+) -> Result<unit::Data, QueryError> {
     Ok(client
         .unit()
         .find_unique(unit::id::equals(unit_id))
         .exec()
-        .await?.unwrap())
+        .await?
+        .unwrap())
 }
 
 async fn new_loadout(
@@ -55,7 +63,7 @@ async fn new_loadout(
     )
     .await;
 
-    let skill = new_unit_skill(client, data.skill_level, created.id.clone()).await?;
+    new_unit_skill(client, data.skill_level, created.id.clone()).await?;
     Ok(created)
 }
 

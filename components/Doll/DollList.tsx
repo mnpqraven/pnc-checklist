@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Button from "../Button";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { useQueryClient } from "@tanstack/react-query";
-import { rspc } from "../Toast/Providers";
+import { rspc, rspcClient } from "../Toast/Providers";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
 
@@ -21,14 +21,20 @@ const DollList = ({ filter, isVisible }: Props) => {
   // const { storeLoading, updateIndex, updateDirtyStore, dirtyStore } =
   //   useContext(DollContext);
 
-  const { data: dirtyStore, isLoading, isError } = rspc.useQuery(["getUnits"]);
+  const {
+    data: dirtyStore,
+    isLoading,
+    isError,
+    refetch,
+  } = rspc.useQuery(["getUnits"]);
 
-  const client = useQueryClient();
   // const newUnit = useNewUnitMutation();
+  // const deleteUnit = useDeleteUnitMutation();
   const newUnit = rspc.useMutation(["newUnit"]);
-  const deleteUnit = useDeleteUnitMutation();
+  const deleteUnit = rspc.useMutation(['deleteUnit']);
 
-  const afterNew = ([returned_unit, returned_ind]: [Unit, number]) => {
+  const afterNew = (returned: any) => {
+    console.warn(Date.now())
     // client.refetchQueries({ queryKey: [IVK.GET_UNITS] }).then(() => {
     //   updateDirtyStore((draft) => {
     //     draft.push(returned_unit);
@@ -38,14 +44,18 @@ const DollList = ({ filter, isVisible }: Props) => {
     // });
   };
 
-  const afterDelete = (returned: number) => {
+  const afterDelete = (returned: any) => {
+    console.warn('deleted', returned)
     // client
     //   .refetchQueries({ queryKey: [IVK.GET_UNITS] })
     //   .then(() => updateIndex(returned));
   };
+
+  rspc.useMutation(['newUnit'], {})
   if (isLoading) return <Loading />;
   if (isError) throw new Error("error in dev page");
 
+  console.warn(dirtyStore);
   const nextUnitName = `Doll #${dirtyStore.length + 1}`;
 
   return (
@@ -54,7 +64,9 @@ const DollList = ({ filter, isVisible }: Props) => {
         <Button
           label={"New"}
           onClick={() => {
-            newUnit.mutate([nextUnitName, "Guard"]);
+            newUnit.mutate([nextUnitName, "Guard"], {onSuccess: afterNew});
+            // won't get the desired new results due to backend using async
+            refetch({throwOnError: true});
           }}
         />
         <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
@@ -81,7 +93,10 @@ const DollList = ({ filter, isVisible }: Props) => {
                     unit={unit}
                     deleteMode={deleteMode}
                     deleteUnit={() =>
-                      deleteUnit.mutate({ index }, { onSuccess: afterDelete })
+                    {
+                      console.warn(unit.id)
+                    deleteUnit.mutate(unit.id, { onSuccess: afterDelete })
+                    }
                     }
                   />
                 </motion.li>

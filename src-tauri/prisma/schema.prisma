@@ -1,63 +1,63 @@
 generator client {
-    provider = "cargo prisma"
-    output   = "../src/prisma.rs"
+  provider = "cargo prisma"
+  output   = "../src/prisma.rs"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = "file:database.db"
+  provider = "sqlite"
+  url      = "file:database.db"
 }
 
 model Unit {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    name      String    @unique
-    class     String
-    loadouts  Loadout[]
+  name     String    @unique
+  class    String
+  loadouts Loadout[]
 }
 
 model Loadout {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    skillLevel  UnitSkill?
-    level       Int
-    algo        AlgoPiece[]
-    neural      String
-    frags       Int?
-    loadoutType String
+  skillLevel  UnitSkill?
+  level       Int
+  algo        AlgoPiece[]
+  neural      String
+  frags       Int?
+  loadoutType String
 
-    unit   Unit   @relation(fields: [unitId], references: [id])
-    unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId String
 }
 
 model UnitSkill {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    auto    Int
-    passive Int
+  auto    Int
+  passive Int
 
-    loadout   Loadout @relation(fields: [loadoutId], references: [id])
-    loadoutId String  @unique
+  loadout   Loadout @relation(fields: [loadoutId], references: [id], onDelete: Cascade)
+  loadoutId String  @unique
 }
 
 model AlgoPiece {
-    id String @unique @default(cuid())
+  id String @unique @default(cuid())
 
-    category String
-    name     String
-    stat     String
-    slot     Slot[]
+  category String
+  name     String
+  stat     String
+  slot     Slot[]
 
-    Loadout   Loadout? @relation(fields: [loadoutId], references: [id])
-    loadoutId String?
+  Loadout   Loadout? @relation(fields: [loadoutId], references: [id])
+  loadoutId String?
 }
 
 model Slot {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    placement String
-    value     Boolean
+  placement String
+  value     Boolean
 
-    AlgoPiece   AlgoPiece @relation(fields: [algoPieceId], references: [id])
-    algoPieceId String
+  AlgoPiece   AlgoPiece @relation(fields: [algoPieceId], references: [id], onDelete: Cascade)
+  algoPieceId String
 }

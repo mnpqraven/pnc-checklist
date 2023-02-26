@@ -2,12 +2,13 @@
 
 export type Procedures = {
     queries: 
-        { key: "getSkillLevel", input: [string, LoadoutType], result: UnitSkill } | 
         { key: "getUnitFromId", input: string, result: Unit } | 
         { key: "getUnits", input: never, result: Array<Unit> } | 
         { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
+        { key: "skillLevelByUnitId", input: [string, LoadoutType], result: UnitSkill } | 
         { key: "version", input: never, result: string },
     mutations: 
+        { key: "deleteUnit", input: string, result: Unit } | 
         { key: "newUnit", input: [string, Class], result: Unit },
     subscriptions: never
 };
