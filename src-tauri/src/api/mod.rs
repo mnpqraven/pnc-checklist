@@ -2,12 +2,13 @@ pub mod crud;
 use crate::{
     algorithm::types::AlgoPiece,
     loadout::types::LoadoutType,
-    prisma::{self, PrismaClient},
+    prisma::{self, PrismaClient, loadout},
     unit::types::{Class, Unit},
 };
 use prisma_client_rust::QueryError;
 use rspc::{Config, Error, ErrorCode, Router, RouterBuilder};
 use std::{path::PathBuf, sync::Arc};
+use strum::IntoEnumIterator;
 
 use self::crud::unit::{delete_unit, get_unit_from_id, get_units, new_unit};
 
@@ -47,6 +48,20 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             })
         })
         // INFO: LOADOUT
+        .query("loadouts", |t| {
+            t(|ctx, loadout_id: Option<String>| async move {
+                let pat = match loadout_id {
+                    Some(id) => vec![loadout::id::equals(id)],
+                    None => vec![]
+                };
+                ctx.client
+                    .loadout()
+                    .find_many(pat)
+                    .exec()
+                    .await
+                    .map_err(error_map)
+            })
+        })
         .query("loadoutByUnitId", |t| {
             t(|ctx, unit_id: String| async move {
                 ctx.client
@@ -57,16 +72,18 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
-        .query("skillLevelByUnitId", |t| {
-            t(
-                |ctx, (unit_id, loadout_type): (String, LoadoutType)| async move {
-                    get_skill_level(&ctx.client, unit_id, loadout_type)
-                        .await
-                        .map_err(error_map)
-                },
-            )
+        .query("skillLevelsByUnitIds", |t| {
+            t(|ctx, unit_ids: Option<Vec<String>>| async move {
+                get_skill_levels(&ctx.client, unit_ids)
+                    .await
+                    .map_err(error_map)
+            })
         })
-        .query("err", |t| { // NOTE: dev err
+        .query("listLoadoutType", |t| {
+            t(|_, _: ()| async move { LoadoutType::iter().collect::<Vec<LoadoutType>>() })
+        })
+        .query("err", |t| {
+            // NOTE: dev err
             t(|_, _: ()| {
                 // Rust is unable to infer the `Ok` variant of the result.
                 // We use the `as` keyword to tell Rust the type of the result.
@@ -79,27 +96,25 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
         })
 }
 
-async fn get_skill_level(
+async fn get_skill_levels(
     client: &PrismaClient,
-    unit_id: String,
-    loadout_type: LoadoutType,
-) -> Result<prisma::unit_skill::Data, QueryError> {
-    let loadout = client
-        .loadout()
-        .find_first(vec![
-            prisma::loadout::unit_id::equals(unit_id),
-            prisma::loadout::loadout_type::equals(loadout_type.to_string()),
-        ])
-        .exec()
-        .await?;
-    let loadout_id: String = match loadout {
-        Some(loadout) => loadout.id,
-        None => panic!("should have at least one skill level entry for every loadout table"),
+    unit_ids: Option<Vec<String>>,
+) -> Result<Vec<prisma::unit_skill::Data>, QueryError> {
+    let pat = match unit_ids {
+        Some(ids) => vec![prisma::loadout::unit_id::in_vec(ids)],
+        None => vec![]
     };
-    let returned = client
-        .unit_skill()
-        .find_unique(prisma::unit_skill::loadout_id::equals(loadout_id))
+    let loadout_ids = client
+        .loadout()
+        .find_many(pat)
         .exec()
-        .await?;
-    Ok(returned.unwrap())
+        .await?
+        .iter()
+        .map(|e| e.id.clone())
+        .collect();
+    client
+        .unit_skill()
+        .find_many(vec![prisma::unit_skill::loadout_id::in_vec(loadout_ids)])
+        .exec()
+        .await
 }

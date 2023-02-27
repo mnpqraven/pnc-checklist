@@ -5,8 +5,10 @@ export type Procedures = {
         { key: "err", input: never, result: string } | 
         { key: "getUnitFromId", input: string, result: Unit } | 
         { key: "getUnits", input: never, result: Array<Unit> } | 
+        { key: "listLoadoutType", input: never, result: Array<LoadoutType> } | 
         { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
-        { key: "skillLevelByUnitId", input: [string, LoadoutType], result: UnitSkill } | 
+        { key: "loadouts", input: string | null, result: Array<Loadout> } | 
+        { key: "skillLevelsByUnitIds", input: Array<string> | null, result: Array<UnitSkill> } | 
         { key: "version", input: never, result: string },
     mutations: 
         { key: "deleteUnit", input: string, result: Unit } | 

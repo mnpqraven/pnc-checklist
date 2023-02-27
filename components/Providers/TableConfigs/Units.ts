@@ -17,10 +17,10 @@ export const useStoreConfigs = () => {
     if (storeData) {
       // updates dirtyOnTop with storeData
       setDirtyOnTop((draft) => {
-        let beforeIds = dirtyOnTop.map((e) => e.id);
+        let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);
         // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-        const intersecOrDiff = nextIds.length > dirtyOnTop.length;
+        const intersecOrDiff = nextIds.length > draft.length;
         let diff = nextIds.filter((e) =>
           intersecOrDiff ? !beforeIds.includes(e) : beforeIds.includes(e)
         );

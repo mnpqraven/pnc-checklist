@@ -1,21 +1,19 @@
 import Slider from "@/components/Form/Slider";
-import { UnitSkill } from "@/src-tauri/bindings/structs";
-import { ChangeEvent } from "react";
+import { DbDollContext } from "@/interfaces/payloads";
+import { UnitSkill } from "@/src-tauri/bindings/rspc";
+import { useContext } from "react";
 import Skeleton from "react-loading-skeleton";
 
 const SKILL_TYPE = { passive: "passive", auto: "auto" };
 type SkillType = keyof typeof SKILL_TYPE;
 
-const SkillBox = ({
-  skill_level,
-  handleSlvChange,
-}: {
-  skill_level: UnitSkill | undefined;
-  handleSlvChange: (
-    e: ChangeEvent<HTMLInputElement> | number,
-    skill_type: SkillType
-  ) => void;
-}) => {
+type Props = {
+  loadoutId: string;
+};
+const SkillBox = ({ loadoutId }: Props) => {
+  const { skills, updateSkill } = useContext(DbDollContext);
+
+  const skillData = skills.find((e) => e.loadoutId == loadoutId)!;
   const skill: { type: SkillType; label: string }[] = [
     {
       type: "passive",
@@ -26,11 +24,29 @@ const SkillBox = ({
       label: "Auto Skill",
     },
   ];
+
+  function prepareUpdate(
+    to: number,
+    skillType: "auto" | "passive",
+    loadoutId: string
+  ) {
+    let obj: UnitSkill = skillData;
+    switch (skillType) {
+      case "auto":
+        obj = { ...skillData, auto: to };
+        break;
+      case "passive":
+        obj = { ...skillData, passive: to };
+        break;
+    }
+
+    updateSkill(obj, loadoutId);
+  }
   return (
     <div className="mx-4 flex flex-col">
       <div className="flex flex-col ">
         <div className="flex justify-between"></div>
-        {skill_level ? (
+        {skillData ? (
           skill.map(({ type, label }) => (
             <Slider
               key={type}
@@ -38,8 +54,8 @@ const SkillBox = ({
               min={1}
               max={10}
               label={label}
-              value={skill_level[type]}
-              onChange={(e) => handleSlvChange(e[0], type)}
+              value={skillData[type]}
+              onChange={(e) => prepareUpdate(e[0], type, loadoutId)}
             />
           ))
         ) : (

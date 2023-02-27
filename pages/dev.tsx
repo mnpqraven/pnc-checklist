@@ -1,7 +1,6 @@
 import { LoadoutContainer } from "@/components/Common";
 import DollHeader from "@/components/Doll/Profile/Header";
 import DollPanelContainer from "@/components/Doll/Profile/PanelContainer";
-import Label from "@/components/Form/Label";
 import Loading from "@/components/Loading";
 import { DbDollContext } from "@/interfaces/payloads";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
@@ -12,7 +11,6 @@ const Dev = () => {
 
   if (!currentLoadout || !goalLoadout) return <Loading />;
   const loadouts = [currentLoadout, goalLoadout];
-  console.warn(loadouts)
 
   return (
     <main>

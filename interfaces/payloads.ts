@@ -1,5 +1,10 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
-import { Loadout, LoadoutType, Unit } from "@/src-tauri/bindings/rspc";
+import {
+  Loadout,
+  LoadoutType,
+  Unit,
+  UnitSkill,
+} from "@/src-tauri/bindings/rspc";
 import React from "react";
 import { DraftFunction, Updater } from "use-immer";
 
@@ -68,6 +73,9 @@ export type DbDollContextPayload = {
   currentLoadout: Loadout | undefined;
   goalLoadout: Loadout | undefined;
   updateLoadout: (to: Loadout, type: LoadoutType) => void;
+
+  skills: UnitSkill[];
+  updateSkill: (to: UnitSkill, loadoutId: string) => void;
 };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
@@ -78,5 +86,8 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
 
   currentLoadout: undefined,
   goalLoadout: undefined,
-  updateLoadout: () => {}
+  updateLoadout: () => {},
+
+  skills: [],
+  updateSkill: () => {},
 });

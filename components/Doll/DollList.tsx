@@ -6,7 +6,7 @@ import Button from "../Button";
 import { rspc } from "../Providers/ClientProviders";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
-import { DbDollContext, DollContext } from "@/interfaces/payloads";
+import { DbDollContext } from "@/interfaces/payloads";
 
 type Props = {
   filter: Class[];
@@ -21,6 +21,7 @@ const DollList = ({ filter, isVisible }: Props) => {
     isError,
     refetch: refetchUnits,
   } = rspc.useQuery(["getUnits"]);
+  const { data: los } = rspc.useQuery(["loadouts", null]);
 
   const { units: dirtyStore } = useContext(DbDollContext);
   const newUnitMutation = rspc.useMutation(["newUnit"]);
@@ -38,10 +39,16 @@ const DollList = ({ filter, isVisible }: Props) => {
     });
   }
 
-  if (isLoading) return <Loading />;
+  if (isLoading || !dirtyStore || !los) return <Loading />;
   if (isError) throw new Error("error in dev page");
 
   const nextUnitName = `Doll #${dirtyStore.length + 1}`;
+  //
+  const currentLoadoutIds = dirtyStore.map((unit) => {
+    let find = los.find((e) => e.loadoutType == "Current" && e.unitId == unit.id);
+    if (find) return find.id
+      return ''
+  });
 
   return (
     <ul id="dolllist" className="w-60">
@@ -69,6 +76,7 @@ const DollList = ({ filter, isVisible }: Props) => {
                 >
                   <DollListItem
                     unit={unit}
+                    currentLoadoutId={currentLoadoutIds[index]}
                     deleteMode={deleteMode}
                     deleteUnit={() => deleteUnit(unit.id)}
                   />

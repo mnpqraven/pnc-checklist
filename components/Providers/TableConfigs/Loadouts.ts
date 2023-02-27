@@ -1,10 +1,8 @@
-import { DbDollContext } from "@/interfaces/payloads";
 import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
 import { deep_eq } from "@/utils/helper";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
-import { useStoreConfigs } from "./Units";
 
 export const useLoadoutConfigs = (unitId: string) => {
   // if (!unitId) throw new Error('should always have an unitid')

@@ -1,8 +1,6 @@
-import AlgorithmSet from "@/components/Algorithm/AlgorithmSet";
 import { ChangeEvent, useContext } from "react";
-import { DbDollContext, DollContext } from "@/interfaces/payloads";
+import { DbDollContext } from "@/interfaces/payloads";
 import { LevelBox, RaritySelect, SkillBox } from "./Doll";
-import useLoadoutController from "@/utils/hooks/useLoadoutController";
 import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
 import Loading from "./Loading";
 import { NeuralExpansion } from "@/src-tauri/bindings/enums";
@@ -30,8 +28,7 @@ const LoadoutContainer = ({ type, data }: Props) => {
     <>
       <div className="flex items-center">
         <SkillBox
-          // skill_level={}
-          handleSlvChange={() => {}}
+          loadoutId={data.id}
         />
         <LevelBox
           type={type}

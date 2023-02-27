@@ -1,26 +1,27 @@
+import { DbDollContext } from "@/interfaces/payloads";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import { class_src } from "@/utils/helper";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import ErrorContainer from "../Error";
+import { useContext } from "react";
 import Loading from "../Loading";
-import { rspc } from "../Providers/ClientProviders";
 
 type Props = {
   unit: Unit;
   deleteMode: boolean;
   deleteUnit: () => void;
+  currentLoadoutId: string;
 };
-const DollListItem = ({ unit, deleteMode, deleteUnit }: Props) => {
-  const { data, isLoading, isError } = rspc.useQuery([
-    "skillLevelByUnitId",
-    [unit.id, 'Current'],
-  ]);
-
-
-  if (isLoading) return <Loading />;
-  if (isError) return <ErrorContainer />;
+const DollListItem = ({
+  unit,
+  deleteMode,
+  deleteUnit,
+  currentLoadoutId,
+}: Props) => {
+  const { skills } = useContext(DbDollContext);
+  const skill = skills.find((e) => e.loadoutId == currentLoadoutId);
+  if (!skill) return <Loading />;
 
   return (
     <div className="flex items-center">
@@ -35,7 +36,7 @@ const DollListItem = ({ unit, deleteMode, deleteUnit }: Props) => {
       <div>
         <p>{unit.name ? unit.name : "No name"}</p>
         <p>
-          {data.passive}/{data.auto}
+          {skill.passive}/{skill.auto}
         </p>
       </div>
       <div className="grow" />
