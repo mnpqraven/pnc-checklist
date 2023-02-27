@@ -7,7 +7,6 @@ import { rspc } from "../Providers/ClientProviders";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
 import { DbDollContext, DollContext } from "@/interfaces/payloads";
-import { useStoreConfigs } from "../Providers/TableConfigs/Units";
 
 type Props = {
   filter: Class[];

@@ -1,5 +1,5 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
-import { ReactNode, useContext, useEffect } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
 import { useStoreConfigs } from "./TableConfigs/Units";
 
@@ -11,14 +11,14 @@ const DbDollProvider = ({ children }: Props) => {
 
   const { setUnsaved } = useContext(SaveContext);
   const storeValues = useStoreConfigs();
-  const loadoutValues = useLoadoutConfigs({
-    unitId: storeValues.currentUnitId
-  });
+  const loadoutValues = useLoadoutConfigs(storeValues.currentUnitId);
 
   useEffect(() => {
-    setUnsaved(storeValues.dirtyUnits.length > 0 ||
-    loadoutValues.dirtyLoadouts.length > 0
+    setUnsaved(
+      storeValues.dirtyUnits.length > 0 ||
+        loadoutValues.dirtyLoadouts.length > 0
     );
+
   }, [setUnsaved, storeValues.dirtyUnits, loadoutValues.dirtyLoadouts]);
 
   return (

@@ -1,13 +1,17 @@
+import { DbDollContext } from "@/interfaces/payloads";
 import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
 import { deep_eq } from "@/utils/helper";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { useStoreConfigs } from "./Units";
 
-type Props = { unitId: string };
+export const useLoadoutConfigs = (unitId: string) => {
+  // if (!unitId) throw new Error('should always have an unitid')
+  // unitId is undefined on refresh, need to have a fallbackId
 
-export const useLoadoutConfigs = ({ unitId }: Props) => {
   const { data } = rspc.useQuery(["loadoutByUnitId", unitId]);
+  const types: LoadoutType[] = ["Current", "Goal"];
   const [currentLoadout, setCurrentLoadout] = useImmer<Loadout | undefined>(
     undefined
   );
@@ -17,34 +21,21 @@ export const useLoadoutConfigs = ({ unitId }: Props) => {
   const [dirtyLoadouts, setDirtyLoadouts] = useImmer<Loadout[]>([]);
 
   useEffect(() => {
-    if (data) {
-      setCurrentLoadout(data.find((e) => e.loadoutType == "Current"));
-      setGoalLoadout(data.find((e) => e.loadoutType == "Goal"));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    // TODO: refactor
-    if (data) {
-      let currentFind = dirtyLoadouts.find(
-        (e) => e.unitId == unitId && e.loadoutType == "Current"
-      )
-        ? dirtyLoadouts.find(
-            (e) => e.unitId == unitId && e.loadoutType == "Current"
-          )
-        : data.find((e) => e.loadoutType == "Current");
-
-      let goalFind = dirtyLoadouts.find(
-        (e) => e.unitId == unitId && e.loadoutType == "Goal"
-      )
-        ? dirtyLoadouts.find(
-            (e) => e.unitId == unitId && e.loadoutType == "Goal"
-          )
-        : data.find((e) => e.loadoutType == "Goal");
-      setCurrentLoadout(currentFind);
-      setGoalLoadout(goalFind);
-    }
+    // whenever unitId is changed or new db data is fetched, check first if
+    // there's exsting dirty data and use it
+    if (data)
+      [setCurrentLoadout, setGoalLoadout].forEach((setLoadout, index) =>
+        setLoadout(
+          tryFind(dirtyLoadouts, types[index])
+            ? tryFind(dirtyLoadouts, types[index])
+            : tryFind(data, types[index])
+        )
+      );
   }, [unitId, data]);
+
+  function tryFind(inList: Loadout[], type: LoadoutType) {
+    return inList.find((e) => e.unitId == unitId && e.loadoutType == type);
+  }
 
   function updateLoadout(to: Loadout, type: LoadoutType) {
     if (!data) throw new Error("should be defined here already");

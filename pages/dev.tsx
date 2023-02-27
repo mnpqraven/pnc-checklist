@@ -5,8 +5,7 @@ import Label from "@/components/Form/Label";
 import Loading from "@/components/Loading";
 import { DbDollContext } from "@/interfaces/payloads";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
-import { ChangeEvent, useContext } from "react";
-import LoadoutConfig from "../components/Loadout/Config";
+import { useContext } from "react";
 
 const Dev = () => {
   const { currentLoadout, goalLoadout } = useContext(DbDollContext);

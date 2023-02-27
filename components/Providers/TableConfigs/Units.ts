@@ -1,4 +1,5 @@
 import { Unit } from "@/src-tauri/bindings/rspc";
+import { isEmpty } from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
@@ -6,7 +7,7 @@ import { rspc } from "../ClientProviders";
 export const useStoreConfigs = () => {
   const { data: storeData } = rspc.useQuery(["getUnits"]);
   const [currentUnitId, setCurrentUnitId] = useState<string>(
-    storeData ? storeData[0].id : ""
+    storeData && storeData[0] ? storeData[0].id : ""
   );
   const [currentUnit, setCurrentUnit] = useImmer<Unit | undefined>(undefined);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
@@ -31,6 +32,10 @@ export const useStoreConfigs = () => {
         // intesect > push, diff > splice
         return draft;
       });
+
+      // sets initial currentUnitId
+      // needed else loadout will use undefined on page load
+      if (isEmpty(currentUnitId)) setCurrentUnitId(storeData[0].id)
     }
   }, [storeData]);
 
@@ -93,8 +98,6 @@ export const useStoreConfigs = () => {
     setCurrentUnitId(to);
   }
 
-  console.warn("from context file");
-  console.warn(dirtyOnTop);
   return {
     currentUnit,
     updateCurrentUnit,
