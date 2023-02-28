@@ -1,5 +1,6 @@
 import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
 import {
+  AlgoPiece,
   Loadout,
   LoadoutType,
   Unit,
@@ -76,6 +77,9 @@ export type DbDollContextPayload = {
 
   skills: UnitSkill[];
   updateSkill: (to: UnitSkill, loadoutId: string) => void;
+
+  algoPieces: AlgoPiece[];
+  updatePiece: (to: AlgoPiece) => void;
 };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
@@ -90,4 +94,7 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
 
   skills: [],
   updateSkill: () => {},
+
+  algoPieces: [],
+  updatePiece: () => {},
 });

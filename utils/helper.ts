@@ -1,4 +1,5 @@
 import { Algorithm, Class } from "@/src-tauri/bindings/enums";
+import { ChangeEvent } from "react";
 
 /**
  * same as Object.keys() but with generic type return
@@ -48,4 +49,9 @@ export function deduplicate<T>(input: Iterable<T>): T[] {
 export function isEmpty(str: string | undefined) {
   if (str === "" || typeof str === "undefined") return true;
   return false;
+}
+
+export function getValue(e: ChangeEvent<HTMLInputElement>): number {
+  let value = parseInt(e.target.value);
+  return value;
 }

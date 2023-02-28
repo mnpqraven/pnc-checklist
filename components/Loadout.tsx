@@ -4,6 +4,8 @@ import { LevelBox, RaritySelect, SkillBox } from "./Doll";
 import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
 import Loading from "./Loading";
 import { NeuralExpansion } from "@/src-tauri/bindings/enums";
+import AlgorithmSet from "./Algorithm/AlgorithmSet";
+import { getValue } from "@/utils/helper";
 
 type Props = {
   type: LoadoutType;
@@ -16,20 +18,16 @@ const LoadoutContainer = ({ type, data }: Props) => {
   // const { algo, neural, skill_level: slv } = data;
   // const control = useLoadoutController(updateCurrentUnit, type);
 
-  function getValue(e: ChangeEvent<HTMLInputElement>): number {
-    let value = parseInt(e.target.value);
-    return value;
-  }
-  if (!data || !currentLoadout || !goalLoadout) return <Loading />;
+  const { algoPieces } = useContext(DbDollContext);
+
+  if (!data || !algoPieces || !currentLoadout || !goalLoadout) return <Loading />;
 
   const loadout = type === "Current" ? currentLoadout : goalLoadout;
 
   return (
     <>
       <div className="flex items-center">
-        <SkillBox
-          loadoutId={data.id}
-        />
+        <SkillBox loadoutId={data.id} />
         <LevelBox
           type={type}
           frags={loadout.frags}
@@ -48,7 +46,7 @@ const LoadoutContainer = ({ type, data }: Props) => {
           />
         )}
       </div>
-      {/* <AlgorithmSet algo={data?.algo} type={type} /> */}
+      <AlgorithmSet algos={algoPieces} type={type} />
     </>
   );
 };

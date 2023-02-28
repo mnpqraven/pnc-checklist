@@ -1,4 +1,3 @@
-import { LoadoutType } from "@/src-tauri/bindings/enums";
 import { Unit } from "@/src-tauri/bindings/structs";
 import { DEFAULT_LEVEL } from "@/utils/defaults";
 import { useContext, useState } from "react";
@@ -22,9 +21,10 @@ import {
   CheckIcon,
   ChevronRightIcon,
 } from "@radix-ui/react-icons";
-import { DollContext } from "@/interfaces/payloads";
-import { useUnitQuery } from "@/utils/hooks/dolls/useStoreUnitsQuery";
+import { DbDollContext } from "@/interfaces/payloads";
 import { useMutateAlgoFillSlot } from "@/utils/hooks/algo/mutateAlgo";
+import { rspc } from "../Providers/ClientProviders";
+import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 type Props = {
   unitHandler: Updater<Unit>;
@@ -39,15 +39,15 @@ type UndoTypes = keyof typeof UNDO_TYPES;
 const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
   const undoTypes: UndoTypes[] = ["LOADOUT", "UNIT"];
 
-  const { dollData, currentUnitId: index } = useContext(DollContext);
-  const { data: unit } = useUnitQuery(index);
+  const { currentUnit, currentUnitId } = useContext(DbDollContext);
+  const { data: unit } = rspc.useQuery(['getUnitFromId', currentUnitId ])
   const [keepOpen, setKeepOpen] = useState(false);
   const algoFillSlot = useMutateAlgoFillSlot({ setDollData, loadoutType });
 
   function fillAlgo(allOrNone: boolean, e: Event) {
     if (keepOpen) e.preventDefault();
-    if (dollData)
-      algoFillSlot.mutate({ allOrNone, input: dollData[loadoutType].algo });
+    if (currentUnit)
+      algoFillSlot.mutate({ allOrNone, input: currentUnit[loadoutType].algo });
   }
 
   function updateLevel(to: number, e: Event) {

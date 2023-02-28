@@ -5,12 +5,10 @@ import DollPanelContainer from "@/components/Doll/Profile/PanelContainer";
 
 const Dolls = () => (
   <main>
-    <DollProvider>
       <div className="big_container">
         <DollPanelContainer />
         <DollProfile />
       </div>
-    </DollProvider>
   </main>
 );
 export default Dolls;

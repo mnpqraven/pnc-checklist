@@ -2,6 +2,7 @@
 
 export type Procedures = {
     queries: 
+        { key: "algoPiecesByLoadoutId", input: Array<string> | null, result: Array<AlgoPiece> } | 
         { key: "err", input: never, result: string } | 
         { key: "getUnitFromId", input: string, result: Unit } | 
         { key: "getUnits", input: never, result: Array<Unit> } | 
@@ -15,6 +16,8 @@ export type Procedures = {
         { key: "newUnit", input: [string, Class], result: Unit },
     subscriptions: never
 };
+
+export interface AlgoPiece { id: string, category: string, name: string, stat: string, loadoutId: string | null }
 
 export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
 

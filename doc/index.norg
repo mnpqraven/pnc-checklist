@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-02-27
+updated: 2023-02-28
 version: 0.1.2
 @end
 
@@ -39,7 +39,6 @@ version: 0.1.2
     --- (x) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot
         to put loadout name (current/goal) on top
-    --- (!) functionalities + refactor `LoadoutConfig` dropdown
 
     - (x) AlgoPiece: click on icon to open up image selection div, combobox
         is too tiring to read
@@ -71,10 +70,11 @@ version: 0.1.2
     --- ( )  alleviate top heavy data, especially in `<Dolls />`
     --- ( ) refactor DollList component tree
     --- ( ) dollContext controller needs rewriting
-    --- updateIndex -> updateCurrentUnit (unit_id)
-    --- updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
+    --- (?) updateIndex -> updateCurrentUnit (unit_id)
+    --- (?) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
         updateUnitSkill, updateAlgoPiece, updateSlot)
-    --- or use caches from react query
+        or use caches from react query
+    --- (-) loadoutconfig
 
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)

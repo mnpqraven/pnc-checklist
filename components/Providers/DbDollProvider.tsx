@@ -1,5 +1,6 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
 import { ReactNode, useContext, useEffect } from "react";
+import useAlgorithmConfigs from "./TableConfigs/Algorithms";
 import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
 import { useSkillConfigs } from "./TableConfigs/Skills";
 import { useStoreConfigs } from "./TableConfigs/Units";
@@ -12,6 +13,7 @@ const DbDollProvider = ({ children }: Props) => {
   const storeValues = useStoreConfigs();
   const loadoutValues = useLoadoutConfigs(storeValues.currentUnitId);
   const skillValues = useSkillConfigs();
+  const algorithmValues = useAlgorithmConfigs();
 
   useEffect(() => {
     setUnsaved(
@@ -28,7 +30,12 @@ const DbDollProvider = ({ children }: Props) => {
 
   return (
     <DbDollContext.Provider
-      value={{ ...storeValues, ...loadoutValues, ...skillValues }}
+      value={{
+        ...storeValues,
+        ...loadoutValues,
+        ...skillValues,
+        ...algorithmValues,
+      }}
     >
       {children}
     </DbDollContext.Provider>

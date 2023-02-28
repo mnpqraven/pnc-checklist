@@ -1,42 +1,48 @@
 import { useContext, useEffect } from "react";
 import { LoadoutContainer } from "@/components/Common";
 import React from "react";
-import { DollContext, ToastContext } from "@/interfaces/payloads";
-import { LoadoutType } from "@/src-tauri/bindings/enums";
+import {
+  DbDollContext,
+  DollContext,
+  ToastContext,
+} from "@/interfaces/payloads";
 import LoadoutConfig from "../Loadout/Config";
 import Skeleton from "react-loading-skeleton";
 import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
 import DollHeader from "./Profile/Header";
-import useSaveUnitsMutation from "@/utils/hooks/mutations/saveUnits";
+import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 const DollProfile = () => {
-  const { dollData, setDollData } = useContext(DollContext);
-  const loadouts: LoadoutType[] = ["current", "goal"];
-  const { storeLoading, dirtyStore } = useContext(DollContext);
+  const { currentLoadout, goalLoadout } = useContext(DbDollContext);
   const { setHeaderContent } = useContext(ToastContext);
 
-  const { saveUnits } = useSaveUnitsMutation();
-  const isLoading = !dollData || !setDollData || storeLoading;
+  const isLoading = !currentLoadout || !goalLoadout;
 
   useEffect(() => {
     setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
-  }, [setHeaderContent]);
+  }, []);
 
   if (isLoading) return <Loading />;
+  const loadouts = [currentLoadout, goalLoadout];
 
   return (
     <div className="flex w-[54rem] flex-col">
-      <DollHeader handleSave={() => saveUnits(dirtyStore)} />
+      <DollHeader handleSave={() => {}} />
       {/* NOTE: named css */}
-      {loadouts.map((type, index) => (
+      {loadouts.map((loadout, index) => (
         <div className="card component_space" key={index}>
           <div className="float-right">
-            <LoadoutConfig unitHandler={setDollData} type={type} />
+          {/* INFO: IN QUEUE AFTER ALGO
+            <LoadoutConfig
+              unitHandler={() => {}}
+              type={loadout.loadoutType as LoadoutType}
+            />
+          */}
           </div>
 
           <LoadoutContainer
-            type={type as LoadoutType}
-            data={dollData ? dollData[type] : undefined}
+            type={loadout.loadoutType as LoadoutType}
+            data={loadout}
           />
         </div>
       ))}

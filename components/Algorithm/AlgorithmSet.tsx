@@ -9,7 +9,7 @@ import {
   Algorithm,
   LoadoutType,
 } from "@/src-tauri/bindings/enums";
-import { AlgoPiece, AlgoSet } from "@/src-tauri/bindings/structs";
+import { AlgoPiece } from "@/src-tauri/bindings/rspc";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useMainStatsQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
@@ -21,7 +21,7 @@ import ErrorContainer from "../Error";
 import AlgorithmPiece from "./AlgorithmPiece";
 
 type Props = {
-  algo: AlgoSet | undefined;
+  algos: AlgoPiece[]
   type: LoadoutType;
 };
 export type OptionPayload = {
@@ -29,7 +29,7 @@ export type OptionPayload = {
   mainStat: AlgoMainStat[];
 };
 
-const AlgorithmSet = ({ algo, type }: Props) => {
+const AlgorithmSet = ({ algos, type }: Props) => {
   const cats: AlgoCategory[] = ["Offense", "Stability", "Special"];
   const algoDbQuery = useAlgoDbQuery();
   const mainStatQuery = useMainStatsQuery();
@@ -43,37 +43,37 @@ const AlgorithmSet = ({ algo, type }: Props) => {
     return find[1];
   };
 
-  function handleAddPiece(
-    e: AlgoPiece,
-    cat: AlgoCategory,
-    loadout: LoadoutType
-  ): void {
-    if (setDollData)
-      setDollData((draft) => {
-        if (draft)
-          draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e);
-      });
-  }
-
-  const handleUpdatePiece = useCallback(
-    (e: AlgoPiece | null, cat: AlgoCategory, index: number): void => {
-      if (setDollData && e)
-        setDollData((draft) => {
-          if (draft)
-            draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
-        });
-      else if (setDollData)
-        // no piece passed, deletion
-        setDollData((draft) => {
-          if (draft)
-            draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(
-              index,
-              1
-            );
-        });
-    },
-    [setDollData, type]
-  );
+  // function handleAddPiece(
+  //   e: AlgoPiece,
+  //   cat: AlgoCategory,
+  //   loadout: LoadoutType
+  // ): void {
+  //   if (setDollData)
+  //     setDollData((draft) => {
+  //       if (draft)
+  //         draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e);
+  //     });
+  // }
+  //
+  // const handleUpdatePiece = useCallback(
+  //   (e: AlgoPiece | null, cat: AlgoCategory, index: number): void => {
+  //     if (setDollData && e)
+  //       setDollData((draft) => {
+  //         if (draft)
+  //           draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
+  //       });
+  //     else if (setDollData)
+  //       // no piece passed, deletion
+  //       setDollData((draft) => {
+  //         if (draft)
+  //           draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(
+  //             index,
+  //             1
+  //           );
+  //       });
+  //   },
+  //   [setDollData, type]
+  // );
 
   // if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
   if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
@@ -85,7 +85,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
   return (
     <div className="flex flex-none flex-col">
       <div className="flex">
-        {algoDbQuery.data && algo ? (
+        {algoDbQuery.data && algos ? (
           algoDbQuery.data
             .map((e) => e[0] as AlgoCategory)
             .map((category, catindex) => (
@@ -93,7 +93,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                 className="my-2 flex shrink-0 basis-1/3 flex-col"
                 key={catindex}
               >
-                {algo[category.toLowerCase() as keyof AlgoSet].map(
+                {algos.filter(e =>e.category == category).map(
                   (piece, pieceind) => (
                     <AlgorithmPiece
                       key={pieceind}
@@ -105,7 +105,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
                       category={category}
                       pieceData={piece}
                       valid={!errList(category).includes(pieceind)}
-                      onChange={handleUpdatePiece}
+                      onChange={() => {}}
                     />
                   )
                 )}
@@ -122,7 +122,7 @@ const AlgorithmSet = ({ algo, type }: Props) => {
             key={index}
             category={cat}
             loadout_type={type}
-            addHandler={handleAddPiece}
+            addHandler={() => {}}
           />
         ))}
       </div>

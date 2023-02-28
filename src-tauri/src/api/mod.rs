@@ -2,7 +2,7 @@ pub mod crud;
 use crate::{
     algorithm::types::AlgoPiece,
     loadout::types::LoadoutType,
-    prisma::{self, PrismaClient, loadout},
+    prisma::{self, loadout, PrismaClient, algo_piece},
     unit::types::{Class, Unit},
 };
 use prisma_client_rust::QueryError;
@@ -52,7 +52,7 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             t(|ctx, loadout_id: Option<String>| async move {
                 let pat = match loadout_id {
                     Some(id) => vec![loadout::id::equals(id)],
-                    None => vec![]
+                    None => vec![],
                 };
                 ctx.client
                     .loadout()
@@ -72,6 +72,7 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
+        // INFO: SKILLLEVEL
         .query("skillLevelsByUnitIds", |t| {
             t(|ctx, unit_ids: Option<Vec<String>>| async move {
                 get_skill_levels(&ctx.client, unit_ids)
@@ -79,6 +80,23 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
+        // INFO: ALGOPIECE
+        .query("algoPiecesByLoadoutId", |t| {
+            t(|ctx, loadout_ids: Option<Vec<String>>| async move {
+                let pat = match loadout_ids {
+                    Some(ids) => vec![algo_piece::loadout_id::in_vec(ids)],
+                    None => vec![],
+                };
+                ctx.client
+                    .algo_piece()
+                    .find_many(pat)
+                    .with(algo_piece::loadout::fetch())
+                    .exec()
+                    .await
+                    .map_err(error_map)
+            })
+        })
+        // INFO: ENUMS
         .query("listLoadoutType", |t| {
             t(|_, _: ()| async move { LoadoutType::iter().collect::<Vec<LoadoutType>>() })
         })
@@ -102,7 +120,7 @@ async fn get_skill_levels(
 ) -> Result<Vec<prisma::unit_skill::Data>, QueryError> {
     let pat = match unit_ids {
         Some(ids) => vec![prisma::loadout::unit_id::in_vec(ids)],
-        None => vec![]
+        None => vec![],
     };
     let loadout_ids = client
         .loadout()

@@ -35,7 +35,7 @@ export const useStoreConfigs = () => {
 
       // sets initial currentUnitId
       // needed else loadout will use undefined on page load
-      if (isEmpty(currentUnitId)) setCurrentUnitId(storeData[0].id)
+      if (isEmpty(currentUnitId)) setCurrentUnitId(storeData[0] ? storeData[0].id : '')
     }
   }, [storeData]);
 
