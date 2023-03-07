@@ -8,35 +8,54 @@ export const useLoadoutConfigs = (unitId: string) => {
   // if (!unitId) throw new Error('should always have an unitid')
   // unitId is undefined on refresh, need to have a fallbackId
 
-  const { data } = rspc.useQuery(["loadoutByUnitId", unitId]);
+  const { data: storeData } = rspc.useQuery(["loadoutByUnitId", unitId]);
   const types: LoadoutType[] = ["Current", "Goal"];
-  const [currentLoadout, setCurrentLoadout] = useImmer<Loadout | undefined>(
-    undefined
-  );
-  const [goalLoadout, setGoalLoadout] = useImmer<Loadout | undefined>(
-    undefined
-  );
+
+  const [usingLoadouts, setUsingLoadouts] = useImmer<Loadout[]>([]);
   const [dirtyLoadouts, setDirtyLoadouts] = useImmer<Loadout[]>([]);
 
-  useEffect(() => {
-    // whenever unitId is changed or new db data is fetched, check first if
-    // there's exsting dirty data and use it
-    if (data)
-      [setCurrentLoadout, setGoalLoadout].forEach((setLoadout, index) =>
-        setLoadout(
-          tryFind(dirtyLoadouts, types[index])
-            ? tryFind(dirtyLoadouts, types[index])
-            : tryFind(data, types[index])
-        )
-      );
-  }, [unitId, data]);
+  const [loadoutsOnTop, setLoadoutOnTop] = useImmer<Loadout[]>([]);
 
-  function tryFind(inList: Loadout[], type: LoadoutType) {
-    return inList.find((e) => e.unitId == unitId && e.loadoutType == type);
-  }
+  useEffect(() => {
+    if (storeData) {
+      setLoadoutOnTop((draft) => {
+        let beforeIds = draft.map((e) => e.id);
+        let nextIds = storeData.map((e) => e.id);
+        // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
+        const intersecOrDiff = nextIds.length > draft.length;
+        let diff = nextIds.filter((e) =>
+          intersecOrDiff ? !beforeIds.includes(e) : beforeIds.includes(e)
+        );
+        if (intersecOrDiff)
+          storeData
+            .filter((e) => diff.includes(e.id))
+            .forEach((unit) => draft.push(unit));
+        else draft = draft.filter((e) => diff.includes(e.id));
+        // intesect > push, diff > splice
+        return draft;
+      });
+    }
+  }, [storeData]);
+
+  useEffect(() => {
+    // console.warn("dirtyskills");
+    if (storeData) {
+      let dirtyList = storeData.map((unit) => {
+        if (dirtyLoadouts.map((e) => e.id).includes(unit.id))
+          return dirtyLoadouts.find((e) => e.id == unit.id)!;
+        return unit;
+      });
+
+      setLoadoutOnTop((draft) => {
+        draft = dirtyList;
+        return draft;
+      });
+    }
+    // console.warn(dirtySkills);
+  }, [dirtyLoadouts]);
 
   function updateLoadout(to: Loadout, type: LoadoutType) {
-    if (!data) throw new Error("should be defined here already");
+    if (!storeData) throw new Error("should be defined here already");
 
     let bucketIndex: number = dirtyLoadouts.findIndex((e) => e.id == to.id);
 
@@ -46,7 +65,9 @@ export const useLoadoutConfigs = (unitId: string) => {
         draft.push(to);
         return draft;
       });
-    } else if (deep_eq(data[data.findIndex((e) => e.id == to.id)], to)) {
+    } else if (
+      deep_eq(storeData[storeData.findIndex((e) => e.id == to.id)], to)
+    ) {
       // removing
       setDirtyLoadouts((draft) => {
         draft.splice(bucketIndex, 1);
@@ -59,15 +80,16 @@ export const useLoadoutConfigs = (unitId: string) => {
       });
     }
 
-    switch (type) {
-      case "Current":
-        setCurrentLoadout(to);
-        break;
-      case "Goal":
-        setGoalLoadout(to);
-        break;
-    }
+    setUsingLoadouts((draft) => {
+      draft[draft.findIndex((e) => e.loadoutType == type)] = to;
+      return draft;
+    });
   }
 
-  return { currentLoadout, goalLoadout, updateLoadout, dirtyLoadouts };
+  return {
+    loadouts: loadoutsOnTop,
+    usingLoadouts,
+    updateLoadout,
+    dirtyLoadouts,
+  };
 };

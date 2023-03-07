@@ -2,9 +2,9 @@ import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Loading } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
 import SlotCheckbox from "./SlotCheckbox";
-import { DollContext } from "@/interfaces/payloads";
+import { DbDollContext, DollContext } from "@/interfaces/payloads";
 import { invoke } from "@tauri-apps/api/tauri";
-import { AlgoPiece, AlgoSlot } from "@/src-tauri/bindings/structs";
+import { AlgoSlot } from "@/src-tauri/bindings/structs";
 import {
   AlgoCategory,
   AlgoMainStat,
@@ -23,6 +23,8 @@ import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import Button from "../Button";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { AlgoPiece, Class } from "@/src-tauri/bindings/rspc";
+import { parseAlgoName } from "@/utils/helper";
 
 type Props = {
   index: number;
@@ -41,7 +43,7 @@ const AlgorithmPiece = ({
   valid,
   onChange: pieceUpdate,
 }: Props) => {
-  const { dollData } = useContext(DollContext);
+  const { currentUnit } = useContext(DbDollContext);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
   const [slot, setSlot] = useImmer<AlgoSlot>([]);
@@ -59,7 +61,7 @@ const AlgorithmPiece = ({
     setAlgorithm(pieceData.name);
     setMainStat(pieceData.stat);
     updateSlots(
-      { name: pieceData.name, currentSlots: pieceData.slot },
+      { name: parseAlgoName(pieceData.name), currentSlots: pieceData.slot },
       { onSuccess: (data) => setSlot(data) }
     );
   }, [pieceData]);
@@ -112,6 +114,7 @@ const AlgorithmPiece = ({
     }
   }
 
+console.warn('algopiece.tsx rendered')
   return (
     <motion.div
       id="algo-piece"
@@ -131,7 +134,7 @@ const AlgorithmPiece = ({
         )}
       </AnimatePresence>
       <div className="mx-2 cursor-pointer">
-        <AlgoImage algo={algorithm} onClick={() => setModal(!openModal)} />
+        <AlgoImage algo={algorithm as Algorithm} onClick={() => setModal(!openModal)} />
       </div>
       <div className="flex max-w-[10rem] grow flex-col gap-2">
         <MainStatSelect
@@ -142,10 +145,11 @@ const AlgorithmPiece = ({
           category={category}
         />
         <div className="flex flex-row items-center justify-between">
-          {dollData ? (
+          {currentUnit ? (
             <SlotCheckbox
               value={slot}
-              unitClass={dollData.class}
+              pieceId={pieceData.id}
+              unitClass={currentUnit.class as Class}
               category={category}
               onChangeHandler={slotHandler}
             />

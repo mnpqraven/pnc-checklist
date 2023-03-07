@@ -3,6 +3,7 @@ import {
   AlgoPiece,
   Loadout,
   LoadoutType,
+  Slot,
   Unit,
   UnitSkill,
 } from "@/src-tauri/bindings/rspc";
@@ -71,15 +72,17 @@ export type DbDollContextPayload = {
   updateCurrentUnitId: (to: string) => void;
   units: Unit[];
 
-  currentLoadout: Loadout | undefined;
-  goalLoadout: Loadout | undefined;
+  loadouts: Loadout[];
   updateLoadout: (to: Loadout, type: LoadoutType) => void;
 
   skills: UnitSkill[];
   updateSkill: (to: UnitSkill, loadoutId: string) => void;
 
   algoPieces: AlgoPiece[];
-  updatePiece: (to: AlgoPiece) => void;
+  updatePiece: (to: AlgoPiece, loadoutId: string) => void;
+
+  slots: Slot[];
+  updateSlot: (to: Slot, algoPieceId: string) => void;
 };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
@@ -88,8 +91,7 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
   currentUnitId: "",
   updateCurrentUnitId: () => {},
 
-  currentLoadout: undefined,
-  goalLoadout: undefined,
+  loadouts: [],
   updateLoadout: () => {},
 
   skills: [],
@@ -97,4 +99,7 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
 
   algoPieces: [],
   updatePiece: () => {},
+
+  slots: [],
+  updateSlot: () => {},
 });

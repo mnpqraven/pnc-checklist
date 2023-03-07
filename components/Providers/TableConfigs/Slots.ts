@@ -1,20 +1,20 @@
-import { AlgoPiece } from "@/src-tauri/bindings/rspc";
+import { Slot } from "@/src-tauri/bindings/rspc";
 import { deep_eq } from "@/utils/helper";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
 
-const useAlgorithmConfigs = () => {
-  const { data: storeData } = rspc.useQuery(["algoPiecesByLoadoutId", null]);
+const useSlotConfigs = () => {
+  const { data: storeData } = rspc.useQuery(["slotsByAlgoPieceIds", null]);
 
-  const [currentPieces, setCurrentPieces] = useImmer<AlgoPiece[]>([]);
-  const [dirtyPieces, setDirtyPieces] = useImmer<AlgoPiece[]>([]);
+  const [currentSlots, setCurrentSlots] = useImmer<Slot[]>([]);
+  const [dirtySlots, setDirtySlots] = useImmer<Slot[]>([]);
 
-  const [piecesOnTop, setPiecesOnTop] = useImmer<AlgoPiece[]>([]);
+  const [slotsOnTop, setSlotsOnTop] = useImmer<Slot[]>([]);
 
   useEffect(() => {
     if (storeData) {
-      setPiecesOnTop((draft) => {
+      setSlotsOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);
         // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
@@ -37,27 +37,27 @@ const useAlgorithmConfigs = () => {
     // console.warn("dirtyskills");
     if (storeData) {
       let dirtyList = storeData.map((unit) => {
-        if (dirtyPieces.map((e) => e.id).includes(unit.id))
-          return dirtyPieces.find((e) => e.id == unit.id)!;
+        if (dirtySlots.map((e) => e.id).includes(unit.id))
+          return dirtySlots.find((e) => e.id == unit.id)!;
         return unit;
       });
 
-      setPiecesOnTop((draft) => {
+      setSlotsOnTop((draft) => {
         draft = dirtyList;
         return draft;
       });
     }
     // console.warn(dirtySkills);
-  }, [dirtyPieces]);
+  }, [dirtySlots]);
 
-  function updatePiece(to: AlgoPiece, loadoutId: string) {
+  function updateSlot(to: Slot, algoPieceId: string) {
     if (!storeData) throw new Error("should be defined here already");
 
-    let bucketIndex: number = dirtyPieces.findIndex((e) => e.id == to.id);
+    let bucketIndex: number = dirtySlots.findIndex((e) => e.id == to.id);
 
     if (bucketIndex === -1) {
       // adding
-      setDirtyPieces((draft) => {
+      setDirtySlots((draft) => {
         draft.push(to);
         return draft;
       });
@@ -65,23 +65,23 @@ const useAlgorithmConfigs = () => {
       deep_eq(storeData[storeData.findIndex((e) => e.id == to.id)], to)
     ) {
       // removing
-      setDirtyPieces((draft) => {
+      setDirtySlots((draft) => {
         draft.splice(bucketIndex, 1);
         return draft;
       });
     } else {
-      setDirtyPieces((draft) => {
+      setDirtySlots((draft) => {
         draft[draft.findIndex((e) => e.id == to.id)] = to;
         return draft;
       });
     }
 
-    setCurrentPieces((draft) => {
-      draft[draft.findIndex((e) => e.loadoutId == loadoutId)] = to;
+    setCurrentSlots((draft) => {
+      draft[draft.findIndex((e) => e.algoPieceId == algoPieceId)] = to;
       return draft;
     });
   }
 
-  return { algoPieces: piecesOnTop, dirtyPieces, currentPieces, updatePiece };
+  return { slots: slotsOnTop, dirtySlots, currentSlots, updateSlot };
 };
-export default useAlgorithmConfigs;
+export default useSlotConfigs;

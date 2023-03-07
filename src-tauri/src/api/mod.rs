@@ -1,8 +1,8 @@
 pub mod crud;
 use crate::{
-    algorithm::types::AlgoPiece,
+    algorithm::types::{AlgoMainStat, AlgoPiece, Algorithm},
     loadout::types::LoadoutType,
-    prisma::{self, loadout, PrismaClient, algo_piece},
+    prisma::{self, algo_piece, loadout, PrismaClient},
     unit::types::{Class, Unit},
 };
 use prisma_client_rust::QueryError;
@@ -96,9 +96,50 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
+        // INFO: SLOT
+        .query("slotsByAlgoPieceIds", |t| {
+            t(|ctx, algo_piece_ids: Option<Vec<String>>| async move {
+                get_slots(&ctx.client, algo_piece_ids)
+                    .await
+                    .map_err(error_map)
+            })
+        })
         // INFO: ENUMS
         .query("listLoadoutType", |t| {
+            t(|_, _: ()| async move {
+                LoadoutType::iter()
+                    .map(|e| format!("{}", e))
+                    .collect::<Vec<String>>()
+            })
+        })
+        .query("displayLoadoutType", |t| {
             t(|_, _: ()| async move { LoadoutType::iter().collect::<Vec<LoadoutType>>() })
+        })
+        .query("listAlgorithm", |t| {
+            t(|_, _: ()| async move {
+                Algorithm::iter()
+                    .map(|e| format!("{}", e))
+                    .collect::<Vec<String>>()
+            })
+        })
+        .query("displayAlgorithm", |t| {
+            t(|_, _: ()| async move { Algorithm::iter().collect::<Vec<Algorithm>>() })
+        })
+        .query("listAlgoMainstat", |t| {
+            t(|_, mainstats: Option<Vec<AlgoMainStat>>| async move {
+                match mainstats {
+                    Some(stats) => stats
+                        .iter()
+                        .map(|e| format!("{}", e))
+                        .collect::<Vec<String>>(),
+                    None => AlgoMainStat::iter()
+                        .map(|e| format!("{}", e))
+                        .collect::<Vec<String>>(),
+                }
+            })
+        })
+        .query("displayAlgoMainstat", |t| {
+            t(|_, _: ()| async move { AlgoMainStat::iter().collect::<Vec<AlgoMainStat>>() })
         })
         .query("err", |t| {
             // NOTE: dev err
@@ -135,4 +176,15 @@ async fn get_skill_levels(
         .find_many(vec![prisma::unit_skill::loadout_id::in_vec(loadout_ids)])
         .exec()
         .await
+}
+
+async fn get_slots(
+    client: &PrismaClient,
+    algo_piece_ids: Option<Vec<String>>,
+) -> Result<Vec<prisma::slot::Data>, QueryError> {
+    let pat = match algo_piece_ids {
+        Some(ids) => vec![prisma::slot::algo_piece_id::in_vec(ids)],
+        None => vec![],
+    };
+    client.slot().find_many(pat).exec().await
 }

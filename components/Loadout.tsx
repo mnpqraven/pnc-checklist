@@ -13,16 +13,13 @@ type Props = {
 };
 
 const LoadoutContainer = ({ type, data }: Props) => {
-  const { currentLoadout, goalLoadout, updateLoadout } =
+  const { loadouts, updateLoadout, algoPieces } =
     useContext(DbDollContext);
-  // const { algo, neural, skill_level: slv } = data;
-  // const control = useLoadoutController(updateCurrentUnit, type);
 
-  const { algoPieces } = useContext(DbDollContext);
+  if (!data || !algoPieces ) return <Loading />;
 
-  if (!data || !algoPieces || !currentLoadout || !goalLoadout) return <Loading />;
-
-  const loadout = type === "Current" ? currentLoadout : goalLoadout;
+  const loadout = loadouts.find(e => e.loadoutType == type)!
+  const algoSet = algoPieces.filter(e => e.loadoutId == data.id)
 
   return (
     <>
@@ -46,7 +43,7 @@ const LoadoutContainer = ({ type, data }: Props) => {
           />
         )}
       </div>
-      <AlgorithmSet algos={algoPieces} type={type} />
+      <AlgorithmSet algos={algoSet} type={type} />
     </>
   );
 };

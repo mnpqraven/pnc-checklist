@@ -2,7 +2,7 @@ import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 
-type AlgoTuple = [AlgoCategory, Algorithm[]];
+export type AlgoTuple = [AlgoCategory, Algorithm[]];
 
 export const useAlgoDbQuery = () => {
   const algoDb = useQuery({

@@ -1,27 +1,30 @@
 import {
   AlgoError,
   AlgoErrorContext,
+  DbDollContext,
   DollContext,
 } from "@/interfaces/payloads";
 import {
   AlgoCategory,
   AlgoMainStat,
   Algorithm,
-  LoadoutType,
 } from "@/src-tauri/bindings/enums";
-import { AlgoPiece } from "@/src-tauri/bindings/rspc";
-import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
+import { AlgoPiece, LoadoutType } from "@/src-tauri/bindings/rspc";
+import { parseAlgoName } from "@/utils/helper";
+import { AlgoTuple, useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useMainStatsQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
 import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import Button from "../Button";
 import ErrorContainer from "../Error";
+import Loading from "../Loading";
+import { rspc } from "../Providers/ClientProviders";
 import AlgorithmPiece from "./AlgorithmPiece";
 
 type Props = {
-  algos: AlgoPiece[]
+  algos: AlgoPiece[];
   type: LoadoutType;
 };
 export type OptionPayload = {
@@ -33,15 +36,6 @@ const AlgorithmSet = ({ algos, type }: Props) => {
   const cats: AlgoCategory[] = ["Offense", "Stability", "Special"];
   const algoDbQuery = useAlgoDbQuery();
   const mainStatQuery = useMainStatsQuery();
-  const { setDollData } = useContext(DollContext);
-
-  const algoError: AlgoError[] = useContext(AlgoErrorContext);
-  const errList = (category: AlgoCategory): number[] => {
-    // e: [ALGOCATEGORY, indexes[]]
-    let find = algoError.find((e) => e[0] == category);
-    if (find === undefined) return [];
-    return find[1];
-  };
 
   // function handleAddPiece(
   //   e: AlgoPiece,
@@ -75,42 +69,26 @@ const AlgorithmSet = ({ algos, type }: Props) => {
   //   [setDollData, type]
   // );
 
-  // if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
-  if (algoDbQuery.isLoading || mainStatQuery.isLoading) return null;
+  if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
   if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />;
-
-  const { data: algoDb } = algoDbQuery;
-  const { data: mainStat } = mainStatQuery;
+  const algoDb = algoDbQuery.data;
+  const mainStat = mainStatQuery.data;
 
   return (
     <div className="flex flex-none flex-col">
       <div className="flex">
-        {algoDbQuery.data && algos ? (
-          algoDbQuery.data
-            .map((e) => e[0] as AlgoCategory)
-            .map((category, catindex) => (
-              <div
-                className="my-2 flex shrink-0 basis-1/3 flex-col"
-                key={catindex}
-              >
-                {algos.filter(e =>e.category == category).map(
-                  (piece, pieceind) => (
-                    <AlgorithmPiece
-                      key={pieceind}
-                      index={pieceind}
-                      options={{
-                        algoTypes: algoDb[catindex],
-                        mainStat: mainStat[catindex],
-                      }}
-                      category={category}
-                      pieceData={piece}
-                      valid={!errList(category).includes(pieceind)}
-                      onChange={() => {}}
-                    />
-                  )
-                )}
-              </div>
-            ))
+        {algos ? (
+          cats.map((category, catindex) => (
+            <CategoryContainer
+              key={catindex}
+              category={category}
+              algos={algos}
+              options={{
+                algoTypes: algoDb[catindex],
+                mainStat: mainStat[catindex],
+              }}
+            />
+          ))
         ) : (
           <LoadingAlgoSet />
         )}
@@ -126,6 +104,39 @@ const AlgorithmSet = ({ algos, type }: Props) => {
           />
         ))}
       </div>
+    </div>
+  );
+};
+
+type CategoryContainerProps = {
+  category: AlgoCategory;
+  algos: AlgoPiece[];
+  options: OptionPayload;
+};
+const CategoryContainer = ({ category, algos, options }: CategoryContainerProps) => {
+  const algoError: AlgoError[] = useContext(AlgoErrorContext);
+  const errList = (category: AlgoCategory): number[] => {
+    // e: [ALGOCATEGORY, indexes[]]
+    let find = algoError.find((e) => e[0] == category);
+    if (find === undefined) return [];
+    return find[1];
+  };
+  console.warn(algos)
+  return (
+    <div className="my-2 flex shrink-0 basis-1/3 flex-col">
+      {algos
+        .filter((e) => e.category == category)
+        .map((piece, pieceind) => (
+          <AlgorithmPiece
+            key={pieceind}
+            index={pieceind}
+            options={options}
+            category={category}
+            pieceData={piece}
+            valid={!errList(category).includes(pieceind)}
+            onChange={() => {}}
+          />
+        ))}
     </div>
   );
 };

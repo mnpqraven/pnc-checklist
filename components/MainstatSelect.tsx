@@ -1,16 +1,17 @@
-import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
-import { useEnumLabel } from "@/utils/hooks/useEnumLabel";
+import { AlgoCategory } from "@/src-tauri/bindings/enums";
+import { AlgoMainStat } from "@/src-tauri/bindings/rspc";
 import {
   CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
+import { rspc } from "./Providers/ClientProviders";
 
 type Props = {
   value: any;
   labelPayload?: { method: string; payload: any };
-  options: string[];
+  options: AlgoMainStat[]
   onChangeHandler: (value: string) => void;
   category: AlgoCategory;
 };
@@ -22,7 +23,9 @@ const MainstatSelect = ({
   onChangeHandler,
   category,
 }: Props) => {
-  const label = useEnumLabel(labelPayload);
+  // const label = useEnumLabel(labelPayload);
+const {data: labels} = rspc.useQuery(['listAlgoMainstat', options])
+if (!labels) return null;
 
   return (
     <Select.Root onValueChange={onChangeHandler} value={value}>
@@ -44,9 +47,9 @@ const MainstatSelect = ({
               <Select.Label className="SelectLabel">
                 {category} Algorithms
               </Select.Label>
-              {options.map((item, index) => (
+              {labels.map((item, index) => (
                 <Select.Item key={index} className="SelectItem" value={item}>
-                  <Select.ItemText>{label[index]}</Select.ItemText>
+                  <Select.ItemText>{item}</Select.ItemText>
                   <Select.ItemIndicator className="SelectItemIndicator">
                     <CheckIcon />
                   </Select.ItemIndicator>

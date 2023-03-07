@@ -3,6 +3,7 @@ import { ReactNode, useContext, useEffect } from "react";
 import useAlgorithmConfigs from "./TableConfigs/Algorithms";
 import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
 import { useSkillConfigs } from "./TableConfigs/Skills";
+import useSlotConfigs from "./TableConfigs/Slots";
 import { useStoreConfigs } from "./TableConfigs/Units";
 
 interface Props {
@@ -14,12 +15,14 @@ const DbDollProvider = ({ children }: Props) => {
   const loadoutValues = useLoadoutConfigs(storeValues.currentUnitId);
   const skillValues = useSkillConfigs();
   const algorithmValues = useAlgorithmConfigs();
+  const slotValues = useSlotConfigs();
 
   useEffect(() => {
     setUnsaved(
       storeValues.dirtyUnits.length > 0 ||
         loadoutValues.dirtyLoadouts.length > 0 ||
-        skillValues.dirtySkills.length > 0
+        skillValues.dirtySkills.length > 0 ||
+        slotValues.dirtySlots.length > 0
     );
   }, [
     setUnsaved,
@@ -35,6 +38,7 @@ const DbDollProvider = ({ children }: Props) => {
         ...loadoutValues,
         ...skillValues,
         ...algorithmValues,
+        ...slotValues,
       }}
     >
       {children}

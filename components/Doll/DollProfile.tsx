@@ -13,17 +13,12 @@ import DollHeader from "./Profile/Header";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 const DollProfile = () => {
-  const { currentLoadout, goalLoadout } = useContext(DbDollContext);
+  const { loadouts } = useContext(DbDollContext);
   const { setHeaderContent } = useContext(ToastContext);
-
-  const isLoading = !currentLoadout || !goalLoadout;
 
   useEffect(() => {
     setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
   }, []);
-
-  if (isLoading) return <Loading />;
-  const loadouts = [currentLoadout, goalLoadout];
 
   return (
     <div className="flex w-[54rem] flex-col">

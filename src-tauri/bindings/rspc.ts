@@ -3,13 +3,19 @@
 export type Procedures = {
     queries: 
         { key: "algoPiecesByLoadoutId", input: Array<string> | null, result: Array<AlgoPiece> } | 
+        { key: "displayAlgoMainstat", input: never, result: Array<AlgoMainStat> } | 
+        { key: "displayAlgorithm", input: never, result: Array<Algorithm> } | 
+        { key: "displayLoadoutType", input: never, result: Array<LoadoutType> } | 
         { key: "err", input: never, result: string } | 
         { key: "getUnitFromId", input: string, result: Unit } | 
         { key: "getUnits", input: never, result: Array<Unit> } | 
-        { key: "listLoadoutType", input: never, result: Array<LoadoutType> } | 
+        { key: "listAlgoMainstat", input: Array<AlgoMainStat> | null, result: Array<string> } | 
+        { key: "listAlgorithm", input: never, result: Array<string> } | 
+        { key: "listLoadoutType", input: never, result: Array<string> } | 
         { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
         { key: "loadouts", input: string | null, result: Array<Loadout> } | 
         { key: "skillLevelsByUnitIds", input: Array<string> | null, result: Array<UnitSkill> } | 
+        { key: "slotsByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
         { key: "version", input: never, result: string },
     mutations: 
         { key: "deleteUnit", input: string, result: Unit } | 
@@ -17,13 +23,19 @@ export type Procedures = {
     subscriptions: never
 };
 
+export type AlgoMainStat = "Hashrate" | "HashratePercent" | "Atk" | "AtkPercent" | "Health" | "HealthPercent" | "Haste" | "PhysPen" | "PhysPenPercent" | "OperandPen" | "OperandPenPercent" | "CritRate" | "CritDmg" | "DamageInc" | "Dodge" | "HealInc" | "Def" | "DefPercent" | "OperandDef" | "OperandDefPercent" | "PostBattleRegen"
+
 export interface AlgoPiece { id: string, category: string, name: string, stat: string, loadoutId: string | null }
+
+export type Algorithm = "LowerLimit" | "Feedforward" | "Deduction" | "Progression" | "DataRepair" | "MLRMatrix" | "Stack" | "LimitValue" | "Encapsulate" | "Iteration" | "Perception" | "Overflow" | "Rationality" | "Connection" | "Convolution" | "Reflection" | "Resolve" | "Inspiration" | "LoopGain" | "SVM" | "Paradigm" | "DeltaV" | "Cluster" | "Stratagem" | "Exploit"
 
 export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
 
 export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitId: string }
 
 export type LoadoutType = "Current" | "Goal"
+
+export interface Slot { id: string, placement: string, value: boolean, algoPieceId: string }
 
 export interface Unit { id: string, name: string, class: string }
 

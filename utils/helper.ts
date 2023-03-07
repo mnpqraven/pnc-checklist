@@ -1,5 +1,6 @@
-import { Algorithm, Class } from "@/src-tauri/bindings/enums";
+import { Class } from "@/src-tauri/bindings/enums";
 import { ChangeEvent } from "react";
+import { Algorithm } from '@/src-tauri/bindings/rspc'
 
 /**
  * same as Object.keys() but with generic type return
@@ -54,4 +55,8 @@ export function isEmpty(str: string | undefined) {
 export function getValue(e: ChangeEvent<HTMLInputElement>): number {
   let value = parseInt(e.target.value);
   return value;
+}
+
+export function parseAlgoName(prettyName: string): Algorithm {
+  return prettyName.replace(/\.|\s/g, '') as Algorithm
 }
