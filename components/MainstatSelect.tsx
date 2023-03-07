@@ -10,22 +10,29 @@ import { rspc } from "./Providers/ClientProviders";
 
 type Props = {
   value: any;
-  labelPayload?: { method: string; payload: any };
-  options: AlgoMainStat[]
+  options: AlgoMainStat[];
   onChangeHandler: (value: string) => void;
   category: AlgoCategory;
 };
 
 const MainstatSelect = ({
   value,
-  labelPayload,
   options,
   onChangeHandler,
   category,
 }: Props) => {
   // const label = useEnumLabel(labelPayload);
-const {data: labels} = rspc.useQuery(['listAlgoMainstat', options])
-if (!labels) return null;
+  // TODO: custom hook
+  const { data: labels } = rspc.useQuery(["listAlgoMainstat", options]);
+
+  if (!labels) return null;
+
+  const selectStructs: { key: AlgoMainStat; label: string }[] = options.map(
+    (option, index) => ({
+      key: option,
+      label: labels[index],
+    })
+  );
 
   return (
     <Select.Root onValueChange={onChangeHandler} value={value}>
@@ -47,9 +54,9 @@ if (!labels) return null;
               <Select.Label className="SelectLabel">
                 {category} Algorithms
               </Select.Label>
-              {labels.map((item, index) => (
-                <Select.Item key={index} className="SelectItem" value={item}>
-                  <Select.ItemText>{item}</Select.ItemText>
+              {selectStructs.map(({ key: option, label }, index) => (
+                <Select.Item key={index} className="SelectItem" value={option}>
+                  <Select.ItemText>{label}</Select.ItemText>
                   <Select.ItemIndicator className="SelectItemIndicator">
                     <CheckIcon />
                   </Select.ItemIndicator>

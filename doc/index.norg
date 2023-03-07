@@ -70,11 +70,14 @@ version: 0.1.2
     --- ( )  alleviate top heavy data, especially in `<Dolls />`
     --- (-) refactor DollList component tree
     --- ( ) dollContext controller needs rewriting
-    --- (?) updateIndex -> updateCurrentUnit (unit_id)
-    --- (?) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
+    --- (x) updateIndex -> updateCurrentUnit (unit_id)
+    --- (x) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
         updateUnitSkill, updateAlgoPiece, updateSlot)
         or use caches from react query
     --- (-) loadoutconfig
+    --- (-) new algoPiece button
+    --- (=) data initialization during adding unit + loading empty database
+    ---- (=) custom hook
 
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)

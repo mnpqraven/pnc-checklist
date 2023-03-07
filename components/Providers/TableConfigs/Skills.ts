@@ -14,6 +14,7 @@ export const useSkillConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
+      console.warn('storeData skill changed')
       setSkillsOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);

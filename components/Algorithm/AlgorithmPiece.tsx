@@ -1,14 +1,12 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Loading } from "@/components/Common";
 import { OptionPayload } from "./AlgorithmSet";
 import SlotCheckbox from "./SlotCheckbox";
-import { DbDollContext, DollContext } from "@/interfaces/payloads";
 import { invoke } from "@tauri-apps/api/tauri";
+import { DbDollContext } from "@/interfaces/payloads";
 import { AlgoSlot } from "@/src-tauri/bindings/structs";
 import {
   AlgoCategory,
   AlgoMainStat,
-  Algorithm,
   SlotPlacement,
 } from "@/src-tauri/bindings/enums";
 import PieceModal from "./PieceModal";
@@ -23,27 +21,25 @@ import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import Button from "../Button";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
-import { AlgoPiece, Class } from "@/src-tauri/bindings/rspc";
+import { AlgoPiece, Algorithm, Class } from "@/src-tauri/bindings/rspc";
 import { parseAlgoName } from "@/utils/helper";
 
 type Props = {
-  index: number;
   pieceData: AlgoPiece;
   options: OptionPayload;
   category: AlgoCategory;
   valid: boolean | undefined;
-  onChange: (e: AlgoPiece | null, cat: AlgoCategory, index: number) => void;
+  loadoutId: string;
 };
 
 const AlgorithmPiece = ({
-  index,
   pieceData,
   options,
   category,
   valid,
-  onChange: pieceUpdate,
+  loadoutId,
 }: Props) => {
-  const { currentUnit } = useContext(DbDollContext);
+  const { currentUnit, updatePiece, slots } = useContext(DbDollContext);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
   const [slot, setSlot] = useImmer<AlgoSlot>([]);
@@ -51,10 +47,6 @@ const AlgorithmPiece = ({
   const [openModal, setModal] = useState(false);
 
   const { mutate: updateSlots } = useComputeSlotsMutation();
-
-  const { data: slotPlacementIter } = useEnumTable<SlotPlacement>(
-    ENUM_TABLE.SlotPlacement
-  );
 
   // chaging unit
   useEffect(() => {
@@ -68,23 +60,18 @@ const AlgorithmPiece = ({
 
   // changing details, passed to parent's setDollData
   useEffect(() => {
-    pieceUpdate(piece, category, index);
+    // pieceUpdate(piece, category, index);
     // NOTE: do NOT put pieceUpdate in the depency Array
     // TODO: test
-  }, [category, index, piece]);
+  }, [category, piece]);
 
   function pieceHandler(name: Algorithm) {
-    invoke<AlgoSlot | null>(IVK.VALIDATE_SLOTS, { piece: pieceData })
-      .then((slot) => {
-        if (slot) {
-          setSlot(slot);
-          setPiece({ ...pieceData, name, slot });
-        } else setPiece({ ...pieceData, name });
-      })
-      .finally(() => {
-        setModal(false);
-        setAlgorithm(name);
-      });
+    console.warn(name);
+    let nextPiece = { ...pieceData, name };
+    setPiece(nextPiece);
+    updatePiece(nextPiece, loadoutId);
+
+    setModal(false);
   }
 
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement> | string) {
@@ -92,29 +79,13 @@ const AlgorithmPiece = ({
     if (typeof event === "string") stat = event as AlgoMainStat;
     else stat = event.currentTarget.value as AlgoMainStat;
 
-    setPiece({ ...pieceData, stat });
+    let nextPiece = { ...pieceData, stat };
+    setPiece(nextPiece);
     setMainStat(stat);
+
+    updatePiece(nextPiece, loadoutId);
   }
 
-  /**
-   * Updates the slots in an `AlgoPiece`
-   * @param e new value of the slot managed by thecheckbox
-   * @param checkboxIndex the index of the slot in the `AlgoPiece`
-   */
-  function slotHandler(e: boolean | "indeterminate", checkboxIndex: number) {
-    if (e === "indeterminate") return;
-    if (slotPlacementIter) {
-      let next_slot: Slot[] = slot.map((item, index) => {
-        if (index === checkboxIndex) {
-          return { placement: slotPlacementIter[index], value: e };
-        } else return item;
-      });
-      setPiece({ ...pieceData, slot: next_slot });
-      setSlot(next_slot);
-    }
-  }
-
-console.warn('algopiece.tsx rendered')
   return (
     <motion.div
       id="algo-piece"
@@ -127,6 +98,7 @@ console.warn('algopiece.tsx rendered')
       <AnimatePresence initial={false} mode="wait">
         {openModal && (
           <PieceModal
+            current={pieceData.name as Algorithm}
             handleClose={() => setModal(false)}
             category={category}
             onSelect={pieceHandler}
@@ -134,12 +106,14 @@ console.warn('algopiece.tsx rendered')
         )}
       </AnimatePresence>
       <div className="mx-2 cursor-pointer">
-        <AlgoImage algo={algorithm as Algorithm} onClick={() => setModal(!openModal)} />
+        <AlgoImage
+          algo={algorithm as Algorithm}
+          onClick={() => setModal(!openModal)}
+        />
       </div>
       <div className="flex max-w-[10rem] grow flex-col gap-2">
         <MainStatSelect
           value={mainStat}
-          labelPayload={{ method: IVK.PRINT_MAIN_STATS, payload: category }}
           options={options.mainStat}
           onChangeHandler={mainStatHandler}
           category={category}
@@ -147,19 +121,12 @@ console.warn('algopiece.tsx rendered')
         <div className="flex flex-row items-center justify-between">
           {currentUnit ? (
             <SlotCheckbox
-              value={slot}
               pieceId={pieceData.id}
               unitClass={currentUnit.class as Class}
               category={category}
-              onChangeHandler={slotHandler}
             />
-          ) : (
-            <Loading />
-          )}
-          <Button
-            className="small red"
-            onClick={() => pieceUpdate(null, category, index)}
-          >
+          ) : null}
+          <Button className="small red" onClick={() => {}}>
             <TrashIcon />
           </Button>
         </div>

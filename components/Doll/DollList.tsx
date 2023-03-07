@@ -21,7 +21,22 @@ const DollList = ({ filter, isVisible }: Props) => {
     isError,
     refetch: refetchUnits,
   } = rspc.useQuery(["getUnits"]);
-  const { data: los } = rspc.useQuery(["loadouts", null]);
+  const { refetch: refetchSkills } = rspc.useQuery([
+    "skillLevelsByUnitIds",
+    null,
+  ]);
+  const { data: los, refetch: refetchLoadouts } = rspc.useQuery([
+    "loadoutByUnitId",
+    null,
+  ]);
+  const { refetch: refetchPieces } = rspc.useQuery([
+    "algoPiecesByLoadoutId",
+    null,
+  ]);
+  const { refetch: refetchSlots } = rspc.useQuery([
+    "slotsByAlgoPieceIds",
+    null,
+  ]);
 
   const { units: dirtyStore } = useContext(DbDollContext);
   const newUnitMutation = rspc.useMutation(["newUnit"]);
@@ -29,7 +44,14 @@ const DollList = ({ filter, isVisible }: Props) => {
 
   function addUnit() {
     newUnitMutation.mutate([nextUnitName, "Guard"], {
-      onSuccess: () => refetchUnits(),
+      onSuccess: () => {
+        // TODO: custom hook
+        refetchUnits();
+        refetchSkills();
+        refetchLoadouts();
+        refetchPieces();
+        refetchSlots();
+      },
     });
   }
 
@@ -45,9 +67,11 @@ const DollList = ({ filter, isVisible }: Props) => {
   const nextUnitName = `Doll #${dirtyStore.length + 1}`;
   //
   const currentLoadoutIds = dirtyStore.map((unit) => {
-    let find = los.find((e) => e.loadoutType == "Current" && e.unitId == unit.id);
-    if (find) return find.id
-      return ''
+    let find = los.find(
+      (e) => e.loadoutType == "Current" && e.unitId == unit.id
+    );
+    if (find) return find.id;
+    return "";
   });
 
   return (

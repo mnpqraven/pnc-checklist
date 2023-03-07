@@ -12,7 +12,7 @@ interface Props {
 const DbDollProvider = ({ children }: Props) => {
   const { setUnsaved } = useContext(SaveContext);
   const storeValues = useStoreConfigs();
-  const loadoutValues = useLoadoutConfigs(storeValues.currentUnitId);
+  const loadoutValues = useLoadoutConfigs();
   const skillValues = useSkillConfigs();
   const algorithmValues = useAlgorithmConfigs();
   const slotValues = useSlotConfigs();
@@ -22,6 +22,7 @@ const DbDollProvider = ({ children }: Props) => {
       storeValues.dirtyUnits.length > 0 ||
         loadoutValues.dirtyLoadouts.length > 0 ||
         skillValues.dirtySkills.length > 0 ||
+        algorithmValues.dirtyPieces.length > 0 ||
         slotValues.dirtySlots.length > 0
     );
   }, [
@@ -29,6 +30,8 @@ const DbDollProvider = ({ children }: Props) => {
     storeValues.dirtyUnits,
     loadoutValues.dirtyLoadouts,
     skillValues.dirtySkills,
+    algorithmValues.dirtyPieces,
+    slotValues.dirtySlots
   ]);
 
   return (

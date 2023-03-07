@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext } from "react";
+import { useContext } from "react";
 import { DbDollContext } from "@/interfaces/payloads";
 import { LevelBox, RaritySelect, SkillBox } from "./Doll";
 import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
@@ -43,7 +43,7 @@ const LoadoutContainer = ({ type, data }: Props) => {
           />
         )}
       </div>
-      <AlgorithmSet algos={algoSet} type={type} />
+      <AlgorithmSet algos={algoSet} type={type} loadoutId={loadout.id} />
     </>
   );
 };

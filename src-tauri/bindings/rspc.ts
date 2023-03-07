@@ -12,7 +12,7 @@ export type Procedures = {
         { key: "listAlgoMainstat", input: Array<AlgoMainStat> | null, result: Array<string> } | 
         { key: "listAlgorithm", input: never, result: Array<string> } | 
         { key: "listLoadoutType", input: never, result: Array<string> } | 
-        { key: "loadoutByUnitId", input: string, result: Array<Loadout> } | 
+        { key: "loadoutByUnitId", input: string | null, result: Array<Loadout> } | 
         { key: "loadouts", input: string | null, result: Array<Loadout> } | 
         { key: "skillLevelsByUnitIds", input: Array<string> | null, result: Array<UnitSkill> } | 
         { key: "slotsByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 

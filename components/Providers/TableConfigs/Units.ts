@@ -15,6 +15,7 @@ export const useStoreConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
+      console.warn('store data changed')
       // updates dirtyOnTop with storeData
       setDirtyOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);

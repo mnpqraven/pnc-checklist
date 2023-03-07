@@ -63,10 +63,14 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             })
         })
         .query("loadoutByUnitId", |t| {
-            t(|ctx, unit_id: String| async move {
+            t(|ctx, unit_id: Option<String>| async move {
+                let pat = match unit_id {
+                    Some(id) => vec![prisma::loadout::unit_id::equals(id)],
+                    None => vec![],
+                };
                 ctx.client
                     .loadout()
-                    .find_many(vec![prisma::loadout::unit_id::equals(unit_id.clone())])
+                    .find_many(pat)
                     .exec()
                     .await
                     .map_err(error_map)

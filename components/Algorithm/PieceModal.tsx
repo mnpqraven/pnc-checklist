@@ -1,17 +1,24 @@
-import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
+import { AlgoCategory } from "@/src-tauri/bindings/enums";
 import Loading from "../Loading";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { motion } from "framer-motion";
 import { Backdrop } from "../Modal/Backdrop";
 import ErrorContainer from "../Error";
 import AlgoImage from "./AlgoImage";
+import { Algorithm } from "@/src-tauri/bindings/rspc";
 
 type Props = {
   handleClose: () => void;
   category: AlgoCategory;
   onSelect: (algo: Algorithm) => void;
+  current: Algorithm;
 };
-const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
+const PieceModal = ({
+  handleClose,
+  category,
+  onSelect: selectAlgo,
+  current,
+}: Props) => {
   const algoDb = useAlgoDbQuery();
 
   if (algoDb.isLoading) return <Loading />;
@@ -20,6 +27,9 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
   const [_, algos]: [AlgoCategory, Algorithm[]] = algoDb.data.filter(
     (item) => item[0] == category
   )[0];
+
+  const onClick = (algo: Algorithm) =>
+    algo !== current ? selectAlgo(algo) : {};
 
   return (
     <>
@@ -32,9 +42,9 @@ const PieceModal = ({ handleClose, category, onSelect: selectAlgo }: Props) => {
       >
         {algos.map((algo, index) => (
           <motion.div
-            className="cursor-pointer"
+            className={algo != current ? "cursor-pointer" : "opacity-50"}
             key={index}
-            onClick={() => selectAlgo(algo)}
+            onClick={() => onClick(algo)}
             initial={{ scale: 0.9 }}
             whileHover={{ scale: 1.0 }}
             whileTap={{ scale: 0.8 }}

@@ -4,11 +4,11 @@ import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
 
-export const useLoadoutConfigs = (unitId: string) => {
+export const useLoadoutConfigs = () => {
   // if (!unitId) throw new Error('should always have an unitid')
   // unitId is undefined on refresh, need to have a fallbackId
 
-  const { data: storeData } = rspc.useQuery(["loadoutByUnitId", unitId]);
+  const { data: storeData } = rspc.useQuery(["loadoutByUnitId", null]);
   const types: LoadoutType[] = ["Current", "Goal"];
 
   const [usingLoadouts, setUsingLoadouts] = useImmer<Loadout[]>([]);
@@ -18,6 +18,7 @@ export const useLoadoutConfigs = (unitId: string) => {
 
   useEffect(() => {
     if (storeData) {
+      console.warn('loadout store changed')
       setLoadoutOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);

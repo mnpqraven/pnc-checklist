@@ -26,13 +26,14 @@ import AlgorithmPiece from "./AlgorithmPiece";
 type Props = {
   algos: AlgoPiece[];
   type: LoadoutType;
+  loadoutId: string
 };
 export type OptionPayload = {
   algoTypes: [AlgoCategory, Algorithm[]];
   mainStat: AlgoMainStat[];
 };
 
-const AlgorithmSet = ({ algos, type }: Props) => {
+const AlgorithmSet = ({ algos, type, loadoutId }: Props) => {
   const cats: AlgoCategory[] = ["Offense", "Stability", "Special"];
   const algoDbQuery = useAlgoDbQuery();
   const mainStatQuery = useMainStatsQuery();
@@ -87,6 +88,7 @@ const AlgorithmSet = ({ algos, type }: Props) => {
                 algoTypes: algoDb[catindex],
                 mainStat: mainStat[catindex],
               }}
+              loadoutId={loadoutId}
             />
           ))
         ) : (
@@ -112,8 +114,9 @@ type CategoryContainerProps = {
   category: AlgoCategory;
   algos: AlgoPiece[];
   options: OptionPayload;
+  loadoutId: string
 };
-const CategoryContainer = ({ category, algos, options }: CategoryContainerProps) => {
+const CategoryContainer = ({ category, algos, options, loadoutId }: CategoryContainerProps) => {
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
   const errList = (category: AlgoCategory): number[] => {
     // e: [ALGOCATEGORY, indexes[]]
@@ -121,7 +124,9 @@ const CategoryContainer = ({ category, algos, options }: CategoryContainerProps)
     if (find === undefined) return [];
     return find[1];
   };
-  console.warn(algos)
+
+  const { updatePiece } = useContext(DbDollContext)
+
   return (
     <div className="my-2 flex shrink-0 basis-1/3 flex-col">
       {algos
@@ -129,12 +134,11 @@ const CategoryContainer = ({ category, algos, options }: CategoryContainerProps)
         .map((piece, pieceind) => (
           <AlgorithmPiece
             key={pieceind}
-            index={pieceind}
             options={options}
             category={category}
             pieceData={piece}
             valid={!errList(category).includes(pieceind)}
-            onChange={() => {}}
+            loadoutId={loadoutId}
           />
         ))}
     </div>
