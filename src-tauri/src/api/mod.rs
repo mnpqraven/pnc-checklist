@@ -25,6 +25,23 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
         ))
         .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
+        // INFO: GENERAL
+        .mutation("saveUnits", |t| {
+            t(|ctx, units: Vec<prisma::unit::Data>| async move {
+                ctx.client
+                    ._batch(units.into_iter().map(|data| {
+                        ctx.client.unit().update(
+                            prisma::unit::id::equals(data.id),
+                            vec![
+                                prisma::unit::name::set(data.name),
+                                prisma::unit::class::set(data.class),
+                            ],
+                        )
+                    }))
+                    .await
+                    .map_err(error_map)
+            })
+        })
         // INFO: UNIT
         .mutation("newUnit", |t| {
             t(|ctx, (name, class): (String, Class)| async move {

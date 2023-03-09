@@ -1,9 +1,10 @@
 import { Unit } from "@/src-tauri/bindings/rspc";
 import { deep_eq, isEmpty } from "@/utils/helper";
+import { Draft } from "immer";
 import { useEffect, useState } from "react";
-import { Updater, useImmer } from "use-immer";
+import { Updater, useImmer, useImmerReducer } from "use-immer";
 import { rspc } from "../ClientProviders";
-import { clearDirty } from "./Generics";
+import { DirtyOnTopActionables, clearDirty, dirtyOnTopReducer } from "./Generics";
 
 // TODO: refactor all these into a reducer
 export const useStoreConfigs = () => {
@@ -13,29 +14,35 @@ export const useStoreConfigs = () => {
   );
   const [currentUnit, setCurrentUnit] = useImmer<Unit | undefined>(undefined);
   const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-  const [dirtyOnTop, setDirtyOnTop] = useImmer<Unit[]>([]);
+  // const [dirtyOnTop, setDirtyOnTop] = useImmer<Unit[]>([]);
+
+  // NOTE: DEV
+  const [dirtyOnTop, dispatchDirtyOnTop] = useImmerReducer<Unit[], DirtyOnTopActionables<Unit>>(dirtyOnTopReducer, [])
 
   useEffect(() => {
     if (storeData) {
       clearDirty<Unit>(storeData, dirtyUnits, setDirtyUnits);
       console.warn("store data changed");
       // updates dirtyOnTop with storeData
-      setDirtyOnTop((draft) => {
-        let beforeIds = draft.map((e) => e.id);
-        let nextIds = storeData.map((e) => e.id);
-        // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-        const intersecOrDiff = nextIds.length > draft.length;
-        let diff = nextIds.filter((e) =>
-          intersecOrDiff ? !beforeIds.includes(e) : beforeIds.includes(e)
-        );
-        if (intersecOrDiff)
-          storeData
-            .filter((e) => diff.includes(e.id))
-            .forEach((unit) => draft.push(unit));
-        else draft = draft.filter((e) => diff.includes(e.id));
-        // intesect > push, diff > splice
-        return draft;
-      });
+      // setDirtyOnTop((draft) => {
+      //   let beforeIds = draft.map((e) => e.id);
+      //   let nextIds = storeData.map((e) => e.id);
+      //   // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
+      //   const intersecOrDiff = nextIds.length > draft.length;
+      //   let diff = nextIds.filter((e) =>
+      //     intersecOrDiff ? !beforeIds.includes(e) : beforeIds.includes(e)
+      //   );
+      //   if (intersecOrDiff)
+      //     storeData
+      //       .filter((e) => diff.includes(e.id))
+      //       .forEach((unit) => draft.push(unit));
+      //   else draft = draft.filter((e) => diff.includes(e.id));
+      //   // intesect > push, diff > splice
+      //   return draft;
+      // });
+      //
+      // NOTE: DEV
+      dispatchDirtyOnTop({name: 'CONFORM_WITH_STORE', store: storeData})
 
       // sets initial currentUnitId
       // needed else loadout will use undefined on page load
@@ -46,16 +53,19 @@ export const useStoreConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
-      let dirtyList = storeData.map((unit) => {
-        if (dirtyUnits.map((e) => e.id).includes(unit.id))
-          return dirtyUnits.find((e) => e.id == unit.id)!;
-        return unit;
-      });
+      // let dirtyList = storeData.map((unit) => {
+      //   if (dirtyUnits.map((e) => e.id).includes(unit.id))
+      //     return dirtyUnits.find((e) => e.id == unit.id)!;
+      //   return unit;
+      // });
+      //
+      // setDirtyOnTop((draft) => {
+      //   draft = dirtyList;
+      //   return draft;
+      // });
 
-      setDirtyOnTop((draft) => {
-        draft = dirtyList;
-        return draft;
-      });
+      // NOTE: DEV
+      dispatchDirtyOnTop({name: 'SET', store: storeData, dirties: dirtyUnits})
     }
   }, [dirtyUnits]);
 

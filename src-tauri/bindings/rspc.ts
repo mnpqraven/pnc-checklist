@@ -19,7 +19,8 @@ export type Procedures = {
         { key: "version", input: never, result: string },
     mutations: 
         { key: "deleteUnit", input: string, result: Unit } | 
-        { key: "newUnit", input: [string, Class], result: Unit },
+        { key: "newUnit", input: [string, Class], result: Unit } | 
+        { key: "saveUnits", input: Array<Unit>, result: Array<Unit> },
     subscriptions: never
 };
 

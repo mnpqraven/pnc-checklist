@@ -83,6 +83,8 @@ export type DbDollContextPayload = {
 
   slots: Slot[];
   updateSlot: (to: Slot, algoPieceId: string) => void;
+
+  saveUnits: () => void
 };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
@@ -102,4 +104,6 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
 
   slots: [],
   updateSlot: () => {},
+
+  saveUnits: () => {}
 });
