@@ -3,6 +3,7 @@ import { deep_eq } from "@/utils/helper";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { clearDirty } from "./Generics";
 
 export const useSkillConfigs = () => {
   const { data: storeData } = rspc.useQuery(["skillLevelsByUnitIds", null]);
@@ -15,6 +16,7 @@ export const useSkillConfigs = () => {
   useEffect(() => {
     if (storeData) {
       console.warn('storeData skill changed')
+      clearDirty<UnitSkill>(storeData, dirtySkills, setDirtySkills)
       setSkillsOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);

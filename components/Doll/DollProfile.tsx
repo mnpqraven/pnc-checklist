@@ -11,7 +11,7 @@ import DollHeader from "./Profile/Header";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 const DollProfile = () => {
-  const { loadouts, currentUnitId } = useContext(DbDollContext);
+  const { loadouts, currentUnitId, saveUnits } = useContext(DbDollContext);
   const { setHeaderContent } = useContext(ToastContext);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const DollProfile = () => {
 
   return (
     <div className="flex w-[54rem] flex-col">
-      <DollHeader handleSave={() => {}} />
+      <DollHeader handleSave={saveUnits} />
       {/* NOTE: named css */}
       {loadouts
         .filter((e) => e.unitId == currentUnitId)

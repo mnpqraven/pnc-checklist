@@ -3,6 +3,7 @@ import { deep_eq } from "@/utils/helper";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { clearDirty } from "./Generics";
 
 const useSlotConfigs = () => {
   const { data: storeData } = rspc.useQuery(["slotsByAlgoPieceIds", null]);
@@ -14,6 +15,7 @@ const useSlotConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
+      clearDirty<Slot>(storeData, dirtySlots, setDirtySlots);
       setSlotsOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);

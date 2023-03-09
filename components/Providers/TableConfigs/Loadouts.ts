@@ -3,6 +3,7 @@ import { deep_eq } from "@/utils/helper";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { clearDirty } from "./Generics";
 
 export const useLoadoutConfigs = () => {
   // if (!unitId) throw new Error('should always have an unitid')
@@ -19,6 +20,7 @@ export const useLoadoutConfigs = () => {
   useEffect(() => {
     if (storeData) {
       console.warn('loadout store changed')
+      clearDirty<Loadout>(storeData, dirtyLoadouts, setDirtyLoadouts)
       setLoadoutOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);

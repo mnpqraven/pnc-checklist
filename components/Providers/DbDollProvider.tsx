@@ -1,5 +1,7 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
+import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
 import { ReactNode, useContext, useEffect } from "react";
+import { rspc } from "./ClientProviders";
 import useAlgorithmConfigs from "./TableConfigs/Algorithms";
 import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
 import { useSkillConfigs } from "./TableConfigs/Skills";
@@ -16,6 +18,19 @@ const DbDollProvider = ({ children }: Props) => {
   const skillValues = useSkillConfigs();
   const algorithmValues = useAlgorithmConfigs();
   const slotValues = useSlotConfigs();
+  const refresh = useStoreRefresh();
+
+  const saveUnitsMutation = rspc.useMutation(["saveUnits"]);
+  function saveUnits() {
+    saveUnitsMutation.mutate(storeValues.dirtyUnits, {
+      onSuccess: () => refresh.refreshUnits(),
+    });
+  }
+
+  useEffect(() => {
+  console.warn('should see', storeValues.dirtyUnits)
+  }, [storeValues.units]);
+
 
   useEffect(() => {
     setUnsaved(
@@ -31,7 +46,7 @@ const DbDollProvider = ({ children }: Props) => {
     loadoutValues.dirtyLoadouts,
     skillValues.dirtySkills,
     algorithmValues.dirtyPieces,
-    slotValues.dirtySlots
+    slotValues.dirtySlots,
   ]);
 
   return (
@@ -42,6 +57,7 @@ const DbDollProvider = ({ children }: Props) => {
         ...skillValues,
         ...algorithmValues,
         ...slotValues,
+        saveUnits,
       }}
     >
       {children}

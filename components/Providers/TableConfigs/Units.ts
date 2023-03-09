@@ -1,9 +1,11 @@
 import { Unit } from "@/src-tauri/bindings/rspc";
-import { isEmpty } from "@/utils/helper";
+import { deep_eq, isEmpty } from "@/utils/helper";
 import { useEffect, useState } from "react";
-import { useImmer } from "use-immer";
+import { Updater, useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { clearDirty } from "./Generics";
 
+// TODO: refactor all these into a reducer
 export const useStoreConfigs = () => {
   const { data: storeData } = rspc.useQuery(["getUnits"]);
   const [currentUnitId, setCurrentUnitId] = useState<string>(
@@ -15,7 +17,8 @@ export const useStoreConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
-      console.warn('store data changed')
+      clearDirty<Unit>(storeData, dirtyUnits, setDirtyUnits);
+      console.warn("store data changed");
       // updates dirtyOnTop with storeData
       setDirtyOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
@@ -29,14 +32,15 @@ export const useStoreConfigs = () => {
           storeData
             .filter((e) => diff.includes(e.id))
             .forEach((unit) => draft.push(unit));
-        else draft = draft.filter(e => diff.includes(e.id))
+        else draft = draft.filter((e) => diff.includes(e.id));
         // intesect > push, diff > splice
         return draft;
       });
 
       // sets initial currentUnitId
       // needed else loadout will use undefined on page load
-      if (isEmpty(currentUnitId)) setCurrentUnitId(storeData[0] ? storeData[0].id : '')
+      if (isEmpty(currentUnitId))
+        setCurrentUnitId(storeData[0] ? storeData[0].id : "");
     }
   }, [storeData]);
 

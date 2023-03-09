@@ -3,6 +3,7 @@ import { deep_eq } from "@/utils/helper";
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { rspc } from "../ClientProviders";
+import { clearDirty } from "./Generics";
 
 const useAlgorithmConfigs = () => {
   const { data: storeData } = rspc.useQuery(["algoPiecesByLoadoutId", null]);
@@ -14,6 +15,7 @@ const useAlgorithmConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
+      clearDirty<AlgoPiece>(storeData, dirtyPieces, setDirtyPieces)
       setPiecesOnTop((draft) => {
         let beforeIds = draft.map((e) => e.id);
         let nextIds = storeData.map((e) => e.id);
