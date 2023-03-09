@@ -7,6 +7,7 @@ import { rspc } from "../Providers/ClientProviders";
 import { Class, Unit } from "@/src-tauri/bindings/rspc";
 import Loading from "../Loading";
 import { DbDollContext } from "@/interfaces/payloads";
+import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
 
 type Props = {
   filter: Class[];
@@ -14,59 +15,36 @@ type Props = {
 };
 const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
-  const { updateCurrentUnitId } = useContext(DbDollContext);
-
+  const { updateCurrentUnitId, units } = useContext(DbDollContext);
+  const { isLoading, isError } = rspc.useQuery(["getUnits"]);
   const {
-    isLoading,
-    isError,
-    refetch: refetchUnits,
-  } = rspc.useQuery(["getUnits"]);
-  const { refetch: refetchSkills } = rspc.useQuery([
-    "skillLevelsByUnitIds",
-    null,
-  ]);
-  const { data: los, refetch: refetchLoadouts } = rspc.useQuery([
-    "loadoutByUnitId",
-    null,
-  ]);
-  const { refetch: refetchPieces } = rspc.useQuery([
-    "algoPiecesByLoadoutId",
-    null,
-  ]);
-  const { refetch: refetchSlots } = rspc.useQuery([
-    "slotsByAlgoPieceIds",
-    null,
-  ]);
+    data: los,
+    isLoading: isLoadingLo,
+    isError: isErrorLo,
+  } = rspc.useQuery(["loadoutByUnitId", null]);
+  const { refreshAll, refreshUnits } = useStoreRefresh();
 
-  const { units: dirtyStore } = useContext(DbDollContext);
   const newUnitMutation = rspc.useMutation(["newUnit"]);
   const deleteUnitMutation = rspc.useMutation(["deleteUnit"]);
 
   function addUnit() {
     newUnitMutation.mutate([nextUnitName, "Guard"], {
-      onSuccess: () => {
-        // TODO: custom hook
-        refetchUnits();
-        refetchSkills();
-        refetchLoadouts();
-        refetchPieces();
-        refetchSlots();
-      },
+      onSuccess: () => refreshAll(),
     });
   }
 
   function deleteUnit(unitId: string) {
     deleteUnitMutation.mutate(unitId, {
-      onSuccess: () => refetchUnits(),
+      onSuccess: () => refreshUnits(),
     });
   }
 
-  if (isLoading || !dirtyStore || !los) return <Loading />;
-  if (isError) throw new Error("error in dev page");
+  if (isLoading || isLoadingLo || !los) return <Loading />;
+  if (isError || isErrorLo) throw new Error("error in dev page");
 
-  const nextUnitName = `Doll #${dirtyStore.length + 1}`;
+  const nextUnitName = `Doll #${units.length + 1}`;
   //
-  const currentLoadoutIds = dirtyStore.map((unit) => {
+  const currentLoadoutIds = units.map((unit) => {
     let find = los.find(
       (e) => e.loadoutType == "Current" && e.unitId == unit.id
     );
@@ -80,15 +58,9 @@ const DollList = ({ filter, isVisible }: Props) => {
         <Button label={"New"} onClick={addUnit} />
         <Button onClick={() => setDeleteMode(!deleteMode)}>Delete</Button>
       </div>
-      {isLoading ? (
-        [1, 2, 3].map((ind) => (
-          <li key={ind}>
-            <Skeleton count={2} />
-          </li>
-        ))
-      ) : (
+      {!isLoading ? (
         <AnimatePresence mode="sync">
-          {dirtyStore.map(
+          {units.map(
             (unit, index) =>
               isVisible(unit, filter) && (
                 <motion.li
@@ -108,8 +80,21 @@ const DollList = ({ filter, isVisible }: Props) => {
               )
           )}
         </AnimatePresence>
+      ) : (
+        <LoadingLi />
       )}
     </ul>
+  );
+};
+const LoadingLi = () => {
+  return (
+    <>
+      {[1, 2, 3].map((ind) => (
+        <li key={ind}>
+          <Skeleton count={2} />
+        </li>
+      ))}
+    </>
   );
 };
 export default DollList;
