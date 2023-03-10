@@ -1,8 +1,8 @@
-import { Unit } from "@/src-tauri/bindings/rspc";
 import { deep_eq } from "@/utils/helper";
 import { castDraft, Draft } from "immer";
 import { Updater } from "use-immer";
 
+// safe to refactor in other config hooks
 export function clearDirty<T extends { id: string }>(
   storeData: Array<T>,
   dirtyData: Array<T>,
@@ -34,13 +34,42 @@ export type DirtyOnTopActionables<T extends Id> =
     };
 
 // TODO: evaluate type
-type DirtyListActionables<T extends Id> = {
+export type DirtyListActionables<T extends Id> =
+  | {
+      name: "UPDATE";
+      store: Array<T>;
+      to: T;
+    }
+  | {
+      name: "CLEAR";
+      store: Array<T>;
+    };
+
+export type CurrentActionables<T, Constrain extends keyof T | undefined> = {
   name: "UPDATE";
-  store: Array<T>;
   to: T;
+  constrain: Constrain;
+  equals: string; // value to compare
 };
-// TODO: test
-function dirtyListReducer<T extends Id>(
+
+export function currentReducer<T, Constrain extends keyof T | undefined>(
+  draft: Array<Draft<T>>,
+  action: CurrentActionables<T, Constrain>
+) {
+  switch (action.name) {
+    case "UPDATE": {
+      if (action.constrain != undefined) {
+        let ind = draft.findIndex(
+          (e) => e[action.constrain as keyof Draft<T>] == action.equals
+        );
+        draft[ind] = castDraft(action.to);
+      }
+      return draft;
+    }
+  }
+}
+
+export function dirtyListReducer<T extends Id>(
   draft: Draft<T>[],
   action: DirtyListActionables<T>
 ) {
@@ -61,6 +90,17 @@ function dirtyListReducer<T extends Id>(
         let ind = draft.findIndex((e) => e.id == action.to.id);
         draft[ind] = castDraft(action.to);
       }
+      return draft;
+    }
+    case "CLEAR": {
+      let excludeIds: string[] = [];
+      draft.forEach((dirty) => {
+        let find = action.store.find((e) => e.id == dirty.id);
+        if (find && deep_eq(find, dirty)) {
+          excludeIds.push(dirty.id);
+        }
+      });
+      draft = draft.filter((e) => !excludeIds.includes(e.id));
       return draft;
     }
   }

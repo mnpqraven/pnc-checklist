@@ -1,10 +1,14 @@
 import { Unit } from "@/src-tauri/bindings/rspc";
-import { deep_eq, isEmpty } from "@/utils/helper";
-import { Draft } from "immer";
+import { isEmpty } from "@/utils/helper";
 import { useEffect, useState } from "react";
-import { Updater, useImmer, useImmerReducer } from "use-immer";
+import { useImmer, useImmerReducer } from "use-immer";
 import { rspc } from "../ClientProviders";
-import { DirtyOnTopActionables, clearDirty, dirtyOnTopReducer } from "./Generics";
+import {
+  DirtyOnTopActionables,
+  dirtyOnTopReducer,
+  dirtyListReducer,
+  DirtyListActionables,
+} from "./configReducers";
 
 // TODO: refactor all these into a reducer
 export const useStoreConfigs = () => {
@@ -13,36 +17,22 @@ export const useStoreConfigs = () => {
     storeData && storeData[0] ? storeData[0].id : ""
   );
   const [currentUnit, setCurrentUnit] = useImmer<Unit | undefined>(undefined);
-  const [dirtyUnits, setDirtyUnits] = useImmer<Unit[]>([]);
-  // const [dirtyOnTop, setDirtyOnTop] = useImmer<Unit[]>([]);
 
-  // NOTE: DEV
-  const [dirtyOnTop, dispatchDirtyOnTop] = useImmerReducer<Unit[], DirtyOnTopActionables<Unit>>(dirtyOnTopReducer, [])
+  const [dirtyOnTop, dispatchDirtyOnTop] = useImmerReducer<
+    Unit[],
+    DirtyOnTopActionables<Unit>
+  >(dirtyOnTopReducer, []);
+  const [dirtyList, dispatchDirtyList] = useImmerReducer<
+    Unit[],
+    DirtyListActionables<Unit>
+  >(dirtyListReducer, []);
 
   useEffect(() => {
     if (storeData) {
-      clearDirty<Unit>(storeData, dirtyUnits, setDirtyUnits);
       console.warn("store data changed");
+      dispatchDirtyList({ name: "CLEAR", store: storeData });
       // updates dirtyOnTop with storeData
-      // setDirtyOnTop((draft) => {
-      //   let beforeIds = draft.map((e) => e.id);
-      //   let nextIds = storeData.map((e) => e.id);
-      //   // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-      //   const intersecOrDiff = nextIds.length > draft.length;
-      //   let diff = nextIds.filter((e) =>
-      //     intersecOrDiff ? !beforeIds.includes(e) : beforeIds.includes(e)
-      //   );
-      //   if (intersecOrDiff)
-      //     storeData
-      //       .filter((e) => diff.includes(e.id))
-      //       .forEach((unit) => draft.push(unit));
-      //   else draft = draft.filter((e) => diff.includes(e.id));
-      //   // intesect > push, diff > splice
-      //   return draft;
-      // });
-      //
-      // NOTE: DEV
-      dispatchDirtyOnTop({name: 'CONFORM_WITH_STORE', store: storeData})
+      dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store: storeData });
 
       // sets initial currentUnitId
       // needed else loadout will use undefined on page load
@@ -53,26 +43,19 @@ export const useStoreConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
-      // let dirtyList = storeData.map((unit) => {
-      //   if (dirtyUnits.map((e) => e.id).includes(unit.id))
-      //     return dirtyUnits.find((e) => e.id == unit.id)!;
-      //   return unit;
-      // });
-      //
-      // setDirtyOnTop((draft) => {
-      //   draft = dirtyList;
-      //   return draft;
-      // });
-
-      // NOTE: DEV
-      dispatchDirtyOnTop({name: 'SET', store: storeData, dirties: dirtyUnits})
+      dispatchDirtyOnTop({
+        name: "SET",
+        store: storeData,
+        dirties: dirtyList,
+      });
     }
-  }, [dirtyUnits]);
+    console.warn(dirtyList);
+  }, [dirtyList]);
 
   useEffect(() => {
     if (storeData) {
-      let find = dirtyUnits.find((e) => e.id == currentUnitId)
-        ? dirtyUnits.find((e) => e.id == currentUnitId)
+      let find = dirtyList.find((e) => e.id == currentUnitId)
+        ? dirtyList.find((e) => e.id == currentUnitId)
         : storeData.find((e) => e.id == currentUnitId);
       setCurrentUnit(find);
     }
@@ -81,31 +64,8 @@ export const useStoreConfigs = () => {
   /// appends to the dirty bucket if needed
   /// also removes from the bucket if the contents after change is the same
   function updateCurrentUnit(to: Unit) {
-    // not in bucket
-    let bucketIndex: number = dirtyUnits.findIndex((e) => e.id == to.id);
-    if (bucketIndex === -1) {
-      // adding
-      setDirtyUnits((draft) => {
-        draft.push(to);
-        return draft;
-      });
-    } else if (
-      storeData &&
-      JSON.stringify(storeData[storeData.findIndex((e) => e.id == to.id)]) ===
-        JSON.stringify(to)
-    ) {
-      // removing
-      setDirtyUnits((draft) => {
-        draft.splice(bucketIndex, 1);
-        return draft;
-      });
-    } else {
-      // stay dirty, update dirty entry
-      setDirtyUnits((draft) => {
-        draft[draft.findIndex((e) => e.id == to.id)] = to;
-        return draft;
-      });
-    }
+    if (storeData) dispatchDirtyList({ name: "UPDATE", store: storeData, to });
+    else throw "storeData should not be undefined by now";
     setCurrentUnit(to);
   }
 
@@ -119,6 +79,6 @@ export const useStoreConfigs = () => {
     currentUnitId,
     updateCurrentUnitId,
     units: dirtyOnTop,
-    dirtyUnits,
+    dirtyUnits: dirtyList,
   };
 };
