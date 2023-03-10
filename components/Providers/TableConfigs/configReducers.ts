@@ -2,23 +2,7 @@ import { deep_eq } from "@/utils/helper";
 import { castDraft, Draft } from "immer";
 import { Updater } from "use-immer";
 
-// safe to refactor in other config hooks
-export function clearDirty<T extends { id: string }>(
-  storeData: Array<T>,
-  dirtyData: Array<T>,
-  dirtyUpdater: Updater<Array<T>>
-) {
-  let excludeIds: string[] = [];
-  dirtyData.forEach((dirty) => {
-    let find = storeData.find((e) => e.id == dirty.id);
-    if (find && deep_eq(find, dirty)) {
-      excludeIds.push(dirty.id);
-    }
-  });
-  dirtyUpdater(dirtyData.filter((e) => !excludeIds.includes(e.id)));
-}
-
-interface Id {
+export interface Id {
   id: string;
 }
 
@@ -45,16 +29,17 @@ export type DirtyListActionables<T extends Id> =
       store: Array<T>;
     };
 
-export type CurrentActionables<T, Constrain extends keyof T | undefined> = {
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type CurrentActionables<T> = {
   name: "UPDATE";
   to: T;
-  constrain: Constrain;
+  constrain: KeysOfUnion<T>
   equals: string; // value to compare
 };
 
-export function currentReducer<T, Constrain extends keyof T | undefined>(
+export function currentReducer<T>(
   draft: Array<Draft<T>>,
-  action: CurrentActionables<T, Constrain>
+  action: CurrentActionables<T>
 ) {
   switch (action.name) {
     case "UPDATE": {
@@ -106,10 +91,10 @@ export function dirtyListReducer<T extends Id>(
   }
 }
 
-export function dirtyOnTopReducer<T extends Id>(
+export const dirtyOnTopReducer = <T extends Id>(
   draft: Draft<T>[],
   action: DirtyOnTopActionables<T>
-) {
+) => {
   switch (action.name) {
     case "CONFORM_WITH_STORE": {
       let beforeIds = draft.map((e) => e.id);
@@ -124,7 +109,6 @@ export function dirtyOnTopReducer<T extends Id>(
           .filter((e) => diff.includes(e.id))
           .forEach((item) => draft.push(castDraft(item)));
       else draft = draft.filter((e) => diff.includes(e.id));
-      // intesect > push, diff > splice
       return draft;
     }
     case "SET": {

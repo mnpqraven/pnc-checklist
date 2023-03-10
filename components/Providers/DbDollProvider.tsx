@@ -1,4 +1,5 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
+import { AlgoPiece } from "@/src-tauri/bindings/rspc";
 import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
 import { ReactNode, useContext, useEffect } from "react";
 import { rspc } from "./ClientProviders";
@@ -7,6 +8,7 @@ import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
 import { useSkillConfigs } from "./TableConfigs/Skills";
 import useSlotConfigs from "./TableConfigs/Slots";
 import { useStoreConfigs } from "./TableConfigs/Units";
+import { useGenericConfig } from "./TableConfigs/useGenericConfig";
 
 interface Props {
   children: ReactNode;
@@ -16,9 +18,13 @@ const DbDollProvider = ({ children }: Props) => {
   const storeValues = useStoreConfigs();
   const loadoutValues = useLoadoutConfigs();
   const skillValues = useSkillConfigs();
-  const algorithmValues = useAlgorithmConfigs();
+  // const algorithmValues = useAlgorithmConfigs();
   const slotValues = useSlotConfigs();
   const refresh = useStoreRefresh();
+
+
+  // TODO: name resolution
+  const algorithmValues = useGenericConfig<AlgoPiece>({storeApi: 'algoPiecesByLoadoutId', constraint: 'loadoutId'})
 
   const saveUnitsMutation = rspc.useMutation(["saveUnits"]);
   function saveUnits() {
@@ -37,7 +43,7 @@ const DbDollProvider = ({ children }: Props) => {
       storeValues.dirtyUnits.length > 0 ||
         loadoutValues.dirtyLoadouts.length > 0 ||
         skillValues.dirtySkills.length > 0 ||
-        algorithmValues.dirtyPieces.length > 0 ||
+        algorithmValues.dirtyData.length > 0 ||
         slotValues.dirtySlots.length > 0
     );
   }, [
@@ -45,7 +51,7 @@ const DbDollProvider = ({ children }: Props) => {
     storeValues.dirtyUnits,
     loadoutValues.dirtyLoadouts,
     skillValues.dirtySkills,
-    algorithmValues.dirtyPieces,
+    algorithmValues.dirtyData,
     slotValues.dirtySlots,
   ]);
 

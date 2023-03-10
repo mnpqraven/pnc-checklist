@@ -16,7 +16,7 @@ const useAlgorithmConfigs = () => {
 
   const [currentList, dispatchList] = useImmerReducer<
     AlgoPiece[],
-    CurrentActionables<AlgoPiece, "loadoutId">
+    CurrentActionables<AlgoPiece>
   >(currentReducer, []);
   const [dirtyOnTop, dispatchDirtyOnTop] = useImmerReducer<
     AlgoPiece[],
