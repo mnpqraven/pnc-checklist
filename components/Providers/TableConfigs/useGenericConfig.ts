@@ -30,7 +30,7 @@ type Props<T extends PassableStructs> = {
 
 interface Ret<RetT> {
   data: RetT[];
-  store: RetT[] | undefined
+  store: RetT[] | undefined;
   dirtyData: RetT[];
   currentData: RetT[];
   updateData: (to: RetT, equals: string) => void;
@@ -40,10 +40,6 @@ export function useGenericConfig<T extends PassableStructs>({
   constraint,
 }: Props<T>): Ret<T> {
   const { data: store } = rspc.useQuery([storeApi, null]);
-  // TODO: test after finish refactoring
-  // type Single = Exclude<typeof store, undefined> extends (infer R)[]
-  //   ? R
-  //   : never;
 
   const [currentList, dispatchList] = useImmerReducer<
     T[],
@@ -84,7 +80,7 @@ export function useGenericConfig<T extends PassableStructs>({
    * Slot: algoPieceId
    */
   function updateData(to: T, equals: string) {
-    console.warn('to', to)
+    console.warn("to", to);
     if (!store) throw new Error("should be defined here already");
     dispatchDirtyList({ name: "UPDATE", store, to });
     dispatchList({

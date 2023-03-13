@@ -45,9 +45,16 @@ const DbDollProvider = ({ children }: Props) => {
   }
 
   function algoFillSlot(loadoutId: string, allOrNone: boolean) {
-    console.warn("algopiece", algoPiece.currentData);
-    console.warn("slot", slot.currentData);
-    console.warn("loadout", loadout.currentData);
+    slot.data
+      .filter((e) =>
+        algoPiece.data
+          .filter((e) => e.loadoutId == loadoutId)
+          .map((e) => e.id)
+          .includes(e.algoPieceId)
+      )
+      .forEach((sl) =>
+        slot.updateData({ ...sl, value: allOrNone }, sl.algoPieceId)
+      );
   }
 
   function undoChanges(
