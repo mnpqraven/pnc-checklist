@@ -11,19 +11,18 @@ import DollHeader from "./Profile/Header";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 const DollProfile = () => {
-  const { loadouts, currentUnitId, saveUnits } = useContext(DbDollContext);
+  const { loadout, currentUnitId, saveUnits } = useContext(DbDollContext);
   const { setHeaderContent } = useContext(ToastContext);
 
   useEffect(() => {
     setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
   }, []);
-  console.warn(loadouts)
 
   return (
     <div className="flex w-[54rem] flex-col">
       <DollHeader handleSave={saveUnits} />
       {/* NOTE: named css */}
-      {loadouts
+      {loadout.data
         .filter((e) => e.unitId == currentUnitId)
         .map((loadout, index) => (
           <div className="card component_space" key={index}>

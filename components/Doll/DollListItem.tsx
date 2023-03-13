@@ -19,9 +19,9 @@ const DollListItem = ({
   deleteUnit,
   currentLoadoutId,
 }: Props) => {
-  const { skills } = useContext(DbDollContext);
-  const skill = skills.find((e) => e.loadoutId == currentLoadoutId);
-  if (!skill) return <Loading />;
+  const { skill } = useContext(DbDollContext);
+  const currentSkill = skill.data.find((e) => e.loadoutId == currentLoadoutId);
+  if (!currentSkill) return <Loading />;
 
   return (
     <div className="flex items-center">
@@ -36,7 +36,7 @@ const DollListItem = ({
       <div>
         <p>{unit.name ? unit.name : "No name"}</p>
         <p>
-          {skill.passive}/{skill.auto}
+          {currentSkill.passive}/{currentSkill.auto}
         </p>
       </div>
       <div className="grow" />

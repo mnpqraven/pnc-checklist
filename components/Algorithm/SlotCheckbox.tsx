@@ -13,14 +13,10 @@ type Props = {
   category: AlgoCategory;
   pieceId: string;
 };
-const SlotCheckbox = ({
-  unitClass,
-  category,
-  pieceId,
-}: Props) => {
+const SlotCheckbox = ({ unitClass, category, pieceId }: Props) => {
   const [clickable, setClickable] = useState(2); // default case for 2 falses
   const [size, setSize] = useState(2);
-  const { slots, updateSlot } = useContext(DbDollContext);
+  const { slot } = useContext(DbDollContext);
 
   async function setVisible(
     unitClass: Class,
@@ -36,18 +32,21 @@ const SlotCheckbox = ({
 
   useEffect(() => {
     setVisible(unitClass, category).then((size) =>
-      setClickable(size - slots.filter((e) => e.algoPieceId === pieceId && e.value).length)
+      setClickable(
+        size -
+          slot.data.filter((e) => e.algoPieceId === pieceId && e.value).length
+      )
     );
-  }, [category, unitClass, slots]);
+  }, [category, unitClass, slot.data]);
 
   /**
    * Updates the slots in an `AlgoPiece`
    * @param value new value of the slot managed by thecheckbox
    * @param checkboxIndex the index of the slot in the `AlgoPiece`
    */
-  function onChange(value: boolean | "indeterminate", slot: Slot) {
+  function onChange(value: boolean | "indeterminate", selectedSlot: Slot) {
     if (value === "indeterminate") return;
-    updateSlot({ ...slot, value}, pieceId);
+    slot.updateData({ ...selectedSlot, value }, pieceId);
     updateVisible(value);
   }
 
@@ -58,11 +57,11 @@ const SlotCheckbox = ({
     else setClickable(clickable + 1);
   }
 
-  if (!slots) return <Loading />;
+  if (!slot.data) return <Loading />;
 
   return (
     <div className="flex gap-2">
-      {slots
+      {slot.data
         .filter((e) => e.algoPieceId == pieceId)
         .map((slot) => (
           <Checkbox.Root

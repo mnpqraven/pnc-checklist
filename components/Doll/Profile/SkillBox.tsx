@@ -11,10 +11,10 @@ type Props = {
   loadoutId: string;
 };
 const SkillBox = ({ loadoutId }: Props) => {
-  const { skills, updateSkill } = useContext(DbDollContext);
+  const { skill } = useContext(DbDollContext);
 
-  const skillData = skills.find((e) => e.loadoutId == loadoutId)!;
-  const skill: { type: SkillType; label: string }[] = [
+  const skillData = skill.data.find((e) => e.loadoutId == loadoutId)!;
+  const skillTuple: { type: SkillType; label: string }[] = [
     {
       type: "passive",
       label: "Passive Skill",
@@ -40,14 +40,14 @@ const SkillBox = ({ loadoutId }: Props) => {
         break;
     }
 
-    updateSkill(obj, loadoutId);
+    skill.updateData(obj, loadoutId);
   }
   return (
     <div className="mx-4 flex flex-col">
       <div className="flex flex-col ">
         <div className="flex justify-between"></div>
         {skillData ? (
-          skill.map(({ type, label }) => (
+          skillTuple.map(({ type, label }) => (
             <Slider
               key={type}
               type={type}

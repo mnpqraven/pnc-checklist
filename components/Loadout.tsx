@@ -13,13 +13,12 @@ type Props = {
 };
 
 const LoadoutContainer = ({ type, data }: Props) => {
-  const { loadouts, updateLoadout, algoPieces } =
-    useContext(DbDollContext);
+  const { loadout, algoPiece } = useContext(DbDollContext);
 
-  if (!data || !algoPieces ) return <Loading />;
+  if (!data || !algoPiece) return <Loading />;
 
-  const loadout = loadouts.find(e => e.loadoutType == type)!
-  const algoSet = algoPieces.filter(e => e.loadoutId == data.id)
+  const currentLoadout = loadout.data.find((e) => e.loadoutType == type)!;
+  const algoSet = algoPiece.data.filter((e) => e.loadoutId == data.id);
 
   return (
     <>
@@ -27,23 +26,25 @@ const LoadoutContainer = ({ type, data }: Props) => {
         <SkillBox loadoutId={data.id} />
         <LevelBox
           type={type}
-          frags={loadout.frags}
-          level={loadout.level}
+          frags={currentLoadout.frags}
+          level={currentLoadout.level}
           handleLevelChange={(e) =>
-            updateLoadout({ ...loadout, level: getValue(e) }, type)
+            loadout.updateData({ ...currentLoadout, level: getValue(e) }, type)
           }
           handleFragsChange={(e) =>
-            updateLoadout({ ...loadout, frags: getValue(e) }, type)
+            loadout.updateData({ ...currentLoadout, frags: getValue(e) }, type)
           }
         />
         {data && (
           <RaritySelect
             value={data.neural as NeuralExpansion}
-            onChange={(neural) => updateLoadout({ ...loadout, neural }, type)}
+            onChange={(neural) =>
+              loadout.updateData({ ...currentLoadout, neural }, type)
+            }
           />
         )}
       </div>
-      <AlgorithmSet algos={algoSet} type={type} loadoutId={loadout.id} />
+      <AlgorithmSet algos={algoSet} type={type} loadoutId={currentLoadout.id} />
     </>
   );
 };
