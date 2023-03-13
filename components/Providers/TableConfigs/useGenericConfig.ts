@@ -61,8 +61,8 @@ export function useGenericConfig<T extends PassableStructs>({
 
   useEffect(() => {
     if (store) {
-      dispatchDirtyList({ name: "CLEAR", store: store as T[] });
-      dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store: store as T[] });
+      dispatchDirtyList({ name: "CLEAR", store });
+      dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store });
     }
   }, [store]);
 
@@ -70,14 +70,14 @@ export function useGenericConfig<T extends PassableStructs>({
     if (store)
       dispatchDirtyOnTop({
         name: "SET",
-        store: store as T[],
+        store: store,
         dirties: dirtyList,
       });
   }, [dirtyList]);
 
   function updateData(to: T, equals: string) {
     if (!store) throw new Error("should be defined here already");
-    dispatchDirtyList({ name: "UPDATE", store: store as T[], to });
+    dispatchDirtyList({ name: "UPDATE", store, to });
     dispatchList({
       name: "UPDATE",
       to,

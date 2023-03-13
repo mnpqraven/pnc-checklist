@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-03-07
+updated: 2023-03-13
 version: 0.1.2
 @end
 
@@ -69,12 +69,12 @@ version: 0.1.2
         children components,
     --- ( )  alleviate top heavy data, especially in `<Dolls />`
     --- (-) refactor DollList component tree
-    --- ( ) dollContext controller needs rewriting
+    --- (x) dollContext controller needs rewriting
     --- (x) updateIndex -> updateCurrentUnit (unit_id)
     --- (x) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
         updateUnitSkill, updateAlgoPiece, updateSlot)
         or use caches from react query
-    --- (-) loadoutconfig
+    --- (x) loadoutconfig
     --- (-) new algoPiece button
     --- (=) data initialization during adding unit + loading empty database
     ---- (=) custom hook

@@ -9,30 +9,29 @@ export interface Id {
 export type DirtyOnTopActionables<T extends PassableStructs> =
   | {
       name: "CONFORM_WITH_STORE";
-      store: Array<T>;
+      store: Array<PassableStructs>;
     }
   | {
       name: "SET";
-      store: Array<T>;
+      store: Array<PassableStructs>;
       dirties: Array<T>;
     };
 
 export type DirtyListActionables<T extends PassableStructs> =
   | {
       name: "UPDATE";
-      store: Array<T>;
+      store: Array<PassableStructs>;
       to: T;
     }
   | {
       name: "CLEAR";
-      store: Array<T>;
+      store: Array<PassableStructs>;
     };
 
 // type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type CurrentActionables<T extends PassableStructs> = {
   name: "UPDATE";
   to: T;
-  // constrain: KeysOfUnion<T>
   constraint: keyof T;
   equals: string; // value to compare
 };
