@@ -82,7 +82,7 @@ export type DbDollContextPayload = {
   algoPiece: DbDataProvider<AlgoPiece>;
   slot: DbDataProvider<Slot>;
 
-  saveUnits: () => void;
+  saveDatabase: () => void;
   algoFillSlot: (loadoutId: string, allOrNone: boolean) => void;
   undoChanges: (
     unitId: string,
@@ -104,7 +104,7 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
   algoPiece: placeholder,
   slot: placeholder,
 
-  saveUnits: () => {},
+  saveDatabase: () => {},
   algoFillSlot: () => {},
   undoChanges: () => {},
 });

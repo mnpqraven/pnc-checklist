@@ -38,11 +38,15 @@ const DbDollProvider = ({ children }: Props) => {
   });
 
   const saveUnitsMutation = rspc.useMutation(["saveUnits"]);
-  function saveUnits() {
+  async function saveDatabase() {}
+  async function saveUnits() {
     saveUnitsMutation.mutate(storeValues.dirtyUnits, {
       onSuccess: () => refresh.refreshUnits(),
     });
   }
+  async function saveLoadouts() {
+
+    }
 
   function algoFillSlot(loadoutId: string, allOrNone: boolean) {
     slot.data
@@ -102,7 +106,7 @@ const DbDollProvider = ({ children }: Props) => {
         loadout,
         slot,
         skill,
-        saveUnits,
+        saveDatabase,
         algoFillSlot,
         undoChanges,
       }}

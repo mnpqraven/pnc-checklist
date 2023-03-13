@@ -28,7 +28,7 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
         ))
         .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
-        // INFO: GENERAL
+        // INFO: UNIT
         .mutation("saveUnits", |t| {
             t(|ctx, units: Vec<prisma::unit::Data>| async move {
                 ctx.client
@@ -45,7 +45,6 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
-        // INFO: UNIT
         .mutation("newUnit", |t| {
             t(|ctx, (name, class): (String, Class)| async move {
                 let unit = Unit::new(name, class);
@@ -92,6 +91,23 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .loadout()
                     .find_many(pat)
                     .exec()
+                    .await
+                    .map_err(error_map)
+            })
+        })
+        .mutation("saveLoadouts", |t| {
+            t(|ctx, loadouts: Vec<loadout::Data>| async move {
+                ctx.client
+                    ._batch(loadouts.into_iter().map(|data| {
+                        ctx.client.loadout().update(
+                            loadout::id::equals(data.id),
+                            vec![
+                                loadout::level::set(data.level),
+                                loadout::neural::set(data.neural),
+                                loadout::frags::set(data.frags),
+                            ],
+                        )
+                    }))
                     .await
                     .map_err(error_map)
             })
