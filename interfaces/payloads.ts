@@ -65,6 +65,10 @@ export const AlgoErrorContext = React.createContext<AlgoErrorContextPayload>(
   []
 );
 
+export interface DbDataProvider<Type> {
+  data: Type[];
+  updateData: (to: Type, equals: string) => void;
+}
 export type DbDollContextPayload = {
   currentUnit: Unit | undefined;
   updateCurrentUnit: (to: Unit) => void;
@@ -72,20 +76,15 @@ export type DbDollContextPayload = {
   updateCurrentUnitId: (to: string) => void;
   units: Unit[];
 
-  loadouts: Loadout[];
-  updateLoadout: (to: Loadout, type: LoadoutType) => void;
+  loadout: DbDataProvider<Loadout>;
+  skill: DbDataProvider<UnitSkill>;
+  algoPiece: DbDataProvider<AlgoPiece>;
+  slot: DbDataProvider<Slot>;
 
-  skills: UnitSkill[];
-  updateSkill: (to: UnitSkill, loadoutId: string) => void;
-
-  algoPieces: AlgoPiece[];
-  updatePiece: (to: AlgoPiece, loadoutId: string) => void;
-
-  slots: Slot[];
-  updateSlot: (to: Slot, algoPieceId: string) => void;
-
-  saveUnits: () => void
+  saveUnits: () => void;
 };
+
+const placeholder = { data: [], updateData: () => {} };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
   currentUnit: undefined,
@@ -93,17 +92,10 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
   currentUnitId: "",
   updateCurrentUnitId: () => {},
 
-  loadouts: [],
-  updateLoadout: () => {},
+  loadout: placeholder,
+  skill: placeholder,
+  algoPiece: placeholder,
+  slot: placeholder,
 
-  skills: [],
-  updateSkill: () => {},
-
-  algoPieces: [],
-  updatePiece: () => {},
-
-  slots: [],
-  updateSlot: () => {},
-
-  saveUnits: () => {}
+  saveUnits: () => {},
 });

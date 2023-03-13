@@ -1,12 +1,12 @@
 import { deep_eq } from "@/utils/helper";
 import { castDraft, Draft } from "immer";
-import { Updater } from "use-immer";
+import { PassableStructs } from "./useGenericConfig";
 
 export interface Id {
   id: string;
 }
 
-export type DirtyOnTopActionables<T extends Id> =
+export type DirtyOnTopActionables<T extends PassableStructs> =
   | {
       name: "CONFORM_WITH_STORE";
       store: Array<T>;
@@ -17,8 +17,7 @@ export type DirtyOnTopActionables<T extends Id> =
       dirties: Array<T>;
     };
 
-// TODO: evaluate type
-export type DirtyListActionables<T extends Id> =
+export type DirtyListActionables<T extends PassableStructs> =
   | {
       name: "UPDATE";
       store: Array<T>;
@@ -29,23 +28,24 @@ export type DirtyListActionables<T extends Id> =
       store: Array<T>;
     };
 
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type CurrentActionables<T> = {
+// type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type CurrentActionables<T extends PassableStructs> = {
   name: "UPDATE";
   to: T;
-  constrain: KeysOfUnion<T>
+  // constrain: KeysOfUnion<T>
+  constraint: keyof T;
   equals: string; // value to compare
 };
 
-export function currentReducer<T>(
-  draft: Array<Draft<T>>,
+export function currentReducer<T extends PassableStructs>(
+  draft: any[],
   action: CurrentActionables<T>
 ) {
   switch (action.name) {
     case "UPDATE": {
-      if (action.constrain != undefined) {
+      if (action.constraint != undefined) {
         let ind = draft.findIndex(
-          (e) => e[action.constrain as keyof Draft<T>] == action.equals
+          (e) => e[action.constraint as keyof Draft<T>] == action.equals
         );
         draft[ind] = castDraft(action.to);
       }
@@ -54,8 +54,8 @@ export function currentReducer<T>(
   }
 }
 
-export function dirtyListReducer<T extends Id>(
-  draft: Draft<T>[],
+export function dirtyListReducer<T extends PassableStructs>(
+  draft: any[],
   action: DirtyListActionables<T>
 ) {
   switch (action.name) {
@@ -91,8 +91,8 @@ export function dirtyListReducer<T extends Id>(
   }
 }
 
-export const dirtyOnTopReducer = <T extends Id>(
-  draft: Draft<T>[],
+export const dirtyOnTopReducer = <T extends PassableStructs>(
+  draft: any[],
   action: DirtyOnTopActionables<T>
 ) => {
   switch (action.name) {
@@ -120,4 +120,4 @@ export const dirtyOnTopReducer = <T extends Id>(
       return dirtyList;
     }
   }
-}
+};

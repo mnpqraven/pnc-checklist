@@ -1,4 +1,4 @@
-import { AlgoMainStat, AlgoPiece, Loadout, Procedures, Slot, Unit } from "@/src-tauri/bindings/rspc";
+import { Procedures } from "@/src-tauri/bindings/rspc";
 import { useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 import { rspc } from "../ClientProviders";
@@ -15,61 +15,82 @@ import {
 type Extends<T, U extends T> = U;
 type ArrayType<Type> = Type extends Array<infer X extends Id> ? X : never;
 
-type PassableStructs = Extends<Id, ArrayType<Procedures['queries']['result']>>;
+export type PassableStructs = Extends<
+  Id,
+  ArrayType<Procedures["queries"]["result"]>
+>;
 
 type Props<T extends PassableStructs> = {
-  storeApi: Extract<Procedures['queries'], { result: PassableStructs[] }>['key']
+  storeApi: Extract<
+    Procedures["queries"],
+    { result: PassableStructs[] }
+  >["key"];
   constraint: keyof T;
 };
 
+interface Ret<RetT> {
+  data: RetT[];
+  dirtyData: RetT[];
+  currentData: RetT[];
+  updateData: (to: RetT, equals: string) => void;
+}
 export function useGenericConfig<T extends PassableStructs>({
   storeApi,
   constraint,
-}: Props<T>) {
+}: Props<T>): Ret<T> {
   const { data: store } = rspc.useQuery([storeApi, null]);
-  type Single = Exclude<typeof store, undefined> extends (infer R)[] ? R : never;
+  // TODO: test after finish refactoring
+  // type Single = Exclude<typeof store, undefined> extends (infer R)[]
+  //   ? R
+  //   : never;
 
   const [currentList, dispatchList] = useImmerReducer<
-    Single[],
-    CurrentActionables<Single>
+    T[],
+    CurrentActionables<T>
   >(currentReducer, []);
 
   const [dirtyOnTop, dispatchDirtyOnTop] = useImmerReducer<
-    Single[],
-    DirtyOnTopActionables<Single>
+    T[],
+    DirtyOnTopActionables<T>
   >(dirtyOnTopReducer, []);
 
   const [dirtyList, dispatchDirtyList] = useImmerReducer<
-    Single[],
-    DirtyListActionables<Single>
+    T[],
+    DirtyListActionables<T>
   >(dirtyListReducer, []);
 
   useEffect(() => {
     if (store) {
-      dispatchDirtyList({ name: "CLEAR", store: store });
-      dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store });
+      dispatchDirtyList({ name: "CLEAR", store: store as T[] });
+      dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store: store as T[] });
     }
   }, [store]);
 
   useEffect(() => {
-    if (store) dispatchDirtyOnTop({ name: "SET", store, dirties: dirtyList });
+    if (store)
+      dispatchDirtyOnTop({
+        name: "SET",
+        store: store as T[],
+        dirties: dirtyList,
+      });
   }, [dirtyList]);
 
-  function updateData(to: Single, equals: string) {
+  function updateData(to: T, equals: string) {
     if (!store) throw new Error("should be defined here already");
-    dispatchDirtyList({ name: "UPDATE", store, to });
+    dispatchDirtyList({ name: "UPDATE", store: store as T[], to });
     dispatchList({
       name: "UPDATE",
       to,
-      constrain: constraint as keyof Single,
-      equals
+      constraint,
+      equals,
     });
   }
 
-  return {
+  let ret: Ret<T> = {
     data: dirtyOnTop,
     dirtyData: dirtyList,
     currentData: currentList,
     updateData,
   };
+  return ret;
 }

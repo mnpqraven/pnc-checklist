@@ -1,12 +1,8 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
-import { AlgoPiece } from "@/src-tauri/bindings/rspc";
+import { AlgoPiece, Loadout, Slot, UnitSkill } from "@/src-tauri/bindings/rspc";
 import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
 import { ReactNode, useContext, useEffect } from "react";
 import { rspc } from "./ClientProviders";
-import useAlgorithmConfigs from "./TableConfigs/Algorithms";
-import { useLoadoutConfigs } from "./TableConfigs/Loadouts";
-import { useSkillConfigs } from "./TableConfigs/Skills";
-import useSlotConfigs from "./TableConfigs/Slots";
 import { useStoreConfigs } from "./TableConfigs/Units";
 import { useGenericConfig } from "./TableConfigs/useGenericConfig";
 
@@ -16,15 +12,24 @@ interface Props {
 const DbDollProvider = ({ children }: Props) => {
   const { setUnsaved } = useContext(SaveContext);
   const storeValues = useStoreConfigs();
-  const loadoutValues = useLoadoutConfigs();
-  const skillValues = useSkillConfigs();
-  // const algorithmValues = useAlgorithmConfigs();
-  const slotValues = useSlotConfigs();
   const refresh = useStoreRefresh();
 
-
-  // TODO: name resolution
-  const algorithmValues = useGenericConfig<AlgoPiece>({storeApi: 'algoPiecesByLoadoutId', constraint: 'loadoutId'})
+  const loadout = useGenericConfig<Loadout>({
+    storeApi: "loadoutByUnitId",
+    constraint: "loadoutType",
+  });
+  const skill = useGenericConfig<UnitSkill>({
+    storeApi: "skillLevelsByUnitIds",
+    constraint: "loadoutId",
+  });
+  const algoPiece = useGenericConfig<AlgoPiece>({
+    storeApi: "algoPiecesByLoadoutId",
+    constraint: "loadoutId",
+  });
+  const slot = useGenericConfig<Slot>({
+    storeApi: "slotsByAlgoPieceIds",
+    constraint: "algoPieceId",
+  });
 
   const saveUnitsMutation = rspc.useMutation(["saveUnits"]);
   function saveUnits() {
@@ -33,36 +38,45 @@ const DbDollProvider = ({ children }: Props) => {
     });
   }
 
-  useEffect(() => {
-  console.warn('should see', storeValues.dirtyUnits)
-  }, [storeValues.units]);
+  const dirtyData = [
+    loadout.dirtyData,
+    skill.dirtyData,
+    algoPiece.dirtyData,
+    slot.dirtyData,
+  ];
 
-
+  // TODO: test after finishing refactoring
   useEffect(() => {
     setUnsaved(
       storeValues.dirtyUnits.length > 0 ||
-        loadoutValues.dirtyLoadouts.length > 0 ||
-        skillValues.dirtySkills.length > 0 ||
-        algorithmValues.dirtyData.length > 0 ||
-        slotValues.dirtySlots.length > 0
+        dirtyData.reduce((accu, current) => accu || current.length > 0, false)
     );
-  }, [
-    setUnsaved,
-    storeValues.dirtyUnits,
-    loadoutValues.dirtyLoadouts,
-    skillValues.dirtySkills,
-    algorithmValues.dirtyData,
-    slotValues.dirtySlots,
-  ]);
+  }, [setUnsaved, storeValues.dirtyUnits, ...dirtyData]);
+  // useEffect(() => {
+  //   setUnsaved(
+  //     storeValues.dirtyUnits.length > 0 ||
+  //       loadout.dirtyData.length > 0 ||
+  //       skill.dirtyData.length > 0 ||
+  //       algoPiece.dirtyData.length > 0 ||
+  //       slot.dirtyData.length > 0
+  //   );
+  // }, [
+  //   setUnsaved,
+  //   storeValues.dirtyUnits,
+  //   loadout.dirtyData,
+  //   skill.dirtyData,
+  //   algoPiece.dirtyData,
+  //   slot.dirtyData,
+  // ]);
 
   return (
     <DbDollContext.Provider
       value={{
         ...storeValues,
-        ...loadoutValues,
-        ...skillValues,
-        ...algorithmValues,
-        ...slotValues,
+        algoPiece,
+        loadout,
+        slot,
+        skill,
         saveUnits,
       }}
     >
