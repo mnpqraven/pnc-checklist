@@ -30,6 +30,7 @@ type Props<T extends PassableStructs> = {
 
 interface Ret<RetT> {
   data: RetT[];
+  store: RetT[] | undefined
   dirtyData: RetT[];
   currentData: RetT[];
   updateData: (to: RetT, equals: string) => void;
@@ -70,12 +71,20 @@ export function useGenericConfig<T extends PassableStructs>({
     if (store)
       dispatchDirtyOnTop({
         name: "SET",
-        store: store,
+        store,
         dirties: dirtyList,
       });
   }, [dirtyList]);
 
+  /**
+   * required equal variable for each data type
+   * AlgoPiece: loadoutId
+   * UnitSkill: loadoutId
+   * Loadout: loadoutType
+   * Slot: algoPieceId
+   */
   function updateData(to: T, equals: string) {
+    console.warn('to', to)
     if (!store) throw new Error("should be defined here already");
     dispatchDirtyList({ name: "UPDATE", store, to });
     dispatchList({
@@ -88,6 +97,7 @@ export function useGenericConfig<T extends PassableStructs>({
 
   let ret: Ret<T> = {
     data: dirtyOnTop,
+    store: store as T[],
     dirtyData: dirtyList,
     currentData: currentList,
     updateData,

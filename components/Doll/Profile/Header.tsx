@@ -6,8 +6,9 @@ import { ClassSelect } from "./ClassSelect";
 import Button from "@/components/Button";
 import { Class } from "@/src-tauri/bindings/rspc";
 
-const DollHeader = ({ handleSave }: { handleSave: () => void }) => {
-  const { currentUnit, updateCurrentUnit } = useContext(DbDollContext);
+const DollHeader = () => {
+  // TODO: expand saveUnits to all dirty entries
+  const { currentUnit, updateCurrentUnit, saveUnits } = useContext(DbDollContext);
   const { fireToast } = useContext(ToastContext);
   const { isUnsaved } = useContext(SaveContext);
 
@@ -37,7 +38,7 @@ const DollHeader = ({ handleSave }: { handleSave: () => void }) => {
           <Button
             label="Save changes"
             onClick={() => {
-              handleSave();
+              saveUnits();
               fireToast();
             }}
           />

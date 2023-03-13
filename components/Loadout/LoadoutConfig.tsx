@@ -1,7 +1,5 @@
-import { Unit } from "@/src-tauri/bindings/structs";
 import { DEFAULT_LEVEL } from "@/utils/defaults";
 import { useContext, useState } from "react";
-import { Updater } from "use-immer";
 import {
   Root,
   Trigger,
@@ -22,67 +20,52 @@ import {
   ChevronRightIcon,
 } from "@radix-ui/react-icons";
 import { DbDollContext } from "@/interfaces/payloads";
-import { useMutateAlgoFillSlot } from "@/utils/hooks/algo/mutateAlgo";
-import { rspc } from "../Providers/ClientProviders";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
 
 type Props = {
-  unitHandler: Updater<Unit>;
   type: LoadoutType;
 };
 const UNDO_TYPES = {
   LOADOUT: "This section",
-  UNIT: "Unit",
+  UNIT: "This unit",
 } as const;
 type UndoTypes = keyof typeof UNDO_TYPES;
 
-const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
+const LoadoutConfig = ({ type: loadoutType }: Props) => {
   const undoTypes: UndoTypes[] = ["LOADOUT", "UNIT"];
 
-  const { currentUnit, currentUnitId } = useContext(DbDollContext);
-  const { data: unit } = rspc.useQuery(['getUnitFromId', currentUnitId ])
+  const { currentUnitId, loadout, algoFillSlot, undoChanges } =
+    useContext(DbDollContext);
+  const thisLoadout = loadout.data.find(
+    (e) => e.unitId == currentUnitId && e.loadoutType == loadoutType
+  );
+
   const [keepOpen, setKeepOpen] = useState(false);
-  const algoFillSlot = useMutateAlgoFillSlot({ setDollData, loadoutType });
 
   function fillAlgo(allOrNone: boolean, e: Event) {
     if (keepOpen) e.preventDefault();
-    if (currentUnit)
-      algoFillSlot.mutate({ allOrNone, input: currentUnit[loadoutType].algo });
+    if (thisLoadout) algoFillSlot(thisLoadout.id, allOrNone);
   }
 
   function updateLevel(to: number, e: Event) {
     if (keepOpen) e.preventDefault();
-    setDollData((draft) => {
-      draft[loadoutType].level = to;
-      return draft;
-    });
+    if (thisLoadout) {
+      loadout.updateData({ ...thisLoadout, level: to }, loadoutType);
+    } else throw "should always find a valid loadout";
   }
 
   function clearNeural(e: Event) {
     if (keepOpen) e.preventDefault();
-    setDollData((draft) => {
-      draft[loadoutType].frags = 0;
-      return draft;
-    });
+    if (thisLoadout) {
+      loadout.updateData({ ...thisLoadout, frags: 0 }, loadoutType);
+    } else throw "should always find a valid loadout";
   }
 
   function undoChange(type: UndoTypes, e: Event) {
     if (keepOpen) e.preventDefault();
-    if (unit)
-      switch (type) {
-        case "LOADOUT":
-          setDollData((draft) => {
-            draft[loadoutType] = unit[loadoutType];
-            return draft;
-          });
-          break;
-        case "UNIT":
-          setDollData(unit);
-          break;
-      }
+    undoChanges(currentUnitId, loadoutType, type);
   }
 
-  if (!dollData) return null;
   return (
     <Root>
       <Trigger asChild>
@@ -126,7 +109,7 @@ const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
                   <CheckboxItem
                     key={level}
                     className="DropdownMenuCheckboxItem"
-                    checked={dollData[loadoutType].level === level}
+                    checked={thisLoadout?.level === level}
                     onSelect={(e) => updateLevel(level, e)}
                   >
                     <ItemIndicator className="DropdownMenuItemIndicator">
@@ -140,7 +123,7 @@ const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
             </Portal>
           </Sub>
 
-          {loadoutType !== "goal" && (
+          {loadoutType !== "Goal" && (
             <Item className="DropdownMenuItem" onSelect={clearNeural}>
               Clear Neural Fragments <div className="RightSlot"></div>
             </Item>
@@ -194,4 +177,4 @@ const ConfigDev = ({ type: loadoutType, unitHandler: setDollData }: Props) => {
     </Root>
   );
 };
-export default ConfigDev;
+export default LoadoutConfig;

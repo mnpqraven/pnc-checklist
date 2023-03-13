@@ -1,5 +1,11 @@
 import { DbDollContext, SaveContext } from "@/interfaces/payloads";
-import { AlgoPiece, Loadout, Slot, UnitSkill } from "@/src-tauri/bindings/rspc";
+import {
+  AlgoPiece,
+  Loadout,
+  LoadoutType,
+  Slot,
+  UnitSkill,
+} from "@/src-tauri/bindings/rspc";
 import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
 import { ReactNode, useContext, useEffect } from "react";
 import { rspc } from "./ClientProviders";
@@ -38,6 +44,35 @@ const DbDollProvider = ({ children }: Props) => {
     });
   }
 
+  function algoFillSlot(loadoutId: string, allOrNone: boolean) {
+    console.warn("algopiece", algoPiece.currentData);
+    console.warn("slot", slot.currentData);
+    console.warn("loadout", loadout.currentData);
+  }
+
+  function undoChanges(
+    unitId: string,
+    loadoutType: LoadoutType,
+    undoType: "LOADOUT" | "UNIT"
+  ) {
+    switch (undoType) {
+      case "LOADOUT": {
+        const find = loadout.store?.find(
+          (e) => e.unitId == unitId && e.loadoutType == loadoutType
+        );
+        if (find) loadout.updateData(find, loadoutType);
+        break;
+      }
+      case "UNIT": {
+        const filter = loadout.store?.filter((e) => e.unitId == unitId);
+        filter?.forEach((lo) => loadout.updateData(lo, lo.loadoutType));
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
   const dirtyData = [
     loadout.dirtyData,
     skill.dirtyData,
@@ -45,29 +80,12 @@ const DbDollProvider = ({ children }: Props) => {
     slot.dirtyData,
   ];
 
-  // TODO: test after finishing refactoring
   useEffect(() => {
     setUnsaved(
       storeValues.dirtyUnits.length > 0 ||
         dirtyData.reduce((accu, current) => accu || current.length > 0, false)
     );
   }, [setUnsaved, storeValues.dirtyUnits, ...dirtyData]);
-  // useEffect(() => {
-  //   setUnsaved(
-  //     storeValues.dirtyUnits.length > 0 ||
-  //       loadout.dirtyData.length > 0 ||
-  //       skill.dirtyData.length > 0 ||
-  //       algoPiece.dirtyData.length > 0 ||
-  //       slot.dirtyData.length > 0
-  //   );
-  // }, [
-  //   setUnsaved,
-  //   storeValues.dirtyUnits,
-  //   loadout.dirtyData,
-  //   skill.dirtyData,
-  //   algoPiece.dirtyData,
-  //   slot.dirtyData,
-  // ]);
 
   return (
     <DbDollContext.Provider
@@ -78,6 +96,8 @@ const DbDollProvider = ({ children }: Props) => {
         slot,
         skill,
         saveUnits,
+        algoFillSlot,
+        undoChanges,
       }}
     >
       {children}
