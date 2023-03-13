@@ -4,12 +4,12 @@ import {
   DbDollContext,
   DollContext,
 } from "@/interfaces/payloads";
+import { AlgoMainStat, Algorithm } from "@/src-tauri/bindings/enums";
 import {
   AlgoCategory,
-  AlgoMainStat,
-  Algorithm,
-} from "@/src-tauri/bindings/enums";
-import { AlgoPiece, LoadoutType } from "@/src-tauri/bindings/rspc";
+  AlgoPiece,
+  LoadoutType,
+} from "@/src-tauri/bindings/rspc";
 import { parseAlgoName } from "@/utils/helper";
 import { AlgoTuple, useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useMainStatsQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
@@ -26,7 +26,7 @@ import AlgorithmPiece from "./AlgorithmPiece";
 type Props = {
   algos: AlgoPiece[];
   type: LoadoutType;
-  loadoutId: string
+  loadoutId: string;
 };
 export type OptionPayload = {
   algoTypes: [AlgoCategory, Algorithm[]];
@@ -101,8 +101,8 @@ const AlgorithmSet = ({ algos, type, loadoutId }: Props) => {
           <NewAlgoSet
             key={index}
             category={cat}
-            loadout_type={type}
-            addHandler={() => {}}
+            loadoutType={type}
+            loadoutId={loadoutId}
           />
         ))}
       </div>
@@ -114,9 +114,14 @@ type CategoryContainerProps = {
   category: AlgoCategory;
   algos: AlgoPiece[];
   options: OptionPayload;
-  loadoutId: string
+  loadoutId: string;
 };
-const CategoryContainer = ({ category, algos, options, loadoutId }: CategoryContainerProps) => {
+const CategoryContainer = ({
+  category,
+  algos,
+  options,
+  loadoutId,
+}: CategoryContainerProps) => {
   const algoError: AlgoError[] = useContext(AlgoErrorContext);
   const errList = (category: AlgoCategory): number[] => {
     // e: [ALGOCATEGORY, indexes[]]
@@ -146,31 +151,21 @@ export default AlgorithmSet;
 
 type NewAlgoSetProps = {
   category: AlgoCategory;
-  loadout_type: LoadoutType;
-  addHandler: (
-    value: AlgoPiece,
-    category: AlgoCategory,
-    loadout_type: LoadoutType
-  ) => void;
+  loadoutType: LoadoutType;
+  loadoutId: string;
 };
 
-const NewAlgoSet = ({
-  category,
-  loadout_type,
-  addHandler,
-}: NewAlgoSetProps) => {
-  const { newAlgorithmPiece } = useNewAlgoMutation(
-    addHandler,
-    category,
-    loadout_type
-  );
-  const checkedSlots = loadout_type === "goal";
+const NewAlgoSet = ({ category, loadoutType, loadoutId }: NewAlgoSetProps) => {
+  const ctx = useContext(DbDollContext);
+  const newAlgoPieceMutation = rspc.useMutation(["newAlgoPiece"]);
 
-  return (
-    <Button onClick={() => newAlgorithmPiece({ category, checkedSlots })}>
-      New {category} piece
-    </Button>
-  );
+  function newAlgorithmPiece() {
+    newAlgoPieceMutation.mutate([loadoutId, category, loadoutType === "Goal"], {
+      onSuccess: () => [ctx.algoPiece, ctx.slot].forEach((e) => e.refetch()),
+    });
+  }
+
+  return <Button onClick={newAlgorithmPiece}>New {category} piece</Button>;
 };
 
 const LoadingAlgoSet = () => {

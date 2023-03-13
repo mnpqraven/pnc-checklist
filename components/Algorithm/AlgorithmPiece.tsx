@@ -12,6 +12,7 @@ import Button from "../Button";
 import { AlgoPiece, Algorithm, Class } from "@/src-tauri/bindings/rspc";
 import { invoke } from "@tauri-apps/api/tauri";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { rspc } from "../Providers/ClientProviders";
 
 type Props = {
   pieceData: AlgoPiece;
@@ -66,6 +67,14 @@ const AlgorithmPiece = ({
     algoPiece.updateData(nextPiece, loadoutId);
   }
 
+  const mutation = rspc.useMutation(["deleteAlgoPiece"]);
+  const ctx = useContext(DbDollContext);
+  function deleteAlgoPiece(algoPieceId: string) {
+    mutation.mutate(algoPieceId, {
+      onSuccess: () => [ctx.algoPiece, ctx.slot].forEach((e) => e.refetch()),
+    });
+  }
+
   return (
     <motion.div
       id="algo-piece"
@@ -107,7 +116,10 @@ const AlgorithmPiece = ({
               componentSize={componentSize}
             />
           ) : null}
-          <Button className="small red" onClick={() => {}}>
+          <Button
+            className="small red"
+            onClick={() => deleteAlgoPiece(pieceData.id)}
+          >
             <TrashIcon />
           </Button>
         </div>

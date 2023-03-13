@@ -18,11 +18,15 @@ export type Procedures = {
         { key: "slotsByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
         { key: "version", input: never, result: string },
     mutations: 
+        { key: "deleteAlgoPiece", input: string, result: AlgoPiece } | 
         { key: "deleteUnit", input: string, result: Unit } | 
+        { key: "newAlgoPiece", input: [string | null, AlgoCategory, boolean], result: AlgoPiece } | 
         { key: "newUnit", input: [string, Class], result: Unit } | 
         { key: "saveUnits", input: Array<Unit>, result: Array<Unit> },
     subscriptions: never
 };
+
+export type AlgoCategory = "Offense" | "Stability" | "Special"
 
 export type AlgoMainStat = "Hashrate" | "HashratePercent" | "Atk" | "AtkPercent" | "Health" | "HealthPercent" | "Haste" | "PhysPen" | "PhysPenPercent" | "OperandPen" | "OperandPenPercent" | "CritRate" | "CritDmg" | "DamageInc" | "Dodge" | "HealInc" | "Def" | "DefPercent" | "OperandDef" | "OperandDefPercent" | "PostBattleRegen"
 

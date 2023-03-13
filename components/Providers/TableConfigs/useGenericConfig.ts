@@ -31,6 +31,7 @@ type Props<T extends PassableStructs> = {
 interface Ret<RetT> {
   data: RetT[];
   store: RetT[] | undefined;
+  refetch: () => void;
   dirtyData: RetT[];
   currentData: RetT[];
   updateData: (to: RetT, equals: string) => void;
@@ -39,7 +40,7 @@ export function useGenericConfig<T extends PassableStructs>({
   storeApi,
   constraint,
 }: Props<T>): Ret<T> {
-  const { data: store } = rspc.useQuery([storeApi, null]);
+  const { data: store, refetch } = rspc.useQuery([storeApi, null]);
 
   const [currentList, dispatchList] = useImmerReducer<
     T[],
@@ -94,6 +95,7 @@ export function useGenericConfig<T extends PassableStructs>({
   let ret: Ret<T> = {
     data: dirtyOnTop,
     store: store as T[],
+    refetch,
     dirtyData: dirtyList,
     currentData: currentList,
     updateData,

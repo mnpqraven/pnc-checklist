@@ -54,28 +54,28 @@ version: 0.1.2
     --- (-) `Algorithm`
     --- (x) `Requirement`
     --- (x) `Summary`
-    --- (-) `pages`
+    --- (x) `pages`
     --- (x) `Doll` components (mutations)
     ----- (x) migrate to using `useQuery` in main page `dolls.tsx` first
     ----- (x) then drill to sub components
     - (-) migrate info fetching from managed tauri state to database queries
-    --- (-) dolls: params (name, class) + loadout and unit ids
+    --- (x) dolls: params (name, class) + loadout and unit ids
     ---- (x) dolllist
-    ---- (-) header -> `handleSave()`
-    ---- (-) loadout
+    ---- (x) header -> `handleSave()`
+    ---- (x) loadout
     ---- (x) changing unitId doesn't cache the data
     ---- (x) adding doesn't reflect refetched items
     --- ( ) then we can pass children ids (loadouts then algo pieces) to
         children components,
-    --- ( )  alleviate top heavy data, especially in `<Dolls />`
-    --- (-) refactor DollList component tree
+    --- (x)  alleviate top heavy data, especially in `<Dolls />`
+    --- (x) refactor DollList component tree
     --- (x) dollContext controller needs rewriting
     --- (x) updateIndex -> updateCurrentUnit (unit_id)
     --- (x) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
         updateUnitSkill, updateAlgoPiece, updateSlot)
         or use caches from react query
     --- (x) loadoutconfig
-    --- (-) new algoPiece button
+    --- (x) new algoPiece button
     --- (=) data initialization during adding unit + loading empty database
     ---- (=) custom hook
 

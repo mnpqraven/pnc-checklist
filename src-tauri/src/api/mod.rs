@@ -1,6 +1,6 @@
 pub mod crud;
 use crate::{
-    algorithm::types::{AlgoMainStat, AlgoPiece, Algorithm},
+    algorithm::types::{AlgoCategory, AlgoMainStat, AlgoPiece, Algorithm},
     loadout::types::LoadoutType,
     prisma::{self, algo_piece, loadout, PrismaClient},
     unit::types::{Class, Unit},
@@ -10,7 +10,10 @@ use rspc::{Config, Error, ErrorCode, Router, RouterBuilder};
 use std::{path::PathBuf, sync::Arc};
 use strum::IntoEnumIterator;
 
-use self::crud::unit::{delete_unit, get_unit_from_id, get_units, new_unit};
+use self::crud::{
+    algo::new_algo_piece,
+    unit::{delete_unit, get_unit_from_id, get_units, new_unit},
+};
 
 pub struct Ctx {
     pub client: Arc<prisma::PrismaClient>,
@@ -115,6 +118,16 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .exec()
                     .await
                     .map_err(error_map)
+            })
+        })
+        .mutation("newAlgoPiece", |t| {
+            t(|ctx, (loadout_id, category, checked_slots): (Option<String>, AlgoCategory, bool)| async move {
+                new_algo_piece(&ctx.client, AlgoPiece::new(category, checked_slots), loadout_id).await.map_err(error_map)
+            })
+        })
+        .mutation("deleteAlgoPiece", |t| {
+            t(| ctx, algo_piece_id: String | async move {
+                ctx.client.algo_piece().delete(prisma::algo_piece::id::equals(algo_piece_id)).exec().await.map_err(error_map)
             })
         })
         // INFO: SLOT

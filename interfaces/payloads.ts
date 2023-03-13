@@ -68,6 +68,7 @@ export const AlgoErrorContext = React.createContext<AlgoErrorContextPayload>(
 export interface DbDataProvider<Type> {
   data: Type[];
   updateData: (to: Type, equals: string) => void;
+  refetch: () => void;
 }
 export type DbDollContextPayload = {
   currentUnit: Unit | undefined;
@@ -82,11 +83,15 @@ export type DbDollContextPayload = {
   slot: DbDataProvider<Slot>;
 
   saveUnits: () => void;
-  algoFillSlot: (loadoutId: string, allOrNone: boolean) => void
-  undoChanges: (unitId: string, loadoutType: LoadoutType, undoType: 'LOADOUT' | 'UNIT') => void
+  algoFillSlot: (loadoutId: string, allOrNone: boolean) => void;
+  undoChanges: (
+    unitId: string,
+    loadoutType: LoadoutType,
+    undoType: "LOADOUT" | "UNIT"
+  ) => void;
 };
 
-const placeholder = { data: [], updateData: () => {} };
+const placeholder = { data: [], updateData: () => {}, refetch: () => {} };
 export const DbDollContext = React.createContext<DbDollContextPayload>({
   units: [],
   currentUnit: undefined,
@@ -101,5 +106,5 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
 
   saveUnits: () => {},
   algoFillSlot: () => {},
-  undoChanges: () => {}
+  undoChanges: () => {},
 });

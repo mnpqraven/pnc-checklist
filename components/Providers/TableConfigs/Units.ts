@@ -29,7 +29,6 @@ export const useStoreConfigs = () => {
 
   useEffect(() => {
     if (storeData) {
-      console.warn("store data changed");
       dispatchDirtyList({ name: "CLEAR", store: storeData });
       // updates dirtyOnTop with storeData
       dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store: storeData });
@@ -49,7 +48,6 @@ export const useStoreConfigs = () => {
         dirties: dirtyList,
       });
     }
-    console.warn(dirtyList);
   }, [dirtyList]);
 
   useEffect(() => {

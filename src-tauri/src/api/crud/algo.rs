@@ -3,7 +3,7 @@ use crate::api::AlgoPiece;
 use crate::prisma::{algo_piece, slot, PrismaClient};
 use prisma_client_rust::QueryError;
 
-pub(super) async fn new_algo_piece(
+pub async fn new_algo_piece(
     client: &PrismaClient,
     data: AlgoPiece,
     loadout_id: Option<String>,
