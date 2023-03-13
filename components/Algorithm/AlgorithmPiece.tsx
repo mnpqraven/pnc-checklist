@@ -1,28 +1,17 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { OptionPayload } from "./AlgorithmSet";
 import SlotCheckbox from "./SlotCheckbox";
-import { invoke } from "@tauri-apps/api/tauri";
 import { DbDollContext } from "@/interfaces/payloads";
-import { AlgoSlot } from "@/src-tauri/bindings/structs";
-import {
-  AlgoCategory,
-  AlgoMainStat,
-  SlotPlacement,
-} from "@/src-tauri/bindings/enums";
+import { AlgoCategory, AlgoMainStat } from "@/src-tauri/bindings/enums";
 import PieceModal from "./PieceModal";
 import { AnimatePresence, motion } from "framer-motion";
 import MainStatSelect from "../MainstatSelect";
 import { TrashIcon } from "@radix-ui/react-icons";
 import AlgoImage from "./AlgoImage";
-import { useComputeSlotsMutation } from "@/utils/hooks/mutations/computeSlots";
-import { useImmer } from "use-immer";
-import { Slot } from "@/src-tauri/bindings/structs/Slot";
-import { useEnumTable } from "@/utils/hooks/useEnumTable";
-import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import Button from "../Button";
-import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { AlgoPiece, Algorithm, Class } from "@/src-tauri/bindings/rspc";
-import { parseAlgoName } from "@/utils/helper";
+import { invoke } from "@tauri-apps/api/tauri";
+import { IVK } from "@/src-tauri/bindings/invoke_keys";
 
 type Props = {
   pieceData: AlgoPiece;
@@ -39,37 +28,28 @@ const AlgorithmPiece = ({
   valid,
   loadoutId,
 }: Props) => {
-  const { currentUnit, updatePiece, slots } = useContext(DbDollContext);
+  const { currentUnit, algoPiece } = useContext(DbDollContext);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
-  const [slot, setSlot] = useImmer<AlgoSlot>([]);
-  const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
+  // const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
   const [openModal, setModal] = useState(false);
 
-  const { mutate: updateSlots } = useComputeSlotsMutation();
+  const [componentSize, setComponentSize] = useState(2);
+  function updateComponentSize(algo: Algorithm) {
+    invoke<number>(IVK.ALGO_GET_SLOT_SIZE, { algo }).then(setComponentSize);
+  }
 
   // chaging unit
   useEffect(() => {
     setAlgorithm(pieceData.name);
+    updateComponentSize(pieceData.name as Algorithm);
     setMainStat(pieceData.stat);
-    updateSlots(
-      { name: parseAlgoName(pieceData.name), currentSlots: pieceData.slot },
-      { onSuccess: (data) => setSlot(data) }
-    );
   }, [pieceData]);
 
-  // changing details, passed to parent's setDollData
-  useEffect(() => {
-    // pieceUpdate(piece, category, index);
-    // NOTE: do NOT put pieceUpdate in the depency Array
-    // TODO: test
-  }, [category, piece]);
-
   function pieceHandler(name: Algorithm) {
-    console.warn(name);
     let nextPiece = { ...pieceData, name };
-    setPiece(nextPiece);
-    updatePiece(nextPiece, loadoutId);
+    // setPiece(nextPiece);
+    algoPiece.updateData(nextPiece, loadoutId);
 
     setModal(false);
   }
@@ -80,10 +60,10 @@ const AlgorithmPiece = ({
     else stat = event.currentTarget.value as AlgoMainStat;
 
     let nextPiece = { ...pieceData, stat };
-    setPiece(nextPiece);
+    // setPiece(nextPiece);
     setMainStat(stat);
 
-    updatePiece(nextPiece, loadoutId);
+    algoPiece.updateData(nextPiece, loadoutId);
   }
 
   return (
@@ -124,6 +104,7 @@ const AlgorithmPiece = ({
               pieceId={pieceData.id}
               unitClass={currentUnit.class as Class}
               category={category}
+              componentSize={componentSize}
             />
           ) : null}
           <Button className="small red" onClick={() => {}}>

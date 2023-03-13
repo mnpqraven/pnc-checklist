@@ -125,8 +125,6 @@ const CategoryContainer = ({ category, algos, options, loadoutId }: CategoryCont
     return find[1];
   };
 
-  const { updatePiece } = useContext(DbDollContext)
-
   return (
     <div className="my-2 flex shrink-0 basis-1/3 flex-col">
       {algos

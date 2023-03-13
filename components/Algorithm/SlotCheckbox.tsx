@@ -12,8 +12,14 @@ type Props = {
   unitClass: Class;
   category: AlgoCategory;
   pieceId: string;
+  componentSize: number;
 };
-const SlotCheckbox = ({ unitClass, category, pieceId }: Props) => {
+const SlotCheckbox = ({
+  unitClass,
+  category,
+  pieceId,
+  componentSize,
+}: Props) => {
   const [clickable, setClickable] = useState(2); // default case for 2 falses
   const [size, setSize] = useState(2);
   const { slot } = useContext(DbDollContext);
@@ -31,11 +37,12 @@ const SlotCheckbox = ({ unitClass, category, pieceId }: Props) => {
   }
 
   useEffect(() => {
+    let filteredLength = slot.data.filter(
+      (e) => e.algoPieceId === pieceId && e.value
+    ).length;
+
     setVisible(unitClass, category).then((size) =>
-      setClickable(
-        size -
-          slot.data.filter((e) => e.algoPieceId === pieceId && e.value).length
-      )
+      setClickable(size - filteredLength)
     );
   }, [category, unitClass, slot.data]);
 
@@ -63,19 +70,21 @@ const SlotCheckbox = ({ unitClass, category, pieceId }: Props) => {
     <div className="flex gap-2">
       {slot.data
         .filter((e) => e.algoPieceId == pieceId)
-        .map((slot) => (
-          <Checkbox.Root
-            className="CheckboxRoot"
-            key={slot.placement}
-            checked={slot.value}
-            onCheckedChange={(e) => onChange(e, slot)}
-            disabled={!slot.value && clickable === 0}
-          >
-            <Checkbox.Indicator className="CheckboxIndicator">
-              <CheckIcon />
-            </Checkbox.Indicator>
-          </Checkbox.Root>
-        ))}
+        .map((slot, index) =>
+          index < componentSize ? (
+            <Checkbox.Root
+              className="CheckboxRoot"
+              key={slot.placement}
+              checked={slot.value}
+              onCheckedChange={(e) => onChange(e, slot)}
+              disabled={!slot.value && clickable === 0}
+            >
+              <Checkbox.Indicator className="CheckboxIndicator">
+                <CheckIcon />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+          ) : null
+        )}
     </div>
   );
 };
