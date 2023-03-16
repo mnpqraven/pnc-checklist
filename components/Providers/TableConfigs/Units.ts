@@ -2,13 +2,9 @@ import { Unit } from "@/src-tauri/bindings/rspc";
 import { isEmpty } from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { useImmer, useImmerReducer } from "use-immer";
+import { DirtyListActionables, DirtyOnTopActionables } from "../actionables";
 import { rspc } from "../ClientProviders";
-import {
-  DirtyOnTopActionables,
-  dirtyOnTopReducer,
-  dirtyListReducer,
-  DirtyListActionables,
-} from "./configReducers";
+import { dirtyOnTopReducer, dirtyListReducer } from "./configReducers";
 
 // TODO: refactor all these into a reducer
 export const useStoreConfigs = () => {

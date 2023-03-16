@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-03-13
+updated: 2023-03-16
 version: 0.1.2
 @end
 
@@ -35,7 +35,7 @@ version: 0.1.2
     #UXUI
     - (x) `radix UI`
     --- (x) `ClassFilter`
-    - (-) Doll page:
+    - (x) Doll page:
     --- (x) Loadout: wrench icon top right, slides out for more options: select
         all/none algo, set skill/level/frags to max/min. probably a good spot
         to put loadout name (current/goal) on top
@@ -65,13 +65,14 @@ version: 0.1.2
     ---- (x) loadout
     ---- (x) changing unitId doesn't cache the data
     ---- (x) adding doesn't reflect refetched items
-    --- ( ) then we can pass children ids (loadouts then algo pieces) to
+    --- (x) then we can pass children ids (loadouts then algo pieces) to
         children components,
     --- (x)  alleviate top heavy data, especially in `<Dolls />`
     --- (x) refactor DollList component tree
     --- (x) dollContext controller needs rewriting
     --- (x) updateIndex -> updateCurrentUnit (unit_id)
-    --- (x) updateDirtyStore -> separate table updates (updateLoadouts, updateUnit,
+    --- (x) updateDirtyStore -> separate table updates (updateLoadouts,
+            updateUnit,
         updateUnitSkill, updateAlgoPiece, updateSlot)
         or use caches from react query
     --- (x) loadoutconfig
@@ -121,6 +122,9 @@ version: 0.1.2
     ----- (-) rspc setup
     ------ (-) clean up binding mapping
     ------ (-) refactor to module
+    --- ( ) prisma string to enum cast
+    --- ( ) migrate fns using `Computed` to use prisma database (lots in
+            `Requirement` module)
     - (x) tokio
     - (_) try `Suspense` with swr
     ---- Didn't work, `Suspense` triggers data fetching before `invoke` IPC
@@ -160,6 +164,8 @@ version: 0.1.2
          easier to read.
     - (x) inverting bools in `AlgoRequirment` feels unintuitive, maybe flip
       value
+    - (-) refactor away old invoke commands and replace with prisma calls
+    - (?) a helper fn to cast from db type to rust type
 
     #maintenance
     - (-) refactors

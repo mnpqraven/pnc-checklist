@@ -48,7 +48,7 @@ model AlgoPiece {
   stat     String
   slot     Slot[]
 
-  Loadout   Loadout? @relation(fields: [loadoutId], references: [id])
+  Loadout   Loadout? @relation(fields: [loadoutId], references: [id], onDelete: Cascade)
   loadoutId String?
 }
 

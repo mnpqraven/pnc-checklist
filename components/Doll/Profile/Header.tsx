@@ -9,14 +9,25 @@ import { useContext } from "react";
 import { ClassSelect } from "./ClassSelect";
 import Button from "@/components/Button";
 import { Class } from "@/src-tauri/bindings/rspc";
+import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
 
 const DollHeader = () => {
-  // TODO: expand saveUnits to all dirty entries
-  // to Promise, needs to handle rejection with fireToast
   const { currentUnit, updateCurrentUnit, saveDatabase } =
     useContext(DbDollContext);
   const { fireToast } = useContext(ToastContext);
   const { isUnsaved } = useContext(SaveContext);
+  function saveOnClick() {
+    saveDatabase()
+      .catch((err) => {
+        fireToast({
+          header: "Save failed",
+          content: `Saving data failed. Reason: ${err}`,
+        });
+      })
+      .finally(() =>
+        fireToast({ header: SUCCESS, content: TOAST_SAVE_CONTENT_OK })
+      );
+  }
 
   if (!currentUnit || !updateCurrentUnit) return null;
 
@@ -38,15 +49,7 @@ const DollHeader = () => {
       <div className="grow" />
 
       <AnimatePresence>
-        {isUnsaved && (
-          <Button
-            label="Save changes"
-            onClick={() => {
-              saveDatabase();
-              fireToast();
-            }}
-          />
-        )}
+        {isUnsaved && <Button label="Save changes" onClick={saveOnClick} />}
       </AnimatePresence>
     </div>
   );

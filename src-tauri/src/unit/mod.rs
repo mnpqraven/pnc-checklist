@@ -12,6 +12,7 @@ use tauri::State;
 mod impls;
 pub mod types;
 
+// TODO: to refactor
 #[tauri::command]
 pub async fn get_units(computed: State<'_, Computed>) -> Result<Vec<Unit>, TauriError> {
     println!("[invoke] view_store_units");
@@ -21,6 +22,7 @@ pub async fn get_units(computed: State<'_, Computed>) -> Result<Vec<Unit>, Tauri
     }
 }
 
+// TODO: to refactor
 #[tauri::command]
 /// Adds a new `Unit` into the database
 /// NOTE: origin data needs an `Arc::new()` &&
@@ -51,6 +53,7 @@ pub async fn new_unit(
     res
 }
 
+// TODO: to refactor
 #[tauri::command]
 pub fn delete_unit(index: usize, computed: State<Computed>) -> Result<usize, TauriError> {
     println!("[invoke] delete_units");
@@ -71,6 +74,7 @@ pub fn delete_unit(index: usize, computed: State<Computed>) -> Result<usize, Tau
     res
 }
 
+// TODO: to refactor
 #[tauri::command]
 pub fn get_unit(index: usize, computed: State<Computed>) -> Result<Unit, TauriError> {
     if let Ok(g_computed) = computed.units.lock() {
@@ -89,6 +93,7 @@ pub fn get_unit(index: usize, computed: State<Computed>) -> Result<Unit, TauriEr
     }
 }
 
+// TODO: to refactor
 #[tauri::command]
 pub fn save_units(
     units: Vec<(Unit, usize)>,

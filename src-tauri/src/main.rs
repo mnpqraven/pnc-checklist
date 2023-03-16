@@ -5,6 +5,7 @@
 #![feature(arc_unwrap_or_clone)]
 #![feature(slice_partition_dedup)]
 #![feature(slice_group_by)]
+#![feature(async_fn_in_trait)]
 
 mod algorithm;
 mod api;
@@ -20,6 +21,7 @@ mod stats;
 mod table;
 mod unit;
 mod validator;
+pub mod traits;
 
 use crate::{
     algorithm::{

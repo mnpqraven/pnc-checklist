@@ -1,10 +1,7 @@
 import { useContext, useEffect } from "react";
 import { LoadoutContainer } from "@/components/Common";
 import React from "react";
-import {
-  DbDollContext,
-  ToastContext,
-} from "@/interfaces/payloads";
+import { DbDollContext, ToastContext } from "@/interfaces/payloads";
 import Skeleton from "react-loading-skeleton";
 import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
 import DollHeader from "./Profile/Header";
@@ -13,11 +10,6 @@ import LoadoutConfig from "../Loadout/LoadoutConfig";
 
 const DollProfile = () => {
   const { loadout, currentUnitId } = useContext(DbDollContext);
-  const { setHeaderContent } = useContext(ToastContext);
-
-  useEffect(() => {
-    setHeaderContent(SUCCESS, TOAST_SAVE_CONTENT_OK);
-  }, []);
 
   return (
     <div className="flex w-[54rem] flex-col">
@@ -28,12 +20,8 @@ const DollProfile = () => {
         .map((loadout, index) => (
           <div className="card component_space" key={index}>
             <div className="float-right">
-              {/* INFO: IN QUEUE AFTER ALGO
-          */}
-            <LoadoutConfig
-              unitHandler={() => {}}
-              type={loadout.loadoutType as LoadoutType}
-            />
+              {/* INFO: IN QUEUE AFTER ALGO */}
+              <LoadoutConfig type={loadout.loadoutType as LoadoutType} />
             </div>
 
             <LoadoutContainer

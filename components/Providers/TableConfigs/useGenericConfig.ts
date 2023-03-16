@@ -1,24 +1,18 @@
 import { Procedures } from "@/src-tauri/bindings/rspc";
 import { useEffect } from "react";
 import { useImmerReducer } from "use-immer";
-import { rspc } from "../ClientProviders";
 import {
   CurrentActionables,
-  currentReducer,
   DirtyListActionables,
-  dirtyListReducer,
   DirtyOnTopActionables,
+  PassableStructs,
+} from "../actionables";
+import { rspc } from "../ClientProviders";
+import {
+  currentReducer,
+  dirtyListReducer,
   dirtyOnTopReducer,
-  Id,
 } from "./configReducers";
-
-type Extends<T, U extends T> = U;
-type ArrayType<Type> = Type extends Array<infer X extends Id> ? X : never;
-
-export type PassableStructs = Extends<
-  Id,
-  ArrayType<Procedures["queries"]["result"]>
->;
 
 type Props<T extends PassableStructs> = {
   storeApi: Extract<
@@ -62,7 +56,7 @@ export function useGenericConfig<T extends PassableStructs>({
       dispatchDirtyList({ name: "CLEAR", store });
       dispatchDirtyOnTop({ name: "CONFORM_WITH_STORE", store });
     }
-  }, [store]);
+  }, [dispatchDirtyList, dispatchDirtyOnTop, store]);
 
   useEffect(() => {
     if (store)
@@ -71,7 +65,7 @@ export function useGenericConfig<T extends PassableStructs>({
         store,
         dirties: dirtyList,
       });
-  }, [dirtyList]);
+  }, [dirtyList, dispatchDirtyOnTop]);
 
   /**
    * required equal variable for each data type

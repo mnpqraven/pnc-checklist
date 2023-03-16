@@ -22,6 +22,10 @@ export type Procedures = {
         { key: "deleteUnit", input: string, result: Unit } | 
         { key: "newAlgoPiece", input: [string | null, AlgoCategory, boolean], result: AlgoPiece } | 
         { key: "newUnit", input: [string, Class], result: Unit } | 
+        { key: "saveAlgoPieces", input: Array<AlgoPiece>, result: Array<AlgoPiece> } | 
+        { key: "saveLoadouts", input: Array<Loadout>, result: Array<Loadout> } | 
+        { key: "saveSlots", input: Array<Slot>, result: Array<Slot> } | 
+        { key: "saveUnitSkills", input: Array<UnitSkill>, result: Array<UnitSkill> } | 
         { key: "saveUnits", input: Array<Unit>, result: Array<Unit> },
     subscriptions: never
 };

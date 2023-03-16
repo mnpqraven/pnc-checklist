@@ -37,16 +37,27 @@ const DbDollProvider = ({ children }: Props) => {
     constraint: "algoPieceId",
   });
 
-  const saveUnitsMutation = rspc.useMutation(["saveUnits"]);
-  async function saveDatabase() {}
-  async function saveUnits() {
-    saveUnitsMutation.mutate(storeValues.dirtyUnits, {
-      onSuccess: () => refresh.refreshUnits(),
-    });
-  }
-  async function saveLoadouts() {
+  const sUnits = rspc.useMutation(["saveUnits"]);
+  const sLoadouts = rspc.useMutation(["saveLoadouts"]);
+  const sUnitSkills = rspc.useMutation(["saveUnitSkills"]);
+  const sAlgoPieces = rspc.useMutation(["saveAlgoPieces"]);
+  const sSlots = rspc.useMutation(["saveSlots"]);
 
-    }
+  const saveUnits = async () => sUnits.mutateAsync(storeValues.dirtyUnits);
+  const saveLoadouts = async () => sLoadouts.mutateAsync(loadout.dirtyData);
+  const saveUnitSkills = async () => sUnitSkills.mutateAsync(skill.dirtyData);
+  const saveAlgoPieces = async () => sAlgoPieces.mutateAsync(algoPiece.dirtyData);
+  const saveSlots = async () => sSlots.mutateAsync(slot.dirtyData);
+
+  async function saveDatabase() {
+    return Promise.all([
+      saveUnits(),
+      saveLoadouts(),
+      saveUnitSkills(),
+      saveAlgoPieces(),
+      saveSlots(),
+    ]).then(refresh.refreshAll);
+  }
 
   function algoFillSlot(loadoutId: string, allOrNone: boolean) {
     slot.data

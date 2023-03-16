@@ -1,12 +1,19 @@
+use std::str::FromStr;
+
 use strum::IntoEnumIterator;
 
 use super::types::*;
-use crate::table::{
-    consts::{
-        ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
-        ALGO_SPECIAL, ALGO_STABILITY,
+use crate::{
+    prisma::{algo_piece, slot},
+    service::db::get_db,
+    table::{
+        consts::{
+            ALGO_MAINSTAT_OFFENSE, ALGO_MAINSTAT_SPECIAL, ALGO_MAINSTAT_STABILITY, ALGO_OFFENSE,
+            ALGO_SPECIAL, ALGO_STABILITY,
+        },
+        types::Day,
     },
-    types::Day,
+    traits::FromAsync,
 };
 
 impl Algorithm {
@@ -149,7 +156,7 @@ impl AlgoSet {
     }
 
     /// consumes a bucket of AlgoPiece to update the AlgoSet
-    fn get_set(bucket: &[AlgoPiece]) -> Self {
+    pub fn get_set(bucket: &[AlgoPiece]) -> Self {
         Self {
             offense: bucket
                 .iter()
@@ -294,6 +301,53 @@ impl AlgoPiece {
             true if ALGO_OFFENSE.contains(&self.name) => AlgoCategory::Offense,
             true if ALGO_STABILITY.contains(&self.name) => AlgoCategory::Stability,
             _ => AlgoCategory::Special,
+        }
+    }
+}
+
+impl FromAsync<algo_piece::Data> for AlgoPiece {
+    async fn from_async(value: algo_piece::Data) -> Self {
+        let client = get_db().await;
+        let piece = client
+            .algo_piece()
+            .find_unique(algo_piece::id::equals(value.id))
+            .with(algo_piece::slot::fetch(vec![]))
+            .exec()
+            .await
+            .unwrap()
+            .unwrap();
+        let slot: AlgoSlot = AlgoSlot(
+            futures::future::join_all(
+                piece
+                    .slot()
+                    .unwrap()
+                    .iter()
+                    .map(|slot| async { Slot::from_async(slot.clone()).await }),
+            )
+            .await,
+        );
+        Self {
+            name: Algorithm::from_str(&piece.name).unwrap(),
+            stat: AlgoMainStat::from_str(&piece.stat).unwrap(),
+            category: AlgoCategory::from_str(&piece.category).unwrap(),
+            slot,
+        }
+    }
+}
+
+impl FromAsync<slot::Data> for Slot {
+    async fn from_async(value: slot::Data) -> Self {
+        let client = get_db().await;
+        let slot = client
+            .slot()
+            .find_unique(slot::id::equals(value.id))
+            .exec()
+            .await
+            .unwrap()
+            .unwrap();
+        Self {
+            placement: SlotPlacement::from_str(&slot.placement).unwrap(),
+            value: slot.value,
         }
     }
 }

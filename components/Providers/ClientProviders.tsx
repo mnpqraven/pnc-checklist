@@ -48,12 +48,9 @@ const Providers = ({ children }: Props) => {
   const [content, setContent] = useState("");
   const timerRef = React.useRef(0);
 
-  const setHeaderContent = (header = "", content = "") => {
-    setHeader(header);
-    setContent(content);
-  };
-
-  function fireToast() {
+  function fireToast(text: {header?: string, content?: string}) {
+    if (text.header) setHeader(text.header)
+    if (text.content) setContent(text.content)
     setOpen(false);
 
     window.clearTimeout(timerRef.current);
@@ -71,7 +68,6 @@ const Providers = ({ children }: Props) => {
             setOpen,
             header,
             content,
-            setHeaderContent,
             fireToast,
           }}
         >

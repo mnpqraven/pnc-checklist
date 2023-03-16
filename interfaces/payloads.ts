@@ -43,15 +43,13 @@ export type ToastContextPayload = {
   setOpen: (e: boolean) => void;
   header: string;
   content: string;
-  setHeaderContent: (header?: string, content?: string) => void;
-  fireToast: () => void;
+  fireToast: (to: {header?: string, content?: string}) => void;
 };
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,
   setOpen: () => {},
   header: "Default Header",
   content: "Default Content",
-  setHeaderContent: () => {},
   fireToast: () => {},
 });
 
@@ -82,7 +80,7 @@ export type DbDollContextPayload = {
   algoPiece: DbDataProvider<AlgoPiece>;
   slot: DbDataProvider<Slot>;
 
-  saveDatabase: () => void;
+  saveDatabase: () => Promise<any>;
   algoFillSlot: (loadoutId: string, allOrNone: boolean) => void;
   undoChanges: (
     unitId: string,
@@ -104,7 +102,7 @@ export const DbDollContext = React.createContext<DbDollContextPayload>({
   algoPiece: placeholder,
   slot: placeholder,
 
-  saveDatabase: () => {},
+  saveDatabase: async () => {},
   algoFillSlot: () => {},
   undoChanges: () => {},
 });

@@ -2,8 +2,8 @@ pub mod crud;
 use crate::{
     algorithm::types::{AlgoCategory, AlgoMainStat, AlgoPiece, Algorithm},
     loadout::types::LoadoutType,
-    prisma::{self, algo_piece, loadout, PrismaClient},
-    unit::types::{Class, Unit},
+    prisma::{self, algo_piece, loadout, slot, unit_skill, PrismaClient},
+    unit::types::{Class, Unit}, traits::FromAsync,
 };
 use prisma_client_rust::QueryError;
 use rspc::{Config, Error, ErrorCode, Router, RouterBuilder};
@@ -48,7 +48,10 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
         .mutation("newUnit", |t| {
             t(|ctx, (name, class): (String, Class)| async move {
                 let unit = Unit::new(name, class);
-                new_unit(&ctx.client, unit).await.map_err(error_map)
+                let new_unit = new_unit(&ctx.client, unit).await.map_err(error_map);
+                let t = Unit::from_async(new_unit.clone().unwrap()).await;
+                println!("{:?}", t);
+                new_unit
             })
         })
         .mutation("deleteUnit", |t| {
@@ -120,6 +123,22 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .map_err(error_map)
             })
         })
+        .mutation("saveUnitSkills", |t| {
+            t(|ctx, unit_skills: Vec<unit_skill::Data>| async move {
+                ctx.client
+                    ._batch(unit_skills.into_iter().map(|data| {
+                        ctx.client.unit_skill().update(
+                            unit_skill::id::equals(data.id),
+                            vec![
+                            unit_skill::passive::set(data.passive),
+                            unit_skill::auto::set(data.auto),
+                            ],
+                        )
+                    }))
+                    .await
+                    .map_err(error_map)
+            })
+        })
         // INFO: ALGOPIECE
         .query("algoPiecesByLoadoutId", |t| {
             t(|ctx, loadout_ids: Option<Vec<String>>| async move {
@@ -146,6 +165,19 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                 ctx.client.algo_piece().delete(prisma::algo_piece::id::equals(algo_piece_id)).exec().await.map_err(error_map)
             })
         })
+        .mutation("saveAlgoPieces", |t| {
+            t(|ctx, algo_pieces: Vec<algo_piece::Data>| async move {
+                ctx.client._batch(algo_pieces.into_iter().map(|data| {
+                        ctx.client.algo_piece().update(
+                            algo_piece::id::equals(data.id),
+                            vec![
+                            algo_piece::name::set(data.name),
+                            algo_piece::stat::set(data.stat),
+                            ],
+                        )
+                    })).await.map_err(error_map)
+            })
+        })
         // INFO: SLOT
         .query("slotsByAlgoPieceIds", |t| {
             t(|ctx, algo_piece_ids: Option<Vec<String>>| async move {
@@ -153,6 +185,20 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
                     .await
                     .map_err(error_map)
             })
+        })
+        .mutation("saveSlots", |t| {
+            t(|ctx, slots: Vec<slot::Data>| async move {
+                ctx.client._batch(slots.into_iter().map(|data| {
+                        ctx.client.slot().update(
+                            slot::id::equals(data.id),
+                            vec![
+                            slot::placement::set(data.placement),
+                            slot::value::set(data.value),
+                            ],
+                        )
+                    })).await.map_err(error_map)
+            })
+
         })
         // INFO: ENUMS
         .query("listLoadoutType", |t| {

@@ -4,11 +4,12 @@ use rspc::Type;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter};
+use strum_macros::EnumString;
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(
     Serialize, Deserialize, JsonSchema, Debug, Clone, EnumIter, Display, PartialEq, Eq,
-    Type
+    Type, EnumString
 )]
 /// List of algorithms
 pub enum Algorithm {
@@ -67,7 +68,7 @@ pub struct Slot {
 pub struct AlgoSlot(pub Vec<Slot>);
 
 #[derive(
-    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema,
+    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema, EnumString
 )]
 pub enum SlotPlacement {
     One,
@@ -101,7 +102,7 @@ pub struct AlgoSet {
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(
-    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema,
+    Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema, EnumString
 )]
 pub enum AlgoMainStat {
     Hashrate,
@@ -150,7 +151,7 @@ pub enum AlgoSubStat {
     HashratePercent,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Display, Clone, Copy, Type, EnumIter, JsonSchema)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Display, Clone, Copy, Type, EnumIter, JsonSchema, EnumString)]
 pub enum AlgoCategory {
     Offense,
     Stability,

@@ -52,3 +52,12 @@ impl ValidData<Coin> for Coin {
         Ok(None)
     }
 }
+
+impl NeuralFragment {
+    pub fn new(value: Option<i32>) -> Self {
+        match value {
+            Some(num) => Self(Some(num as u32)),
+            None => Self(None)
+        }
+    }
+}

@@ -1,40 +1,7 @@
 import { deep_eq } from "@/utils/helper";
 import { castDraft, Draft } from "immer";
+import { CurrentActionables, DirtyListActionables, DirtyOnTopActionables } from "../actionables";
 import { PassableStructs } from "./useGenericConfig";
-
-export interface Id {
-  id: string;
-}
-
-export type DirtyOnTopActionables<T extends PassableStructs> =
-  | {
-      name: "CONFORM_WITH_STORE";
-      store: Array<PassableStructs>;
-    }
-  | {
-      name: "SET";
-      store: Array<PassableStructs>;
-      dirties: Array<T>;
-    };
-
-export type DirtyListActionables<T extends PassableStructs> =
-  | {
-      name: "UPDATE";
-      store: Array<PassableStructs>;
-      to: T;
-    }
-  | {
-      name: "CLEAR";
-      store: Array<PassableStructs>;
-    };
-
-// type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type CurrentActionables<T extends PassableStructs> = {
-  name: "UPDATE";
-  to: T;
-  constraint: keyof T;
-  equals: string; // value to compare
-};
 
 export function currentReducer<T extends PassableStructs>(
   draft: any[],
