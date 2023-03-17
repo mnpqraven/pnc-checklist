@@ -5,6 +5,7 @@
 #![feature(arc_unwrap_or_clone)]
 #![feature(slice_partition_dedup)]
 #![feature(slice_group_by)]
+#![allow(incomplete_features)]
 #![feature(async_fn_in_trait)]
 
 mod algorithm;
@@ -19,15 +20,15 @@ mod service;
 mod state;
 mod stats;
 mod table;
+pub mod traits;
 mod unit;
 mod validator;
-pub mod traits;
 
 use crate::{
     algorithm::{
         algo_get_slot_size, algo_piece_new, algo_set_fill, algo_set_new, algo_slots_compute,
-        algorithm_all, default_slot_size, main_stat_all, print_algo,
-        print_main_stat, print_main_stats,
+        algorithm_all, default_slot_size, main_stat_all, print_algo, print_main_stat,
+        print_main_stats,
     },
     compute::{get_needed_rsc, update_chunk},
     requirement::{
@@ -37,37 +38,36 @@ use crate::{
     },
     service::{
         enum_ls,
-        file::{export, import, set_default_file},
+        file::{export, import, set_default_file}, enum_ls_pretty,
     },
     state::{clear_ownerless, get_tauri_version, remove_kc, view_locker},
     table::{get_algo_by_days, get_algo_db, get_bonuses},
-    unit::{delete_unit, get_unit, get_units, new_unit, save_units},
+    unit::{delete_unit, get_unit, save_units},
     validator::{validate, validate_slots},
 };
 use requirement::types::DatabaseRequirement;
-use service::db::{db_path_url, load_and_migrate };
-use state::types::{Computed, JSONStorage, KeychainTable, UserJSON};
+use service::db::{db_path_url, load_and_migrate};
+use state::types::{Computed, JSONStorage, KeychainTable};
 use std::{
     error::Error,
     sync::{Arc, Mutex},
 };
 #[allow(unused_imports)]
 use tauri::Manager;
-use unit::types::Unit;
+use unit::{get_units_iternal, types::Unit};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     // INFO: PRISMA + RSPC
-    let router = api::new().build().arced();
+    let router = api::init_router();
     let (db_path, db_url) = db_path_url();
     let client = load_and_migrate(&db_path, &db_url).await;
-    // preload enum data onto the database
 
-    let initial_units: Vec<Unit> = UserJSON::default().units;
-    let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units);
+    let initial_units: Vec<Unit> = get_units_iternal().await.unwrap();
+    let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units.clone());
     let state_computed = Computed {
         database_req: Mutex::new(
-            DatabaseRequirement::process_list(&initial_am_units)
+            DatabaseRequirement::process_list(initial_units)
                 .expect("process_list stack should not have any blocking thread"),
         ),
         units: Mutex::new(initial_am_units),
@@ -112,6 +112,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             update_chunk,
             // model
             enum_ls,
+            enum_ls_pretty,
             // requirement
             requirement_slv,
             requirement_level,
@@ -135,8 +136,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             get_bonuses,
             get_algo_by_days,
             // unit
-            get_units,
-            new_unit,
             delete_unit,
             save_units,
             get_unit,

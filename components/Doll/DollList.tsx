@@ -16,16 +16,16 @@ type Props = {
 const DollList = ({ filter, isVisible }: Props) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { updateCurrentUnitId, units } = useContext(DbDollContext);
-  const { isLoading, isError } = rspc.useQuery(["getUnits"]);
+  const { isLoading, isError } = rspc.useQuery(["units.get"]);
   const {
     data: los,
     isLoading: isLoadingLo,
     isError: isErrorLo,
-  } = rspc.useQuery(["loadoutByUnitId", null]);
+  } = rspc.useQuery(["loadouts.get"]);
   const { refreshAll, refreshUnits } = useStoreRefresh();
 
-  const newUnitMutation = rspc.useMutation(["newUnit"]);
-  const deleteUnitMutation = rspc.useMutation(["deleteUnit"]);
+  const newUnitMutation = rspc.useMutation(["unit.new"]);
+  const deleteUnitMutation = rspc.useMutation(["unit.delete"]);
 
   function addUnit() {
     newUnitMutation.mutate([nextUnitName, "Guard"], {

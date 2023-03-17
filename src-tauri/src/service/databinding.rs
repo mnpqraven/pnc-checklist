@@ -62,6 +62,16 @@ where
     }
     list
 }
+pub(super) fn gen_vec_pretty<T>() -> Vec<String>
+where
+    T: IntoEnumIterator + Debug + Display,
+{
+    let mut list: Vec<String> = Vec::new();
+    for item in T::iter() {
+        list.push(item.to_string())
+    }
+    list
+}
 
 #[derive(EnumString, Display)]
 pub enum Folder {

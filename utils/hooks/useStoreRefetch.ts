@@ -1,17 +1,11 @@
 import { rspc } from "@/components/Providers/ClientProviders";
 
 export const useStoreRefresh = () => {
-  const { refetch: refreshSlv } = rspc.useQuery(["skillLevelsByUnitIds", null]);
-  const { refetch: refreshLoadout } = rspc.useQuery(["loadoutByUnitId", null]);
-  const { refetch: refreshPieces } = rspc.useQuery([
-    "algoPiecesByLoadoutId",
-    null,
-  ]);
-  const { refetch: refreshSlots } = rspc.useQuery([
-    "slotsByAlgoPieceIds",
-    null,
-  ]);
-  const { refetch: refreshUnits } = rspc.useQuery(["getUnits"]);
+  const { refetch: refreshSlv } = rspc.useQuery(["unitSkills.get"]);
+  const { refetch: refreshLoadout } = rspc.useQuery(["loadouts.get"]);
+  const { refetch: refreshPieces } = rspc.useQuery(["algoPieces.get"]);
+  const { refetch: refreshSlots } = rspc.useQuery(["slots.get"]);
+  const { refetch: refreshUnits } = rspc.useQuery(["units.get"]);
 
   function refreshAll() {
     refreshSlv();

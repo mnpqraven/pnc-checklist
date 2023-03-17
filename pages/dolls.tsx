@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { DollList, DollProfile } from "@/components/Doll";
-import DollProvider from "@/components/Doll/DollProvider";
+import { DollProfile } from "@/components/Doll";
 import DollPanelContainer from "@/components/Doll/Profile/PanelContainer";
 
 const Dolls = () => (

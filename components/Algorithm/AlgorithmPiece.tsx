@@ -1,18 +1,25 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { OptionPayload } from "./AlgorithmSet";
-import SlotCheckbox from "./SlotCheckbox";
 import { DbDollContext } from "@/interfaces/payloads";
-import { AlgoCategory, AlgoMainStat } from "@/src-tauri/bindings/enums";
-import PieceModal from "./PieceModal";
+import {
+  AlgoImage,
+  PieceModal,
+  SlotCheckbox,
+} from "@/components/Algorithm/Common";
 import { AnimatePresence, motion } from "framer-motion";
-import MainStatSelect from "../MainstatSelect";
 import { TrashIcon } from "@radix-ui/react-icons";
-import AlgoImage from "./AlgoImage";
-import Button from "../Button";
-import { AlgoPiece, Algorithm, Class } from "@/src-tauri/bindings/rspc";
+import {
+  AlgoCategory,
+  AlgoMainStat,
+  AlgoPiece,
+  Algorithm,
+  Class,
+} from "@/src-tauri/bindings/rspc";
 import { invoke } from "@tauri-apps/api/tauri";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { rspc } from "../Providers/ClientProviders";
+import { Button, MainStatSelect } from "@/components/Common";
+import { parseAlgoName } from "@/utils/helper";
 
 type Props = {
   pieceData: AlgoPiece;
@@ -29,27 +36,26 @@ const AlgorithmPiece = ({
   valid,
   loadoutId,
 }: Props) => {
-  const { currentUnit, algoPiece } = useContext(DbDollContext);
+  const { currentUnit, algoPiece, slot } = useContext(DbDollContext);
+  const { mutate } = rspc.useMutation(["algoPiece.deleteById"]);
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
-  // const [piece, setPiece] = useState<AlgoPiece | null>(pieceData);
   const [openModal, setModal] = useState(false);
 
   const [componentSize, setComponentSize] = useState(2);
-  function updateComponentSize(algo: Algorithm) {
+  async function updateComponentSize(algo: string) {
     invoke<number>(IVK.ALGO_GET_SLOT_SIZE, { algo }).then(setComponentSize);
   }
 
   // chaging unit
   useEffect(() => {
     setAlgorithm(pieceData.name);
-    updateComponentSize(pieceData.name as Algorithm);
+    updateComponentSize(parseAlgoName(pieceData.name)); // need a cast
     setMainStat(pieceData.stat);
   }, [pieceData]);
 
   function pieceHandler(name: Algorithm) {
     let nextPiece = { ...pieceData, name };
-    // setPiece(nextPiece);
     algoPiece.updateData(nextPiece, loadoutId);
 
     setModal(false);
@@ -67,11 +73,9 @@ const AlgorithmPiece = ({
     algoPiece.updateData(nextPiece, loadoutId);
   }
 
-  const mutation = rspc.useMutation(["deleteAlgoPiece"]);
-  const ctx = useContext(DbDollContext);
   function deleteAlgoPiece(algoPieceId: string) {
-    mutation.mutate(algoPieceId, {
-      onSuccess: () => [ctx.algoPiece, ctx.slot].forEach((e) => e.refetch()),
+    mutate(algoPieceId, {
+      onSuccess: () => [algoPiece, slot].forEach((e) => e.refetch()),
     });
   }
 

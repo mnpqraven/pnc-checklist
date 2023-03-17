@@ -21,27 +21,27 @@ const DbDollProvider = ({ children }: Props) => {
   const refresh = useStoreRefresh();
 
   const loadout = useGenericConfig<Loadout>({
-    storeApi: "loadoutByUnitId",
+    storeApi: "loadouts.get",
     constraint: "loadoutType",
   });
   const skill = useGenericConfig<UnitSkill>({
-    storeApi: "skillLevelsByUnitIds",
+    storeApi: "unitSkills.get",
     constraint: "loadoutId",
   });
   const algoPiece = useGenericConfig<AlgoPiece>({
-    storeApi: "algoPiecesByLoadoutId",
+    storeApi: "algoPieces.get",
     constraint: "loadoutId",
   });
   const slot = useGenericConfig<Slot>({
-    storeApi: "slotsByAlgoPieceIds",
+    storeApi: "slots.get",
     constraint: "algoPieceId",
   });
 
-  const sUnits = rspc.useMutation(["saveUnits"]);
-  const sLoadouts = rspc.useMutation(["saveLoadouts"]);
-  const sUnitSkills = rspc.useMutation(["saveUnitSkills"]);
-  const sAlgoPieces = rspc.useMutation(["saveAlgoPieces"]);
-  const sSlots = rspc.useMutation(["saveSlots"]);
+  const sUnits = rspc.useMutation(["units.save"]);
+  const sLoadouts = rspc.useMutation(["loadouts.save"]);
+  const sUnitSkills = rspc.useMutation(["unitSkills.save"]);
+  const sAlgoPieces = rspc.useMutation(["algoPieces.save"]);
+  const sSlots = rspc.useMutation(["slots.save"]);
 
   const saveUnits = async () => sUnits.mutateAsync(storeValues.dirtyUnits);
   const saveLoadouts = async () => sLoadouts.mutateAsync(loadout.dirtyData);

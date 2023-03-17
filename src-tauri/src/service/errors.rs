@@ -22,6 +22,12 @@ impl<T: Display> Display for RequirementError<T> {
     }
 }
 
+impl<T: Display> From<RequirementError<T>> for rspc::Error {
+    fn from(value: RequirementError<T>) -> Self {
+        rspc::Error::new(rspc::ErrorCode::InternalServerError, value.to_string())
+    }
+}
+
 /// Error concering the tauri runtime, should stop the application from
 /// continuing
 #[derive(Serialize, Deserialize, Debug)]

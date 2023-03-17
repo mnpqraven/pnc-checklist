@@ -1,5 +1,6 @@
 use super::types::*;
 use crate::algorithm::types::AlgoPiece;
+use crate::loadout::get_loadout_db;
 use crate::loadout::types::LoadoutType;
 use crate::prisma::{self, algo_piece, loadout, unit, unit_skill};
 use crate::service::db::get_db;
@@ -63,25 +64,16 @@ impl FromAsync<unit::Data> for Unit {
             .await
             .unwrap()
             .unwrap();
-        println!("{:?}", unit_in_db);
-        let current = unit_in_db
-            .loadouts()
-            .unwrap()
-            .iter()
-            .find(|e| e.loadout_type == LoadoutType::Current.to_string())
-            .unwrap();
-        let goal = unit_in_db
-            .loadouts()
-            .unwrap()
-            .iter()
-            .find(|e| e.loadout_type == LoadoutType::Current.to_string())
-            .unwrap();
+        let current = get_loadout_db(&unit_in_db, LoadoutType::Current)
+            .expect("a Unit struct always have a current Loadout");
+        let goal = get_loadout_db(&unit_in_db, LoadoutType::Goal)
+            .expect("a Unit struct always have a goal Loadout");
 
         Self {
             name: value.name,
             class: Class::from_str(&value.class).unwrap(),
-            current: Loadout::from_async(current.clone()).await,
-            goal: Loadout::from_async(goal.clone()).await
+            current: Loadout::from_async(current).await,
+            goal: Loadout::from_async(goal).await,
         }
     }
 }

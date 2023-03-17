@@ -4,7 +4,6 @@ use crate::service::errors::{RequirementError, TauriError};
 use crate::state::types::GrandResource;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{stats::types::*, table::consts::*, unit::types::Unit};
-use std::sync::{Arc, Mutex};
 
 impl DatabaseRequirement {
     /// generate total resouces required from `DatabaseRequirement`
@@ -17,32 +16,27 @@ impl DatabaseRequirement {
     }
 }
 impl UnitRequirement {
-    pub fn update_unit_req(unit: &Arc<Mutex<Unit>>) -> Result<Self, TauriError> {
-        if let Ok(unit) = unit.lock() {
-            Ok(Self {
-                skill: SkillResourceRequirement::calculate(
-                    unit.current.skill_level,
-                    unit.goal.skill_level,
-                ),
-                neural: NeuralResourceRequirement::calculate(
-                    unit.current.frags,
-                    unit.current.neural,
-                    unit.goal.neural,
-                )
-                .unwrap(),
-                level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0)
-                    .unwrap(),
-                breakthrough: WidgetResourceRequirement::calculate(
-                    unit.class,
-                    unit.current.level.0,
-                    unit.goal.level.0,
-                )
-                .unwrap(),
-                algo: AlgorithmRequirement::calculate(&unit).unwrap(),
-            })
-        } else {
-            Err(TauriError::RequestLockFailed)
-        }
+    pub fn update_unit_req(unit: &Unit) -> Result<Self, TauriError> {
+        Ok(Self {
+            skill: SkillResourceRequirement::calculate(
+                unit.current.skill_level,
+                unit.goal.skill_level,
+            ),
+            neural: NeuralResourceRequirement::calculate(
+                unit.current.frags,
+                unit.current.neural,
+                unit.goal.neural,
+            )
+            .unwrap(),
+            level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0).unwrap(),
+            breakthrough: WidgetResourceRequirement::calculate(
+                unit.class,
+                unit.current.level.0,
+                unit.goal.level.0,
+            )
+            .unwrap(),
+            algo: AlgorithmRequirement::calculate(unit).unwrap(),
+        })
     }
 
     pub fn get_req(&self) -> GrandResource {
@@ -62,7 +56,7 @@ impl UnitRequirement {
 }
 
 impl AlgorithmRequirement {
-    pub(super) fn calculate(from_unit: &Unit) -> Result<Self, RequirementError<AlgoPiece>> {
+    pub fn calculate(from_unit: &Unit) -> Result<Self, RequirementError<AlgoPiece>> {
         // TODO: handle error
         Ok(Self {
             pieces: from_unit.get_missing_algos(),

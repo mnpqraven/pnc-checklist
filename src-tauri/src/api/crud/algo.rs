@@ -12,8 +12,8 @@ pub async fn new_algo_piece(
         .algo_piece()
         .create(
             data.category.to_string(),
-            format!("{:?}", data.name),
-            format!("{:?}", data.stat),
+            data.name.to_string(),
+            data.stat.to_string(),
             vec![algo_piece::loadout_id::set(loadout_id)],
         )
         .exec()

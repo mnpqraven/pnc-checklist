@@ -96,6 +96,9 @@
     },
     "Loadout": {
       "type": "object",
+      "required": [
+        "loadout_type"
+      ],
       "properties": {
         "skill_level": {
           "default": {
@@ -143,6 +146,9 @@
               "$ref": "#/definitions/NeuralFragment"
             }
           ]
+        },
+        "loadout_type": {
+          "$ref": "#/definitions/LoadoutType"
         }
       }
     },
@@ -201,6 +207,7 @@
     "AlgoPiece": {
       "type": "object",
       "required": [
+        "category",
         "name",
         "slot",
         "stat"
@@ -212,6 +219,9 @@
         "stat": {
           "$ref": "#/definitions/AlgoMainStat"
         },
+        "category": {
+          "$ref": "#/definitions/AlgoCategory"
+        },
         "slot": {
           "$ref": "#/definitions/AlgoSlot"
         }
@@ -221,14 +231,14 @@
       "description": "List of algorithms",
       "type": "string",
       "enum": [
-        "LowerLimit",
+        "Lower Limit",
         "Feedforward",
         "Deduction",
         "Progression",
-        "DataRepair",
-        "MLRMatrix",
+        "Data Repair",
+        "MLR Matrix",
         "Stack",
-        "LimitValue",
+        "Limit Value",
         "Encapsulate",
         "Iteration",
         "Perception",
@@ -239,10 +249,10 @@
         "Reflection",
         "Resolve",
         "Inspiration",
-        "LoopGain",
-        "SVM",
+        "Loop Gain",
+        "S.V.M",
         "Paradigm",
-        "DeltaV",
+        "Delta V",
         "Cluster",
         "Stratagem",
         "Exploit"
@@ -272,6 +282,14 @@
         "OperandDef",
         "OperandDefPercent",
         "PostBattleRegen"
+      ]
+    },
+    "AlgoCategory": {
+      "type": "string",
+      "enum": [
+        "Offense",
+        "Stability",
+        "Special"
       ]
     },
     "AlgoSlot": {
@@ -324,6 +342,13 @@
       ],
       "format": "uint32",
       "minimum": 0.0
+    },
+    "LoadoutType": {
+      "type": "string",
+      "enum": [
+        "Current",
+        "Goal"
+      ]
     }
   }
 }

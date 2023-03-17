@@ -8,7 +8,7 @@ import { dirtyOnTopReducer, dirtyListReducer } from "./configReducers";
 
 // TODO: refactor all these into a reducer
 export const useStoreConfigs = () => {
-  const { data: storeData } = rspc.useQuery(["getUnits"]);
+  const { data: storeData } = rspc.useQuery(["units.get"]);
   const [currentUnitId, setCurrentUnitId] = useState<string>(
     storeData && storeData[0] ? storeData[0].id : ""
   );

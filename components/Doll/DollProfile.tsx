@@ -1,9 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { LoadoutContainer } from "@/components/Common";
 import React from "react";
-import { DbDollContext, ToastContext } from "@/interfaces/payloads";
+import { DbDollContext } from "@/interfaces/payloads";
 import Skeleton from "react-loading-skeleton";
-import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
 import DollHeader from "./Profile/Header";
 import { LoadoutType } from "@/src-tauri/bindings/rspc";
 import LoadoutConfig from "../Loadout/LoadoutConfig";

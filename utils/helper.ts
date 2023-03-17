@@ -57,6 +57,9 @@ export function getValue(e: ChangeEvent<HTMLInputElement>): number {
   return value;
 }
 
+/**
+ * Removes dots and spaces
+ */
 export function parseAlgoName(prettyName: string): Algorithm {
   return prettyName.replace(/\.|\s/g, '') as Algorithm
 }

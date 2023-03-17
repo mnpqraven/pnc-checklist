@@ -43,10 +43,10 @@ export default function App({ Component, pageProps }: AppProps) {
         attribute="class"
       >
         <NoSSRProviders>
-      <DbDollProvider>
-          <Navbar />
-          <Component {...pageProps} />
-      </DbDollProvider>
+          <DbDollProvider>
+            <Navbar />
+            <Component {...pageProps} />
+          </DbDollProvider>
         </NoSSRProviders>
       </ThemeProvider>
     </SkeletonTheme>

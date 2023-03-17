@@ -1,10 +1,11 @@
 use self::types::{Class, Unit};
 use crate::{
     compute::update_reqs,
-    service::{file::localsave, errors::TauriError, db::get_db},
+    service::{db::get_db, errors::TauriError, file::localsave},
     state::types::{Computed, JSONStorage, KeychainTable},
+    traits::FromAsync,
 };
-use std::sync::{Arc, Mutex};
+use prisma_client_rust::QueryError;
 use tauri::State;
 
 // #[cfg(test)]
@@ -12,45 +13,18 @@ use tauri::State;
 mod impls;
 pub mod types;
 
-// TODO: to refactor
-#[tauri::command]
-pub async fn get_units(computed: State<'_, Computed>) -> Result<Vec<Unit>, TauriError> {
-    println!("[invoke] view_store_units");
-    match computed.units.lock() {
-        Ok(units) => Ok(units.iter().map(|c| c.lock().unwrap().clone()).collect()),
-        _ => Err(TauriError::RequestLockFailed),
-    }
-}
-
-// TODO: to refactor
-#[tauri::command]
-/// Adds a new `Unit` into the database
-/// NOTE: origin data needs an `Arc::new()` &&
-/// `KeychainTable` + `Computed` needs to point to the same `Unit`
-pub async fn new_unit(
-    name: String,
-    class: Class,
-    computed: State<'_, Computed>,
-    keyc: State<'_, KeychainTable>,
-) -> Result<(Unit, usize), TauriError> {
-    println!("[invoke] new_unit");
-    let n_unit = Unit::new(name, class);
+pub async fn get_units_iternal() -> Result<Vec<Unit>, QueryError> {
+    println!("[invoke] get_units");
     let client = get_db().await;
-    crate::api::crud::unit::new_unit(&client, n_unit.clone()).await.unwrap();
-    let res = if let Ok(mut g_computed) = computed.units.lock() {
-        let ind = g_computed.len();
-        let am_unit = Arc::new(Mutex::new(n_unit.clone()));
+    let db_units = client.unit().find_many(vec![]).exec().await?;
 
-        g_computed.push(Arc::clone(&am_unit));
-
-        let lockers = Unit::create_lockers(&am_unit)?;
-        keyc.assign(&am_unit, &lockers);
-        Ok((n_unit, ind))
-    } else {
-        Err(TauriError::UnitModification)
-    };
-    update_reqs(computed)?;
-    res
+    let units = futures::future::join_all(
+        db_units
+            .into_iter()
+            .map(|db_unit| async { Unit::from_async(db_unit).await }),
+    )
+    .await;
+    Ok(units)
 }
 
 // TODO: to refactor

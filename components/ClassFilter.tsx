@@ -2,14 +2,14 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Root, Item } from "@radix-ui/react-toggle-group";
 import { class_src } from "@/utils/helper";
-import { Class } from "@/src-tauri/bindings/enums";
 import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
+import { Class } from "@/src-tauri/bindings/rspc";
 
 type Props = {
-  onChange: (to: Class) => void
-}
-const ClassFilter = ({onChange}: Props) => {
+  onChange: (to: Class) => void;
+};
+const ClassFilter = ({ onChange }: Props) => {
   const { data: options } = useEnumTable<Class>(ENUM_TABLE.Class);
 
   if (!options) return null;

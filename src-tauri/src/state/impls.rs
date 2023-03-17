@@ -141,12 +141,14 @@ impl DatabaseRequirement {
     ///
     /// * `units`: list of units. If only `Unit` without an Arc wrapper, try to
     /// use `Arc::clone()` instead of `Arc::new()`
-    pub fn process_list(units: &[Arc<Mutex<Unit>>]) -> Result<Self, TauriError> {
+    pub fn process_list(units: Vec<Unit>) -> Result<Self, TauriError> {
+        println!("process_list");
         let unit_req: Vec<UnitRequirement> = units
             .iter()
             .map(UnitRequirement::update_unit_req)
             .collect::<Result<Vec<UnitRequirement>, TauriError>>(
         )?;
+        dbg!(&unit_req);
         Ok(Self { unit_req })
     }
 }

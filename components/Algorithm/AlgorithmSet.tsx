@@ -2,24 +2,20 @@ import {
   AlgoError,
   AlgoErrorContext,
   DbDollContext,
-  DollContext,
 } from "@/interfaces/payloads";
-import { AlgoMainStat, Algorithm } from "@/src-tauri/bindings/enums";
 import {
   AlgoCategory,
+  AlgoMainStat,
   AlgoPiece,
   LoadoutType,
+  Algorithm,
 } from "@/src-tauri/bindings/rspc";
-import { parseAlgoName } from "@/utils/helper";
-import { AlgoTuple, useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
+import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { useMainStatsQuery } from "@/utils/hooks/algo/useAlgoMainStatQuery";
-import { useNewAlgoMutation } from "@/utils/hooks/mutations/newAlgo";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useContext, useEffect } from "react";
+import { useContext } from "react";
 import Skeleton from "react-loading-skeleton";
-import Button from "../Button";
-import ErrorContainer from "../Error";
-import Loading from "../Loading";
+import { Button, ErrorContainer, Loading } from "@/components/Common";
 import { rspc } from "../Providers/ClientProviders";
 import AlgorithmPiece from "./AlgorithmPiece";
 
@@ -38,42 +34,8 @@ const AlgorithmSet = ({ algos, type, loadoutId }: Props) => {
   const algoDbQuery = useAlgoDbQuery();
   const mainStatQuery = useMainStatsQuery();
 
-  // function handleAddPiece(
-  //   e: AlgoPiece,
-  //   cat: AlgoCategory,
-  //   loadout: LoadoutType
-  // ): void {
-  //   if (setDollData)
-  //     setDollData((draft) => {
-  //       if (draft)
-  //         draft[loadout].algo[cat.toLowerCase() as keyof AlgoSet].push(e);
-  //     });
-  // }
-  //
-  // const handleUpdatePiece = useCallback(
-  //   (e: AlgoPiece | null, cat: AlgoCategory, index: number): void => {
-  //     if (setDollData && e)
-  //       setDollData((draft) => {
-  //         if (draft)
-  //           draft[type].algo[cat.toLowerCase() as keyof AlgoSet][index] = e;
-  //       });
-  //     else if (setDollData)
-  //       // no piece passed, deletion
-  //       setDollData((draft) => {
-  //         if (draft)
-  //           draft[type].algo[cat.toLowerCase() as keyof AlgoSet].splice(
-  //             index,
-  //             1
-  //           );
-  //       });
-  //   },
-  //   [setDollData, type]
-  // );
-
   if (algoDbQuery.isLoading || mainStatQuery.isLoading) return <Loading />;
   if (algoDbQuery.isError || mainStatQuery.isError) return <ErrorContainer />;
-  const algoDb = algoDbQuery.data;
-  const mainStat = mainStatQuery.data;
 
   return (
     <div className="flex flex-none flex-col">
@@ -85,8 +47,8 @@ const AlgorithmSet = ({ algos, type, loadoutId }: Props) => {
               category={category}
               algos={algos}
               options={{
-                algoTypes: algoDb[catindex],
-                mainStat: mainStat[catindex],
+                algoTypes: algoDbQuery.data[catindex],
+                mainStat: mainStatQuery.data[catindex],
               }}
               loadoutId={loadoutId}
             />
@@ -156,12 +118,12 @@ type NewAlgoSetProps = {
 };
 
 const NewAlgoSet = ({ category, loadoutType, loadoutId }: NewAlgoSetProps) => {
-  const ctx = useContext(DbDollContext);
-  const newAlgoPieceMutation = rspc.useMutation(["newAlgoPiece"]);
+  const { algoPiece, slot } = useContext(DbDollContext);
+  const mutation = rspc.useMutation(["algoPiece.new"]);
 
   function newAlgorithmPiece() {
-    newAlgoPieceMutation.mutate([loadoutId, category, loadoutType === "Goal"], {
-      onSuccess: () => [ctx.algoPiece, ctx.slot].forEach((e) => e.refetch()),
+    mutation.mutate([loadoutId, category, loadoutType === "Goal"], {
+      onSuccess: () => [algoPiece, slot].forEach((e) => e.refetch()),
     });
   }
 

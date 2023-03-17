@@ -1,5 +1,5 @@
-import { AlgoCategory } from "@/src-tauri/bindings/enums/AlgoCategory";
 import {
+  AlgoCategory,
   AlgoPiece,
   Loadout,
   LoadoutType,
@@ -8,26 +8,6 @@ import {
   UnitSkill,
 } from "@/src-tauri/bindings/rspc";
 import React from "react";
-import { DraftFunction, Updater } from "use-immer";
-
-export type DollContextPayload = {
-  dollData: Unit | undefined;
-  setDollData: Updater<Unit> | undefined;
-  storeLoading: boolean;
-  currentUnitId: string;
-  updateCurrentUnitId: (to: string) => void;
-  dirtyStore: Unit[];
-  updateDirtyStore: (to: Unit[] | DraftFunction<Unit[]>) => void;
-};
-export const DollContext = React.createContext<DollContextPayload>({
-  dollData: undefined,
-  setDollData: undefined,
-  storeLoading: true,
-  currentUnitId: "",
-  updateCurrentUnitId: () => {},
-  dirtyStore: [],
-  updateDirtyStore: () => {},
-});
 
 export type SaveContextPayload = {
   isUnsaved: boolean;
@@ -43,7 +23,7 @@ export type ToastContextPayload = {
   setOpen: (e: boolean) => void;
   header: string;
   content: string;
-  fireToast: (to: {header?: string, content?: string}) => void;
+  fireToast: (to: { header?: string; content?: string }) => void;
 };
 export const ToastContext = React.createContext<ToastContextPayload>({
   open: false,

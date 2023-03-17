@@ -1,5 +1,4 @@
-import { AlgoCategory } from "@/src-tauri/bindings/enums";
-import { AlgoMainStat } from "@/src-tauri/bindings/rspc";
+import { AlgoCategory, AlgoMainStat } from "@/src-tauri/bindings/rspc";
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -15,7 +14,7 @@ type Props = {
   category: AlgoCategory;
 };
 
-const MainstatSelect = ({
+const MainStatSelect = ({
   value,
   options,
   onChangeHandler,
@@ -26,13 +25,6 @@ const MainstatSelect = ({
   const { data: labels } = rspc.useQuery(["listAlgoMainstat", options]);
 
   if (!labels) return null;
-
-  const selectStructs: { key: AlgoMainStat; label: string }[] = options.map(
-    (option, index) => ({
-      key: option,
-      label: labels[index],
-    })
-  );
 
   return (
     <Select.Root onValueChange={onChangeHandler} value={value}>
@@ -54,8 +46,8 @@ const MainstatSelect = ({
               <Select.Label className="SelectLabel">
                 {category} Algorithms
               </Select.Label>
-              {selectStructs.map(({ key: option, label }, index) => (
-                <Select.Item key={index} className="SelectItem" value={option}>
+              {labels.map((label, index) => (
+                <Select.Item key={index} className="SelectItem" value={label}>
                   <Select.ItemText>{label}</Select.ItemText>
                   <Select.ItemIndicator className="SelectItemIndicator">
                     <CheckIcon />
@@ -76,4 +68,4 @@ const MainstatSelect = ({
     </Select.Root>
   );
 };
-export default MainstatSelect;
+export default MainStatSelect;

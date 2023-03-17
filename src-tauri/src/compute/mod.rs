@@ -1,7 +1,8 @@
 mod impls;
-use crate::requirement::types::UnitRequirement;
+use crate::requirement::types::{DatabaseRequirement, UnitRequirement};
 use crate::service::errors::TauriError;
 use crate::state::types::{Computed, GrandResource, JSONStorage};
+use crate::unit::get_units_iternal;
 use crate::{
     requirement::{
         requirement_algo_unit, requirement_level, requirement_neural, requirement_slv,
@@ -36,11 +37,13 @@ pub fn update_reqs(computed: State<Computed>) -> Result<(), TauriError> {
 }
 
 #[tauri::command]
-pub fn get_needed_rsc(computed: State<'_, Computed>) -> GrandResource {
-    let guard_req = computed.database_req.lock().unwrap();
-    let t = guard_req.generate_resource();
+pub async fn get_needed_rsc() -> Result<GrandResource, TauriError> {
+    println!("[invoke] get_needed_rsc");
+    let units = get_units_iternal().await.unwrap();
+    let db_req = DatabaseRequirement::process_list(units)?;
+    let t = db_req.generate_resource();
     println!("{:?}", t);
-    t
+    Ok(t)
 }
 
 #[tauri::command]

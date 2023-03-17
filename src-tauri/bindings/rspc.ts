@@ -2,31 +2,36 @@
 
 export type Procedures = {
     queries: 
-        { key: "algoPiecesByLoadoutId", input: Array<string> | null, result: Array<AlgoPiece> } | 
+        { key: "algoPieces.get", input: never, result: Array<AlgoPiece> } | 
+        { key: "algoPieces.getByLoadoutIds", input: Array<string>, result: Array<AlgoPiece> } | 
         { key: "displayAlgoMainstat", input: never, result: Array<AlgoMainStat> } | 
-        { key: "displayAlgorithm", input: never, result: Array<Algorithm> } | 
-        { key: "displayLoadoutType", input: never, result: Array<LoadoutType> } | 
-        { key: "err", input: never, result: string } | 
-        { key: "getUnitFromId", input: string, result: Unit } | 
-        { key: "getUnits", input: never, result: Array<Unit> } | 
+        { key: "enum.pretty.Algorithm", input: never, result: Array<Algorithm> } | 
+        { key: "enum.pretty.Algorithm.toRaw", input: string, result: string } | 
+        { key: "enum.pretty.LoadoutType", input: never, result: Array<LoadoutType> } | 
+        { key: "enum.pretty.LoadoutType.raw", input: string, result: string } | 
+        { key: "enum.rust.Algorithm", input: never, result: Array<string> } | 
+        { key: "enum.rust.LoadoutType", input: never, result: Array<string> } | 
         { key: "listAlgoMainstat", input: Array<AlgoMainStat> | null, result: Array<string> } | 
-        { key: "listAlgorithm", input: never, result: Array<string> } | 
-        { key: "listLoadoutType", input: never, result: Array<string> } | 
-        { key: "loadoutByUnitId", input: string | null, result: Array<Loadout> } | 
-        { key: "loadouts", input: string | null, result: Array<Loadout> } | 
-        { key: "skillLevelsByUnitIds", input: Array<string> | null, result: Array<UnitSkill> } | 
-        { key: "slotsByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
+        { key: "loadout.getByUnitId", input: string | null, result: Array<Loadout> } | 
+        { key: "loadouts.get", input: never, result: Array<Loadout> } | 
+        { key: "loadouts.getById", input: string, result: Array<Loadout> } | 
+        { key: "slots.get", input: never, result: Array<Slot> } | 
+        { key: "slots.getByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
+        { key: "unit.getById", input: string, result: Unit } | 
+        { key: "unitSkills.get", input: never, result: Array<UnitSkill> } | 
+        { key: "unitSkills.getByUnitIds", input: Array<string>, result: Array<UnitSkill> } | 
+        { key: "units.get", input: never, result: Array<Unit> } | 
         { key: "version", input: never, result: string },
     mutations: 
-        { key: "deleteAlgoPiece", input: string, result: AlgoPiece } | 
-        { key: "deleteUnit", input: string, result: Unit } | 
-        { key: "newAlgoPiece", input: [string | null, AlgoCategory, boolean], result: AlgoPiece } | 
-        { key: "newUnit", input: [string, Class], result: Unit } | 
-        { key: "saveAlgoPieces", input: Array<AlgoPiece>, result: Array<AlgoPiece> } | 
-        { key: "saveLoadouts", input: Array<Loadout>, result: Array<Loadout> } | 
-        { key: "saveSlots", input: Array<Slot>, result: Array<Slot> } | 
-        { key: "saveUnitSkills", input: Array<UnitSkill>, result: Array<UnitSkill> } | 
-        { key: "saveUnits", input: Array<Unit>, result: Array<Unit> },
+        { key: "algoPiece.deleteById", input: string, result: AlgoPiece } | 
+        { key: "algoPiece.new", input: [string | null, AlgoCategory, boolean], result: AlgoPiece } | 
+        { key: "algoPieces.save", input: Array<AlgoPiece>, result: Array<AlgoPiece> } | 
+        { key: "loadouts.save", input: Array<Loadout>, result: Array<Loadout> } | 
+        { key: "slots.save", input: Array<Slot>, result: Array<Slot> } | 
+        { key: "unit.delete", input: string, result: Unit } | 
+        { key: "unit.new", input: [string, Class], result: Unit } | 
+        { key: "unitSkills.save", input: Array<UnitSkill>, result: Array<UnitSkill> } | 
+        { key: "units.save", input: Array<Unit>, result: Array<Unit> },
     subscriptions: never
 };
 
