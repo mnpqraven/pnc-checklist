@@ -5,20 +5,20 @@ use crate::{
     table::consts::{VALID_LEVEL_MAX, VALID_LEVEL_MIN},
 };
 
-impl ValidData<Level> for Level {
-    type U = Level;
-    fn input_validate<U>(&self) -> Result<Option<Level>, ValidationError> {
+impl ValidData<ILevel> for ILevel {
+    type U = ILevel;
+    fn input_validate<U>(&self) -> Result<Option<ILevel>, ValidationError> {
         match self.0 {
-            x if x < VALID_LEVEL_MIN => Ok(Some(Level(VALID_LEVEL_MIN))),
-            x if x > VALID_LEVEL_MAX => Ok(Some(Level(VALID_LEVEL_MAX))),
+            x if x < VALID_LEVEL_MIN => Ok(Some(ILevel(VALID_LEVEL_MIN))),
+            x if x > VALID_LEVEL_MAX => Ok(Some(ILevel(VALID_LEVEL_MAX))),
             _ => Ok(None),
         }
     }
 }
 
-impl ValidData<UnitSkill> for UnitSkill {
-    type U = UnitSkill;
-    fn input_validate<U>(&self) -> Result<Option<UnitSkill>, ValidationError> {
+impl ValidData<IUnitSkill> for IUnitSkill {
+    type U = IUnitSkill;
+    fn input_validate<U>(&self) -> Result<Option<IUnitSkill>, ValidationError> {
         fn helper_bound(x: &u32) -> Option<u32> {
             match *x {
                 t if t < 1 => Some(1),
@@ -30,15 +30,15 @@ impl ValidData<UnitSkill> for UnitSkill {
         let b = helper_bound(&self.auto);
         match (a, b) {
             (None, None) => Ok(None),
-            (None, Some(y)) => Ok(Some(UnitSkill {
+            (None, Some(y)) => Ok(Some(IUnitSkill {
                 passive: self.passive,
                 auto: y,
             })),
-            (Some(x), None) => Ok(Some(UnitSkill {
+            (Some(x), None) => Ok(Some(IUnitSkill {
                 passive: x,
                 auto: self.auto,
             })),
-            (Some(x), Some(y)) => Ok(Some(UnitSkill {
+            (Some(x), Some(y)) => Ok(Some(IUnitSkill {
                 passive: x,
                 auto: y,
             })),
@@ -53,7 +53,7 @@ impl ValidData<Coin> for Coin {
     }
 }
 
-impl NeuralFragment {
+impl INeuralFragment {
     pub fn new(value: Option<i32>) -> Self {
         match value {
             Some(num) => Self(Some(num as u32)),

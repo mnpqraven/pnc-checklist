@@ -1,12 +1,12 @@
 use super::{error_map, Ctx, crud::algo::new_algo_piece};
-use crate::{prisma::algo_piece, algorithm::types::{AlgoCategory, AlgoPiece}};
+use crate::{prisma::algo_piece, algorithm::types::{AlgoCategory, IAlgoPiece}};
 use rspc::{Router, RouterBuilder};
 
 pub fn algo_piece_router() -> RouterBuilder<Ctx> {
     Router::<Ctx>::new()
         .mutation("new", |t| {
             t(|ctx, (loadout_id, category, checked_slots): (Option<String>, AlgoCategory, bool)| async move {
-                new_algo_piece(&ctx.client, AlgoPiece::new(category, checked_slots), loadout_id).await.map_err(error_map)
+                new_algo_piece(&ctx.client, IAlgoPiece::new(category, checked_slots), loadout_id).await.map_err(error_map)
             })
         })
         .mutation("deleteById", |t| {

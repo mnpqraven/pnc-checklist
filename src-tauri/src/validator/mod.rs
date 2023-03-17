@@ -1,8 +1,8 @@
 use self::{algo::validate_algo, unit::validate_unit_name};
 use crate::{
-    algorithm::types::{AlgoPiece, AlgoSlot},
+    algorithm::types::{IAlgoPiece, IAlgoSlot},
     service::errors::ValidationError,
-    unit::types::Unit,
+    unit::types::IUnit,
 };
 
 mod algo;
@@ -23,7 +23,7 @@ pub trait ValidData<T> {
 }
 
 #[tauri::command]
-pub fn validate(unit: Option<Unit>) -> Result<(), Vec<ValidationError>> {
+pub fn validate(unit: Option<IUnit>) -> Result<(), Vec<ValidationError>> {
     let mut errs: Vec<ValidationError> = Vec::new();
     if let Some(unit) = unit {
         match (validate_unit_name(&unit), validate_algo(&unit)) {
@@ -42,6 +42,6 @@ pub fn validate(unit: Option<Unit>) -> Result<(), Vec<ValidationError>> {
 }
 
 #[tauri::command]
-pub fn validate_slots(piece: AlgoPiece) -> Result<Option<AlgoSlot>, ValidationError> {
-    piece.input_validate::<AlgoSlot>()
+pub fn validate_slots(piece: IAlgoPiece) -> Result<Option<IAlgoSlot>, ValidationError> {
+    piece.input_validate::<IAlgoSlot>()
 }

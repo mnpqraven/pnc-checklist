@@ -6,7 +6,7 @@ use crate::{
     api::crud::unit::new_unit,
     prisma::unit,
     traits::FromAsync,
-    unit::types::{Class, Unit},
+    unit::types::{Class, IUnit},
 };
 use rspc::{Router, RouterBuilder};
 
@@ -21,9 +21,9 @@ pub fn unit_router() -> RouterBuilder<Ctx> {
         })
         .mutation("new", |t| {
             t(|ctx, (name, class): (String, Class)| async move {
-                let unit = Unit::new(name, class);
+                let unit = IUnit::new(name, class);
                 let new_unit = new_unit(&ctx.client, unit).await.map_err(error_map);
-                let t = Unit::from_async(new_unit.clone().unwrap()).await;
+                let t = IUnit::from_async(new_unit.clone().unwrap()).await;
                 println!("{:?}", t);
                 new_unit
             })

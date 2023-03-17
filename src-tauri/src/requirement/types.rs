@@ -44,7 +44,7 @@ pub struct WidgetResourceRequirement {
 #[derive(Debug, Serialize, Deserialize, Default, Type)]
 pub struct NeuralResourceRequirement {
     #[serde(default)]
-    pub frags: NeuralFragment,
+    pub frags: INeuralFragment,
     pub coin: Coin,
     pub kits: u32,
 }
@@ -52,6 +52,6 @@ pub struct NeuralResourceRequirement {
 // NOTE: probably need to consider what fields are needed here
 #[derive(Debug, Serialize, Deserialize, Default, Type)]
 pub struct AlgorithmRequirement {
-    pub pieces: Vec<AlgoPiece>,
-    pub from_unit: Unit,
+    pub pieces: Vec<IAlgoPiece>,
+    pub from_unit: IUnit,
 }

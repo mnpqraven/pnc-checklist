@@ -1,5 +1,5 @@
 use crate::{
-    algorithm::types::AlgoPiece, requirement::types::DatabaseRequirement, stats::types::*,
+    algorithm::types::IAlgoPiece, requirement::types::DatabaseRequirement, stats::types::*,
     unit::types::*,
 };
 use rspc::Type;
@@ -19,7 +19,7 @@ pub struct UserJSON {
     #[serde(rename = "$schema")]
     pub schema: String,
     pub database: Database,
-    pub units: Vec<Unit>,
+    pub units: Vec<IUnit>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type, Clone, JsonSchema)]
@@ -40,7 +40,7 @@ pub struct GrandResource {
 /// data computed from the backend, state managed by tauri
 pub struct Computed {
     pub database_req: Mutex<DatabaseRequirement>,
-    pub units: Mutex<Vec<Arc<Mutex<Unit>>>>,
+    pub units: Mutex<Vec<Arc<Mutex<IUnit>>>>,
 }
 
 // -- structs for the InvTable and hookup management between user units and db
@@ -51,6 +51,6 @@ pub struct KeychainTable {
 
 #[derive(Debug, Serialize)]
 pub struct Keychain {
-    pub unit: Weak<Mutex<Unit>>,
-    pub locker: Arc<Mutex<AlgoPiece>>, // piece items in above unit
+    pub unit: Weak<Mutex<IUnit>>,
+    pub locker: Arc<Mutex<IAlgoPiece>>, // piece items in above unit
 }

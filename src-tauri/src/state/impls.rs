@@ -1,8 +1,8 @@
 use super::types::{Computed, GrandResource, JSONStorage, Keychain, KeychainTable, UserJSON};
-use crate::algorithm::types::AlgoPiece;
+use crate::algorithm::types::IAlgoPiece;
 use crate::service::errors::TauriError;
 use crate::stats::types::*;
-use crate::unit::types::{Class, Unit};
+use crate::unit::types::{Class, IUnit};
 use crate::{
     requirement::types::{DatabaseRequirement, UnitRequirement},
     service::file::import,
@@ -32,33 +32,33 @@ impl Default for UserJSON {
 #[cfg(test)]
 mod tests {
     use crate::{
-        algorithm::types::AlgoSet,
+        algorithm::types::IAlgoSet,
         loadout::types::LoadoutType,
-        stats::types::{NeuralFragment, UnitSkill},
-        unit::types::{Loadout, Unit},
+        stats::types::{INeuralFragment, IUnitSkill},
+        unit::types::{ILoadout, IUnit},
     };
 
     #[test]
     fn serde() {
-        let lo_current: Loadout = Loadout {
+        let lo_current: ILoadout = ILoadout {
             loadout_type: LoadoutType::Current,
-            skill_level: UnitSkill::max(),
-            level: crate::stats::types::Level(30),
-            algo: AlgoSet::new(true),
+            skill_level: IUnitSkill::max(),
+            level: crate::stats::types::ILevel(30),
+            algo: IAlgoSet::new(true),
             neural: crate::unit::types::NeuralExpansion::OneHalf,
-            frags: NeuralFragment(Some(9)),
+            frags: INeuralFragment(Some(9)),
         };
         let mut lo_goal = lo_current.clone();
         lo_goal.loadout_type = LoadoutType::Goal;
-        lo_goal.frags = NeuralFragment(None);
+        lo_goal.frags = INeuralFragment(None);
 
-        let u: Unit = Unit {
+        let u: IUnit = IUnit {
             name: "Croque".to_string(),
             class: crate::unit::types::Class::Guard,
             current: lo_current,
             goal: lo_goal,
         };
-        let t = serde_json::to_string_pretty::<Unit>(&u).unwrap();
+        let t = serde_json::to_string_pretty::<IUnit>(&u).unwrap();
         for line in t.split('\n') {
             println!("{}", line);
         }
@@ -79,16 +79,16 @@ impl KeychainTable {
     /// NOTE: important: using initialized store to produce `Arc`s
     /// AlgoPiece will always be cloned, will be separated with the AlgoPiece
     /// in each unit and therefore need a dedicated update function
-    pub fn inject(store: Vec<Unit>) -> (Self, Vec<Arc<Mutex<Unit>>>) {
+    pub fn inject(store: Vec<IUnit>) -> (Self, Vec<Arc<Mutex<IUnit>>>) {
         // arc mutex option unit
         let mut keychains: Vec<Keychain> = Vec::new();
-        let mut am_units: Vec<Arc<Mutex<Unit>>> = Vec::new();
+        let mut am_units: Vec<Arc<Mutex<IUnit>>> = Vec::new();
         for unit in store.iter() {
-            let am_unit: Arc<Mutex<Unit>> = Arc::new(Mutex::new(unit.clone()));
+            let am_unit: Arc<Mutex<IUnit>> = Arc::new(Mutex::new(unit.clone()));
             am_units.push(Arc::clone(&am_unit));
 
             for algo in unit.current.get_algos().into_iter() {
-                let am_algo: Arc<Mutex<AlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
+                let am_algo: Arc<Mutex<IAlgoPiece>> = Arc::new(Mutex::new(algo.clone()));
 
                 keychains.push(Keychain::new(&Arc::clone(&am_unit), &am_algo));
             }
@@ -103,7 +103,7 @@ impl KeychainTable {
     ///
     /// * `g_kcs`: the mutex guard for the `Vec<Keychain>`
     /// * `unit`: `Unit` that will have its data replaced by its new value
-    pub fn update_keychain(mut g_kcs: MutexGuard<Vec<Keychain>>, am_unit: &Arc<Mutex<Unit>>) {
+    pub fn update_keychain(mut g_kcs: MutexGuard<Vec<Keychain>>, am_unit: &Arc<Mutex<IUnit>>) {
         println!("update_keychain");
 
         // will be finding unit using `Weak`
@@ -115,7 +115,7 @@ impl KeychainTable {
         // INFO: append new keychains
         let g_unit = am_unit.lock().unwrap();
         for algo in g_unit.current.get_algos().into_iter() {
-            let am_algo: &Arc<Mutex<AlgoPiece>> = &Arc::new(Mutex::new(algo.clone()));
+            let am_algo: &Arc<Mutex<IAlgoPiece>> = &Arc::new(Mutex::new(algo.clone()));
             g_kcs.push(Keychain::new(am_unit, am_algo));
         }
     }
@@ -125,7 +125,7 @@ impl KeychainTable {
     ///
     /// * `unit`:
     /// * `lockers`:
-    pub fn assign(&self, am_unit: &Arc<Mutex<Unit>>, am_lockers: &[Arc<Mutex<AlgoPiece>>]) {
+    pub fn assign(&self, am_unit: &Arc<Mutex<IUnit>>, am_lockers: &[Arc<Mutex<IAlgoPiece>>]) {
         for am_locker in am_lockers.iter() {
             self.keychains
                 .lock()
@@ -141,7 +141,7 @@ impl DatabaseRequirement {
     ///
     /// * `units`: list of units. If only `Unit` without an Arc wrapper, try to
     /// use `Arc::clone()` instead of `Arc::new()`
-    pub fn process_list(units: Vec<Unit>) -> Result<Self, TauriError> {
+    pub fn process_list(units: Vec<IUnit>) -> Result<Self, TauriError> {
         println!("process_list");
         let unit_req: Vec<UnitRequirement> = units
             .iter()
@@ -211,7 +211,7 @@ impl Keychain {
     /// * `unit`: Unit inside an `Arc<Mutex<T>>` that will be downgraded with
     /// `Weak`, so that the keychain owner can be `None` if the unit is deleted
     /// * `piece`:
-    pub fn new(am_unit: &Arc<Mutex<Unit>>, am_piece: &Arc<Mutex<AlgoPiece>>) -> Self {
+    pub fn new(am_unit: &Arc<Mutex<IUnit>>, am_piece: &Arc<Mutex<IAlgoPiece>>) -> Self {
         Self {
             unit: Arc::downgrade(am_unit),
             locker: Arc::clone(am_piece),

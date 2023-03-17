@@ -1,11 +1,11 @@
-use crate::algorithm::types::AlgoSlot;
-use crate::api::AlgoPiece;
+use crate::algorithm::types::IAlgoSlot;
+use crate::api::IAlgoPiece;
 use crate::prisma::{algo_piece, slot, PrismaClient};
 use prisma_client_rust::QueryError;
 
 pub async fn new_algo_piece(
     client: &PrismaClient,
-    data: AlgoPiece,
+    data: IAlgoPiece,
     loadout_id: Option<String>,
 ) -> Result<algo_piece::Data, QueryError> {
     let returned = client
@@ -24,7 +24,7 @@ pub async fn new_algo_piece(
 
 async fn new_slots(
     client: &PrismaClient,
-    data: AlgoSlot,
+    data: IAlgoSlot,
     algo_piece_id: &str,
 ) -> Result<i64, QueryError> {
     client

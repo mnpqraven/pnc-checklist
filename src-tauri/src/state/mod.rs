@@ -1,5 +1,5 @@
 use self::types::{Keychain, KeychainTable};
-use crate::{algorithm::types::AlgoPiece, service::errors::TauriError, unit::types::Unit};
+use crate::{algorithm::types::IAlgoPiece, service::errors::TauriError, unit::types::IUnit};
 use semver::Version;
 use std::sync::Weak;
 use tauri::State;
@@ -22,9 +22,9 @@ pub fn get_tauri_version() -> Result<Version, TauriError> {
 
 #[tauri::command]
 /// dev: traverse locker tree and return content with respective owner
-pub fn view_locker(keychain: State<KeychainTable>) -> Vec<(AlgoPiece, Option<Unit>)> {
+pub fn view_locker(keychain: State<KeychainTable>) -> Vec<(IAlgoPiece, Option<IUnit>)> {
     println!("[invoke] view_locker");
-    let mut v: Vec<(AlgoPiece, Option<Unit>)> = Vec::new();
+    let mut v: Vec<(IAlgoPiece, Option<IUnit>)> = Vec::new();
 
     let g_kc = keychain.keychains.lock().unwrap();
     for chain in g_kc.iter() {

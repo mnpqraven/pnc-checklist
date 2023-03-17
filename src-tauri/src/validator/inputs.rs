@@ -1,10 +1,10 @@
 use super::ValidData;
 use crate::{algorithm::types::*, validator::ValidationError};
 
-impl ValidData<AlgoPiece> for AlgoSet {
-    type U = AlgoSet;
+impl ValidData<IAlgoPiece> for IAlgoSet {
+    type U = IAlgoSet;
     /// Ensures algos are in the right category
-    fn input_validate<U>(&self) -> Result<Option<AlgoPiece>, ValidationError> {
+    fn input_validate<U>(&self) -> Result<Option<IAlgoPiece>, ValidationError> {
         let cats = vec![&self.offense, &self.stability, &self.special];
         let list = AlgoCategory::get_algo_db();
         let mut errs = Vec::new();
@@ -22,7 +22,7 @@ impl ValidData<AlgoPiece> for AlgoSet {
     }
 }
 
-impl ValidData<AlgoMainStat> for AlgoPiece {
+impl ValidData<AlgoMainStat> for IAlgoPiece {
     type U = AlgoMainStat;
     /// Ensures the right main stats are placed in the algo
     fn input_validate<U>(&self) -> Result<Option<AlgoMainStat>, ValidationError> {
@@ -39,11 +39,11 @@ impl ValidData<AlgoMainStat> for AlgoPiece {
     }
 }
 
-impl ValidData<AlgoSlot> for AlgoPiece {
-    type U = AlgoSlot;
+impl ValidData<IAlgoSlot> for IAlgoPiece {
+    type U = IAlgoSlot;
     /// Ensures the right slots and their assignments are correct in the algo
-    fn input_validate<U>(&self) -> Result<Option<AlgoSlot>, ValidationError> {
-        let next_slot = AlgoPiece::compute_slots(&self.name, &self.slot);
+    fn input_validate<U>(&self) -> Result<Option<IAlgoSlot>, ValidationError> {
+        let next_slot = IAlgoPiece::compute_slots(&self.name, &self.slot);
         match self.slot.eq(&next_slot) {
             false => Ok(Some(next_slot)),
             _ => Ok(None)

@@ -5,44 +5,44 @@ use crate::{
 };
 use std::str::FromStr;
 
-impl Loadout {
+impl ILoadout {
     pub fn new(maxed_slv: bool, checked_slots: bool) -> Self {
         let skill_level = match maxed_slv {
-            true => UnitSkill::max(),
-            false => UnitSkill::default(),
+            true => IUnitSkill::max(),
+            false => IUnitSkill::default(),
         };
         Self {
             skill_level,
-            algo: AlgoSet::new(checked_slots),
-            level: Level(1),
+            algo: IAlgoSet::new(checked_slots),
+            level: ILevel(1),
             neural: NeuralExpansion::Three,
-            frags: NeuralFragment::default(),
+            frags: INeuralFragment::default(),
             loadout_type: LoadoutType::Current,
         }
     }
 
     pub fn new_goal() -> Self {
         Self {
-            skill_level: UnitSkill::max(),
-            level: Level::max(),
-            algo: AlgoSet::new(true),
+            skill_level: IUnitSkill::max(),
+            level: ILevel::max(),
+            algo: IAlgoSet::new(true),
             neural: NeuralExpansion::Five,
-            frags: NeuralFragment(None),
+            frags: INeuralFragment(None),
             loadout_type: LoadoutType::Goal,
         }
     }
 
-    pub fn get_algos(&self) -> Vec<&AlgoPiece> {
+    pub fn get_algos(&self) -> Vec<&IAlgoPiece> {
         self.algo
             .offense
             .iter()
             .chain(self.algo.stability.iter())
             .chain(self.algo.special.iter())
-            .collect::<Vec<&AlgoPiece>>()
+            .collect::<Vec<&IAlgoPiece>>()
     }
 }
 
-impl FromAsync<loadout::Data> for Loadout {
+impl FromAsync<loadout::Data> for ILoadout {
     async fn from_async(value: loadout::Data) -> Self {
         let client = get_db().await;
         let lo = client
@@ -58,15 +58,15 @@ impl FromAsync<loadout::Data> for Loadout {
             lo.algo()
                 .unwrap()
                 .iter()
-                .map(|piece| async { AlgoPiece::from_async(piece.clone()).await }),
+                .map(|piece| async { IAlgoPiece::from_async(piece.clone()).await }),
         )
         .await;
         Self {
-            skill_level: UnitSkill::from_async(value.skill_level().unwrap().unwrap().clone()).await,
-            level: Level::new(value.level.try_into().unwrap()),
-            algo: AlgoSet::get_set(&t),
+            skill_level: IUnitSkill::from_async(value.skill_level().unwrap().unwrap().clone()).await,
+            level: ILevel::new(value.level.try_into().unwrap()),
+            algo: IAlgoSet::get_set(&t),
             neural: NeuralExpansion::from_str(&value.neural).unwrap(),
-            frags: NeuralFragment::new(value.frags),
+            frags: INeuralFragment::new(value.frags),
             loadout_type: LoadoutType::from_str(&value.loadout_type).unwrap(),
         }
     }

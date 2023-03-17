@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{str::FromStr, fmt::Display};
 
 use strum::IntoEnumIterator;
 
@@ -133,19 +133,19 @@ impl Algorithm {
     }
 }
 
-impl AlgoSet {
+impl IAlgoSet {
     pub fn new(checked_slots: bool) -> Self {
         Self {
-            offense: vec![AlgoPiece::new(AlgoCategory::Offense, checked_slots)],
-            stability: vec![AlgoPiece::new(AlgoCategory::Stability, checked_slots)],
-            special: vec![AlgoPiece::new(AlgoCategory::Special, checked_slots)],
+            offense: vec![IAlgoPiece::new(AlgoCategory::Offense, checked_slots)],
+            stability: vec![IAlgoPiece::new(AlgoCategory::Stability, checked_slots)],
+            special: vec![IAlgoPiece::new(AlgoCategory::Special, checked_slots)],
         }
     }
 
     /// returns all (cloned) AlgoPieces from the set as a vector
     /// can be used for later searches and filters
-    pub fn get_bucket(&self) -> Vec<AlgoPiece> {
-        let mut v: Vec<AlgoPiece> = Vec::new();
+    pub fn get_bucket(&self) -> Vec<IAlgoPiece> {
+        let mut v: Vec<IAlgoPiece> = Vec::new();
         let cats = vec![&self.offense, &self.stability, &self.special];
         for cat in cats {
             for piece in cat {
@@ -156,7 +156,7 @@ impl AlgoSet {
     }
 
     /// consumes a bucket of AlgoPiece to update the AlgoSet
-    pub fn get_set(bucket: &[AlgoPiece]) -> Self {
+    pub fn get_set(bucket: &[IAlgoPiece]) -> Self {
         Self {
             offense: bucket
                 .iter()
@@ -184,17 +184,17 @@ impl AlgoSet {
     pub fn apply_checkbox(
         // goal: &mut Vec<AlgoPiece>,
         &mut self,
-        mut with_goal: Vec<AlgoPiece>,
+        mut with_goal: Vec<IAlgoPiece>,
     ) {
-        let current: &Vec<AlgoPiece> = &self.get_bucket();
-        let same_filter = |a: &AlgoPiece, b: &AlgoPiece| a.name.eq(&b.name) && a.stat.eq(&b.stat);
+        let current: &Vec<IAlgoPiece> = &self.get_bucket();
+        let same_filter = |a: &IAlgoPiece, b: &IAlgoPiece| a.name.eq(&b.name) && a.stat.eq(&b.stat);
         // check for contains
         // algopiece is the piece from the other struct (current)
-        let contain = |piece: &AlgoPiece| -> (bool, Option<Vec<&AlgoPiece>>) {
+        let contain = |piece: &IAlgoPiece| -> (bool, Option<Vec<&IAlgoPiece>>) {
             let cont_bucket = current
                 .iter()
                 .filter(|current_piece| same_filter(current_piece, piece))
-                .collect::<Vec<&AlgoPiece>>();
+                .collect::<Vec<&IAlgoPiece>>();
             match !cont_bucket.is_empty() {
                 true => (true, Some(cont_bucket)),
                 false => (false, None),
@@ -214,7 +214,7 @@ impl AlgoSet {
                         .unwrap()
                         .into_iter()
                         .filter(|piece| same_filter(piece, &*goal_piece))
-                        .collect::<Vec<&AlgoPiece>>();
+                        .collect::<Vec<&IAlgoPiece>>();
 
                     for current_piece in current_list.iter_mut() {
                         goal_piece.slot.check_off_current(&current_piece.slot);
@@ -225,15 +225,15 @@ impl AlgoSet {
         *self = Self::get_set(&with_goal);
     }
 
-    fn get_piece_ref(&self) -> [&Vec<AlgoPiece>; 3] {
+    fn get_piece_ref(&self) -> [&Vec<IAlgoPiece>; 3] {
         [&self.offense, &self.stability, &self.special]
     }
 
-    fn get_piece_ref_mut(&mut self) -> [&mut Vec<AlgoPiece>; 3] {
+    fn get_piece_ref_mut(&mut self) -> [&mut Vec<IAlgoPiece>; 3] {
         [&mut self.offense, &mut self.stability, &mut self.special]
     }
 
-    pub fn fill_set(&mut self, all_or_none: bool) -> AlgoSet {
+    pub fn fill_set(&mut self, all_or_none: bool) -> IAlgoSet {
         self.get_piece_ref_mut().into_iter().for_each(|cat| {
             cat.iter_mut().for_each(|piece| {
                 piece
@@ -247,13 +247,13 @@ impl AlgoSet {
     }
 }
 
-impl AlgoPiece {
+impl IAlgoPiece {
     /// creates an empty Algo piece with specified slots
     pub fn new(category: AlgoCategory, checked_slots: bool) -> Self {
         Self {
             name: Algorithm::default(&category),
             stat: AlgoMainStat::default(&category),
-            slot: AlgoSlot::new_default(checked_slots),
+            slot: IAlgoSlot::new_default(checked_slots),
             category,
         }
     }
@@ -270,7 +270,7 @@ impl AlgoPiece {
             name,
             stat,
             category,
-            slot: AlgoSlot::new_three(slot1, slot2, slot3),
+            slot: IAlgoSlot::new_three(slot1, slot2, slot3),
         }
     }
 
@@ -279,21 +279,21 @@ impl AlgoPiece {
     ///
     /// * `name`: New `Algorithm` that the `AlgoPiece` is being changed to
     /// * `current_slots`:
-    pub fn compute_slots(name: &Algorithm, current_slots: &AlgoSlot) -> AlgoSlot {
-        let mut slots: Vec<Slot> = Vec::new();
+    pub fn compute_slots(name: &Algorithm, current_slots: &IAlgoSlot) -> IAlgoSlot {
+        let mut slots: Vec<ISlot> = Vec::new();
 
         for n in 0..name.get_slot_size() {
             let current_slot_nth = current_slots.0.get(n);
 
             match current_slot_nth {
                 Some(slot) => slots.push(slot.clone()),
-                None => slots.push(Slot {
+                None => slots.push(ISlot {
                     placement: SlotPlacement::Three,
                     value: false,
                 }),
             }
         }
-        AlgoSlot(slots)
+        IAlgoSlot(slots)
     }
 
     pub fn get_category(&self) -> AlgoCategory {
@@ -305,7 +305,14 @@ impl AlgoPiece {
     }
 }
 
-impl FromAsync<algo_piece::Data> for AlgoPiece {
+impl Display for IAlgoPiece {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let text = format!("[{}] - [{}]", self.name, self.stat);
+        write!(f, "{}", text)
+    }
+}
+
+impl FromAsync<algo_piece::Data> for IAlgoPiece {
     async fn from_async(value: algo_piece::Data) -> Self {
         let client = get_db().await;
         let piece = client
@@ -316,13 +323,13 @@ impl FromAsync<algo_piece::Data> for AlgoPiece {
             .await
             .unwrap()
             .unwrap();
-        let slot: AlgoSlot = AlgoSlot(
+        let slot: IAlgoSlot = IAlgoSlot(
             futures::future::join_all(
                 piece
                     .slot()
                     .unwrap()
                     .iter()
-                    .map(|slot| async { Slot::from_async(slot.clone()).await }),
+                    .map(|slot| async { ISlot::from_async(slot.clone()).await }),
             )
             .await,
         );
@@ -335,7 +342,7 @@ impl FromAsync<algo_piece::Data> for AlgoPiece {
     }
 }
 
-impl FromAsync<slot::Data> for Slot {
+impl FromAsync<slot::Data> for ISlot {
     async fn from_async(value: slot::Data) -> Self {
         let client = get_db().await;
         let slot = client
@@ -388,18 +395,18 @@ impl AlgoMainStat {
     }
 }
 
-impl AlgoSlot {
+impl IAlgoSlot {
     pub fn new_default(value: bool) -> Self {
         Self(vec![
-            Slot {
+            ISlot {
                 placement: SlotPlacement::One,
                 value,
             },
-            Slot {
+            ISlot {
                 placement: SlotPlacement::Two,
                 value,
             },
-            Slot {
+            ISlot {
                 placement: SlotPlacement::Three,
                 value,
             },
@@ -408,11 +415,11 @@ impl AlgoSlot {
 
     pub fn new_two(one: bool, two: bool) -> Self {
         Self(vec![
-            Slot {
+            ISlot {
                 placement: SlotPlacement::One,
                 value: one,
             },
-            Slot {
+            ISlot {
                 placement: SlotPlacement::Two,
                 value: two,
             },
@@ -421,15 +428,15 @@ impl AlgoSlot {
 
     pub fn new_three(one: bool, two: bool, three: bool) -> Self {
         Self(vec![
-            Slot {
+            ISlot {
                 placement: SlotPlacement::One,
                 value: one,
             },
-            Slot {
+            ISlot {
                 placement: SlotPlacement::Two,
                 value: two,
             },
-            Slot {
+            ISlot {
                 placement: SlotPlacement::Three,
                 value: three,
             },
@@ -445,27 +452,27 @@ impl AlgoSlot {
     /// false .. true   -> true
     /// true  .. false  -> false
     /// false .. false  -> true
-    pub fn check_off_current(&mut self, current_slot: &AlgoSlot) {
+    pub fn check_off_current(&mut self, current_slot: &IAlgoSlot) {
         for (i, goal_slot) in self.0.iter_mut().enumerate() {
             *goal_slot = match (current_slot.0.get(i), goal_slot.value) {
-                (None, true) => Slot {
+                (None, true) => ISlot {
                     placement: goal_slot.placement.clone(),
                     value: false,
                 },
-                (Some(s), true) if s.value => Slot {
+                (Some(s), true) if s.value => ISlot {
                     placement: goal_slot.placement.clone(),
                     value: true,
                 },
-                (Some(s), true) if !s.value => Slot {
+                (Some(s), true) if !s.value => ISlot {
                     placement: goal_slot.placement.clone(),
                     value: false,
                 },
-                (_, false) => Slot {
+                (_, false) => ISlot {
                     placement: goal_slot.placement.clone(),
                     value: true,
                 },
                 // TODO: test
-                _ => Slot {
+                _ => ISlot {
                     placement: SlotPlacement::Three,
                     value: false,
                 },

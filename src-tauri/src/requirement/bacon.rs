@@ -1,20 +1,20 @@
 use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
-use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSet, AlgoSlot, Algorithm};
+use crate::algorithm::types::{AlgoMainStat, IAlgoPiece, IAlgoSet, IAlgoSlot, Algorithm};
 use crate::requirement::types::AlgorithmRequirement;
 use crate::requirement::LevelRequirement;
 use crate::requirement_slv;
 use crate::stats::types::*;
-use crate::unit::types::{Class, Unit};
+use crate::unit::types::{Class, IUnit};
 
 #[test]
 fn test_skill_total() {
-    let unit_skill = UnitSkill {
+    let unit_skill = IUnitSkill {
         passive: 5,
         auto: 8,
     };
     let calc = requirement_slv(
         unit_skill,
-        UnitSkill {
+        IUnitSkill {
             passive: 10,
             auto: 10,
         },
@@ -24,13 +24,13 @@ fn test_skill_total() {
 }
 #[test]
 fn test_skill_halfway() {
-    let unit_skill = UnitSkill {
+    let unit_skill = IUnitSkill {
         passive: 5,
         auto: 8,
     };
     let calc = requirement_slv(
         unit_skill,
-        UnitSkill {
+        IUnitSkill {
             passive: 9,
             auto: 9,
         },
@@ -76,33 +76,33 @@ fn level_to70bound() {
 fn neuralreq() {
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            NeuralFragment::default(),
+            INeuralFragment::default(),
             NeuralExpansion::One,
             NeuralExpansion::Five
         )
         .unwrap()
         .frags,
-        NeuralFragment(Some(400))
+        INeuralFragment(Some(400))
     );
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            NeuralFragment::default(),
+            INeuralFragment::default(),
             NeuralExpansion::Three,
             NeuralExpansion::Five
         )
         .unwrap()
         .frags,
-        NeuralFragment(Some(320))
+        INeuralFragment(Some(320))
     );
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            NeuralFragment::default(),
+            INeuralFragment::default(),
             NeuralExpansion::Two,
             NeuralExpansion::FourHalf
         )
         .unwrap()
         .frags,
-        NeuralFragment(Some(25 + 40 + 60 + 70 + 90))
+        INeuralFragment(Some(25 + 40 + 60 + 70 + 90))
     )
 }
 #[test]
@@ -193,7 +193,7 @@ fn widget_5() {
 #[test]
 fn kits_conversion() {
     let t = NeuralResourceRequirement::calculate_kits_conversion(
-        NeuralFragment(None),
+        INeuralFragment(None),
         NeuralExpansion::Three,
         NeuralExpansion::Five,
     )
@@ -206,7 +206,7 @@ fn kits_conversion() {
 #[test]
 fn kits_2() {
     let t = NeuralResourceRequirement::calculate_kits_conversion(
-        NeuralFragment(Some(10)),
+        INeuralFragment(Some(10)),
         NeuralExpansion::Four,
         NeuralExpansion::Five,
     );
@@ -218,24 +218,24 @@ fn kits_2() {
 
 #[test]
 fn missing_display() {
-    let pieces: Vec<AlgoPiece> = vec![
-        AlgoPiece::new_detailed(
+    let pieces: Vec<IAlgoPiece> = vec![
+        IAlgoPiece::new_detailed(
             Algorithm::Feedforward,
             AlgoMainStat::AtkPercent,
             false,
             false,
             true,
         ),
-        AlgoPiece::new_detailed(
+        IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             true,
             true,
         ),
-        AlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, false, false),
+        IAlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, false, false),
     ];
-    let from_unit = Unit::default();
+    let from_unit = IUnit::default();
     let algo_req = AlgorithmRequirement { pieces, from_unit };
     dbg!(algo_req.is_fulfilled());
     assert_eq!(1, 1);
@@ -243,9 +243,9 @@ fn missing_display() {
 
 #[test]
 fn fulfilled() {
-    let mut set: AlgoSet = AlgoSet {
+    let mut set: IAlgoSet = IAlgoSet {
         offense: vec![],
-        stability: vec![AlgoPiece::new_detailed(
+        stability: vec![IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
@@ -255,15 +255,15 @@ fn fulfilled() {
         special: vec![],
     };
 
-    let with_goal: Vec<AlgoPiece> = vec![
-        AlgoPiece::new_detailed(
+    let with_goal: Vec<IAlgoPiece> = vec![
+        IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             false,
             false,
         ),
-        AlgoPiece::new_detailed(
+        IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
@@ -274,17 +274,17 @@ fn fulfilled() {
     set.apply_checkbox(with_goal);
 
     // NOTE: goal pieces are not checked for duplication for now
-    let right: AlgoSet = AlgoSet {
+    let right: IAlgoSet = IAlgoSet {
         offense: vec![],
         stability: vec![
-            AlgoPiece::new_detailed(
+            IAlgoPiece::new_detailed(
                 Algorithm::Encapsulate,
                 AlgoMainStat::Health,
                 true,
                 true,
                 true,
             ),
-            AlgoPiece::new_detailed(
+            IAlgoPiece::new_detailed(
                 Algorithm::Encapsulate,
                 AlgoMainStat::Health,
                 true,
@@ -299,7 +299,7 @@ fn fulfilled() {
     assert_eq!(set.special, right.special);
     let req = AlgorithmRequirement {
         pieces: set.get_bucket(),
-        from_unit: Unit::default(),
+        from_unit: IUnit::default(),
     };
     assert!(req.is_fulfilled())
 }

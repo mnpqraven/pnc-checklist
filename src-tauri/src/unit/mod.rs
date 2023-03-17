@@ -1,4 +1,4 @@
-use self::types::{Class, Unit};
+use self::types::{Class, IUnit};
 use crate::{
     compute::update_reqs,
     service::{db::get_db, errors::TauriError, file::localsave},
@@ -13,7 +13,7 @@ use tauri::State;
 mod impls;
 pub mod types;
 
-pub async fn get_units_iternal() -> Result<Vec<Unit>, QueryError> {
+pub async fn get_units_iternal() -> Result<Vec<IUnit>, QueryError> {
     println!("[invoke] get_units");
     let client = get_db().await;
     let db_units = client.unit().find_many(vec![]).exec().await?;
@@ -21,7 +21,7 @@ pub async fn get_units_iternal() -> Result<Vec<Unit>, QueryError> {
     let units = futures::future::join_all(
         db_units
             .into_iter()
-            .map(|db_unit| async { Unit::from_async(db_unit).await }),
+            .map(|db_unit| async { IUnit::from_async(db_unit).await }),
     )
     .await;
     Ok(units)
@@ -50,7 +50,7 @@ pub fn delete_unit(index: usize, computed: State<Computed>) -> Result<usize, Tau
 
 // TODO: to refactor
 #[tauri::command]
-pub fn get_unit(index: usize, computed: State<Computed>) -> Result<Unit, TauriError> {
+pub fn get_unit(index: usize, computed: State<Computed>) -> Result<IUnit, TauriError> {
     if let Ok(g_computed) = computed.units.lock() {
         match g_computed.get(index) {
             Some(unit) => {
@@ -70,7 +70,7 @@ pub fn get_unit(index: usize, computed: State<Computed>) -> Result<Unit, TauriEr
 // TODO: to refactor
 #[tauri::command]
 pub fn save_units(
-    units: Vec<(Unit, usize)>,
+    units: Vec<(IUnit, usize)>,
     computed: State<Computed>,
     storage: State<JSONStorage>,
     kc: State<KeychainTable>,

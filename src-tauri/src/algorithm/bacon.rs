@@ -1,36 +1,36 @@
 use super::{
     print_main_stat,
-    types::{AlgoCategory, AlgoSet},
+    types::{AlgoCategory, IAlgoSet},
 };
-use crate::algorithm::types::{AlgoMainStat, AlgoPiece, AlgoSlot, Algorithm};
+use crate::algorithm::types::{AlgoMainStat, IAlgoPiece, IAlgoSlot, Algorithm};
 
 #[test]
 fn slots_small_to_big() {
-    let right = AlgoPiece::compute_slots(&Algorithm::DeltaV, &AlgoSlot::new_two(true, true));
-    assert_eq!(AlgoSlot::new_three(true, true, false), right);
+    let right = IAlgoPiece::compute_slots(&Algorithm::DeltaV, &IAlgoSlot::new_two(true, true));
+    assert_eq!(IAlgoSlot::new_three(true, true, false), right);
 
-    let right = AlgoPiece::compute_slots(&Algorithm::MLRMatrix, &AlgoSlot::new_two(false, true));
-    assert_eq!(AlgoSlot::new_three(false, true, false), right);
+    let right = IAlgoPiece::compute_slots(&Algorithm::MLRMatrix, &IAlgoSlot::new_two(false, true));
+    assert_eq!(IAlgoSlot::new_three(false, true, false), right);
 }
 #[test]
 fn slots_big_to_small() {
-    let right = AlgoPiece::compute_slots(
+    let right = IAlgoPiece::compute_slots(
         &Algorithm::Connection,
-        &AlgoSlot::new_three(true, true, true),
+        &IAlgoSlot::new_three(true, true, true),
     );
-    assert_eq!(AlgoSlot::new_two(true, true), right);
+    assert_eq!(IAlgoSlot::new_two(true, true), right);
 
-    let right = AlgoPiece::compute_slots(
+    let right = IAlgoPiece::compute_slots(
         &Algorithm::Inspiration,
-        &AlgoSlot::new_three(true, false, true),
+        &IAlgoSlot::new_three(true, false, true),
     );
-    assert_eq!(AlgoSlot::new_two(true, false), right);
+    assert_eq!(IAlgoSlot::new_two(true, false), right);
 
-    let right = AlgoPiece::compute_slots(
+    let right = IAlgoPiece::compute_slots(
         &Algorithm::Feedforward,
-        &AlgoSlot::new_three(false, true, false),
+        &IAlgoSlot::new_three(false, true, false),
     );
-    assert_eq!(AlgoSlot::new_two(false, true), right);
+    assert_eq!(IAlgoSlot::new_two(false, true), right);
 }
 #[test]
 fn algodb_refactor() {
@@ -54,16 +54,16 @@ fn algodb_refactor() {
 
 #[test]
 fn update_slots_pass() {
-    let mut current_set: AlgoSet = AlgoSet {
+    let mut current_set: IAlgoSet = IAlgoSet {
         offense: vec![
-            AlgoPiece::new_detailed(
+            IAlgoPiece::new_detailed(
                 Algorithm::Feedforward,
                 AlgoMainStat::AtkPercent,
                 false,
                 true,
                 false,
             ),
-            AlgoPiece::new_detailed(
+            IAlgoPiece::new_detailed(
                 Algorithm::MLRMatrix,
                 AlgoMainStat::HashratePercent,
                 false,
@@ -71,14 +71,14 @@ fn update_slots_pass() {
                 true,
             ),
         ],
-        stability: vec![AlgoPiece::new_detailed(
+        stability: vec![IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             true,
             false,
         )],
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             false,
@@ -87,41 +87,41 @@ fn update_slots_pass() {
         )],
     };
 
-    let with_goal: Vec<AlgoPiece> = vec![
-        AlgoPiece::new_detailed(
+    let with_goal: Vec<IAlgoPiece> = vec![
+        IAlgoPiece::new_detailed(
             Algorithm::MLRMatrix,
             AlgoMainStat::AtkPercent,
             true,
             true,
             true,
         ),
-        AlgoPiece::new_detailed(
+        IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             true,
             true,
             false,
         ),
-        AlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, true, false),
+        IAlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, true, false),
     ];
     current_set.apply_checkbox(with_goal);
 
-    let right: AlgoSet = AlgoSet {
-        offense: vec![AlgoPiece::new_detailed(
+    let right: IAlgoSet = IAlgoSet {
+        offense: vec![IAlgoPiece::new_detailed(
             Algorithm::MLRMatrix,
             AlgoMainStat::AtkPercent,
             false,
             false,
             false,
         )],
-        stability: vec![AlgoPiece::new_detailed(
+        stability: vec![IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             true,
             true,
         )],
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             false,
@@ -136,16 +136,16 @@ fn update_slots_pass() {
 
 #[test]
 fn update_slots_pass_partial() {
-    let mut set: AlgoSet = AlgoSet {
+    let mut set: IAlgoSet = IAlgoSet {
         offense: vec![],
-        stability: vec![AlgoPiece::new_detailed(
+        stability: vec![IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             true,
             false,
         )],
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             false,
@@ -154,41 +154,41 @@ fn update_slots_pass_partial() {
         )],
     };
 
-    let with_goal: Vec<AlgoPiece> = vec![
-        AlgoPiece::new_detailed(
+    let with_goal: Vec<IAlgoPiece> = vec![
+        IAlgoPiece::new_detailed(
             Algorithm::MLRMatrix,
             AlgoMainStat::AtkPercent,
             true,
             true,
             true,
         ),
-        AlgoPiece::new_detailed(
+        IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             true,
             true,
             false,
         ),
-        AlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, true, false),
+        IAlgoPiece::new_detailed(Algorithm::DeltaV, AlgoMainStat::Haste, true, true, false),
     ];
     set.apply_checkbox(with_goal);
 
-    let right: AlgoSet = AlgoSet {
-        offense: vec![AlgoPiece::new_detailed(
+    let right: IAlgoSet = IAlgoSet {
+        offense: vec![IAlgoPiece::new_detailed(
             Algorithm::MLRMatrix,
             AlgoMainStat::AtkPercent,
             false,
             false,
             false,
         )],
-        stability: vec![AlgoPiece::new_detailed(
+        stability: vec![IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
             true,
             true,
         )],
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             false,
@@ -210,9 +210,9 @@ fn mainstat_display() {
 
 #[test]
 fn set_filling() {
-    let mut left: AlgoSet = AlgoSet {
+    let mut left: IAlgoSet = IAlgoSet {
         offense: vec![],
-        stability: [AlgoPiece::new_detailed(
+        stability: [IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             false,
@@ -220,7 +220,7 @@ fn set_filling() {
             false,
         ); 1]
             .to_vec(),
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             false,
@@ -228,9 +228,9 @@ fn set_filling() {
             true,
         )],
     };
-    let right: AlgoSet = AlgoSet {
+    let right: IAlgoSet = IAlgoSet {
         offense: vec![],
-        stability: [AlgoPiece::new_detailed(
+        stability: [IAlgoPiece::new_detailed(
             Algorithm::Encapsulate,
             AlgoMainStat::Health,
             true,
@@ -238,7 +238,7 @@ fn set_filling() {
             true,
         ); 1]
             .to_vec(),
-        special: vec![AlgoPiece::new_detailed(
+        special: vec![IAlgoPiece::new_detailed(
             Algorithm::DeltaV,
             AlgoMainStat::Haste,
             true,

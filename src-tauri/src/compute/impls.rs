@@ -10,46 +10,46 @@ impl UserJSON {
                 skill: SkillCurrency::default(),
                 coin: Coin::default(),
             },
-            units: vec![Unit {
+            units: vec![IUnit {
                 name: String::from("Croque"),
                 class: Class::Guard,
-                current: Loadout {
+                current: ILoadout {
                     loadout_type: LoadoutType::Current,
-                    skill_level: UnitSkill {
+                    skill_level: IUnitSkill {
                         passive: 1,
                         auto: 1,
                     },
-                    algo: AlgoSet::default(),
-                    level: Level::default(),
+                    algo: IAlgoSet::default(),
+                    level: ILevel::default(),
                     neural: NeuralExpansion::Three,
-                    frags: NeuralFragment::default(),
+                    frags: INeuralFragment::default(),
                 },
-                goal: Loadout {
+                goal: ILoadout {
                     loadout_type: LoadoutType::Goal,
-                    skill_level: UnitSkill::max(),
-                    algo: AlgoSet {
-                        offense: vec![AlgoPiece {
+                    skill_level: IUnitSkill::max(),
+                    algo: IAlgoSet {
+                        offense: vec![IAlgoPiece {
                             category: AlgoCategory::Offense,
                             name: Algorithm::Deduction,
                             stat: AlgoMainStat::HashratePercent,
-                            slot: AlgoSlot::new_two(true, true),
+                            slot: IAlgoSlot::new_two(true, true),
                         }],
-                        stability: vec![AlgoPiece {
+                        stability: vec![IAlgoPiece {
                             category: AlgoCategory::Stability,
                             name: Algorithm::Overflow,
                             stat: AlgoMainStat::DefPercent,
-                            slot: AlgoSlot::new_default(true),
+                            slot: IAlgoSlot::new_default(true),
                         }],
-                        special: vec![AlgoPiece {
+                        special: vec![IAlgoPiece {
                             category: AlgoCategory::Special,
                             name: Algorithm::Stratagem,
                             stat: AlgoMainStat::DefPercent,
-                            slot: AlgoSlot::new_two(true, true),
+                            slot: IAlgoSlot::new_two(true, true),
                         }],
                     },
-                    level: Level(60),
+                    level: ILevel(60),
                     neural: NeuralExpansion::Five,
-                    frags: NeuralFragment(None),
+                    frags: INeuralFragment(None),
                 },
             }],
         }

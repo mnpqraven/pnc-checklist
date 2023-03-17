@@ -1,4 +1,4 @@
-use crate::{algorithm::types::AlgoSet, loadout::types::LoadoutType};
+use crate::{algorithm::types::IAlgoSet, loadout::types::LoadoutType};
 use crate::stats::types::*;
 use rspc::Type;
 use serde::{Deserialize, Serialize};
@@ -7,25 +7,25 @@ use schemars::JsonSchema;
 use strum_macros::EnumString;
 
 #[derive(Serialize, Deserialize, Default, Debug, Clone, Type, JsonSchema)]
-pub struct Unit {
+pub struct IUnit {
     pub name: String,
     pub class: Class,
-    pub current: Loadout,
-    pub goal: Loadout,
+    pub current: ILoadout,
+    pub goal: ILoadout,
 }
 
 #[derive(Serialize, Deserialize, Default, Debug, Clone, Type, JsonSchema)]
-pub struct Loadout {
+pub struct ILoadout {
     #[serde(default)]
-    pub skill_level: UnitSkill,
+    pub skill_level: IUnitSkill,
     #[serde(default)]
-    pub level: Level,
+    pub level: ILevel,
     #[serde(default)]
-    pub algo: AlgoSet,
+    pub algo: IAlgoSet,
     #[serde(default)]
     pub neural: NeuralExpansion,
     #[serde(default)]
-    pub frags: NeuralFragment,
+    pub frags: INeuralFragment,
     pub loadout_type: LoadoutType
 }
 

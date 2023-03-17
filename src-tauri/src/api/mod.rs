@@ -17,7 +17,7 @@ use self::{
     unitskill::{unit_skill_many_router, unit_skill_router},
 };
 use crate::{
-    algorithm::types::{AlgoMainStat, AlgoPiece},
+    algorithm::types::{AlgoMainStat, IAlgoPiece},
     prisma::{self, PrismaClient},
 };
 use prisma_client_rust::QueryError;

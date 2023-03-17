@@ -1,30 +1,30 @@
 use super::types::*;
-use crate::algorithm::types::AlgoPiece;
+use crate::algorithm::types::IAlgoPiece;
 use crate::loadout::get_loadout_db;
 use crate::loadout::types::LoadoutType;
 use crate::prisma::{self, algo_piece, loadout, unit, unit_skill};
 use crate::service::db::get_db;
-use crate::stats::types::{Level, NeuralFragment, UnitSkill};
+use crate::stats::types::{ILevel, INeuralFragment, IUnitSkill};
 use crate::traits::FromAsync;
 use crate::unit::TauriError;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 
 // UNIT
-impl Unit {
+impl IUnit {
     pub fn new(name: String, class: Class) -> Self {
         Self {
             name,
             class,
-            current: Loadout::new(false, false),
-            goal: Loadout::new_goal(),
+            current: ILoadout::new(false, false),
+            goal: ILoadout::new_goal(),
         }
     }
 
     /// Returns a vector of AlgoPiece by checking unit's `current` and `goal`
     /// Loadout struct
     // TODO: return vec of references
-    pub fn get_missing_algos(&self) -> Vec<AlgoPiece> {
+    pub fn get_missing_algos(&self) -> Vec<IAlgoPiece> {
         let mut v = self.current.algo.clone();
         v.apply_checkbox(self.goal.algo.get_bucket());
         v.get_bucket()
@@ -33,8 +33,8 @@ impl Unit {
     /// creates a `Vec` of new `Arc<Mutex<T>>>` for lockers that should belong to
     /// this `Unit`
     pub fn create_lockers(
-        am_unit: &Arc<Mutex<Unit>>,
-    ) -> Result<Vec<Arc<Mutex<AlgoPiece>>>, TauriError> {
+        am_unit: &Arc<Mutex<IUnit>>,
+    ) -> Result<Vec<Arc<Mutex<IAlgoPiece>>>, TauriError> {
         if let Ok(g_unit) = am_unit.lock() {
             Ok(g_unit
                 .current
@@ -49,7 +49,7 @@ impl Unit {
     }
 }
 
-impl FromAsync<unit::Data> for Unit {
+impl FromAsync<unit::Data> for IUnit {
     async fn from_async(value: unit::Data) -> Self {
         let client = get_db().await;
         let unit_in_db = client
@@ -72,8 +72,8 @@ impl FromAsync<unit::Data> for Unit {
         Self {
             name: value.name,
             class: Class::from_str(&value.class).unwrap(),
-            current: Loadout::from_async(current).await,
-            goal: Loadout::from_async(goal).await,
+            current: ILoadout::from_async(current).await,
+            goal: ILoadout::from_async(goal).await,
         }
     }
 }
@@ -84,19 +84,19 @@ impl Default for NeuralExpansion {
     }
 }
 
-impl Default for Level {
+impl Default for ILevel {
     fn default() -> Self {
         Self(1)
     }
 }
 
-impl Default for NeuralFragment {
+impl Default for INeuralFragment {
     fn default() -> Self {
         Self(Some(0))
     }
 }
 
-impl UnitSkill {
+impl IUnitSkill {
     pub fn max() -> Self {
         Self {
             passive: 10,
@@ -104,7 +104,7 @@ impl UnitSkill {
         }
     }
 }
-impl FromAsync<unit_skill::Data> for UnitSkill {
+impl FromAsync<unit_skill::Data> for IUnitSkill {
     async fn from_async(value: unit_skill::Data) -> Self {
         let client = get_db().await;
         let find = client
@@ -121,7 +121,7 @@ impl FromAsync<unit_skill::Data> for UnitSkill {
     }
 }
 
-impl Default for UnitSkill {
+impl Default for IUnitSkill {
     fn default() -> Self {
         Self {
             passive: 1,
@@ -130,7 +130,7 @@ impl Default for UnitSkill {
     }
 }
 
-impl Level {
+impl ILevel {
     pub fn new(value: u32) -> Self {
         Self(value)
     }

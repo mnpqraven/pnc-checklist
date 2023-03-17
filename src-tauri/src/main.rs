@@ -54,7 +54,7 @@ use std::{
 };
 #[allow(unused_imports)]
 use tauri::Manager;
-use unit::{get_units_iternal, types::Unit};
+use unit::{get_units_iternal, types::IUnit};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -63,7 +63,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let (db_path, db_url) = db_path_url();
     let client = load_and_migrate(&db_path, &db_url).await;
 
-    let initial_units: Vec<Unit> = get_units_iternal().await.unwrap();
+    let initial_units: Vec<IUnit> = get_units_iternal().await.unwrap();
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units.clone());
     let state_computed = Computed {
         database_req: Mutex::new(

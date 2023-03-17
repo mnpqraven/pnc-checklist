@@ -13,7 +13,7 @@ pub struct SkillCurrency {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Type, JsonSchema)]
-pub struct UnitSkill {
+pub struct IUnitSkill {
     pub passive: u32,
     pub auto: u32,
 }
@@ -22,10 +22,10 @@ pub struct UnitSkill {
 pub struct Coin(pub u32);
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, Type, JsonSchema)]
-pub struct Level(pub u32);
+pub struct ILevel(pub u32);
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Type, PartialEq, JsonSchema)]
-pub struct NeuralFragment(pub Option<u32>);
+pub struct INeuralFragment(pub Option<u32>);
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone, Copy, Type, JsonSchema)]
 pub struct WidgetResource {

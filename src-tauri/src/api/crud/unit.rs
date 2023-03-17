@@ -1,12 +1,12 @@
 use crate::{
     api::crud::algo::new_algo_piece,
     prisma::{self, unit, PrismaClient},
-    stats::types::UnitSkill,
-    unit::types::{Loadout, Unit},
+    stats::types::IUnitSkill,
+    unit::types::{ILoadout, IUnit},
 };
 use prisma_client_rust::QueryError;
 
-pub async fn new_unit(client: &PrismaClient, data: Unit) -> Result<unit::Data, QueryError> {
+pub async fn new_unit(client: &PrismaClient, data: IUnit) -> Result<unit::Data, QueryError> {
     let created = client
         .unit()
         .create(data.name, data.class.to_string(), vec![])
@@ -39,7 +39,7 @@ pub async fn get_unit_from_id(
 
 async fn new_loadout(
     client: &PrismaClient,
-    data: Loadout,
+    data: ILoadout,
     unit_id: String,
 ) -> Result<prisma::loadout::Data, QueryError> {
     // let algos = new_algo_pieces(client, data.algo.get_bucket()).await?;
@@ -69,7 +69,7 @@ async fn new_loadout(
 
 async fn new_unit_skill(
     client: &PrismaClient,
-    data: UnitSkill,
+    data: IUnitSkill,
     loadout_id: String,
 ) -> Result<prisma::unit_skill::Data, QueryError> {
     client

@@ -51,21 +51,21 @@ pub enum Algorithm {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Type, PartialEq, Eq, JsonSchema)]
-pub struct AlgoPiece {
+pub struct IAlgoPiece {
     pub name: Algorithm,
     pub stat: AlgoMainStat,
     pub category: AlgoCategory,
-    pub slot: AlgoSlot
+    pub slot: IAlgoSlot
 }
 
 #[derive(Serialize, Deserialize, Type, Clone, Debug, PartialEq, Eq, JsonSchema)]
-pub struct Slot {
+pub struct ISlot {
     pub placement: SlotPlacement,
     pub value: bool,
 }
 
 #[derive(Serialize, Deserialize, Type, Clone, Debug, PartialEq, Eq, JsonSchema)]
-pub struct AlgoSlot(pub Vec<Slot>);
+pub struct IAlgoSlot(pub Vec<ISlot>);
 
 #[derive(
     Serialize, Deserialize, Debug, Clone, Type, EnumIter, Display, PartialEq, Eq, JsonSchema, EnumString
@@ -76,7 +76,7 @@ pub enum SlotPlacement {
     Three,
 }
 
-impl Not for Slot {
+impl Not for ISlot {
     type Output = Self;
 
     fn not(self) -> Self::Output {
@@ -87,17 +87,17 @@ impl Not for Slot {
     }
 }
 
-impl Slot {
+impl ISlot {
     pub fn set(&mut self, to: bool) {
         self.value = to
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, Type, PartialEq, JsonSchema)]
-pub struct AlgoSet {
-    pub offense: Vec<AlgoPiece>,
-    pub stability: Vec<AlgoPiece>,
-    pub special: Vec<AlgoPiece>,
+pub struct IAlgoSet {
+    pub offense: Vec<IAlgoPiece>,
+    pub stability: Vec<IAlgoPiece>,
+    pub special: Vec<IAlgoPiece>,
 }
 
 #[allow(clippy::upper_case_acronyms)]
