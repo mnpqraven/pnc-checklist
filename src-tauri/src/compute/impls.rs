@@ -22,7 +22,7 @@ impl UserJSON {
                     algo: IAlgoSet::default(),
                     level: ILevel::default(),
                     neural: NeuralExpansion::Three,
-                    frags: INeuralFragment::default(),
+                    frags: NeuralFragment::default(),
                 },
                 goal: ILoadout {
                     loadout_type: LoadoutType::Goal,
@@ -49,7 +49,7 @@ impl UserJSON {
                     },
                     level: ILevel(60),
                     neural: NeuralExpansion::Five,
-                    frags: INeuralFragment(None),
+                    frags: NeuralFragment(None),
                 },
             }],
         }

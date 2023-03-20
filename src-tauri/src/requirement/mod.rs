@@ -2,8 +2,8 @@ use self::types::*;
 use crate::algorithm::types::IAlgoPiece;
 use crate::service::errors::RequirementError;
 use crate::state::types::Computed;
-use crate::stats::types::{INeuralFragment, IUnitSkill};
-use crate::unit::types::{Class, NeuralExpansion, IUnit};
+use crate::stats::types::{IUnitSkill, NeuralFragment};
+use crate::unit::types::{Class, IUnit, NeuralExpansion};
 use tauri::State;
 
 #[cfg(test)]
@@ -15,7 +15,10 @@ pub mod types;
 ///
 /// * `current_slv`: unit's current slv
 #[tauri::command]
-pub fn requirement_slv(current_slv: IUnitSkill, target_slv: IUnitSkill) -> SkillResourceRequirement {
+pub fn requirement_slv(
+    current_slv: IUnitSkill,
+    target_slv: IUnitSkill,
+) -> SkillResourceRequirement {
     SkillResourceRequirement::calculate(current_slv, target_slv)
 }
 
@@ -26,7 +29,7 @@ pub fn requirement_level(from: u32, to: u32) -> Result<LevelRequirement, Require
 
 #[tauri::command]
 pub fn requirement_neural(
-    current: INeuralFragment,
+    current: NeuralFragment,
     from: NeuralExpansion,
     to: NeuralExpansion,
 ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
@@ -35,10 +38,10 @@ pub fn requirement_neural(
 
 #[tauri::command]
 pub fn requirment_neural_kits(
-    current: INeuralFragment,
+    current: NeuralFragment,
     from: NeuralExpansion,
     to: NeuralExpansion,
-) -> Result<u32, RequirementError<INeuralFragment>> {
+) -> Result<u32, RequirementError<NeuralFragment>> {
     NeuralResourceRequirement::calculate_kits_conversion(current, from, to)
 }
 

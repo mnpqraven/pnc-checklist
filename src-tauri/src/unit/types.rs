@@ -25,7 +25,7 @@ pub struct ILoadout {
     #[serde(default)]
     pub neural: NeuralExpansion,
     #[serde(default)]
-    pub frags: INeuralFragment,
+    pub frags: NeuralFragment,
     pub loadout_type: LoadoutType
 }
 

@@ -1,4 +1,4 @@
-use crate::prisma::loadout;
+use crate::{prisma::loadout, loadout::loadout_tuple_by_unit_id};
 use rspc::{Router, RouterBuilder};
 
 use super::{error_map, Ctx};
@@ -23,6 +23,11 @@ pub fn loadout_many_router() -> RouterBuilder<Ctx> {
                     .exec()
                     .await
                     .map_err(error_map)
+            })
+        })
+        .query("getTupleByUnitId", |t| {
+            t(|ctx, unit_id: String| async move {
+                loadout_tuple_by_unit_id(unit_id).await.map_err(error_map)
             })
         })
         .mutation("save", |t| {

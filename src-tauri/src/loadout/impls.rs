@@ -16,7 +16,7 @@ impl ILoadout {
             algo: IAlgoSet::new(checked_slots),
             level: ILevel(1),
             neural: NeuralExpansion::Three,
-            frags: INeuralFragment::default(),
+            frags: NeuralFragment::default(),
             loadout_type: LoadoutType::Current,
         }
     }
@@ -27,7 +27,7 @@ impl ILoadout {
             level: ILevel::max(),
             algo: IAlgoSet::new(true),
             neural: NeuralExpansion::Five,
-            frags: INeuralFragment(None),
+            frags: NeuralFragment(None),
             loadout_type: LoadoutType::Goal,
         }
     }
@@ -66,7 +66,7 @@ impl FromAsync<loadout::Data> for ILoadout {
             level: ILevel::new(value.level.try_into().unwrap()),
             algo: IAlgoSet::get_set(&t),
             neural: NeuralExpansion::from_str(&value.neural).unwrap(),
-            frags: INeuralFragment::new(value.frags),
+            frags: NeuralFragment::new(value.frags),
             loadout_type: LoadoutType::from_str(&value.loadout_type).unwrap(),
         }
     }

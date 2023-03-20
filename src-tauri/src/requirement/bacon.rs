@@ -1,5 +1,5 @@
 use super::{NeuralExpansion, NeuralResourceRequirement, WidgetResourceRequirement};
-use crate::algorithm::types::{AlgoMainStat, IAlgoPiece, IAlgoSet, IAlgoSlot, Algorithm};
+use crate::algorithm::types::{AlgoMainStat, IAlgoPiece, IAlgoSet, Algorithm};
 use crate::requirement::types::AlgorithmRequirement;
 use crate::requirement::LevelRequirement;
 use crate::requirement_slv;
@@ -76,33 +76,33 @@ fn level_to70bound() {
 fn neuralreq() {
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            INeuralFragment::default(),
+            NeuralFragment::default(),
             NeuralExpansion::One,
             NeuralExpansion::Five
         )
         .unwrap()
         .frags,
-        INeuralFragment(Some(400))
+        NeuralFragment(Some(400))
     );
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            INeuralFragment::default(),
+            NeuralFragment::default(),
             NeuralExpansion::Three,
             NeuralExpansion::Five
         )
         .unwrap()
         .frags,
-        INeuralFragment(Some(320))
+        NeuralFragment(Some(320))
     );
     assert_eq!(
         NeuralResourceRequirement::calculate(
-            INeuralFragment::default(),
+            NeuralFragment::default(),
             NeuralExpansion::Two,
             NeuralExpansion::FourHalf
         )
         .unwrap()
         .frags,
-        INeuralFragment(Some(25 + 40 + 60 + 70 + 90))
+        NeuralFragment(Some(25 + 40 + 60 + 70 + 90))
     )
 }
 #[test]
@@ -193,7 +193,7 @@ fn widget_5() {
 #[test]
 fn kits_conversion() {
     let t = NeuralResourceRequirement::calculate_kits_conversion(
-        INeuralFragment(None),
+        NeuralFragment(None),
         NeuralExpansion::Three,
         NeuralExpansion::Five,
     )
@@ -206,7 +206,7 @@ fn kits_conversion() {
 #[test]
 fn kits_2() {
     let t = NeuralResourceRequirement::calculate_kits_conversion(
-        INeuralFragment(Some(10)),
+        NeuralFragment(Some(10)),
         NeuralExpansion::Four,
         NeuralExpansion::Five,
     );

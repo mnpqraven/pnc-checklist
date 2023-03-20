@@ -44,7 +44,7 @@ pub struct WidgetResourceRequirement {
 #[derive(Debug, Serialize, Deserialize, Default, Type)]
 pub struct NeuralResourceRequirement {
     #[serde(default)]
-    pub frags: INeuralFragment,
+    pub frags: NeuralFragment,
     pub coin: Coin,
     pub kits: u32,
 }

@@ -1,5 +1,10 @@
+use std::str::FromStr;
+
 use super::types::*;
 use crate::algorithm::types::IAlgoPiece;
+use crate::loadout::loadout_tuple_by_unit_id;
+use crate::prisma::unit_skill;
+use crate::service::db::get_db;
 use crate::service::errors::{RequirementError, TauriError};
 use crate::state::types::GrandResource;
 use crate::unit::types::{Class, NeuralExpansion};
@@ -16,16 +21,18 @@ impl DatabaseRequirement {
     }
 }
 impl UnitRequirement {
-    pub fn update_unit_req(unit: &IUnit) -> Result<Self, TauriError> {
+    pub async fn update_unit_req(unit: &IUnit, temp_unit_id: String) -> Result<Self, TauriError> {
+        let client = get_db().await;
+        let (current_lo, goal_lo) = loadout_tuple_by_unit_id(temp_unit_id).await.unwrap();
         Ok(Self {
             skill: SkillResourceRequirement::calculate(
-                unit.current.skill_level,
-                unit.goal.skill_level,
+                current_lo.skill_level().unwrap().unwrap(),
+                goal_lo.skill_level().unwrap().unwrap()
             ),
             neural: NeuralResourceRequirement::calculate(
-                unit.current.frags,
-                unit.current.neural,
-                unit.goal.neural,
+                NeuralFragment::new(current_lo.frags),
+                NeuralExpansion::from_str(&current_lo.neural).unwrap(),
+                NeuralExpansion::from_str(&goal_lo.neural).unwrap(),
             )
             .unwrap(),
             level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0).unwrap(),
@@ -107,7 +114,7 @@ impl LevelRequirement {
 
 impl NeuralResourceRequirement {
     pub fn calculate(
-        current: INeuralFragment,
+        current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
@@ -126,19 +133,19 @@ impl NeuralResourceRequirement {
     }
 
     fn get_frags(
-        current: INeuralFragment,
+        current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
-    ) -> INeuralFragment {
+    ) -> NeuralFragment {
         let sum = &REQ_NEURAL[from as usize + 1..to as usize + 1];
-        INeuralFragment(Some(sum.iter().sum::<u32>() - current.0.unwrap_or(0)))
+        NeuralFragment(Some(sum.iter().sum::<u32>() - current.0.unwrap_or(0)))
     }
 
     pub fn calculate_kits_conversion(
-        current: INeuralFragment,
+        current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
-    ) -> Result<u32, RequirementError<INeuralFragment>> {
+    ) -> Result<u32, RequirementError<NeuralFragment>> {
         let frags = NeuralResourceRequirement::get_frags(current, from, to);
         println!("{:?}", frags);
         match frags.0 {
@@ -158,9 +165,9 @@ impl NeuralResourceRequirement {
     }
 }
 impl SkillResourceRequirement {
-    pub(super) fn calculate(from: IUnitSkill, to: IUnitSkill) -> Self {
+    pub(super) fn calculate(from: &unit_skill::Data, to: &unit_skill::Data) -> Self {
         /// returns needed resource for passive skill and auto skill from a range of slv
-        fn slice_sum(mut vector: Vec<u32>, from: IUnitSkill, to: IUnitSkill) -> u32 {
+        fn slice_sum(mut vector: Vec<u32>, from: &unit_skill::Data, to: &unit_skill::Data) -> u32 {
             let v_passive: Vec<u32> = vector
                 .clone()
                 .drain(from.passive as usize..to.passive as usize)

@@ -4,7 +4,7 @@ use crate::loadout::get_loadout_db;
 use crate::loadout::types::LoadoutType;
 use crate::prisma::{self, algo_piece, loadout, unit, unit_skill};
 use crate::service::db::get_db;
-use crate::stats::types::{ILevel, INeuralFragment, IUnitSkill};
+use crate::stats::types::{ILevel, NeuralFragment, IUnitSkill};
 use crate::traits::FromAsync;
 use crate::unit::TauriError;
 use std::str::FromStr;
@@ -90,7 +90,7 @@ impl Default for ILevel {
     }
 }
 
-impl Default for INeuralFragment {
+impl Default for NeuralFragment {
     fn default() -> Self {
         Self(Some(0))
     }

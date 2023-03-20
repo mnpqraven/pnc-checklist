@@ -34,7 +34,7 @@ mod tests {
     use crate::{
         algorithm::types::IAlgoSet,
         loadout::types::LoadoutType,
-        stats::types::{INeuralFragment, IUnitSkill},
+        stats::types::{NeuralFragment, IUnitSkill},
         unit::types::{ILoadout, IUnit},
     };
 
@@ -46,11 +46,11 @@ mod tests {
             level: crate::stats::types::ILevel(30),
             algo: IAlgoSet::new(true),
             neural: crate::unit::types::NeuralExpansion::OneHalf,
-            frags: INeuralFragment(Some(9)),
+            frags: NeuralFragment(Some(9)),
         };
         let mut lo_goal = lo_current.clone();
         lo_goal.loadout_type = LoadoutType::Goal;
-        lo_goal.frags = INeuralFragment(None);
+        lo_goal.frags = NeuralFragment(None);
 
         let u: IUnit = IUnit {
             name: "Croque".to_string(),
