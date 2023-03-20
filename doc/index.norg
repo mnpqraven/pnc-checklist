@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-03-16
+updated: 2023-03-20
 version: 0.1.2
 @end
 
@@ -136,7 +136,7 @@ version: 0.1.2
     -- ( ) requirement
     -- ( ) compute
     -- (!) Frontend can save a low-leveled current and a high-level goal
-    -- (!) right now changes to json store struct will make the app panic if
+    -- (!) right now changes to json store struct will make the app panic
        when trying to serialize current json data,
        needs to make an escape hatch (e.g rename current file then create a new
        from example, or make a edit script)
@@ -165,7 +165,7 @@ version: 0.1.2
     - (x) inverting bools in `AlgoRequirment` feels unintuitive, maybe flip
       value
     - (-) refactor away old invoke commands and replace with prisma calls
-    - (?) a helper fn to cast from db type to rust type
+    - (x) a helper fn to cast from db type to rust type
 
     #maintenance
     - (-) refactors

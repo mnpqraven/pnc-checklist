@@ -2,7 +2,7 @@ use super::types::*;
 use crate::algorithm::types::IAlgoPiece;
 use crate::loadout::get_loadout_db;
 use crate::loadout::types::LoadoutType;
-use crate::prisma::{self, algo_piece, loadout, unit, unit_skill};
+use crate::prisma::{algo_piece, loadout, unit, unit_skill};
 use crate::service::db::get_db;
 use crate::stats::types::{ILevel, NeuralFragment, IUnitSkill};
 use crate::traits::FromAsync;

@@ -5,6 +5,7 @@ use super::{
 use crate::{
     api::crud::unit::new_unit,
     prisma::unit,
+    requirement::types::UnitRequirement,
     traits::FromAsync,
     unit::types::{Class, IUnit},
 };
@@ -42,6 +43,12 @@ pub fn unit_many_router() -> RouterBuilder<Ctx> {
         })
         .mutation("save", |t| {
             t(|ctx, units: Vec<crate::prisma::unit::Data>| async move {
+                futures::future::try_join_all(
+                    units
+                        .iter()
+                        .map(|data| async move { UnitRequirement::calculate(data).await }),
+                )
+                .await?;
                 ctx.client
                     ._batch(units.into_iter().map(|data| {
                         ctx.client.unit().update(

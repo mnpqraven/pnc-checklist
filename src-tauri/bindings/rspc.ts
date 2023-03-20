@@ -15,6 +15,7 @@ export type Procedures = {
         { key: "loadout.getByUnitId", input: string | null, result: Array<Loadout> } | 
         { key: "loadouts.get", input: never, result: Array<Loadout> } | 
         { key: "loadouts.getById", input: string, result: Array<Loadout> } | 
+        { key: "loadouts.getTupleByUnitId", input: string, result: [Loadout, Loadout] } | 
         { key: "requirements.algos", input: never, result: Array<AlgorithmRequirement> } | 
         { key: "slots.get", input: never, result: Array<Slot> } | 
         { key: "slots.getByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
@@ -44,33 +45,19 @@ export interface AlgoPiece { id: string, category: string, name: string, stat: s
 
 export type Algorithm = "LowerLimit" | "Feedforward" | "Deduction" | "Progression" | "DataRepair" | "MLRMatrix" | "Stack" | "LimitValue" | "Encapsulate" | "Iteration" | "Perception" | "Overflow" | "Rationality" | "Connection" | "Convolution" | "Reflection" | "Resolve" | "Inspiration" | "LoopGain" | "SVM" | "Paradigm" | "DeltaV" | "Cluster" | "Stratagem" | "Exploit"
 
-export interface AlgorithmRequirement { pieces: Array<IAlgoPiece>, from_unit: IUnit }
+export interface AlgorithmRequirement { pieces: Array<IAlgoPiece>, from_unit_id: string | null }
 
 export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
 
 export interface IAlgoPiece { name: Algorithm, stat: AlgoMainStat, category: AlgoCategory, slot: IAlgoSlot }
 
-export interface IAlgoSet { offense: Array<IAlgoPiece>, stability: Array<IAlgoPiece>, special: Array<IAlgoPiece> }
-
 export type IAlgoSlot = Array<ISlot>
 
-export type ILevel = number
-
-export interface ILoadout { skill_level: IUnitSkill, level: ILevel, algo: IAlgoSet, neural: NeuralExpansion, frags: INeuralFragment, loadout_type: LoadoutType }
-
-export type INeuralFragment = number | null
-
 export interface ISlot { placement: SlotPlacement, value: boolean }
-
-export interface IUnit { name: string, class: Class, current: ILoadout, goal: ILoadout }
-
-export interface IUnitSkill { passive: number, auto: number }
 
 export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitId: string }
 
 export type LoadoutType = "Current" | "Goal"
-
-export type NeuralExpansion = "One" | "OneHalf" | "Two" | "TwoHalf" | "Three" | "ThreeHalf" | "Four" | "FourHalf" | "Five"
 
 export interface Slot { id: string, placement: string, value: boolean, algoPieceId: string }
 

@@ -41,6 +41,7 @@ pub enum TauriError {
     RequestLockFailed,
     UnitNotFound,
     ResourceRequestFailed(String),
+    Other(String)
 }
 impl Display for TauriError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -56,8 +57,27 @@ impl Display for TauriError {
             TauriError::ResourceRequestFailed(str) => {
                 format!("Requesting resource {{ {str} }} failed ")
             }
+            TauriError::Other(str) => format!("Error encountered: {{ {str} }}")
         };
         write!(f, "{}", err)
+    }
+}
+
+impl From<rspc::Error> for TauriError {
+    fn from(value: rspc::Error) -> Self {
+        TauriError::ResourceRequestFailed(value.to_string())
+    }
+}
+
+impl<T: Display + Debug> From<RequirementError<T>> for TauriError {
+    fn from(value: RequirementError<T>) -> Self {
+        TauriError::Other(value.to_string())
+    }
+}
+
+impl From<TauriError> for rspc::Error {
+    fn from(value: TauriError) -> Self {
+        rspc::Error::new(rspc::ErrorCode::InternalServerError, value.to_string())
     }
 }
 

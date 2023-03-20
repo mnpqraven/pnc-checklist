@@ -21,7 +21,7 @@ pub fn get_loadout_db(unit: &unit::Data, loadout_type: LoadoutType) -> Option<lo
         .find(|e| loadout_type.eq(&LoadoutType::from_str(&e.loadout_type).unwrap()))
 }
 
-pub async fn loadout_tuple_by_unit_id(
+pub async fn get_loadout_tuple(
     unit_id: String,
 ) -> Result<(loadout::Data, loadout::Data), QueryError> {
     let client = get_db().await;
@@ -34,13 +34,11 @@ pub async fn loadout_tuple_by_unit_id(
     let current = loadouts
         .iter()
         .cloned()
-        .filter(|e| e.loadout_type.eq(&LoadoutType::Current.to_string()))
-        .next()
+        .find(|e| e.loadout_type.eq(&LoadoutType::Current.to_string()))
         .expect("any unit should have a current loadout");
     let goal = loadouts
         .into_iter()
-        .filter(|e| e.loadout_type.eq(&LoadoutType::Goal.to_string()))
-        .next()
+        .find(|e| e.loadout_type.eq(&LoadoutType::Goal.to_string()))
         .expect("any unit should have a goal loadout");
     Ok((current, goal))
 }

@@ -1,5 +1,7 @@
 use super::types::{Computed, GrandResource, JSONStorage, Keychain, KeychainTable, UserJSON};
 use crate::algorithm::types::IAlgoPiece;
+use crate::prisma::unit;
+use crate::service::db::get_db;
 use crate::service::errors::TauriError;
 use crate::stats::types::*;
 use crate::unit::types::{Class, IUnit};
@@ -7,6 +9,7 @@ use crate::{
     requirement::types::{DatabaseRequirement, UnitRequirement},
     service::file::import,
 };
+use futures::TryFutureExt;
 use std::path::Path;
 use std::sync::{Arc, Mutex, MutexGuard};
 use strum::IntoEnumIterator;
@@ -34,7 +37,7 @@ mod tests {
     use crate::{
         algorithm::types::IAlgoSet,
         loadout::types::LoadoutType,
-        stats::types::{NeuralFragment, IUnitSkill},
+        stats::types::{IUnitSkill, NeuralFragment},
         unit::types::{ILoadout, IUnit},
     };
 
@@ -141,14 +144,21 @@ impl DatabaseRequirement {
     ///
     /// * `units`: list of units. If only `Unit` without an Arc wrapper, try to
     /// use `Arc::clone()` instead of `Arc::new()`
-    pub fn process_list(units: Vec<IUnit>) -> Result<Self, TauriError> {
+    pub async fn process_list(unit_ids: Vec<String>) -> Result<Self, TauriError> {
         println!("process_list");
-        let unit_req: Vec<UnitRequirement> = units
-            .iter()
-            .map(UnitRequirement::update_unit_req)
-            .collect::<Result<Vec<UnitRequirement>, TauriError>>(
-        )?;
-        dbg!(&unit_req);
+        // vec<IUnits>
+        let client = get_db().await;
+        let db_units = client
+            .unit()
+            .find_many(vec![unit::id::in_vec(unit_ids)])
+            .exec()
+            .await
+            .unwrap();
+        let unit_req: Vec<UnitRequirement> =
+            futures::future::try_join_all(db_units.iter().map(UnitRequirement::calculate))
+                .map_err(|err| TauriError::Other(err.to_string()))
+                .await?;
+        // .await?;
         Ok(Self { unit_req })
     }
 }

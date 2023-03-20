@@ -32,17 +32,17 @@ use crate::{
     },
     compute::{get_needed_rsc, update_chunk},
     requirement::{
-        algo_req_fulfilled, algo_req_group_piece, algo_req_table_piece, requirement_algo_store,
+        algo_req_fulfilled, algo_req_group_piece, algo_req_table_piece,
         requirement_level, requirement_neural, requirement_slv, requirement_widget,
-        requirment_neural_kits,
+        requirement_neural_kits,
     },
     service::{
-        enum_ls,
-        file::{export, import, set_default_file}, enum_ls_pretty,
+        enum_ls, enum_ls_pretty,
+        file::{export, import, set_default_file},
     },
     state::{clear_ownerless, get_tauri_version, remove_kc, view_locker},
     table::{get_algo_by_days, get_algo_db, get_bonuses},
-    unit::{delete_unit, get_unit, save_units},
+    unit::get_unit,
     validator::{validate, validate_slots},
 };
 use requirement::types::DatabaseRequirement;
@@ -64,10 +64,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let client = load_and_migrate(&db_path, &db_url).await;
 
     let initial_units: Vec<IUnit> = get_units_iternal().await.unwrap();
+    let db_units = client
+        .unit()
+        .find_many(vec![])
+        .exec()
+        .await
+        .unwrap()
+        .iter()
+        .cloned()
+        .map(|e| e.id)
+        .collect();
     let (state_kc_table, initial_am_units) = KeychainTable::inject(initial_units.clone());
     let state_computed = Computed {
         database_req: Mutex::new(
-            DatabaseRequirement::process_list(initial_units)
+            DatabaseRequirement::process_list(db_units)
+                .await
                 .expect("process_list stack should not have any blocking thread"),
         ),
         units: Mutex::new(initial_am_units),
@@ -117,10 +128,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             requirement_slv,
             requirement_level,
             requirement_neural,
-            requirment_neural_kits,
+            requirement_neural_kits,
             requirement_widget,
             // requirement_algo, // TODO: conflict with Dese
-            requirement_algo_store,
+            // requirement_algo_store,
             algo_req_fulfilled,
             algo_req_table_piece,
             // state
@@ -136,8 +147,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
             get_bonuses,
             get_algo_by_days,
             // unit
-            delete_unit,
-            save_units,
+            // delete_unit,
+            // save_units,
             get_unit,
             // validator
             validate_slots,

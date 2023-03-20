@@ -54,8 +54,9 @@ pub async fn get_db() -> PrismaClient {
         .expect("We should always be able to get a prisma client instance here")
 }
 #[cfg(debug_assertions)]
-pub async fn get_db() -> PrismaClient {
-    prisma::new_client()
+pub async fn get_db() -> Arc<PrismaClient> {
+    let client = prisma::new_client()
         .await
-        .expect("We should always be able to get a prisma client instance here")
+        .expect("We should always be able to get a prisma client instance here");
+    Arc::new(client)
 }

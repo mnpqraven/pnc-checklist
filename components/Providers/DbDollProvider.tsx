@@ -1,4 +1,8 @@
-import { DbDollContext, SaveContext } from "@/interfaces/payloads";
+import {
+  DbDollContext,
+  SaveContext,
+  ToastContext,
+} from "@/interfaces/payloads";
 import {
   AlgoPiece,
   Loadout,
@@ -16,6 +20,7 @@ interface Props {
   children: ReactNode;
 }
 const DbDollProvider = ({ children }: Props) => {
+  const { fireToast } = useContext(ToastContext);
   const { setUnsaved } = useContext(SaveContext);
   const storeValues = useStoreConfigs();
   const refresh = useStoreRefresh();
@@ -46,7 +51,8 @@ const DbDollProvider = ({ children }: Props) => {
   const saveUnits = async () => sUnits.mutateAsync(storeValues.dirtyUnits);
   const saveLoadouts = async () => sLoadouts.mutateAsync(loadout.dirtyData);
   const saveUnitSkills = async () => sUnitSkills.mutateAsync(skill.dirtyData);
-  const saveAlgoPieces = async () => sAlgoPieces.mutateAsync(algoPiece.dirtyData);
+  const saveAlgoPieces = async () =>
+    sAlgoPieces.mutateAsync(algoPiece.dirtyData);
   const saveSlots = async () => sSlots.mutateAsync(slot.dirtyData);
 
   async function saveDatabase() {
@@ -56,7 +62,9 @@ const DbDollProvider = ({ children }: Props) => {
       saveUnitSkills(),
       saveAlgoPieces(),
       saveSlots(),
-    ]).then(refresh.refreshAll);
+    ])
+      .then(refresh.refreshAll)
+      .catch((err) => fireToast({ header: "Save failed", content: err }));
   }
 
   function algoFillSlot(loadoutId: string, allOrNone: boolean) {

@@ -1,14 +1,13 @@
-use std::str::FromStr;
-
 use super::types::*;
 use crate::algorithm::types::IAlgoPiece;
-use crate::loadout::loadout_tuple_by_unit_id;
-use crate::prisma::unit_skill;
-use crate::service::db::get_db;
+use crate::loadout::get_loadout_tuple;
+use crate::prisma::unit;
 use crate::service::errors::{RequirementError, TauriError};
 use crate::state::types::GrandResource;
+use crate::traits::FromAsync;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{stats::types::*, table::consts::*, unit::types::IUnit};
+use std::str::FromStr;
 
 impl DatabaseRequirement {
     /// generate total resouces required from `DatabaseRequirement`
@@ -21,28 +20,49 @@ impl DatabaseRequirement {
     }
 }
 impl UnitRequirement {
-    pub async fn update_unit_req(unit: &IUnit, temp_unit_id: String) -> Result<Self, TauriError> {
-        let client = get_db().await;
-        let (current_lo, goal_lo) = loadout_tuple_by_unit_id(temp_unit_id).await.unwrap();
+    pub async fn calculate(from_unit: &unit::Data) -> Result<Self, TauriError> {
+        let unit = IUnit::from_async(from_unit.clone()).await;
+        let (current_lo, goal_lo) = get_loadout_tuple(from_unit.id.clone()).await.unwrap();
+
+        let (neural_from, neural_to) = (
+            NeuralExpansion::from_str(&current_lo.neural).unwrap(),
+            NeuralExpansion::from_str(&goal_lo.neural).unwrap(),
+        );
+        let neural = NeuralResourceRequirement::calculate(
+            NeuralFragment::new(current_lo.frags),
+            neural_from,
+            neural_to,
+            Some(from_unit.id.clone()),
+        )?;
+
+        let skill = SkillResourceRequirement::calculate(
+            IUnitSkill::from_async(current_lo.skill_level().unwrap().unwrap().clone()).await,
+            IUnitSkill::from_async(goal_lo.skill_level().unwrap().unwrap().clone()).await,
+            Some(from_unit.id.clone()),
+        );
+
+        let level = LevelRequirement::calculate(
+            current_lo.level.try_into().unwrap(),
+            goal_lo.level.try_into().unwrap(),
+            Some(from_unit.id.clone()),
+        )?;
+
+        let breakthrough = WidgetResourceRequirement::calculate(
+            unit.class,
+            unit.current.level.0,
+            unit.goal.level.0,
+            Some(from_unit.id.clone()),
+        )?;
+
+        let algo = AlgorithmRequirement::calculate(&unit, Some(from_unit.id.clone())).await?;
+
         Ok(Self {
-            skill: SkillResourceRequirement::calculate(
-                current_lo.skill_level().unwrap().unwrap(),
-                goal_lo.skill_level().unwrap().unwrap()
-            ),
-            neural: NeuralResourceRequirement::calculate(
-                NeuralFragment::new(current_lo.frags),
-                NeuralExpansion::from_str(&current_lo.neural).unwrap(),
-                NeuralExpansion::from_str(&goal_lo.neural).unwrap(),
-            )
-            .unwrap(),
-            level: LevelRequirement::calculate(unit.current.level.0, unit.goal.level.0).unwrap(),
-            breakthrough: WidgetResourceRequirement::calculate(
-                unit.class,
-                unit.current.level.0,
-                unit.goal.level.0,
-            )
-            .unwrap(),
-            algo: AlgorithmRequirement::calculate(unit).unwrap(),
+            unit_id: Some(from_unit.id.clone()),
+            skill,
+            neural,
+            level,
+            breakthrough,
+            algo,
         })
     }
 
@@ -63,11 +83,14 @@ impl UnitRequirement {
 }
 
 impl AlgorithmRequirement {
-    pub fn calculate(from_unit: &IUnit) -> Result<Self, RequirementError<IAlgoPiece>> {
+    pub async fn calculate(
+        from_unit: &IUnit,
+        from_unit_id: Option<String>,
+    ) -> Result<Self, RequirementError<IAlgoPiece>> {
         // TODO: handle error
         Ok(Self {
             pieces: from_unit.get_missing_algos(),
-            from_unit: from_unit.clone(),
+            from_unit_id,
         })
     }
 
@@ -80,7 +103,11 @@ impl AlgorithmRequirement {
 }
 
 impl LevelRequirement {
-    pub(super) fn calculate(from: u32, to: u32) -> Result<Self, RequirementError<u32>> {
+    pub(super) fn calculate(
+        from: u32,
+        to: u32,
+        from_unit_id: Option<String>,
+    ) -> Result<Self, RequirementError<u32>> {
         match &from.cmp(&to) {
             std::cmp::Ordering::Less => {
                 let (from_ind, to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
@@ -100,13 +127,16 @@ impl LevelRequirement {
 
                 let total: u32 =
                     from_right.iter().sum::<u32>() + middle + to_left.iter().sum::<u32>();
-                Ok(Self { exp: Exp(total) })
+                Ok(Self {
+                    exp: Exp(total),
+                    from_unit_id,
+                })
             }
             std::cmp::Ordering::Equal => Ok(Self::default()),
             std::cmp::Ordering::Greater => {
                 // TODO: handle
-                // Err(RequirementError::FromTo(from, to))
-                Ok(Self::default())
+                Err(RequirementError::FromTo(from, to))
+                // Ok(Self::default())
             }
         }
     }
@@ -117,6 +147,7 @@ impl NeuralResourceRequirement {
         current: NeuralFragment,
         from: NeuralExpansion,
         to: NeuralExpansion,
+        from_unit_id: Option<String>,
     ) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
         match (from as usize).cmp(&(to as usize)) {
             std::cmp::Ordering::Less => {
@@ -125,6 +156,7 @@ impl NeuralResourceRequirement {
                     frags: Self::get_frags(current, from, to),
                     coin: Coin(sum_coin.iter().sum::<u32>()),
                     kits: Self::calculate_kits_conversion(current, from, to).unwrap(),
+                    from_unit_id,
                 })
             }
             // TODO: handle
@@ -165,9 +197,13 @@ impl NeuralResourceRequirement {
     }
 }
 impl SkillResourceRequirement {
-    pub(super) fn calculate(from: &unit_skill::Data, to: &unit_skill::Data) -> Self {
+    pub(super) fn calculate(
+        from: IUnitSkill,
+        to: IUnitSkill,
+        from_unit_id: Option<String>,
+    ) -> Self {
         /// returns needed resource for passive skill and auto skill from a range of slv
-        fn slice_sum(mut vector: Vec<u32>, from: &unit_skill::Data, to: &unit_skill::Data) -> u32 {
+        fn slice_sum(mut vector: Vec<u32>, from: IUnitSkill, to: IUnitSkill) -> u32 {
             let v_passive: Vec<u32> = vector
                 .clone()
                 .drain(from.passive as usize..to.passive as usize)
@@ -186,6 +222,7 @@ impl SkillResourceRequirement {
             token: data[0],
             pivot: data[1],
             coin: Coin(data[2]),
+            from_unit_id,
         }
     }
 }
@@ -196,6 +233,7 @@ impl WidgetResourceRequirement {
         class: Class,
         from: u32,
         to: u32,
+        from_unit_id: Option<String>,
     ) -> Result<WidgetResourceRequirement, RequirementError<u32>> {
         let (mut from_ind, mut to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
         match &from_ind.cmp(&to_ind) {
@@ -223,6 +261,7 @@ impl WidgetResourceRequirement {
                         widget_inventory: widget_inventory.try_into().unwrap(),
                     },
                     coin: Coin(coin[0]),
+                    from_unit_id,
                 })
             }
             std::cmp::Ordering::Equal => Ok(WidgetResourceRequirement::default()),

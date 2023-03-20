@@ -1,19 +1,26 @@
+import { ToastContext } from "@/interfaces/payloads";
 import { SlotPlacement } from "@/src-tauri/bindings/enums";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { AlgoMainStat, Algorithm } from "@/src-tauri/bindings/rspc";
 import { AlgoPiece, Unit } from "@/src-tauri/bindings/structs";
+import { ERROR } from "@/utils/lang";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useContext } from "react";
 import AlgoImage from "../Algorithm/AlgoImage";
 
 type Props = {
   detailMode: boolean;
 };
 const AlgoRequirementGroup = ({ detailMode }: Props) => {
+  const { fireToast } = useContext(ToastContext);
+  // TODO: rspc api
+  // const { data: newTable } = rspc.useQuery(["requirements.algos"]);
   const { data: newTable } = useQuery({
     queryKey: ["new_table"],
     queryFn: () => invoke<[AlgoPiece, Unit][][]>("algo_req_table_piece"),
+    onError: (err) => fireToast({ header: ERROR, content: JSON.stringify(err) })
   });
   if (!newTable) return null;
 
