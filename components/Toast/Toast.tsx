@@ -5,8 +5,10 @@ import {
   Description,
   Action,
   Viewport,
+  Close,
 } from "@radix-ui/react-toast";
 import { ReactNode } from "react";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 type Props = {
   open: boolean;
@@ -26,6 +28,9 @@ const Toast = ({ content, header, open, setOpen, optionalAction }: Props) => {
         <Action className="ToastAction" asChild altText="Action">
           {optionalAction}
         </Action>
+        <Close>
+          <Cross2Icon />
+        </Close>
       </Root>
       <Viewport className="ToastViewport" />
     </Provider>
