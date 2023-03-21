@@ -2,8 +2,8 @@ mod impls;
 use crate::requirement::types::DatabaseRequirement;
 use crate::service::db::get_db;
 use crate::service::errors::TauriError;
-use crate::state::types::{GrandResource, JSONStorage};
 use crate::state::types::UserJSON;
+use crate::state::types::{GrandResource, JSONStorage};
 use tauri::State;
 
 // /// updates the requirement field in the store by reading the store field
@@ -32,8 +32,8 @@ use tauri::State;
 #[tauri::command]
 pub async fn get_needed_rsc() -> Result<GrandResource, TauriError> {
     println!("[invoke] get_needed_rsc");
-    // let units = get_units_iternal().await.unwrap();
     let client = get_db().await;
+    // TODO: refactor
     let unit_ids = client
         .unit()
         .find_many(vec![])
@@ -45,9 +45,7 @@ pub async fn get_needed_rsc() -> Result<GrandResource, TauriError> {
         .map(|e| e.id)
         .collect();
     let db_req = DatabaseRequirement::process_list(unit_ids).await?;
-    let t = db_req.generate_resource();
-    println!("{:?}", t);
-    Ok(t)
+    Ok(db_req.generate_resource())
 }
 
 #[tauri::command]

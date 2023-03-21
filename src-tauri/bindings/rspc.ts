@@ -4,13 +4,11 @@ export type Procedures = {
     queries: 
         { key: "algoPieces.get", input: never, result: AlgoPiece[] } | 
         { key: "algoPieces.getByLoadoutIds", input: string[], result: AlgoPiece[] } | 
-        { key: "displayAlgoMainstat", input: never, result: AlgoMainStat[] } | 
         { key: "enum.AlgoMainStat", input: never, result: CodeTuple<AlgoMainStat>[] } | 
         { key: "enum.Algorithm", input: never, result: CodeTuple<Algorithm>[] } | 
         { key: "enum.Class", input: never, result: CodeTuple<Class>[] } | 
         { key: "enum.Day", input: never, result: CodeTuple<Day>[] } | 
         { key: "enum.LoadoutType", input: never, result: CodeTuple<LoadoutType>[] } | 
-        { key: "listAlgoMainstat", input: AlgoMainStat[] | null, result: string[] } | 
         { key: "loadout.getByUnitId", input: string | null, result: Loadout[] } | 
         { key: "loadouts.get", input: never, result: Loadout[] } | 
         { key: "loadouts.getById", input: string, result: Loadout[] } | 

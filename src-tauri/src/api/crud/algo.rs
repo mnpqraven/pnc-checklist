@@ -1,5 +1,4 @@
-use crate::algorithm::types::IAlgoSlot;
-use crate::api::IAlgoPiece;
+use crate::algorithm::types::{IAlgoSlot, IAlgoPiece};
 use crate::prisma::{algo_piece, slot, PrismaClient};
 use prisma_client_rust::QueryError;
 
