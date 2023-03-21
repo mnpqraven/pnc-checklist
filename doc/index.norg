@@ -4,7 +4,7 @@ description: Insert description here
 authors: Othi
 categories: README
 created: 2023-01-18
-updated: 2023-03-20
+updated: 2023-03-21
 version: 0.1.2
 @end
 
@@ -40,25 +40,25 @@ version: 0.1.2
         all/none algo, set skill/level/frags to max/min. probably a good spot
         to put loadout name (current/goal) on top
 
-    - (x) AlgoPiece: click on icon to open up image selection div, combobox
+    - (-) AlgoPiece: click on icon to open up image selection div, combobox
         is too tiring to read
-    --- (?) probably the same with main stat
+    --- (=) probably the same with main stat
     --- (x) select all button in loadout
     --- (_) Wrap `<Loading />` inside `<Suspense>`
     - (x) layout when there's no algo piece is weird
     #refactors
-    - (-) replace existing `useEffect` calls only for fetching `invoke`
+    - (x) replace existing `useEffect` calls only for fetching `invoke`
         data
     --- current progress on refactoring:
     --- (x) `Dashboard`
-    --- (-) `Algorithm`
+    --- (x) `Algorithm`
     --- (x) `Requirement`
     --- (x) `Summary`
     --- (x) `pages`
     --- (x) `Doll` components (mutations)
     ----- (x) migrate to using `useQuery` in main page `dolls.tsx` first
     ----- (x) then drill to sub components
-    - (-) migrate info fetching from managed tauri state to database queries
+    - (x) migrate info fetching from managed tauri state to database queries
     --- (x) dolls: params (name, class) + loadout and unit ids
     ---- (x) dolllist
     ---- (x) header -> `handleSave()`
@@ -77,8 +77,8 @@ version: 0.1.2
         or use caches from react query
     --- (x) loadoutconfig
     --- (x) new algoPiece button
-    --- (=) data initialization during adding unit + loading empty database
-    ---- (=) custom hook
+    --- (x) data initialization during adding unit + loading empty database
+    ---- (x) custom hook
 
 
     - (-) SOLID principle ![(link)](https://github.com/ipenywis/react-solid)
@@ -119,11 +119,11 @@ version: 0.1.2
     ------ (+) prepare for schema update + data migration
     ------ (!) prisma schema + data structs in rust will be 2 sources of
            truths, need to sync between 2 sources
-    ----- (-) rspc setup
-    ------ (-) clean up binding mapping
-    ------ (-) refactor to module
-    --- ( ) prisma string to enum cast
-    --- ( ) migrate fns using `Computed` to use prisma database (lots in
+    ----- (x) rspc setup
+    ------ (x) clean up binding mapping
+    ------ (x) refactor to module
+    --- (x) prisma string to enum cast
+    --- (-) migrate fns using `Computed` to use prisma database (lots in
             `Requirement` module)
     - (x) tokio
     - (_) try `Suspense` with swr
@@ -132,8 +132,8 @@ version: 0.1.2
     ---- Scrapped, using React Query with RSPC instead
 
     #general
-    - ( ) error handle
-    -- ( ) requirement
+    - (-) error handle
+    -- (x) requirement
     -- ( ) compute
     -- (!) Frontend can save a low-leveled current and a high-level goal
     -- (!) right now changes to json store struct will make the app panic
@@ -148,7 +148,7 @@ version: 0.1.2
 
     #refactor
     - (-) `computed`
-    --- (-) move unit from json struct to computed struct
+    --- (-) move unit from json struct to prisma struct
     ---- (x) validate with old code
     ----- (x) adding units
     ----- (x) saving units
@@ -160,7 +160,7 @@ version: 0.1.2
     ----- (x) `AlgoPiece` inside `Locker` will always be cloned, remember to
           keep track of the new cloned value for `Arc`.
     ---- (x) restabilize requirement fns
-    ---- (-) refactor new `Arc<Mutex<T>>` generating functions to make it
+    ---- (_) refactor new `Arc<Mutex<T>>` generating functions to make it
          easier to read.
     - (x) inverting bools in `AlgoRequirment` feels unintuitive, maybe flip
       value
