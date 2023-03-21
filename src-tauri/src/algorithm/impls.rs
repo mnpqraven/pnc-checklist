@@ -333,6 +333,10 @@ impl FromAsync<algo_piece::Data> for IAlgoPiece {
             )
             .await,
         );
+match Algorithm::from_str(&piece.name) {
+    Ok(_) => {}
+    Err(_) => println!("{:?} it not valid", &piece.name )
+}
         Self {
             name: Algorithm::from_str(&piece.name).unwrap(),
             stat: AlgoMainStat::from_str(&piece.stat).unwrap(),

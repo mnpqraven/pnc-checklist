@@ -1,4 +1,4 @@
-import { Algorithm } from "@/src-tauri/bindings/enums";
+import { Algorithm } from "@/src-tauri/bindings/rspc";
 import { algo_src, parseAlgoName } from "@/utils/helper";
 import Image from "next/image";
 

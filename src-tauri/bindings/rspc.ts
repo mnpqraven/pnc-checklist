@@ -2,67 +2,69 @@
 
 export type Procedures = {
     queries: 
-        { key: "algoPieces.get", input: never, result: Array<AlgoPiece> } | 
-        { key: "algoPieces.getByLoadoutIds", input: Array<string>, result: Array<AlgoPiece> } | 
-        { key: "displayAlgoMainstat", input: never, result: Array<AlgoMainStat> } | 
-        { key: "enum.pretty.Algorithm", input: never, result: Array<Algorithm> } | 
-        { key: "enum.pretty.Algorithm.toRaw", input: string, result: string } | 
-        { key: "enum.pretty.LoadoutType", input: never, result: Array<LoadoutType> } | 
-        { key: "enum.pretty.LoadoutType.raw", input: string, result: string } | 
-        { key: "enum.rust.Algorithm", input: never, result: Array<string> } | 
-        { key: "enum.rust.LoadoutType", input: never, result: Array<string> } | 
-        { key: "listAlgoMainstat", input: Array<AlgoMainStat> | null, result: Array<string> } | 
-        { key: "loadout.getByUnitId", input: string | null, result: Array<Loadout> } | 
-        { key: "loadouts.get", input: never, result: Array<Loadout> } | 
-        { key: "loadouts.getById", input: string, result: Array<Loadout> } | 
+        { key: "algoPieces.get", input: never, result: AlgoPiece[] } | 
+        { key: "algoPieces.getByLoadoutIds", input: string[], result: AlgoPiece[] } | 
+        { key: "displayAlgoMainstat", input: never, result: AlgoMainStat[] } | 
+        { key: "enum.AlgoMainStat", input: never, result: CodeTuple<AlgoMainStat>[] } | 
+        { key: "enum.Algorithm", input: never, result: CodeTuple<Algorithm>[] } | 
+        { key: "enum.LoadoutType", input: never, result: CodeTuple<LoadoutType>[] } | 
+        { key: "listAlgoMainstat", input: AlgoMainStat[] | null, result: string[] } | 
+        { key: "loadout.getByUnitId", input: string | null, result: Loadout[] } | 
+        { key: "loadouts.get", input: never, result: Loadout[] } | 
+        { key: "loadouts.getById", input: string, result: Loadout[] } | 
         { key: "loadouts.getTupleByUnitId", input: string, result: [Loadout, Loadout] } | 
-        { key: "requirements.algos", input: never, result: Array<AlgorithmRequirement> } | 
-        { key: "slots.get", input: never, result: Array<Slot> } | 
-        { key: "slots.getByAlgoPieceIds", input: Array<string> | null, result: Array<Slot> } | 
+        { key: "requirements.algos", input: never, result: AlgorithmRequirement[] } | 
+        { key: "slots.get", input: never, result: Slot[] } | 
+        { key: "slots.getByAlgoPieceIds", input: string[] | null, result: Slot[] } | 
         { key: "unit.getById", input: string, result: Unit } | 
-        { key: "unitSkills.get", input: never, result: Array<UnitSkill> } | 
-        { key: "unitSkills.getByUnitIds", input: Array<string>, result: Array<UnitSkill> } | 
-        { key: "units.get", input: never, result: Array<Unit> } | 
+        { key: "unitSkills.get", input: never, result: UnitSkill[] } | 
+        { key: "unitSkills.getByUnitIds", input: string[], result: UnitSkill[] } | 
+        { key: "units.get", input: never, result: Unit[] } | 
         { key: "version", input: never, result: string },
     mutations: 
         { key: "algoPiece.deleteById", input: string, result: AlgoPiece } | 
         { key: "algoPiece.new", input: [string | null, AlgoCategory, boolean], result: AlgoPiece } | 
-        { key: "algoPieces.save", input: Array<AlgoPiece>, result: Array<AlgoPiece> } | 
-        { key: "loadouts.save", input: Array<Loadout>, result: Array<Loadout> } | 
-        { key: "slots.save", input: Array<Slot>, result: Array<Slot> } | 
+        { key: "algoPieces.save", input: AlgoPiece[], result: AlgoPiece[] } | 
+        { key: "loadouts.save", input: Loadout[], result: Loadout[] } | 
+        { key: "slots.save", input: Slot[], result: Slot[] } | 
         { key: "unit.delete", input: string, result: Unit } | 
         { key: "unit.new", input: [string, Class], result: Unit } | 
-        { key: "unitSkills.save", input: Array<UnitSkill>, result: Array<UnitSkill> } | 
-        { key: "units.save", input: Array<Unit>, result: Array<Unit> },
+        { key: "unitSkills.save", input: UnitSkill[], result: UnitSkill[] } | 
+        { key: "units.save", input: Unit[], result: Unit[] },
     subscriptions: never
 };
 
-export type AlgoCategory = "Offense" | "Stability" | "Special"
+export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
 
-export type AlgoMainStat = "Hashrate" | "HashratePercent" | "Atk" | "AtkPercent" | "Health" | "HealthPercent" | "Haste" | "PhysPen" | "PhysPenPercent" | "OperandPen" | "OperandPenPercent" | "CritRate" | "CritDmg" | "DamageInc" | "Dodge" | "HealInc" | "Def" | "DefPercent" | "OperandDef" | "OperandDefPercent" | "PostBattleRegen"
-
-export interface AlgoPiece { id: string, category: string, name: string, stat: string, loadoutId: string | null }
-
-export type Algorithm = "LowerLimit" | "Feedforward" | "Deduction" | "Progression" | "DataRepair" | "MLRMatrix" | "Stack" | "LimitValue" | "Encapsulate" | "Iteration" | "Perception" | "Overflow" | "Rationality" | "Connection" | "Convolution" | "Reflection" | "Resolve" | "Inspiration" | "LoopGain" | "SVM" | "Paradigm" | "DeltaV" | "Cluster" | "Stratagem" | "Exploit"
-
-export interface AlgorithmRequirement { pieces: Array<IAlgoPiece>, from_unit_id: string | null }
+export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }
 
 export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
 
-export interface IAlgoPiece { name: Algorithm, stat: AlgoMainStat, category: AlgoCategory, slot: IAlgoSlot }
+export type IAlgoSlot = ISlot[]
 
-export type IAlgoSlot = Array<ISlot>
+export type AlgorithmRequirement = { pieces: IAlgoPiece[]; from_unit_id: string | null }
 
-export interface ISlot { placement: SlotPlacement, value: boolean }
+export type CodeTuple<T> = { code: string; label: T }
 
-export interface Loadout { id: string, level: number, neural: string, frags: number | null, loadoutType: string, unitId: string }
+export type AlgoCategory = "Offense" | "Stability" | "Special"
 
-export type LoadoutType = "Current" | "Goal"
+export type ISlot = { placement: SlotPlacement; value: boolean }
 
-export interface Slot { id: string, placement: string, value: boolean, algoPieceId: string }
+export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
+
+export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
+
+export type AlgoMainStat = "Hashrate" | "HashratePercent" | "Atk" | "AtkPercent" | "Health" | "HealthPercent" | "Haste" | "PhysPen" | "PhysPenPercent" | "OperandPen" | "OperandPenPercent" | "CritRate" | "CritDmg" | "DamageInc" | "Dodge" | "HealInc" | "Def" | "DefPercent" | "OperandDef" | "OperandDefPercent" | "PostBattleRegen"
 
 export type SlotPlacement = "One" | "Two" | "Three"
 
-export interface Unit { id: string, name: string, class: string }
+/**
+ * List of algorithms
+ */
+export type Algorithm = "Lower Limit" | "Feedforward" | "Deduction" | "Progression" | "Data Repair" | "MLR Matrix" | "Stack" | "Limit Value" | "Encapsulate" | "Iteration" | "Perception" | "Overflow" | "Rationality" | "Connection" | "Convolution" | "Reflection" | "Resolve" | "Inspiration" | "Loop Gain" | "S.V.M" | "Paradigm" | "Delta V" | "Cluster" | "Stratagem" | "Exploit"
 
-export interface UnitSkill { id: string, auto: number, passive: number, loadoutId: string }
+export type Loadout = { id: string; level: number; neural: string; frags: number | null; loadoutType: string; unitId: string }
+
+export type Unit = { id: string; name: string; class: string }
+
+export type LoadoutType = "Current" | "Goal"

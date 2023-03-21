@@ -17,7 +17,7 @@ import {
 type Props<T extends PassableStructs> = {
   storeApi: Extract<
     Procedures["queries"],
-    { result: PassableStructs[] }
+    { result: PassableStructs[], input: never }
   >["key"];
   constraint: keyof T;
 };
@@ -34,7 +34,7 @@ export function useGenericConfig<T extends PassableStructs>({
   storeApi,
   constraint,
 }: Props<T>): Ret<T> {
-  const { data: store, refetch } = rspc.useQuery([storeApi, null]);
+  const { data: store, refetch } = rspc.useQuery([storeApi]);
 
   const [currentList, dispatchList] = useImmerReducer<
     T[],

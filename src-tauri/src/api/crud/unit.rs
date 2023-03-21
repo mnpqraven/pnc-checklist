@@ -1,23 +1,25 @@
 use crate::{
     api::crud::algo::new_algo_piece,
-    prisma::{self, unit, PrismaClient},
+    prisma::{self, loadout, unit, PrismaClient},
     stats::types::IUnitSkill,
     unit::types::{ILoadout, IUnit},
 };
 use prisma_client_rust::QueryError;
+use std::sync::Arc;
 
-pub async fn new_unit(client: &PrismaClient, data: IUnit) -> Result<unit::Data, QueryError> {
+pub async fn new_unit(client: Arc<PrismaClient>, data: IUnit) -> Result<unit::Data, QueryError> {
     let created = client
+        .clone()
         .unit()
         .create(data.name, data.class.to_string(), vec![])
         .exec()
         .await?;
-    new_loadout(client, data.current, created.id.clone()).await?;
-    new_loadout(client, data.goal, created.id.clone()).await?;
+    new_loadout(client.clone(), data.current, created.id.clone()).await?;
+    new_loadout(client.clone(), data.goal, created.id.clone()).await?;
     Ok(created)
 }
 
-pub async fn get_units(client: &PrismaClient) -> Result<Vec<unit::Data>, QueryError> {
+pub async fn get_units(client: Arc<PrismaClient>) -> Result<Vec<unit::Data>, QueryError> {
     client.unit().find_many(vec![]).exec().await
 }
 
@@ -38,7 +40,7 @@ pub async fn get_unit_from_id(
 }
 
 async fn new_loadout(
-    client: &PrismaClient,
+    client: Arc<PrismaClient>,
     data: ILoadout,
     unit_id: String,
 ) -> Result<prisma::loadout::Data, QueryError> {
@@ -50,7 +52,7 @@ async fn new_loadout(
             data.neural.to_string(),
             data.loadout_type.to_string(),
             prisma::unit::id::equals(unit_id),
-            vec![],
+            vec![loadout::frags::set(data.frags.0.map(|e| e as i32))],
         )
         .exec()
         .await?;
@@ -59,11 +61,11 @@ async fn new_loadout(
         data.algo
             .get_bucket()
             .into_iter()
-            .map(|algo| async { new_algo_piece(client, algo, Some(created.id.clone())).await }),
+            .map(|algo| async { new_algo_piece(&client, algo, Some(created.id.clone())).await }),
     )
     .await;
 
-    new_unit_skill(client, data.skill_level, created.id.clone()).await?;
+    new_unit_skill(&client, data.skill_level, created.id.clone()).await?;
     Ok(created)
 }
 

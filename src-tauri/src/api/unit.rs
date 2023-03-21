@@ -23,7 +23,7 @@ pub fn unit_router() -> RouterBuilder<Ctx> {
         .mutation("new", |t| {
             t(|ctx, (name, class): (String, Class)| async move {
                 let unit = IUnit::new(name, class);
-                let new_unit = new_unit(&ctx.client, unit).await.map_err(error_map);
+                let new_unit = new_unit(ctx.client, unit).await.map_err(error_map);
                 let t = IUnit::from_async(new_unit.clone().unwrap()).await;
                 println!("{:?}", t);
                 new_unit
@@ -39,7 +39,7 @@ pub fn unit_router() -> RouterBuilder<Ctx> {
 pub fn unit_many_router() -> RouterBuilder<Ctx> {
     Router::<Ctx>::new()
         .query("get", |t| {
-            t(|ctx, _: ()| async move { get_units(&ctx.client).await.map_err(error_map) })
+            t(|ctx, _: ()| async move { get_units(ctx.client).await.map_err(error_map) })
         })
         .mutation("save", |t| {
             t(|ctx, units: Vec<crate::prisma::unit::Data>| async move {

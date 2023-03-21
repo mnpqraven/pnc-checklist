@@ -22,7 +22,7 @@ const DollList = ({ filter, isVisible }: Props) => {
     isLoading: isLoadingLo,
     isError: isErrorLo,
   } = rspc.useQuery(["loadouts.get"]);
-  const { refreshAll, refreshUnits } = useStoreRefresh();
+  const { refreshUnits, refreshAll } = useStoreRefresh();
 
   const newUnitMutation = rspc.useMutation(["unit.new"]);
   const deleteUnitMutation = rspc.useMutation(["unit.delete"]);

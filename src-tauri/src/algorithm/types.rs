@@ -15,16 +15,20 @@ use strum_macros::EnumString;
 pub enum Algorithm {
     //offense
     #[strum(serialize = "Lower Limit")]
+    #[serde(rename = "Lower Limit")]
     LowerLimit,
     Feedforward,
     Deduction,
     Progression,
     #[strum(serialize = "Data Repair")]
+    #[serde(rename = "Data Repair")]
     DataRepair,
     #[strum(serialize = "MLR Matrix")]
+    #[serde(rename = "MLR Matrix")]
     MLRMatrix,
     Stack,
     #[strum(serialize = "Limit Value")]
+    #[serde(rename = "Limit Value")]
     LimitValue,
     //stability
     Encapsulate,
@@ -39,11 +43,14 @@ pub enum Algorithm {
     //special
     Inspiration,
     #[strum(serialize = "Loop Gain")]
+    #[serde(rename = "Loop Gain")]
     LoopGain,
     #[strum(serialize = "S.V.M")]
+    #[serde(rename = "S.V.M")]
     SVM,
     Paradigm,
     #[strum(serialize = "Delta V")]
+    #[serde(rename = "Delta V")]
     DeltaV,
     Cluster,
     Stratagem,

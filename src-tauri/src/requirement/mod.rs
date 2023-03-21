@@ -1,5 +1,6 @@
 use self::types::*;
 use crate::algorithm::types::IAlgoPiece;
+use crate::api::crud::unit::get_units;
 use crate::prisma::PrismaClient;
 use crate::service::db::get_db;
 use crate::service::errors::{RequirementError, TauriError};
@@ -87,10 +88,10 @@ pub fn requirement_widget(
 //     Ok(v)
 // }
 
-pub async fn requirement_algo_store_dev(
+pub async fn algo_requirement_store_dev(
     client: Arc<PrismaClient>,
 ) -> Result<Vec<AlgorithmRequirement>, rspc::Error> {
-    let db_units = client.unit().find_many(vec![]).exec().await.unwrap();
+    let db_units = get_units(client).await?;
 
     futures::future::try_join_all(db_units.into_iter().map(|db_unit| async move {
         let from_unit = IUnit::from_async(db_unit.clone()).await;
@@ -131,7 +132,7 @@ pub async fn algo_req_table_piece() -> Result<Vec<Vec<(IAlgoPiece, String)>>, Ta
     // let req_store = requirement_algo_store(computed).unwrap();
     println!("[invoke] algo_req_table_piece");
     let client = get_db().await;
-    let req_store = requirement_algo_store_dev(client).await?;
+    let req_store = algo_requirement_store_dev(client).await?;
     // req {algoPiece[], Unit}[]
     let mut v: Vec<(IAlgoPiece, String)> = Vec::new();
     for req in req_store.iter() {

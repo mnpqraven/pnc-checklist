@@ -41,7 +41,7 @@ pub enum TauriError {
     RequestLockFailed,
     UnitNotFound,
     ResourceRequestFailed(String),
-    Other(String)
+    Other(String),
 }
 impl Display for TauriError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -57,7 +57,7 @@ impl Display for TauriError {
             TauriError::ResourceRequestFailed(str) => {
                 format!("Requesting resource {{ {str} }} failed ")
             }
-            TauriError::Other(str) => format!("Error encountered: {{ {str} }}")
+            TauriError::Other(str) => format!("Error encountered: {{ {str} }}"),
         };
         write!(f, "{}", err)
     }

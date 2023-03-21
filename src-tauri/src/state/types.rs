@@ -14,7 +14,7 @@ pub struct JSONStorage {
     pub db: Mutex<GrandResource>, // generated struct
 }
 
-#[derive(Serialize, Deserialize, Debug, Type, JsonSchema)]
+#[derive(Serialize, Deserialize, Debug, JsonSchema)]
 pub struct UserJSON {
     #[serde(rename = "$schema")]
     pub schema: String,

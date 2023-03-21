@@ -9,7 +9,7 @@ mod unitskill;
 
 use self::{
     algopiece::{algo_piece_many_router, algo_piece_router},
-    enums::{enum_pretty_router, enum_rust_router},
+    enums::enum_router,
     loadout::{loadout_many_router, loadout_router},
     requirement::requirement_router,
     slot::{slot_many_router, slot_router},
@@ -45,8 +45,7 @@ pub(crate) fn init_router() -> Arc<Router<Ctx>> {
         .merge("algoPieces.", algo_piece_many_router())
         .merge("slot.", slot_router())
         .merge("slots.", slot_many_router())
-        .merge("enum.rust.", enum_rust_router())
-        .merge("enum.pretty.", enum_pretty_router())
+        .merge("enum.", enum_router())
         .merge("requirements.", requirement_router())
         .build()
         .arced()

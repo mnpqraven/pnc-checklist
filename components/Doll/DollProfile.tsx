@@ -19,7 +19,6 @@ const DollProfile = () => {
         .map((loadout, index) => (
           <div className="card component_space" key={index}>
             <div className="float-right">
-              {/* INFO: IN QUEUE AFTER ALGO */}
               <LoadoutConfig type={loadout.loadoutType as LoadoutType} />
             </div>
 

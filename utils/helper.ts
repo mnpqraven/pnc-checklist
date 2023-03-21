@@ -1,6 +1,6 @@
 import { Class } from "@/src-tauri/bindings/enums";
 import { ChangeEvent } from "react";
-import { Algorithm } from '@/src-tauri/bindings/rspc'
+import { Algorithm, CodeTuple } from "@/src-tauri/bindings/rspc";
 
 /**
  * same as Object.keys() but with generic type return
@@ -61,5 +61,17 @@ export function getValue(e: ChangeEvent<HTMLInputElement>): number {
  * Removes dots and spaces
  */
 export function parseAlgoName(prettyName: string): Algorithm {
-  return prettyName.replace(/\.|\s/g, '') as Algorithm
+  return prettyName.replace(/\.|\s/g, "") as Algorithm;
+}
+
+export function getCode<T>(tuples: CodeTuple<T>[], label: string): string {
+  let find = tuples.find((e) => e.label == label);
+  if (find) return find.code;
+  throw `label ${label} not found in provided tuple`;
+}
+
+export function getLabel<T>(tuples: CodeTuple<T>[], code: T): T {
+  let find = tuples.find((e) => e.code == code);
+  if (find) return find.label;
+  throw `code ${code} not found in provided tuple`;
 }

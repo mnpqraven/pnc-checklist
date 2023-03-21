@@ -19,7 +19,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
 import { rspc } from "../Providers/ClientProviders";
 import { Button, MainStatSelect } from "@/components/Common";
-import { parseAlgoName } from "@/utils/helper";
+import { getLabel, parseAlgoName } from "@/utils/helper";
 
 type Props = {
   pieceData: AlgoPiece;
@@ -41,24 +41,27 @@ const AlgorithmPiece = ({
   const [algorithm, setAlgorithm] = useState(pieceData.name);
   const [mainStat, setMainStat] = useState(pieceData.stat);
   const [openModal, setModal] = useState(false);
+  const { data: enumAlgos } = rspc.useQuery(["enum.Algorithm"]);
 
   const [componentSize, setComponentSize] = useState(2);
-  async function updateComponentSize(algo: string) {
+
+  async function updateComponentSize(algo: Algorithm) {
     invoke<number>(IVK.ALGO_GET_SLOT_SIZE, { algo }).then(setComponentSize);
   }
 
   // chaging unit
   useEffect(() => {
     setAlgorithm(pieceData.name);
-    updateComponentSize(parseAlgoName(pieceData.name)); // need a cast
+    updateComponentSize(pieceData.name as Algorithm);
     setMainStat(pieceData.stat);
   }, [pieceData]);
 
-  function pieceHandler(name: Algorithm) {
-    let nextPiece = { ...pieceData, name };
-    algoPiece.updateData(nextPiece, loadoutId);
-
-    setModal(false);
+  function pieceHandler(to: Algorithm) {
+    if (enumAlgos) {
+      let piece = { ...pieceData, name: to };
+      algoPiece.updateData(piece, loadoutId);
+      setModal(false);
+    }
   }
 
   function mainStatHandler(event: ChangeEvent<HTMLSelectElement> | string) {

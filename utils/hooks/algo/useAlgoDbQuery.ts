@@ -1,4 +1,4 @@
-import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/enums";
+import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/rspc";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";
 
