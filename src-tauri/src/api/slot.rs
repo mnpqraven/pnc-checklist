@@ -1,6 +1,5 @@
+use super::{crud::slot::get_slots, error_map, Ctx};
 use crate::prisma::slot;
-
-use super::{error_map, get_slots, Ctx};
 use rspc::{Router, RouterBuilder};
 
 pub fn slot_router() -> RouterBuilder<Ctx> {
@@ -20,7 +19,7 @@ pub fn slot_many_router() -> RouterBuilder<Ctx> {
         })
         .query("getByAlgoPieceIds", |t| {
             t(|ctx, algo_piece_ids: Option<Vec<String>>| async move {
-                get_slots(&ctx.client, algo_piece_ids)
+                get_slots(ctx.client, algo_piece_ids)
                     .await
                     .map_err(error_map)
             })

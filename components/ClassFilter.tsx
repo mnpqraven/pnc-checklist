@@ -1,24 +1,26 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Root, Item } from "@radix-ui/react-toggle-group";
 import { class_src } from "@/utils/helper";
-import { useEnumTable } from "@/utils/hooks/useEnumTable";
-import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { Class } from "@/src-tauri/bindings/rspc";
+import { rspc } from "./Providers/ClientProviders";
 
 type Props = {
   onChange: (to: Class) => void;
 };
 const ClassFilter = ({ onChange }: Props) => {
-  const { data: options } = useEnumTable<Class>(ENUM_TABLE.Class);
+  const { data } = rspc.useQuery(["enum.Class"]);
 
-  if (!options) return null;
+  if (!data) return null;
+
+  const options = data.map((e) => e.label);
+
   return (
     <Root
       className="ToggleGroup"
       type="multiple"
       defaultValue={options}
-      aria-label="Text alignment"
+      aria-label="Filter by class"
     >
       {options.map((item, index) => (
         <Item

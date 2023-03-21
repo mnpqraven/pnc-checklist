@@ -114,39 +114,54 @@ pub struct IAlgoSet {
 pub enum AlgoMainStat {
     Hashrate,
     #[strum(serialize = "Hashrate %")]
+    #[serde(rename = "Hashrate %")]
     HashratePercent,
     Atk,
     #[strum(serialize = "Atk %")]
+    #[serde(rename = "Atk %")]
     AtkPercent,
     Health,
     #[strum(serialize = "Health %")]
+    #[serde(rename = "Health %")]
     HealthPercent,
     Haste,
     #[strum(serialize = "Physical Pen.")]
+    #[serde(rename = "Physical Pen.")]
     PhysPen,
     #[strum(serialize = "Physical Pen. %")]
+    #[serde(rename = "Physical Pen. %")]
     PhysPenPercent,
     #[strum(serialize = "Operand Pen.")]
+    #[serde(rename = "Operand Pen.")]
     OperandPen,
     #[strum(serialize = "Operand Pen. %")]
+    #[serde(rename = "Operand Pen. %")]
     OperandPenPercent,
     #[strum(serialize = "Crit %")]
+    #[serde(rename = "Crit %")]
     CritRate,
     #[strum(serialize = "Crit Dmg %")]
+    #[serde(rename = "Crit Dmg %")]
     CritDmg,
     #[strum(serialize = "Damage Inc.")]
+    #[serde(rename = "Damage Inc.")]
     DamageInc,
     Dodge,
     #[strum(serialize = "Heal Inc.")]
+    #[serde(rename = "Heal Inc.")]
     HealInc,
     Def,
     #[strum(serialize = "Def %")]
+    #[serde(rename = "Def %")]
     DefPercent,
     #[strum(serialize = "Operand Def")]
+    #[serde(rename = "Operand Def")]
     OperandDef,
     #[strum(serialize = "Operand Def %")]
+    #[serde(rename = "Operand Def %")]
     OperandDefPercent,
     #[strum(serialize = "Post Battle Regen")]
+    #[serde(rename = "Post Battle Regen")]
     PostBattleRegen,
 }
 

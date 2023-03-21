@@ -1,7 +1,6 @@
+import { rspc } from "@/components/Providers/ClientProviders";
 import { Class } from "@/src-tauri/bindings/enums";
-import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { class_src } from "@/utils/helper";
-import { useEnumTable } from "@/utils/hooks/useEnumTable";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -25,11 +24,14 @@ export const ClassSelect = ({
   value,
   onChangeHandler: handleClassChange,
 }: Props) => {
-  const { data } = useEnumTable<Class>(ENUM_TABLE.Class);
+  const { data } = rspc.useQuery(["enum.Class"]);
   const [hovered, setHovered] = useState(false);
 
   if (!data) return null;
-  const { current, rest } = split_class(value, data);
+  const { current, rest } = split_class(
+    value,
+    data.map((e) => e.label)
+  );
 
   return (
     <motion.div

@@ -1,9 +1,9 @@
 use crate::{algorithm::types::Algorithm, unit::types::Class};
 use rspc::Type;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, Display};
+use strum::{EnumIter, Display, EnumString};
 
-#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter, EnumString)]
 pub enum Day {
     Mon,
     Tue,

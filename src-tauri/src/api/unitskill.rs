@@ -1,4 +1,4 @@
-use super::{error_map, get_skill_levels, Ctx};
+use super::{error_map, Ctx, crud::unit_skill::get_unit_skills};
 use crate::prisma::unit_skill;
 use rspc::{Router, RouterBuilder};
 
@@ -19,7 +19,7 @@ pub fn unit_skill_many_router() -> RouterBuilder<Ctx> {
         })
         .query("getByUnitIds", |t| {
             t(|ctx, unit_ids: Vec<String>| async move {
-                get_skill_levels(&ctx.client, unit_ids)
+                get_unit_skills(ctx.client, unit_ids)
                     .await
                     .map_err(error_map)
             })

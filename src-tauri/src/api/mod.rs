@@ -16,14 +16,10 @@ use self::{
     unit::{unit_many_router, unit_router},
     unitskill::{unit_skill_many_router, unit_skill_router},
 };
-use crate::{
-    algorithm::types::{AlgoMainStat, IAlgoPiece},
-    prisma::{self, PrismaClient},
-};
+use crate::prisma;
 use prisma_client_rust::QueryError;
-use rspc::{Config, Router, RouterBuilder};
+use rspc::{Config, Router};
 use std::{path::PathBuf, sync::Arc};
-use strum::IntoEnumIterator;
 
 pub struct Ctx {
     pub client: Arc<prisma::PrismaClient>,
@@ -34,7 +30,11 @@ fn error_map(err: QueryError) -> rspc::Error {
 }
 
 pub(crate) fn init_router() -> Arc<Router<Ctx>> {
-    new()
+    Router::<Ctx>::new()
+        .config(Config::new().export_ts_bindings(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
+        ))
+        .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
         .merge("unit.", unit_router())
         .merge("units.", unit_many_router())
         .merge("loadout.", loadout_router())
@@ -49,59 +49,4 @@ pub(crate) fn init_router() -> Arc<Router<Ctx>> {
         .merge("requirements.", requirement_router())
         .build()
         .arced()
-}
-
-pub fn new() -> RouterBuilder<Ctx> {
-    Router::<Ctx>::new()
-        .config(Config::new().export_ts_bindings(
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-tauri/bindings/rspc.ts"),
-        ))
-        .query("version", |t| t(|_, _: ()| env!("CARGO_PKG_VERSION")))
-        // INFO: ENUMS
-        .query("listAlgoMainstat", |t| {
-            t(|_, mainstats: Option<Vec<AlgoMainStat>>| async move {
-                match mainstats {
-                    Some(stats) => stats
-                        .iter()
-                        .map(|e| format!("{}", e))
-                        .collect::<Vec<String>>(),
-                    None => AlgoMainStat::iter()
-                        .map(|e| format!("{}", e))
-                        .collect::<Vec<String>>(),
-                }
-            })
-        })
-        .query("displayAlgoMainstat", |t| {
-            t(|_, _: ()| async move { AlgoMainStat::iter().collect::<Vec<AlgoMainStat>>() })
-        })
-}
-
-async fn get_skill_levels(
-    client: &PrismaClient,
-    unit_ids: Vec<String>,
-) -> Result<Vec<prisma::unit_skill::Data>, QueryError> {
-    let loadout_ids = client
-        .loadout()
-        .find_many(vec![prisma::loadout::unit_id::in_vec(unit_ids)])
-        .exec()
-        .await?
-        .iter()
-        .map(|e| e.id.clone())
-        .collect();
-    client
-        .unit_skill()
-        .find_many(vec![prisma::unit_skill::loadout_id::in_vec(loadout_ids)])
-        .exec()
-        .await
-}
-
-async fn get_slots(
-    client: &PrismaClient,
-    algo_piece_ids: Option<Vec<String>>,
-) -> Result<Vec<prisma::slot::Data>, QueryError> {
-    let pat = match algo_piece_ids {
-        Some(ids) => vec![prisma::slot::algo_piece_id::in_vec(ids)],
-        None => vec![],
-    };
-    client.slot().find_many(pat).exec().await
 }

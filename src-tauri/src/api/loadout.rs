@@ -1,7 +1,6 @@
-use crate::{prisma::loadout, loadout::get_loadout_tuple};
-use rspc::{Router, RouterBuilder};
-
 use super::{error_map, Ctx};
+use crate::{loadout::get_loadout_tuple, prisma::loadout};
+use rspc::{Router, RouterBuilder};
 
 pub fn loadout_many_router() -> RouterBuilder<Ctx> {
     Router::<Ctx>::new()

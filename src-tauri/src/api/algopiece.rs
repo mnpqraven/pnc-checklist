@@ -1,5 +1,8 @@
-use super::{error_map, Ctx, crud::algo::new_algo_piece};
-use crate::{prisma::algo_piece, algorithm::types::{AlgoCategory, IAlgoPiece}};
+use super::{crud::algo::new_algo_piece, error_map, Ctx};
+use crate::{
+    algorithm::types::{AlgoCategory, IAlgoPiece},
+    prisma::algo_piece,
+};
 use rspc::{Router, RouterBuilder};
 
 pub fn algo_piece_router() -> RouterBuilder<Ctx> {
@@ -42,15 +45,18 @@ pub fn algo_piece_many_router() -> RouterBuilder<Ctx> {
         })
         .mutation("save", |t| {
             t(|ctx, algo_pieces: Vec<algo_piece::Data>| async move {
-                ctx.client._batch(algo_pieces.into_iter().map(|data| {
+                ctx.client
+                    ._batch(algo_pieces.into_iter().map(|data| {
                         ctx.client.algo_piece().update(
                             algo_piece::id::equals(data.id),
                             vec![
-                            algo_piece::name::set(data.name),
-                            algo_piece::stat::set(data.stat),
+                                algo_piece::name::set(data.name),
+                                algo_piece::stat::set(data.stat),
                             ],
                         )
-                    })).await.map_err(error_map)
+                    }))
+                    .await
+                    .map_err(error_map)
             })
         })
 }

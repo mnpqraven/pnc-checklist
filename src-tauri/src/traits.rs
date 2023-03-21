@@ -1,7 +1,7 @@
 use crate::{
     algorithm::types::{AlgoCategory, AlgoMainStat, Algorithm, SlotPlacement},
     loadout::types::LoadoutType,
-    unit::types::{Class, NeuralExpansion},
+    unit::types::{Class, NeuralExpansion}, table::types::Day,
 };
 use std::{
     fmt::{Debug, Display},
@@ -39,6 +39,7 @@ pub trait Code: Debug + Display + FromStr + IntoEnumIterator + Clone {
 }
 
 impl Code for Class {}
+impl Code for Day {}
 impl Code for Algorithm {}
 impl Code for AlgoMainStat {}
 // impl Code for AlgoSubStat {}

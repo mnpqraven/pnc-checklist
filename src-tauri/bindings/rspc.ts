@@ -7,6 +7,8 @@ export type Procedures = {
         { key: "displayAlgoMainstat", input: never, result: AlgoMainStat[] } | 
         { key: "enum.AlgoMainStat", input: never, result: CodeTuple<AlgoMainStat>[] } | 
         { key: "enum.Algorithm", input: never, result: CodeTuple<Algorithm>[] } | 
+        { key: "enum.Class", input: never, result: CodeTuple<Class>[] } | 
+        { key: "enum.Day", input: never, result: CodeTuple<Day>[] } | 
         { key: "enum.LoadoutType", input: never, result: CodeTuple<LoadoutType>[] } | 
         { key: "listAlgoMainstat", input: AlgoMainStat[] | null, result: string[] } | 
         { key: "loadout.getByUnitId", input: string | null, result: Loadout[] } | 
@@ -34,6 +36,8 @@ export type Procedures = {
     subscriptions: never
 };
 
+export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
+
 export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
 
 export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }
@@ -46,15 +50,15 @@ export type AlgorithmRequirement = { pieces: IAlgoPiece[]; from_unit_id: string 
 
 export type CodeTuple<T> = { code: string; label: T }
 
-export type AlgoCategory = "Offense" | "Stability" | "Special"
-
 export type ISlot = { placement: SlotPlacement; value: boolean }
 
 export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
 
+export type AlgoCategory = "Offense" | "Stability" | "Special"
+
 export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
 
-export type AlgoMainStat = "Hashrate" | "HashratePercent" | "Atk" | "AtkPercent" | "Health" | "HealthPercent" | "Haste" | "PhysPen" | "PhysPenPercent" | "OperandPen" | "OperandPenPercent" | "CritRate" | "CritDmg" | "DamageInc" | "Dodge" | "HealInc" | "Def" | "DefPercent" | "OperandDef" | "OperandDefPercent" | "PostBattleRegen"
+export type AlgoMainStat = "Hashrate" | "Hashrate %" | "Atk" | "Atk %" | "Health" | "Health %" | "Haste" | "Physical Pen." | "Physical Pen. %" | "Operand Pen." | "Operand Pen. %" | "Crit %" | "Crit Dmg %" | "Damage Inc." | "Dodge" | "Heal Inc." | "Def" | "Def %" | "Operand Def" | "Operand Def %" | "Post Battle Regen"
 
 export type SlotPlacement = "One" | "Two" | "Three"
 
