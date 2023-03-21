@@ -11,7 +11,8 @@ import {
   UnitSkill,
 } from "@/src-tauri/bindings/rspc";
 import { useStoreRefresh } from "@/utils/hooks/useStoreRefetch";
-import { ReactNode, useContext, useEffect } from "react";
+import { SUCCESS, TOAST_SAVE_CONTENT_OK } from "@/utils/lang";
+import { ReactNode, useContext, useEffect, useMemo } from "react";
 import { rspc } from "./ClientProviders";
 import { useStoreConfigs } from "./TableConfigs/Units";
 import { useGenericConfig } from "./TableConfigs/useGenericConfig";
@@ -63,8 +64,16 @@ const DbDollProvider = ({ children }: Props) => {
       saveAlgoPieces(),
       saveSlots(),
     ])
-      .then(refresh.refreshAll)
-      .catch((err) => fireToast({ header: "Save failed", content: err }));
+      .then(() => {
+        refresh.refreshAll();
+        fireToast({ header: SUCCESS, content: TOAST_SAVE_CONTENT_OK });
+      })
+      .catch((err) => {
+        fireToast({
+          header: "Save failed",
+          content: `Saving data failed. Reason: ${err.message}`,
+        });
+      })
   }
 
   function algoFillSlot(loadoutId: string, allOrNone: boolean) {
@@ -103,19 +112,28 @@ const DbDollProvider = ({ children }: Props) => {
     }
   }
 
-  const dirtyData = [
-    loadout.dirtyData,
-    skill.dirtyData,
-    algoPiece.dirtyData,
-    slot.dirtyData,
-  ];
+  const dirtyData = useMemo(
+    () => [
+      storeValues.dirtyUnits,
+      loadout.dirtyData,
+      skill.dirtyData,
+      algoPiece.dirtyData,
+      slot.dirtyData,
+    ],
+    [
+      algoPiece.dirtyData,
+      loadout.dirtyData,
+      skill.dirtyData,
+      slot.dirtyData,
+      storeValues.dirtyUnits,
+    ]
+  );
 
   useEffect(() => {
     setUnsaved(
-      storeValues.dirtyUnits.length > 0 ||
-        dirtyData.reduce((accu, current) => accu || current.length > 0, false)
+      dirtyData.reduce((accu, current) => accu || current.length > 0, false)
     );
-  }, [setUnsaved, storeValues.dirtyUnits, ...dirtyData]);
+  }, [dirtyData, setUnsaved]);
 
   return (
     <DbDollContext.Provider

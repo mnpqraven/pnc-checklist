@@ -75,7 +75,6 @@ export function useGenericConfig<T extends PassableStructs>({
    * Slot: algoPieceId
    */
   function updateData(to: T, equals: string) {
-    console.warn("to", to);
     if (!store) throw new Error("should be defined here already");
     dispatchDirtyList({ name: "UPDATE", store, to });
     dispatchList({

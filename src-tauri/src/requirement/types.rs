@@ -3,6 +3,10 @@ use crate::stats::types::*;
 use rspc::Type;
 use serde::{Deserialize, Serialize};
 
+// pub trait Requirement {
+//     async fn calculate<T>(&self, cal_fun: fn()) -> Result<Self, RequirementError<T>>;
+// }
+
 /// struct for the requirement screen, gathers all requirements needed, single
 ///  requirement can be accessed by fields
 /// SoSoA

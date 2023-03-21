@@ -1,5 +1,5 @@
 use super::{error_map, Ctx};
-use crate::{loadout::get_loadout_tuple, prisma::loadout};
+use crate::{loadout::get_loadout_tuple, prisma::loadout, requirement::validate_loadout_save};
 use rspc::{Router, RouterBuilder};
 
 pub fn loadout_many_router() -> RouterBuilder<Ctx> {
@@ -31,6 +31,11 @@ pub fn loadout_many_router() -> RouterBuilder<Ctx> {
         })
         .mutation("save", |t| {
             t(|ctx, loadouts: Vec<loadout::Data>| async move {
+                futures::future::try_join_all(
+                    loadouts.iter().map(|from_lo|
+                validate_loadout_save(ctx.client.clone(), from_lo.clone(), loadouts.clone())
+                    )
+                ).await?;
                 ctx.client
                     ._batch(loadouts.into_iter().map(|data| {
                         ctx.client.loadout().update(

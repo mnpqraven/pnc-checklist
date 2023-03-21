@@ -34,31 +34,27 @@ export type Procedures = {
     subscriptions: never
 };
 
-export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
-
-export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
-
-export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }
-
-export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
-
-export type IAlgoSlot = ISlot[]
+export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
 
 export type AlgorithmRequirement = { pieces: IAlgoPiece[]; from_unit_id: string | null }
 
-export type CodeTuple<T> = { code: string; label: T }
-
-export type ISlot = { placement: SlotPlacement; value: boolean }
-
-export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
+export type Unit = { id: string; name: string; class: string }
 
 export type AlgoCategory = "Offense" | "Stability" | "Special"
 
-export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
+export type LoadoutType = "Current" | "Goal"
 
 export type AlgoMainStat = "Hashrate" | "Hashrate %" | "Atk" | "Atk %" | "Health" | "Health %" | "Haste" | "Physical Pen." | "Physical Pen. %" | "Operand Pen." | "Operand Pen. %" | "Crit %" | "Crit Dmg %" | "Damage Inc." | "Dodge" | "Heal Inc." | "Def" | "Def %" | "Operand Def" | "Operand Def %" | "Post Battle Regen"
 
+export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
+
 export type SlotPlacement = "One" | "Two" | "Three"
+
+export type IAlgoSlot = ISlot[]
+
+export type ISlot = { placement: SlotPlacement; value: boolean }
+
+export type CodeTuple<T> = { code: string; label: T }
 
 /**
  * List of algorithms
@@ -67,6 +63,10 @@ export type Algorithm = "Lower Limit" | "Feedforward" | "Deduction" | "Progressi
 
 export type Loadout = { id: string; level: number; neural: string; frags: number | null; loadoutType: string; unitId: string }
 
-export type Unit = { id: string; name: string; class: string }
+export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
 
-export type LoadoutType = "Current" | "Goal"
+export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
+
+export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
+
+export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }

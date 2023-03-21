@@ -1,12 +1,14 @@
 use self::types::*;
 use crate::algorithm::types::IAlgoPiece;
 use crate::api::crud::unit::get_units;
-use crate::prisma::PrismaClient;
+use crate::loadout::types::LoadoutType;
+use crate::prisma::{loadout, PrismaClient};
 use crate::service::db::get_db;
 use crate::service::errors::{RequirementError, TauriError};
 use crate::stats::types::{IUnitSkill, NeuralFragment};
 use crate::traits::FromAsync;
 use crate::unit::types::{Class, IUnit, NeuralExpansion};
+use std::str::FromStr;
 use std::sync::Arc;
 
 // #[cfg(test)]
@@ -152,4 +154,41 @@ pub async fn algo_req_table_piece() -> Result<Vec<Vec<(IAlgoPiece, String)>>, Ta
         .map(|e| e.to_owned())
         .collect();
     Ok(t)
+}
+
+pub async fn validate_loadout_save(
+    client: Arc<PrismaClient>,
+    from_lo: loadout::Data,
+    save_bucket: Vec<loadout::Data>,
+) -> Result<LevelRequirement, rspc::Error> {
+    // check in bucket first, if contains then validate both
+    let next_loadout_type = match LoadoutType::from_str(&from_lo.loadout_type).unwrap() {
+        LoadoutType::Current => LoadoutType::Goal,
+        LoadoutType::Goal => LoadoutType::Current,
+    };
+    let mut to_lo = save_bucket
+        .iter()
+        .find(|lo| {
+            lo.unit_id == from_lo.unit_id
+                && LoadoutType::from_str(&lo.loadout_type) == Ok(next_loadout_type)
+        })
+        .cloned();
+    // not in bucket, check with db
+    if to_lo.is_none() {
+        to_lo = client
+            .loadout()
+            .find_first(vec![
+                loadout::loadout_type::equals(next_loadout_type.to_string()),
+                loadout::unit_id::equals(from_lo.unit_id),
+            ])
+            .exec()
+            .await?;
+    }
+
+    // validates from target with find target
+    LevelRequirement::calculate(
+        from_lo.level.try_into().unwrap(),
+        to_lo.unwrap().level.try_into().unwrap(),
+        None,
+    ).map_err(|_| rspc::Error::new(rspc::ErrorCode::BadRequest, "validation failed".into()))
 }
