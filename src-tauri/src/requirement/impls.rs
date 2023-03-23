@@ -1,13 +1,15 @@
 use super::types::*;
 use crate::algorithm::types::IAlgoPiece;
-use crate::loadout::get_loadout_tuple;
-use crate::prisma::unit;
+use crate::loadout::{get_loadout_tuple, types::LoadoutType};
+use crate::prisma::{loadout, unit, PrismaClient};
 use crate::service::errors::{RequirementError, TauriError};
 use crate::state::types::GrandResource;
 use crate::traits::FromAsync;
 use crate::unit::types::{Class, NeuralExpansion};
 use crate::{stats::types::*, table::consts::*, unit::types::IUnit};
+use prisma_client_rust::QueryError;
 use std::str::FromStr;
+use std::sync::Arc;
 
 impl DatabaseRequirement {
     /// generate total resouces required from `DatabaseRequirement`
@@ -41,11 +43,13 @@ impl UnitRequirement {
             Some(from_unit.id.clone()),
         );
 
-        let level = LevelRequirement::calculate(
+        let level = LevelRequirement::calculate_algorithm(
             current_lo.level.try_into().unwrap(),
-            goal_lo.level.try_into().unwrap(),
+            Some(goal_lo.level.try_into().unwrap()),
+            None,
             Some(from_unit.id.clone()),
-        )?;
+        )
+        .await?;
 
         let breakthrough = WidgetResourceRequirement::calculate(
             unit.class,
@@ -102,12 +106,42 @@ impl AlgorithmRequirement {
     }
 }
 
-impl LevelRequirement {
-    pub(super) fn calculate(
-        from: u32,
-        to: u32,
+impl TRequirement for LevelRequirement {
+    type Input = u32;
+    type Output = LevelRequirement;
+    type Contraints = ();
+    type ErrorType = u32;
+    type PrismaType = loadout::Data;
+
+    fn choose_field(prisma_data: Self::PrismaType) -> Self::Input {
+        prisma_data.level.try_into().unwrap()
+    }
+
+    async fn get_db_to(
+        client: Arc<PrismaClient>,
+        from: Self::PrismaType,
+        next_loadout_type: LoadoutType,
+    ) -> Result<Option<Self::PrismaType>, QueryError> {
+        client
+            .loadout()
+            .find_first(vec![
+                loadout::loadout_type::equals(next_loadout_type.to_string()),
+                loadout::unit_id::equals(from.clone().unit_id),
+            ])
+            .exec()
+            .await
+    }
+
+    async fn calculate_algorithm(
+        from: Self::Input,
+        to: Option<Self::Input>,
+        _: Option<Self::Contraints>,
         from_unit_id: Option<String>,
-    ) -> Result<Self, RequirementError<u32>> {
+    ) -> Result<Self::Output, RequirementError<Self::ErrorType>> {
+        if to.is_none() {
+            return Err(RequirementError::MissingCompareItem);
+        }
+        let to = to.unwrap();
         match &from.cmp(&to) {
             std::cmp::Ordering::Less => {
                 let (from_ind, to_ind) = ((&from / 10) as usize, (&to / 10) as usize);
@@ -133,11 +167,7 @@ impl LevelRequirement {
                 })
             }
             std::cmp::Ordering::Equal => Ok(Self::default()),
-            std::cmp::Ordering::Greater => {
-                // TODO: handle
-                Err(RequirementError::FromTo(from, to))
-                // Ok(Self::default())
-            }
+            std::cmp::Ordering::Greater => Err(RequirementError::FromTo(from, to)),
         }
     }
 }

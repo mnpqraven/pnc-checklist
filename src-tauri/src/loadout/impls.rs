@@ -1,7 +1,7 @@
 use super::types::LoadoutType;
 use crate::{
     algorithm::types::*, prisma::loadout, service::db::get_db, stats::types::*, traits::FromAsync,
-    unit::types::*,
+    unit::types::*, requirement::types::PrismaData,
 };
 use std::str::FromStr;
 
@@ -69,5 +69,15 @@ impl FromAsync<loadout::Data> for ILoadout {
             frags: NeuralFragment::new(value.frags),
             loadout_type: LoadoutType::from_str(&value.loadout_type).unwrap(),
         }
+    }
+}
+
+impl PrismaData for loadout::Data {
+    async fn get_unit_id(&self) -> Option<String> {
+        Some(self.unit_id.clone())
+    }
+
+    async fn get_loadout_type(&self) -> Option<LoadoutType> {
+        LoadoutType::from_str(&self.loadout_type).ok()
     }
 }

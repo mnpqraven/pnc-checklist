@@ -7,6 +7,7 @@ pub enum RequirementError<T> {
     OutOfBound(T),
     FromTo(T, T),
     None(T),
+    MissingCompareItem
 }
 
 impl<T: Display> Display for RequirementError<T> {
@@ -25,6 +26,12 @@ impl<T: Display> Display for RequirementError<T> {
 impl<T: Display> From<RequirementError<T>> for rspc::Error {
     fn from(value: RequirementError<T>) -> Self {
         rspc::Error::new(rspc::ErrorCode::InternalServerError, value.to_string())
+    }
+}
+
+impl From<strum::ParseError> for TauriError {
+    fn from(value: strum::ParseError) -> Self {
+        TauriError::Other(value.to_string())
     }
 }
 
@@ -81,7 +88,7 @@ impl From<TauriError> for rspc::Error {
     }
 }
 
-/// Error concerning validatino of data, should amend the data and not stop the
+/// Error concerning validation of data, should amend the data and not stop the
 /// application
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub enum ValidationError {

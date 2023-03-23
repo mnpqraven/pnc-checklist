@@ -39,6 +39,12 @@ pub fn unit_many_router() -> RouterBuilder<Ctx> {
         })
         .mutation("save", |t| {
             t(|ctx, units: Vec<crate::prisma::unit::Data>| async move {
+                // validate_loadout_save(ctx.client.clone(), loadouts.clone())
+                // .await?;
+                // TODO: test to see if it works the same as before
+                // expand to more than Level, the calling struct here should
+                // be UnitRequirement
+                // LevelRequirement::dank_calculation(loadouts.clone(), None, None).await?;
                 ctx.client
                     ._batch(units.into_iter().map(|data| {
                         ctx.client.unit().update(
