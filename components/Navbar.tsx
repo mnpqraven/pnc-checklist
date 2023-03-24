@@ -16,7 +16,7 @@ const navigationRoutes = [
   { route: "inventory", name: "Inventory" },
   { route: "settings", name: "Settings" },
   // unimplemented
-  { route: "dev", name: "🍨🍨🍨" },
+  // { route: "dev", name: "🍨🍨🍨" },
   // { route: 'summary', name: "Summary" },
   // { route: 'about', name: "About" },
 ];

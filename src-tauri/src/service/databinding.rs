@@ -86,6 +86,7 @@ where
     T: Display + IntoEnumIterator,
 {
     let path = format!("bindings/{folder}/index.ts");
+    std::fs::create_dir_all(format!("bindings/{folder}"))?;
     let mut buffer = File::create(path).unwrap();
     for payload in T::iter() {
         let import_fmt = format!("import {{ {payload} }} from \"./{payload}\"\n");
@@ -170,18 +171,25 @@ pub fn write_index_keys(invoke_key: &str, path: &str) -> Result<(), Box<dyn std:
 /// ```
 ///
 /// * `enum_name`: name of the enum in Camel_Snake case
-pub fn write_enum_table<T>(enum_name: &str)  -> Result<(), &'static str> where T: IntoEnumIterator + Display{
-        let mut buffer = String::new();
-        let path = format!("bindings/{}.ts", enum_name.to_uppercase());
-        let fmt_first = format!("export const {} = {{\n", enum_name.to_uppercase());
-        let fmt_last = format!("}} as const;\n export type {} = keyof typeof {};", enum_name.replace('_',""), enum_name.to_uppercase());
+pub fn write_enum_table<T>(enum_name: &str) -> Result<(), &'static str>
+where
+    T: IntoEnumIterator + Display,
+{
+    let mut buffer = String::new();
+    let path = format!("bindings/{}.ts", enum_name.to_uppercase());
+    let fmt_first = format!("export const {} = {{\n", enum_name.to_uppercase());
+    let fmt_last = format!(
+        "}} as const;\n export type {} = keyof typeof {};",
+        enum_name.replace('_', ""),
+        enum_name.to_uppercase()
+    );
 
-        buffer.push_str(&fmt_first);
-        for name in T::iter() {
-            buffer.push_str(&format!("  {}: \"{}\",\n", name, name))
-        }
-        buffer.push_str(&fmt_last);
-        fs::write(path, buffer).unwrap();
+    buffer.push_str(&fmt_first);
+    for name in T::iter() {
+        buffer.push_str(&format!("  {}: \"{}\",\n", name, name))
+    }
+    buffer.push_str(&fmt_last);
+    fs::write(path, buffer).unwrap();
     Ok(())
 }
 
