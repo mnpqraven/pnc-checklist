@@ -39,7 +39,7 @@ pub enum Class {
     Warrior,
 }
 
-#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, Type, EnumIter, JsonSchema, EnumString)]
+#[derive(Debug, Display, Serialize, Deserialize, Copy, Clone, Type, EnumIter, JsonSchema, EnumString, PartialEq, Eq, PartialOrd, Ord)]
 pub enum NeuralExpansion {
     One,
     OneHalf,

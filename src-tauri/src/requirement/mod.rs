@@ -36,13 +36,13 @@ pub async fn requirement_level(
 }
 
 #[tauri::command]
-pub fn requirement_neural(
+pub async fn requirement_neural(
     current: NeuralFragment,
     from: NeuralExpansion,
     to: NeuralExpansion,
     unit_id: Option<String>,
-) -> Result<NeuralResourceRequirement, RequirementError<u32>> {
-    NeuralResourceRequirement::calculate(current, from, to, unit_id)
+) -> Result<NeuralResourceRequirement, RequirementError<NeuralExpansion>> {
+    NeuralResourceRequirement::calculate_algorithm(from, Some(to), Some(current), unit_id).await
 }
 
 #[tauri::command]

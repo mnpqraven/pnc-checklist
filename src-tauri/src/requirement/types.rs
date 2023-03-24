@@ -9,10 +9,6 @@ use rspc::Type;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-// pub trait Requirement {
-//     async fn calculate<T>(&self, cal_fun: fn()) -> Result<Self, RequirementError<T>>;
-// }
-
 /// struct for the requirement screen, gathers all requirements needed, single
 ///  requirement can be accessed by fields
 /// SoSoA
@@ -116,7 +112,7 @@ pub trait TRequirement {
     async fn get_from_to_tuple(
         from: Self::PrismaType,
         transaction_list: &[Self::PrismaType],
-        using_tos: bool
+        using_tos: bool,
     ) -> Result<(Self::Input, Option<Self::Input>), QueryError> {
         let client = get_db().await;
         // other loadout not in bucket, check with db
@@ -145,8 +141,11 @@ pub trait TRequirement {
             to_lo = Self::get_db_to(client.clone(), from.clone(), next_loadout_type).await?;
         }
         match using_tos {
-            true => Ok((Self::choose_field(from), Some(Self::choose_field(to_lo.unwrap())))),
-            false => Ok((Self::choose_field(from), None))
+            true => Ok((
+                Self::choose_field(from),
+                Some(Self::choose_field(to_lo.unwrap())),
+            )),
+            false => Ok((Self::choose_field(from), None)),
         }
     }
 
@@ -160,9 +159,10 @@ pub trait TRequirement {
             .clone()
             .into_iter()
             .map(|ongoing_item| async {
-                let (from, to) = Self::get_from_to_tuple(ongoing_item, &transaction_list, using_tos)
-                    .await
-                    .unwrap();
+                let (from, to) =
+                    Self::get_from_to_tuple(ongoing_item, &transaction_list, using_tos)
+                        .await
+                        .unwrap();
                 Self::calculate_algorithm(from, to, extra_constraints.clone(), from_unit_id.clone())
                     .await
                     .map_err(|_| {

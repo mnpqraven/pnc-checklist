@@ -4,9 +4,10 @@ use crate::loadout::get_loadout_db;
 use crate::loadout::types::LoadoutType;
 use crate::prisma::{algo_piece, loadout, unit, unit_skill};
 use crate::service::db::get_db;
-use crate::stats::types::{ILevel, NeuralFragment, IUnitSkill};
+use crate::stats::types::{ILevel, IUnitSkill, NeuralFragment};
 use crate::traits::FromAsync;
 use crate::unit::TauriError;
+use std::fmt::Display;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 
@@ -104,6 +105,14 @@ impl IUnitSkill {
         }
     }
 }
+
+impl Display for IUnitSkill {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let text = format!("[passive: {}, auto: {}]", self.passive, self.auto);
+        write!(f, "{}", text)
+    }
+}
+
 impl FromAsync<unit_skill::Data> for IUnitSkill {
     async fn from_async(value: unit_skill::Data) -> Self {
         let client = get_db().await;

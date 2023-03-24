@@ -29,6 +29,7 @@ pub async fn get_loadout_tuple(
         .loadout()
         .find_many(vec![loadout::unit_id::equals(unit_id.clone())])
         .with(loadout::skill_level::fetch())
+        .with(loadout::algo::fetch(vec![]))
         .exec()
         .await?;
     let current = loadouts

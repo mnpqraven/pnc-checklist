@@ -18,6 +18,7 @@ impl<T: Display> Display for RequirementError<T> {
             }
             RequirementError::FromTo(a, b) => format!("{a} is bigger than {b}"),
             RequirementError::None(t) => format!("Data field {t} is None"),
+            RequirementError::MissingCompareItem => format!("Missing item to compare to"),
         };
         write!(f, "{}", err)
     }
