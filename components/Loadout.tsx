@@ -1,9 +1,8 @@
 import { useContext } from "react";
 import { DbDollContext } from "@/interfaces/payloads";
 import { LevelBox, RaritySelect, SkillBox } from "./Doll";
-import { Loadout, LoadoutType } from "@/src-tauri/bindings/rspc";
+import { Loadout, LoadoutType, NeuralExpansion } from "@/src-tauri/bindings/rspc";
 import Loading from "./Loading";
-import { NeuralExpansion } from "@/src-tauri/bindings/enums";
 import AlgorithmSet from "./Algorithm/AlgorithmSet";
 import { getValue } from "@/utils/helper";
 

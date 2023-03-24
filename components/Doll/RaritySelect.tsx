@@ -1,4 +1,4 @@
-import { NeuralExpansion } from "@/src-tauri/bindings/enums";
+import { NeuralExpansion } from "@/src-tauri/bindings/rspc";
 import { invoke } from "@tauri-apps/api/tauri";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -57,7 +57,7 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
     let bcr = e.currentTarget.getBoundingClientRect();
     if (e.clientX - bcr.left < bcr.width * 0.5 && index != 0) {
       setStarDirty(
-        starDirty.map((e, i) => {
+        starDirty.map((_star, i) => {
           if (i == index) return "star-half";
           if (i < index) return "star-full";
           else return "star-dark";
@@ -65,7 +65,7 @@ const RaritySelect = ({ onChange, value: neural }: Props) => {
       );
     } else
       setStarDirty(
-        starDirty.map((e, i) => {
+        starDirty.map((_star, i) => {
           if (i <= index) return "star-full";
           else return "star-dark";
         })

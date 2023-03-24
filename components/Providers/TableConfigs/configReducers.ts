@@ -1,7 +1,6 @@
 import { deep_eq } from "@/utils/helper";
 import { castDraft, Draft } from "immer";
-import { CurrentActionables, DirtyListActionables, DirtyOnTopActionables } from "../actionables";
-import { PassableStructs } from "./useGenericConfig";
+import { CurrentActionables, DirtyListActionables, DirtyOnTopActionables, PassableStructs } from "../actionables";
 
 export function currentReducer<T extends PassableStructs>(
   draft: any[],

@@ -1,5 +1,6 @@
-import { AlgoCategory, Algorithm, Day } from "@/src-tauri/bindings/enums";
+import { AlgoCategory, Day } from "@/src-tauri/bindings/enums";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { Algorithm } from "@/src-tauri/bindings/rspc";
 import { DEFAULT_DAYS } from "@/utils/defaults";
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";

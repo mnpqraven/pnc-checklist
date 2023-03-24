@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ResourceByDay } from "@/src-tauri/bindings/structs";
-import { Bonus } from "@/src-tauri/bindings/enums";
 import { useTimetable } from "@/utils/hooks/useTimetable";
+import { Bonus } from "@/src-tauri/bindings/rspc";
 
 const Timetable = () => {
   const timetable: ResourceByDay[] = useTimetable();

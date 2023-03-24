@@ -6,9 +6,11 @@ export type Procedures = {
         { key: "algoPieces.getByLoadoutIds", input: string[], result: AlgoPiece[] } | 
         { key: "enum.AlgoMainStat", input: never, result: CodeTuple<AlgoMainStat>[] } | 
         { key: "enum.Algorithm", input: never, result: CodeTuple<Algorithm>[] } | 
+        { key: "enum.Bonus", input: never, result: CodeTuple<Bonus>[] } | 
         { key: "enum.Class", input: never, result: CodeTuple<Class>[] } | 
         { key: "enum.Day", input: never, result: CodeTuple<Day>[] } | 
         { key: "enum.LoadoutType", input: never, result: CodeTuple<LoadoutType>[] } | 
+        { key: "enum.NeuralExpansion", input: never, result: CodeTuple<NeuralExpansion>[] } | 
         { key: "loadout.getByUnitId", input: string | null, result: Loadout[] } | 
         { key: "loadouts.get", input: never, result: Loadout[] } | 
         { key: "loadouts.getById", input: string, result: Loadout[] } | 
@@ -34,27 +36,35 @@ export type Procedures = {
     subscriptions: never
 };
 
-export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
-
 export type AlgorithmRequirement = { pieces: IAlgoPiece[]; from_unit_id: string | null }
 
-export type Unit = { id: string; name: string; class: string }
+export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
 
-export type AlgoCategory = "Offense" | "Stability" | "Special"
+export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
 
-export type LoadoutType = "Current" | "Goal"
+export type NeuralExpansion = "One" | "OneHalf" | "Two" | "TwoHalf" | "Three" | "ThreeHalf" | "Four" | "FourHalf" | "Five"
 
-export type AlgoMainStat = "Hashrate" | "Hashrate %" | "Atk" | "Atk %" | "Health" | "Health %" | "Haste" | "Physical Pen." | "Physical Pen. %" | "Operand Pen." | "Operand Pen. %" | "Crit %" | "Crit Dmg %" | "Damage Inc." | "Dodge" | "Heal Inc." | "Def" | "Def %" | "Operand Def" | "Operand Def %" | "Post Battle Regen"
+export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }
 
 export type Class = "Guard" | "Medic" | "Sniper" | "Specialist" | "Warrior"
 
-export type SlotPlacement = "One" | "Two" | "Three"
-
 export type IAlgoSlot = ISlot[]
+
+export type Bonus = "Coin" | "Exp" | "Skill" | { Class: Class }
+
+export type CodeTuple<T> = { code: string; label: T }
 
 export type ISlot = { placement: SlotPlacement; value: boolean }
 
-export type CodeTuple<T> = { code: string; label: T }
+export type IAlgoPiece = { name: Algorithm; stat: AlgoMainStat; category: AlgoCategory; slot: IAlgoSlot }
+
+export type AlgoCategory = "Offense" | "Stability" | "Special"
+
+export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
+
+export type AlgoMainStat = "Hashrate" | "Hashrate %" | "Atk" | "Atk %" | "Health" | "Health %" | "Haste" | "Physical Pen." | "Physical Pen. %" | "Operand Pen." | "Operand Pen. %" | "Crit %" | "Crit Dmg %" | "Damage Inc." | "Dodge" | "Heal Inc." | "Def" | "Def %" | "Operand Def" | "Operand Def %" | "Post Battle Regen"
+
+export type SlotPlacement = "One" | "Two" | "Three"
 
 /**
  * List of algorithms
@@ -63,10 +73,6 @@ export type Algorithm = "Lower Limit" | "Feedforward" | "Deduction" | "Progressi
 
 export type Loadout = { id: string; level: number; neural: string; frags: number | null; loadoutType: string; unitId: string }
 
-export type UnitSkill = { id: string; auto: number; passive: number; loadoutId: string }
+export type Unit = { id: string; name: string; class: string }
 
-export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
-
-export type AlgoPiece = { id: string; category: string; name: string; stat: string; loadoutId: string | null }
-
-export type Slot = { id: string; placement: string; value: boolean; algoPieceId: string }
+export type LoadoutType = "Current" | "Goal"

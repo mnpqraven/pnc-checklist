@@ -1,5 +1,5 @@
 import { rspc } from "@/components/Providers/ClientProviders";
-import { Class } from "@/src-tauri/bindings/enums";
+import { Class } from "@/src-tauri/bindings/rspc";
 import { class_src } from "@/utils/helper";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";

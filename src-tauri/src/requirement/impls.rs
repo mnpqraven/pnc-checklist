@@ -316,7 +316,7 @@ impl TRequirement for SkillResourceRequirement {
     async fn calculate_algorithm(
         from: Self::Input,
         to: Option<Self::Input>,
-        extra_constraints: Option<Self::Contraints>,
+        _: Option<Self::Contraints>,
         from_unit_id: Option<String>,
     ) -> Result<Self::Output, RequirementError<Self::ErrorType>> {
         /// returns needed resource for passive skill and auto skill from a range of slv

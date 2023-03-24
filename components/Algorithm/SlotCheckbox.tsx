@@ -1,7 +1,6 @@
 import { DbDollContext } from "@/interfaces/payloads";
-import { AlgoCategory, Class } from "@/src-tauri/bindings/enums";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
-import { Slot } from "@/src-tauri/bindings/rspc";
+import { AlgoCategory, Class, Slot } from "@/src-tauri/bindings/rspc";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { invoke } from "@tauri-apps/api/tauri";

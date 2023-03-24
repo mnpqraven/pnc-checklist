@@ -1,5 +1,5 @@
-import { AlgoMainStat } from "@/src-tauri/bindings/enums";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
+import { AlgoMainStat } from "@/src-tauri/bindings/rspc";
 import { AlgoPiece } from "@/src-tauri/bindings/structs";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/tauri";

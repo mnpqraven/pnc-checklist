@@ -24,7 +24,7 @@ pub struct ResourceByDay {
     pub algos: Vec<Algorithm>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter)]
+#[derive(Serialize, Deserialize, Debug, Display, Clone, Copy, Type, EnumIter, EnumString)]
 pub enum Bonus {
     Coin,
     Exp,

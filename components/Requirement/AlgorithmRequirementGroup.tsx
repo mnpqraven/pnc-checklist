@@ -1,8 +1,7 @@
 import { ToastContext } from "@/interfaces/payloads";
-import { SlotPlacement } from "@/src-tauri/bindings/enums";
 import { ENUM_TABLE } from "@/src-tauri/bindings/ENUM_TABLE";
 import { IVK } from "@/src-tauri/bindings/invoke_keys";
-import { AlgoMainStat, Algorithm } from "@/src-tauri/bindings/rspc";
+import { AlgoMainStat, Algorithm, SlotPlacement } from "@/src-tauri/bindings/rspc";
 import { AlgoPiece, Unit } from "@/src-tauri/bindings/structs";
 import { ERROR } from "@/utils/lang";
 import { useQuery } from "@tanstack/react-query";

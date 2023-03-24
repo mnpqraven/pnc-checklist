@@ -5,7 +5,6 @@ import {
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
-import { rspc } from "./Providers/ClientProviders";
 
 type Props = {
   value: any;
@@ -20,12 +19,6 @@ const MainStatSelect = ({
   onChangeHandler,
   category,
 }: Props) => {
-  // const label = useEnumLabel(labelPayload);
-  // TODO: custom hook
-  const { data: labels } = rspc.useQuery(["listAlgoMainstat", options]);
-
-  if (!labels) return null;
-
   return (
     <Select.Root onValueChange={onChangeHandler} value={value}>
       <Select.Trigger className="SelectTrigger" aria-label="Main Stat">
@@ -46,7 +39,7 @@ const MainStatSelect = ({
               <Select.Label className="SelectLabel">
                 {category} Algorithms
               </Select.Label>
-              {labels.map((label, index) => (
+              {options.map((label, index) => (
                 <Select.Item key={index} className="SelectItem" value={label}>
                   <Select.ItemText>{label}</Select.ItemText>
                   <Select.ItemIndicator className="SelectItemIndicator">

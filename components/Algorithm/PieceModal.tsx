@@ -1,11 +1,10 @@
-import { AlgoCategory } from "@/src-tauri/bindings/enums";
 import Loading from "../Loading";
 import { useAlgoDbQuery } from "@/utils/hooks/algo/useAlgoDbQuery";
 import { motion } from "framer-motion";
 import { Backdrop } from "../Modal/Backdrop";
 import ErrorContainer from "../Error";
 import AlgoImage from "./AlgoImage";
-import { Algorithm } from "@/src-tauri/bindings/rspc";
+import { AlgoCategory, Algorithm } from "@/src-tauri/bindings/rspc";
 
 type Props = {
   handleClose: () => void;
